@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "3DSCO",
+    "slug": "3DSCO",
+    "owner": "Rajan_mishra",
+    "version": "1.0.2",
+    "orientation": "portrait",
+    "icon": "./assets/icon1.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash1.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#82027D"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.threeDSCO.iDigital"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon1.png",
+        "backgroundColor": "#82027D"
+      },
+      "package": "com.threeDSCO.iDigital"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "618672be-525f-4730-a1ee-2c7f936af4d8"
+      }
+    }
+  }
+}

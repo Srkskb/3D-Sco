@@ -1,0 +1,5 @@
+export {default as HomeStack} from './homestack/HomeStack'
+export {default as CalendarStack} from './calendarstack/CalendarStack'
+export {default as EducationStack} from './educationstack/EducationStack'
+export {default as AccountStack} from './accountstack/AccountStack'
+export {default as StudentStack} from './studentstack/StudentStack'

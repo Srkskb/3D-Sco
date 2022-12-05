@@ -1,0 +1,8 @@
+const technical_support= `Anim in sint cillum id. Proident laboris do ea Lorem culpa. Velit minim in laboris aliquip reprehenderit eiusmod cupidatat officia. Eiusmod excepteur minim proident qui Lorem sint nisi commodo aliqua aliqua consectetur id in aliqua.
+
+Adipisicing reprehenderit duis eiusmod sit. Consequat qui ex ad ex qui irure. Anim quis occaecat officia ea non excepteur laboris incididunt exercitation adipisicing elit laboris duis. Nulla ut velit labore ipsum dolor pariatur minim cupidatat elit est veniam Lorem. Laboris aute magna id culpa tempor officia officia culpa ipsum magna ipsum esse minim commodo.
+
+Esse exercitation ad velit dolore cillum occaecat esse cupidatat sint. Consectetur qui in ipsum consectetur dolor enim dolore. Lorem exercitation ipsum duis labore veniam minim aute tempor sit elit id aliquip. Ea sunt labore esse aute fugiat et dolore nulla commodo nisi dolore. Consequat ut sint do eu exercitation sint aliquip occaecat quis sint est excepteur ad cillum. Amet cupidatat amet elit sunt mollit nulla deserunt officia do proident do consequat.
+
+Lorem excepteur sunt commodo eiusmod non ut ipsum. Lorem do ipsum exercitation fugiat enim qui dolore proident irure ex voluptate id. Ut incididunt Lorem enim consectetur proident in ex eu pariatur mollit laborum elit. Commodo anim consequat aliqua do ex magna ex excepteur sunt reprehende adipisicing Lorem ex officia. Laborum esse eu do est amet voluptate ea aliquip est eiusmod consequat qui cupidatat et. Quis irure magna velit aliqua occaecat. Exercitation duis dolore excepteur occaecat nulla esse fugiat non ad ex culpa veniam. Cillum non mollit quis ea. Consectetur velit velit fugiat ut do eu nisi excepteur ut veniam minim.`
+export default technical_support

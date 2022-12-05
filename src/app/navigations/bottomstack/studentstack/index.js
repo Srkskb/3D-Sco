@@ -1,0 +1,1 @@
+export {default as Student} from '../../../screens/students/Student'

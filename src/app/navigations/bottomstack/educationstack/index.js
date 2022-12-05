@@ -1,0 +1,7 @@
+export {default as Education} from '../../../screens/students/education/Education'
+export {default as LearnerList} from '../../../screens/students/education/LearnerList'
+export {default as InstructorList} from '../../../screens/students/education/InstructorList'
+export {default as Library} from '../../../screens/students/education/Library'
+export {default as FinancialAssistance} from '../../../screens/students/education/FinancialAssistance'
+export {default as AddFinancial} from '../../../screens/students/education/AddFinancial'
+export {default as EditFinancial} from '../../../screens/students/education/EditFinancial'
