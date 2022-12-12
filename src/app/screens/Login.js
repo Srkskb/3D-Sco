@@ -23,7 +23,9 @@ import Input from "../components/inputs/Input";
 const { height, width } = Dimensions.get("window");
 import { Formik } from "formik";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import axios from "axios";
 import * as Yup from "yup";
+import * as qs from "qs";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Login({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
@@ -52,41 +54,71 @@ export default function Login({ navigation }) {
   };
   const loginUser = async (values) => {
     var role_data = user_id;
-    const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("login", "1");
-    urlencoded.append("email", values.email);
-    urlencoded.append("password", values.password);
-    urlencoded.append("type", role_data);
-    console.log(urlencoded);
-    const result = await fetch(
-      "https://3dsco.com/3discoapi/3dicowebservce.php",
-      {
-        method: "POST",
-        body: urlencoded,
-        headers: {
-          myHeaders,
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success == 1) {
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
-          localStorage.setItem("loginUID", res.data.id);
-          localStorage.setItem("userFName", res.data.name);
-          localStorage.setItem("userMobile", res.data.contact);
-          localStorage.setItem("userEmail", res.data.email);
-          localStorage.setItem("userGender", res.data.gender);
-          localStorage.setItem("userCategory", res.data.category);
-          navigation.navigate("DrawerNavigator");
-        } else {
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
-        }
-      });
+    // const myHeaders = myHeadersData();
+    // var urlencoded = new FormData();
+    // urlencoded.append("login", "1");
+    // urlencoded.append("email", values.email);
+    // urlencoded.append("password", values.password);
+    // urlencoded.append("type", role_data);
+    // console.log(urlencoded);
+    // const result = await fetch(
+    //   "https://3dsco.com/3discoapi/3dicowebservce.php",
+    //   {
+    //     method: "POST",
+    //     body: urlencoded,
+    //     headers: {
+    //       myHeaders,
+    //     },
+    //   }
+    // )
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     console.log(res);
+    //     if (res.success == 1) {
+    //       setSnackVisibleTrue(true);
+    //       setMessageTrue(res.message);
+    //       localStorage.setItem("loginUID", res.data.id);
+    //       localStorage.setItem("userFName", res.data.name);
+    //       localStorage.setItem("userMobile", res.data.contact);
+    //       localStorage.setItem("userEmail", res.data.email);
+    //       localStorage.setItem("userGender", res.data.gender);
+    //       localStorage.setItem("userCategory", res.data.category);
+    //       // navigation.navigate("DrawerNavigator");
+
+    //     } else {
+    //       setSnackVisibleFalse(true);
+    //       setMessageFalse(res.message);
+    //     }
+    //   });
+    var data = qs.stringify({
+  login: '1',
+  email: values.email,
+  password: values.password,
+  type: role_data 
+});
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=fbpj6oakqd6lo2tvf4pnlblnl7'
+  },
+  data : data
+};
+
+axios(config)
+.then((response) =>{
+  if(response.data.data.type=='Student'){
+    navigation.navigate("Navigator");
+  }
+  if(response.data.data.type=='tutor'){
+    navigation.navigate("TutorDrawerNavigator");
+  }
+})
+.catch((error)=>{
+  console.log(error);
+});
   };
 
   return (
@@ -137,10 +169,10 @@ export default function Login({ navigation }) {
                       password: Yup.string()
                         .required("Password is required")
                         .min(5, "Your password is too short.")
-                        .matches(
-                          /[a-zA-Z]/,
-                          "Password can only contain Latin letters."
-                        ),
+                        // .matches(
+                        //   /[a-zA-Z]/,
+                        //   "Password can only contain Latin letters."
+                        // ),
                     })}
                     onSubmit={(values) => loginUser(values)}
                   >
