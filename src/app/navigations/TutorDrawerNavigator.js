@@ -13,6 +13,7 @@ import {
   ViewProfile,
 } from "../screens/common/hamburgerMenu";
 import DrawerContent from "../components/DrawerContent";
+import TutorTabs from "./TutorTabs";
 const Drawer = createDrawerNavigator();
 export default function TutorDrawerNavigator() {
   return (
@@ -21,8 +22,8 @@ export default function TutorDrawerNavigator() {
       drawerContent={(props) => <DrawerContent {...props} />}
     >
       <Drawer.Screen
-        name="ClientTabs"
-        component={ClientTabs}
+        name="TutorTabs"
+        component={TutorTabs}
         options={{
           title: "Home",
           drawerLabelStyle: { fontFamily: "Montserrat-SemiBold" },

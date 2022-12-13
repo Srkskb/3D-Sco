@@ -1,0 +1,5 @@
+export {default as Home} from './home/Home'
+export {default as Student} from './student/Student'
+export {default as Calendar} from './calender/Calender'
+export {default as Account} from './account/Account'
+export {default as Education} from './education/Education'
