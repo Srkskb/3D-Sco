@@ -10,7 +10,21 @@ import {
     EducatorViewContent,
     EducatorEditFileCabinet,
     EducatorLibrary,
-    EducatorResources
+    EducatorResources,
+    EducatorStoreFavoriteLinks,
+    EducatorAddLinks,
+    EducatorEditStoreFavoriteLinks,
+    EducatorViewStoreFavoriteLinks,
+    EducatorBlogs,
+    EducatorViewBlogs,
+    EducatorSuggestLinks,
+    EducatorAddBlogs,
+    EducatorEditBlogs,
+    EducatorExportContent,
+    EducatorPhotoAlbum,
+    AddPhoto,
+    ViewPhoto,
+    EditPhoto
   } from "./";
   const Stack = createStackNavigator();
 export default function Account() {
@@ -24,7 +38,21 @@ export default function Account() {
       <Stack.Screen name="EducatorViewContent" component={EducatorViewContent} />
       <Stack.Screen name="EducatorEditFileCabinet" component={EducatorEditFileCabinet} />
       <Stack.Screen name="EducatorLibrary" component={EducatorLibrary} />
-      <Stack.Screen name="EducatorResources" component={EducatorResources} />
+      <Stack.Screen name="EducatorResources" component={EducatorResources} /> 
+      <Stack.Screen name="EducatorStoreFavoriteLinks" component={EducatorStoreFavoriteLinks} />
+      <Stack.Screen name="EducatorAddLinks" component={EducatorAddLinks} /> 
+      <Stack.Screen name="EducatorEditStoreFavoriteLinks" component={EducatorEditStoreFavoriteLinks} /> 
+      <Stack.Screen name="EducatorViewStoreFavoriteLinks" component={EducatorViewStoreFavoriteLinks} /> 
+      <Stack.Screen name="EducatorBlogs" component={EducatorBlogs} /> 
+      <Stack.Screen name="EducatorViewBlogs" component={EducatorViewBlogs} /> 
+      <Stack.Screen name="EducatorSuggestLinks" component={EducatorSuggestLinks} /> 
+      <Stack.Screen name="EducatorAddBlogs" component={EducatorAddBlogs} /> 
+      <Stack.Screen name="EducatorEditBlogs" component={EducatorEditBlogs} />
+      <Stack.Screen name="EducatorPhotoAlbum" component={EducatorPhotoAlbum} />
+      <Stack.Screen name="EducatorExportContent" component={EducatorExportContent} />  
+      <Stack.Screen name="AddPhoto" component={AddPhoto} />
+      <Stack.Screen name="ViewPhoto" component={ViewPhoto} />
+      <Stack.Screen name="EditPhoto" component={EditPhoto} />
     </Stack.Navigator>
   );
 }

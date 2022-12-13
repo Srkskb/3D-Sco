@@ -43,16 +43,17 @@ export default function EducatorAccount() {
                 onPress={() => navigation.navigate("PreviousCourses")}
               /> */}
 
-              <Account_Tabs
-                imgsrc={require("./../../../assets/images/account/journal.png")}
-                title={"Photo Album"}
-                onPress={() => navigation.navigate("MyJournal")}
-              />
+             
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"Export Content"}
-                onPress={() => navigation.navigate("MyProjects")}
+                onPress={() => navigation.navigate("EducatorExportContent")}
+              />
+               <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Photo Album"}
+                onPress={() => navigation.navigate("EducatorPhotoAlbum")}
               />
             </View>
             <View style={styles.vertical_list}>
@@ -83,12 +84,12 @@ export default function EducatorAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/links.png")}
                 title={"Store Favorite Links (Weblinks)"}
-                onPress={() => navigation.navigate("StoreFavoriteLinks")}
+                onPress={() => navigation.navigate("EducatorStoreFavoriteLinks")}
               />
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/blogs.png")}
                 title={"Blogs"}
-                onPress={() => navigation.navigate("Blogs")}
+                onPress={() => navigation.navigate("EducatorBlogs")}
               />
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
