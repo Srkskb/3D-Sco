@@ -28,13 +28,13 @@ export default function EducatorAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"File Cabinet"}
-                onPress={() => navigation.navigate("FileCabinet")}
+                onPress={() => navigation.navigate("EducatorCabinet")}
               />
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/unknown.png")}
                 title={"My Resources"}
-                onPress={() => navigation.navigate("MyResources")}
+                onPress={() => navigation.navigate("EducatorResources")}
               />
 
               {/* <Account_Tabs
@@ -59,13 +59,13 @@ export default function EducatorAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/calendar.png")}
                 title={"Event Calendar"}
-                onPress={() => navigation.navigate("Calendar")}
+                onPress={() => navigation.navigate("EducatorEvent")}
               />
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/library.png")}
                 title={"Library Acess"}
-                onPress={() => navigation.navigate("LibraryAccess")}
+                onPress={() => navigation.navigate("EducatorLibrary")}
               />
 
               {/* <Account_Tabs
