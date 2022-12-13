@@ -28,7 +28,7 @@ import {
   ViewBlogs,
   AddBlog,
   EditBlogs,
-  ClassRoom
+  ClassRoom,
 } from "./";
 const Stack = createStackNavigator();
 export default function AccountStack() {

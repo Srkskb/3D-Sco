@@ -3,15 +3,10 @@ import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
-import {
-  Home,
-  Calendar,
-  Education,
-  Student,
-  Account,
-} from "../screens/students";
+
 import { FontAwesome5, Ionicons,FontAwesome } from "@expo/vector-icons";
 import { HomeStack,AccountStack,CalendarStack,StudentStack,EducationStack} from "./bottomstack";
+import {Account} from "./educatorstack"
 
 const TutorTab = createBottomTabNavigator();
 
@@ -71,8 +66,8 @@ export default function TutorTabs() {
       />
 
       <TutorTab.Screen
-        name="AccountStack"
-        component={AccountStack}
+        name="Account"
+        component={Account}
         options={{
           tabBarLabel: "Account",
           tabBarIcon: ({ color, size }) => (
