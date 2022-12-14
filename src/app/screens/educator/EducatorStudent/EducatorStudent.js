@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import { myHeadersData } from "../../../api/helper";
-import color from "../../assets/themes/Color";
-import HeaderText from "../../components/HeaderText";
-import Student_Card from "../../components/card/Student_Card";
-import HomeHeader from "../../components/header/HomeHeader";
+import color from "../../../assets/themes/Color";
+import HeaderText from "../../../components/HeaderText";
+import Student_Card from "../../../components/card/Student_Card";
+import HomeHeader from "../../../components/header/HomeHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function EducatorStudent({navigation}) {

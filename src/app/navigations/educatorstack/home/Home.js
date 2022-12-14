@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { EducatorHome, EducatorJoinNewCourse, EducatorInstituteInfo } from "./";
+import { EducatorHome, EducatorJoinNewCourse, EducatorInstituteInfo, } from "./";
 import { createStackNavigator } from "@react-navigation/stack";
 import { EducatorMail } from "../account";
 const Stack = createStackNavigator();

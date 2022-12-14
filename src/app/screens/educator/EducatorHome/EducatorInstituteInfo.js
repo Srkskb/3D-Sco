@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Detail from "../../../../components/view/Detail";
-import Headline from "../../../../components/Headline";
-import color from "../../../../assets/themes/Color";
-import HeaderBack from "../../../../components/header/Header";
-import { myHeadersData } from "../../../../api/helper";
-import AppButton from "../../../../components/buttons/AppButton";
+import Detail from "../../../components/view/Detail";
+import Headline from "../../../components/Headline";
+import color from "../../../assets/themes/Color";
+import HeaderBack from "../../../components/header/Header";
+import { myHeadersData } from "../../../api/helper";
+import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 export default function EducatorInstituteInfo({ route, navigation }) {
   const { adminID, adminIDParam } = route.params;

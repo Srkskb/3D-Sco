@@ -9,11 +9,11 @@ import {
   // SafeAreaView,
   Dimensions,
 } from "react-native";
-import color from "../../assets/themes/Color";
-import HomeHeader from "../../components/header/HomeHeader";
-const banner = require("../../assets/images/banner_home.png");
+import color from "../../../assets/themes/Color";
+import HomeHeader from "../../../components/header/HomeHeader";
+const banner = require("../../../assets/images/banner_home.png");
 import { SafeAreaView } from "react-native-safe-area-context";
-import { JoinedCourse } from "./account";
+import { JoinedCourse } from "../../students/account/JoinedCourse";
 const { height, width } = Dimensions.get("window");
 export default function EducatorHome({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
