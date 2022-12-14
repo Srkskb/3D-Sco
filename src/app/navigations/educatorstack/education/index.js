@@ -1,0 +1,7 @@
+export {default as EducatorEducation} from '../../../screens/educator/EducatorEducation/EducatorEducation'
+export {default as EducatorLearnerList} from '../../../screens/educator/EducatorEducation/EducatorLearnerList'
+export {default as EducatorInstructorList} from '../../../screens/educator/EducatorEducation/EducatorInstructorList'
+export {default as EducatorLibrary} from '../../../screens/educator/EducatorEducation/EducatorLibrary'
+export {default as EducatorFinancialAssistance} from '../../../screens/educator/EducatorEducation/EducatorFinancialAssistance'
+export {default as EducatorAddFinancial} from '../../../screens/educator/EducatorEducation/EducatorAddFinancial'
+export {default as EducatorEditFinancial} from '../../../screens/educator/EducatorEducation/EducatorEditFinancial'

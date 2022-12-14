@@ -5,8 +5,11 @@ import { Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
 
 import { FontAwesome5, Ionicons,FontAwesome } from "@expo/vector-icons";
-import { HomeStack,AccountStack,CalendarStack,StudentStack,EducationStack} from "./bottomstack";
 import {Account} from "./educatorstack"
+import {Calender} from "./educatorstack"
+import { Education } from "./educatorstack";
+import { Student } from "./educatorstack";
+import { Home } from "./educatorstack";
 
 const TutorTab = createBottomTabNavigator();
 
@@ -19,8 +22,8 @@ export default function TutorTabs() {
       }}
     >
       <TutorTab.Screen
-        name="HomeStack"
-        component={HomeStack}
+        name="Home"
+        component={Home}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
@@ -30,8 +33,8 @@ export default function TutorTabs() {
       />
 
       <TutorTab.Screen
-        name="CalendarStack"
-        component={CalendarStack}
+        name="Calender"
+        component={Calender}
         options={{
           tabBarLabel: "Calendar",
           tabBarIcon: ({ color, size }) => (
@@ -42,8 +45,8 @@ export default function TutorTabs() {
       />
 
       <TutorTab.Screen
-        name="EducationStack"
-        component={EducationStack}
+        name="Education"
+        component={Education}
         options={{
           tabBarLabel: "Education",
           tabBarIcon: ({ color, size }) => (
@@ -54,8 +57,8 @@ export default function TutorTabs() {
       />
 
       <TutorTab.Screen
-        name="StudentStack"
-        component={StudentStack}
+        name="Student"
+        component={Student}
         options={{
           tabBarLabel: "Student",
           tabBarIcon: ({ color, size }) => (
