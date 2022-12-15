@@ -13,7 +13,7 @@ import {
 import { EducatorMail } from "../account";
 const Stack = createStackNavigator();
 
-export default function EducationStack() {
+export default function Education() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="EducatorEducation" component={EducatorEducation} />

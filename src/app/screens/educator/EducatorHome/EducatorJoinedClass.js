@@ -7,7 +7,7 @@ import CourseData from "../../../components/courselist/CourseData";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-export default function EducatorJoinedCourse() {
+export default function EducatorJoinedClass() {
   const navigation = useNavigation();
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [getCourseList, setCourseList] = useState([]);
@@ -53,7 +53,7 @@ export default function EducatorJoinedCourse() {
         <TextWithButton
           title={"Course Enrolled"}
           label={"Join  New Courses"}
-          onPress={() => navigation.navigate("EducatorJoinNewCourse")}
+          onPress={() => navigation.navigate("JoinNewCourse")}
         />
 
         <CourseHeader />

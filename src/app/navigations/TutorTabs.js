@@ -9,8 +9,8 @@ import {Account} from "./educatorstack"
 import {Calender} from "./educatorstack"
 import { Education } from "./educatorstack";
 import { Student } from "./educatorstack";
-import { Home } from "./educatorstack";
-
+import {Home} from "./educatorstack"
+import { HomeStack } from "./bottomstack";
 const TutorTab = createBottomTabNavigator();
 
 export default function TutorTabs() {
