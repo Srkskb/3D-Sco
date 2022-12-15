@@ -115,6 +115,9 @@ axios(config)
   if(response.data.data.type=='tutor'){
     navigation.navigate("TutorDrawerNavigator");
   }
+  if(response.data.data.type=='parent'){
+    navigation.navigate("ParentDrawerNavigator");
+  }
 })
 .catch((error)=>{
   console.log(error);
