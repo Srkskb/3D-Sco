@@ -35,6 +35,7 @@ export {default as EditMyJournal} from './EditMyJournal';
 export {default as JoinedCourse} from './JoinedCourse';
 export {default as AddEditStudentCorner} from './AddEditStudentCorner';
 export {default as ShowResume} from './ShowResume';
+export {default as EducatorJoin} from './EducatorJoin'
 
 
 
