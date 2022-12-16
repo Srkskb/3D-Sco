@@ -18,6 +18,8 @@ import { Signup_Educator } from "../screens/educator";
 import { Signup_Admin } from "../screens/admin";
 import Signup_Affiliate from "../screens/affiliate/Signup_Affiliate";
 import Signup_Parent from "../screens/parents/Signup_Parent";
+import AdminDrawerNavigator from "./AdminDrawerNavigator";
+import AffiliateDrawerNavigator from "./AffiliateDrawerNavigator";
 
 const AuthStack = createStackNavigator();
 export default function AuthNavigator() {
@@ -114,6 +116,22 @@ export default function AuthNavigator() {
          <AuthStack.Screen
         name="ParentDrawerNavigator"
         component={ParentDrawerNavigator}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}
+      />
+       <AuthStack.Screen
+        name="AdminDrawerNavigator"
+        component={AdminDrawerNavigator}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}
+      />
+       <AuthStack.Screen
+        name="AffiliateDrawerNavigator"
+        component={AffiliateDrawerNavigator}
         options={{
           headerShown: false,
           ...TransitionPresets.RevealFromBottomAndroid,

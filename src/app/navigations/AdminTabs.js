@@ -11,17 +11,17 @@ import { Education } from "./educatorstack";
 import { Student } from "./educatorstack";
 import {Home} from "./educatorstack"
 import { HomeStack } from "./bottomstack";
-const TutorTab = createBottomTabNavigator();
+const AdminTab = createBottomTabNavigator();
 
-export default function TutorTabs() {
+export default function AdminTabs() {
   return (
-    <TutorTab.Navigator
+    <AdminTab.Navigator
     screenOptions={{headerShown:false,}}
       tabBarOptions={{
         activeTintColor: color.purple,
       }}
     >
-      <TutorTab.Screen
+      <AdminTab.Screen
         name="Home"
         component={Home}
         options={{
@@ -32,7 +32,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AdminTab.Screen
         name="Calender"
         component={Calender}
         options={{
@@ -44,7 +44,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AdminTab.Screen
         name="Education"
         component={Education}
         options={{
@@ -56,7 +56,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AdminTab.Screen
         name="Student"
         component={Student}
         options={{
@@ -68,7 +68,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AdminTab.Screen
         name="Account"
         component={Account}
         options={{
@@ -80,6 +80,6 @@ export default function TutorTabs() {
         }}
       />
 
-    </TutorTab.Navigator>
+    </AdminTab.Navigator>
   );
 }

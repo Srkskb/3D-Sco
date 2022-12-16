@@ -15,16 +15,17 @@ import {
 import DrawerContent from "../components/DrawerContent";
 import TutorTabs from "./TutorTabs";
 import ParentTabs from "./ParentTabs"
+import AdminTabs from './AdminTabs'
 const Drawer = createDrawerNavigator();
-export default function TutorDrawerNavigator() {
+export default function AdminDrawerNavigator() {
   return (
     <Drawer.Navigator
       screenOptions={{ headerShown: false }}
       drawerContent={(props) => <DrawerContent {...props} />}
     >
       <Drawer.Screen
-        name="ParentTabs"
-        component={ParentTabs}
+        name="AdminTabs"
+        component={AdminTabs}
         options={{
           title: "Home",
           drawerLabelStyle: { fontFamily: "Montserrat-SemiBold" },

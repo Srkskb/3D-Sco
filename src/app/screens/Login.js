@@ -118,6 +118,12 @@ axios(config)
   if(response.data.data.type=='parent'){
     navigation.navigate("ParentDrawerNavigator");
   }
+  if(response.data.data.type=='admin'){
+    navigation.navigate("AdminDrawerNavigator");
+  }
+  if(response.data.data.type=='affiliate'){
+    navigation.navigate("AffiliateDrawerNavigator");
+  }
 })
 .catch((error)=>{
   console.log(error);

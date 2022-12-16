@@ -3,7 +3,6 @@ import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
-
 import { FontAwesome5, Ionicons,FontAwesome } from "@expo/vector-icons";
 import {Account} from "./educatorstack"
 import {Calender} from "./educatorstack"
@@ -11,17 +10,17 @@ import { Education } from "./educatorstack";
 import { Student } from "./educatorstack";
 import {Home} from "./educatorstack"
 import { HomeStack } from "./bottomstack";
-const TutorTab = createBottomTabNavigator();
+const AffiliateTab = createBottomTabNavigator();
 
-export default function TutorTabs() {
+export default function AffiliateTabs() {
   return (
-    <TutorTab.Navigator
+    <AffiliateTab.Navigator
     screenOptions={{headerShown:false,}}
       tabBarOptions={{
         activeTintColor: color.purple,
       }}
     >
-      <TutorTab.Screen
+      <AffiliateTab.Screen
         name="Home"
         component={Home}
         options={{
@@ -32,7 +31,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AffiliateTab.Screen
         name="Calender"
         component={Calender}
         options={{
@@ -44,7 +43,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AffiliateTab.Screen
         name="Education"
         component={Education}
         options={{
@@ -56,7 +55,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AffiliateTab.Screen
         name="Student"
         component={Student}
         options={{
@@ -68,7 +67,7 @@ export default function TutorTabs() {
         }}
       />
 
-      <TutorTab.Screen
+      <AffiliateTab.Screen
         name="Account"
         component={Account}
         options={{
@@ -80,6 +79,6 @@ export default function TutorTabs() {
         }}
       />
 
-    </TutorTab.Navigator>
+    </AffiliateTab.Navigator>
   );
 }
