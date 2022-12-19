@@ -31,7 +31,8 @@ export default function EducatorPhotoAlbum() {
       requestOptions
     )
       .then((res) => res.json())
-      .then((result) => setFileCabinetData(result.data))
+      .then((result) => {
+        setFileCabinetData(result.data)})
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {

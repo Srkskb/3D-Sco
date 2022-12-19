@@ -312,7 +312,7 @@ export default function AddPhoto() {
   };
 
   const addFileCabinet = (values) => {
-    console.log(values.docTitle,loginUID,values.description,image);
+    console.log(values.docTitle,loginUID,values.description,image,mime.getType(image));
     const getHeaders = myHeadersData();
     var data = new FormData();
     data.append('add_photos', '1');
@@ -330,7 +330,7 @@ export default function AddPhoto() {
       url: 'https://3dsco.com/3discoapi/studentregistration.php',
       headers: { 
         'Accept': 'application/json', 
-        'Content-Type': 'application/x-www-form-urlencoded', 
+        'Content-Type': 'multipart/form-data', 
         'Cookie': 'PHPSESSID=r8i6tl7an7ibqgp4kog3aa6ro7', 
          ...data
       },
@@ -338,11 +338,12 @@ export default function AddPhoto() {
     };
     
     axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
+    .then((response)=>{
+      if(response.data.success==1){
       navigation.navigate("EducatorPhotoAlbum")
+    }
     })
-    .catch(function (error) {
+    .catch((error)=>{
       console.log(error);
     });
   };
