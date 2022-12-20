@@ -109,7 +109,7 @@ var config = {
 
 axios(config)
 .then((response) =>{
-  if(response.data.data.type=='Student'){
+  if(response.data.data.type=='student'){
     navigation.navigate("DrawerNavigator");
   }
   if(response.data.data.type=='tutor'){
