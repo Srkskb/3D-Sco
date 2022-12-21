@@ -13,7 +13,7 @@ import color from "../../../assets/themes/Color";
 import HomeHeader from "../../../components/header/HomeHeader";
 const banner = require("../../../assets/images/banner_home.png");
 import { SafeAreaView } from "react-native-safe-area-context";
-import { EducatorJoin } from "../../students/account";
+// import { EducatorJoin } from "../../students/account";
 const { height, width } = Dimensions.get("window");
 export default function EducatorHomes({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
@@ -35,7 +35,7 @@ export default function EducatorHomes({ navigation }) {
         }
       >
         <View style={styles.slider_container}>{/* <ImageSlide /> */}</View>
-        <EducatorJoin />
+        {/* <EducatorJoin /> */}
       </ScrollView>
     </SafeAreaView>
   );
