@@ -109,6 +109,8 @@ var config = {
 
 axios(config)
 .then((response) =>{
+  // console.log(response.data.data)
+  localStorage.setItem("loginUID", response.data.data.id);
   if(response.data.data.type=='student'){
     navigation.navigate("DrawerNavigator");
   }
