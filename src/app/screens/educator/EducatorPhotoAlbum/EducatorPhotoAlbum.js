@@ -44,7 +44,7 @@ export default function EducatorPhotoAlbum() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_documents=1&id=${id}&student_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/studentregistration.php?delete_photos=1&user_id=${loginUID}&id=${id}`,
       requestOptions
     )
       .then((res) => res.json())
