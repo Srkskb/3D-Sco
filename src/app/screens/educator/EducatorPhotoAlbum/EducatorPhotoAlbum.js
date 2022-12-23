@@ -8,6 +8,8 @@ import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
+import axios from "axios";
+import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
 export default function EducatorPhotoAlbum() {
   const navigation = useNavigation();
@@ -32,23 +34,30 @@ export default function EducatorPhotoAlbum() {
     )
       .then((res) => res.json())
       .then((result) => {
-        setFileCabinetData(result.data)})
+        setFileCabinetData(result.data)
+        console.log(result.data)
+      })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
     const loginUID = localStorage.getItem("loginUID");
-    const myHeaders = myHeadersData();
-    var requestOptions = {
-      method: "DELETE",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?delete_photos=1&user_id=${loginUID}&id=${id}`,
-      requestOptions
-    )
-      .then((res) => res.json())
-      .then((result) => {
+    var data = qs.stringify({
+  'delete_photos': '1',
+  'user_id': loginUID,
+  'id': id 
+});
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  data : data
+};
+
+axios(config)
+.then((result) => {
         console.log(result);
         if (result.success === 1) {
           setSnackVisibleTrue(true);
@@ -63,6 +72,23 @@ export default function EducatorPhotoAlbum() {
           setMessageFalse(result.message);
         }
       })
+// fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+//       .then((res) => res.json())
+//       .then((result) => {
+//         console.log(result);
+//         if (result.success === 1) {
+//           setSnackVisibleTrue(true);
+//           setMessageTrue(result.message);
+//           let temp = [];
+//           fileCabinetData.forEach((item) => {
+//             if (item.id !== id) temp.push(item);
+//           });
+//           setFileCabinetData(temp);
+//         } else {
+//           setSnackVisibleFalse(true);
+//           setMessageFalse(result.message);
+//         }
+//       })
       .catch((error) => console.log("error", error));
   };
   const onRefresh = () => {
@@ -130,7 +156,7 @@ export default function EducatorPhotoAlbum() {
                       title: list.name,
                       docAccess: list.access_level,
                       description: list.description,
-                      docImage: list.image,
+                      docImage: list.file_name,
                     })
                   }
                   removePress={() => deleteEvent(list.id)}
@@ -139,7 +165,7 @@ export default function EducatorPhotoAlbum() {
                       title: list.name,
                       access: list.access_level,
                       description: list.description,
-                      image: list.image,
+                      image: list.file_name,
                     })
                   }
                 />
