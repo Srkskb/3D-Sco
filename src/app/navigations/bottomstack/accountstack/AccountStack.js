@@ -29,6 +29,9 @@ import {
   AddBlog,
   EditBlogs,
   ClassRoom,
+  ManageResources,
+  EditResources,
+  AddResources
 } from "./";
 const Stack = createStackNavigator();
 export default function AccountStack() {
@@ -42,6 +45,9 @@ export default function AccountStack() {
       <Stack.Screen name="ViewContent" component={ViewContent} />
       <Stack.Screen name="LibraryAccess" component={LibraryAccess} />
       <Stack.Screen name="MyResources" component={MyResources} />
+      <Stack.Screen name="AddResources" component={AddResources} />
+      <Stack.Screen name="ManageResources" component={ManageResources} />
+      <Stack.Screen name="EditResources" component={EditResources} />
       <Stack.Screen name="CourceRoomAccess" component={CourceRoomAccess} />
       <Stack.Screen name="AddEditStudentCorner" component={AddEditStudentCorner} />
       <Stack.Screen name="ClassRoom" component={ClassRoom} />

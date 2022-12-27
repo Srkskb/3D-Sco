@@ -6,7 +6,7 @@ import color from "../../../assets/themes/Color";
 import HeaderText from "../../../components/HeaderText";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-
+import TextWithButton from "../../../components/TextWithButton";
 export default function MyResources() {
   const navigation = useNavigation();
   const [myResourcesData, setMyResourcesData] = useState([]);
@@ -46,6 +46,7 @@ export default function MyResources() {
       />
       <View style={styles.main_box}>
         <HeaderText title={"FREQUENTLY ASKED QUESTIONS ( FAQ )"} />
+        <TextWithButton title={"Manage My Resources"} label={"Manage"} onPress={()=>navigation.navigate("EducatorManageResources")}/>
         <ScrollView refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }  >

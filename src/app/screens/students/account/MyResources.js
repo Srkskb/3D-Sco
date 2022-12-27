@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, Text,RefreshControl } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  RefreshControl,
+} from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import HeaderText from "../../../components/HeaderText";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
+import TextWithButton from "../../../components/TextWithButton";
 
 export default function MyResources() {
   const navigation = useNavigation();
   const [myResourcesData, setMyResourcesData] = useState([]);
-   const [color, changeColor] = useState("red");
+  const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
   const allLearnerList = () => {
     const myHeaders = myHeadersData();
@@ -27,7 +34,7 @@ export default function MyResources() {
       .then((result) => setMyResourcesData(result.data))
       .catch((error) => console.log("error", error));
   };
-   const onRefresh = () => {
+  const onRefresh = () => {
     setRefreshing(true);
     allLearnerList();
     setTimeout(() => {
@@ -40,15 +47,15 @@ export default function MyResources() {
   }, []);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"FAQ"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"FAQ"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <HeaderText title={"FREQUENTLY ASKED QUESTIONS ( FAQ )"} />
-        <ScrollView refreshControl={
+        <TextWithButton title={"Manage My Resources"} label={"Manage"} onPress={()=>navigation.navigate("ManageResources")}/>
+        <ScrollView
+          refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }  >
+          }
+        >
           <View style={styles.main}>
             {myResourcesData === undefined ? (
               <>
@@ -60,13 +67,39 @@ export default function MyResources() {
                   <>
                     <View style={styles.faqBlock}>
                       <View>
-                        <Text style={styles.queT}>
-                          Que. {index + 1} {"   "} {list.Question}
-                        </Text>
-                        <Text style={styles.queT}>
-                          Ans. {index + 1} {"   "} {" "}
-                          <Text style={styles.answer}>{list.Answer}</Text>
-                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            marginBottom: 10,
+                          }}
+                        >
+                          <View style={{ flex: 0.2 }}>
+                            <Text style={styles.queT}>Que. {index + 1}</Text>
+                          </View>
+                          <View style={{ flex: 0.8, paddingRight: 5 }}>
+                            <Text
+                              style={[styles.queT, { textAlign: "justify" }]}
+                            >
+                              {list.Question}
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                          }}
+                        >
+                          <View style={{ flex: 0.2 }}>
+                            <Text style={styles.queT}> Ans.</Text>
+                          </View>
+                          <View style={{ flex: 0.8, paddingRight: 5 }}>
+                            <Text
+                              style={[styles.answer, { textAlign: "justify" }]}
+                            >
+                              {list.Answer}
+                            </Text>
+                          </View>
+                        </View>
                       </View>
                     </View>
                   </>
@@ -85,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
   },
   main_box: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     flex: 1,
   },
   subhead_text: {

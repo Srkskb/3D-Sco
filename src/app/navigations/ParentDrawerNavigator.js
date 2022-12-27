@@ -16,7 +16,7 @@ import DrawerContent from "../components/DrawerContent";
 import TutorTabs from "./TutorTabs";
 import ParentTabs from "./ParentTabs"
 const Drawer = createDrawerNavigator();
-export default function TutorDrawerNavigator() {
+export default function ParentDrawerNavigator() {
   return (
     <Drawer.Navigator
       screenOptions={{ headerShown: false }}
