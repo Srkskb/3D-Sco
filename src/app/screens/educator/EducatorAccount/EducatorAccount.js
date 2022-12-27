@@ -43,13 +43,11 @@ export default function EducatorAccount() {
                 onPress={() => navigation.navigate("PreviousCourses")}
               /> */}
 
-             
-
-              <Account_Tabs
+              {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"Export Content"}
                 onPress={() => navigation.navigate("EducatorExportContent")}
-              />
+              /> */}
                <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Photo Album"}
