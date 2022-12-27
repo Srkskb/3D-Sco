@@ -12,7 +12,7 @@ export default function HeaderText({title}) {
 const styles = StyleSheet.create({
     header_text: {
         color: color.purple,
-        fontSize: 20,
+        fontSize: 18,
         marginVertical: 20,
         textTransform:'uppercase',
         fontFamily:'Montserrat-Bold'

@@ -7,7 +7,8 @@ const Input2 = ({ label, error, onFocus = () => {}, ...props }) => {
   return (
     <View style={styles.input_container}>
       <View style={styles.label_box}>
-        <Text style={styles.label_text}>{label}</Text>
+        {label &&(<Text style={styles.label_text}>{label}</Text>)}
+        
       </View>
       <TextInput
         style={[
