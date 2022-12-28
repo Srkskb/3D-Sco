@@ -5,12 +5,11 @@ import { Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
 
 import { FontAwesome5, Ionicons,FontAwesome } from "@expo/vector-icons";
-import {Account} from "./educatorstack"
-import {Calender} from "./educatorstack"
-import { Education } from "./educatorstack";
-import { Student } from "./educatorstack";
-import {Home} from "./educatorstack"
-import { HomeStack } from "./bottomstack";
+import {PAccountStack} from "./parentstack"
+import {PCalenderStack} from "./parentstack"
+import { PEducationStack } from "./parentstack";
+import { PStudentStack } from "./parentstack";
+import {PHomeStack} from "./parentstack"
 const ParentTab = createBottomTabNavigator();
 
 export default function ParentTabs() {
@@ -22,8 +21,8 @@ export default function ParentTabs() {
       }}
     >
       <ParentTab.Screen
-        name="Home"
-        component={Home}
+        name="PHomeStack"
+        component={PHomeStack}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
@@ -33,8 +32,8 @@ export default function ParentTabs() {
       />
 
       <ParentTab.Screen
-        name="Calender"
-        component={Calender}
+        name="PCalenderStack"
+        component={PCalenderStack}
         options={{
           tabBarLabel: "Calendar",
           tabBarIcon: ({ color, size }) => (
@@ -45,8 +44,8 @@ export default function ParentTabs() {
       />
 
       <ParentTab.Screen
-        name="Education"
-        component={Education}
+        name="PEducationStack"
+        component={PEducationStack}
         options={{
           tabBarLabel: "Education",
           tabBarIcon: ({ color, size }) => (
@@ -57,8 +56,8 @@ export default function ParentTabs() {
       />
 
       <ParentTab.Screen
-        name="Student"
-        component={Student}
+        name="PStudentStack"
+        component={PStudentStack}
         options={{
           tabBarLabel: "Student",
           tabBarIcon: ({ color, size }) => (
@@ -69,8 +68,8 @@ export default function ParentTabs() {
       />
 
       <ParentTab.Screen
-        name="Account"
-        component={Account}
+        name="PAccountStack"
+        component={PAccountStack}
         options={{
           tabBarLabel: "Account",
           tabBarIcon: ({ color, size }) => (

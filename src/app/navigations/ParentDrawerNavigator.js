@@ -13,7 +13,6 @@ import {
   ViewProfile,
 } from "../screens/common/hamburgerMenu";
 import DrawerContent from "../components/DrawerContent";
-import TutorTabs from "./TutorTabs";
 import ParentTabs from "./ParentTabs"
 const Drawer = createDrawerNavigator();
 export default function ParentDrawerNavigator() {

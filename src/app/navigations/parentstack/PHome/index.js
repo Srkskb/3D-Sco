@@ -1,0 +1,1 @@
+export {default as ParentHomes} from '../../../screens/parents/ParentHome/ParentHomes'
