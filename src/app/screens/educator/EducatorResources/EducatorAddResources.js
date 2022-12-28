@@ -18,6 +18,7 @@ import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import * as qs from "qs";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from 'mime'
@@ -33,24 +34,25 @@ export default function EducatorAddResources({ navigation }) {
   const addFileCabinet = (values) => {
     console.log(values.docTitle,loginUID,values.description,);
     const getHeaders = myHeadersData();
-    var data = new FormData();
-    data.append('add_faq', '1');
-    data.append('Question', values.docTitle);
-    data.append('user_id', loginUID);
-    data.append('Answer', values.description);
+    var data = qs.stringify({
+  'add_faq': '1',
+  'Question': values.docTitle,
+  'Answer': values.description,
+  'user_id': loginUID 
+});
   var config = {
-    method: 'post',
-    url: 'https://3dsco.com/3discoapi/studentregistration.php',
-    headers: { 
-      'Accept': 'application/json', 
-      'Content-Type': 'application/x-www-form-urlencoded', 
-      'Cookie': 'PHPSESSID=nquo5j2tsolthnpt2f6hhuuj82'
-    },
-    data : data
-  };
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  data : data
+};
   
   axios(config)
   .then((response)=>{
+    console.log(response)
     if(response.data.success==1){
     navigation.navigate("EducatorManageResources")
   }
