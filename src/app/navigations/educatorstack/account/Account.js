@@ -26,8 +26,8 @@ import {
     ViewPhoto,
     EditPhoto,
     EducatorManageResources,
-    AddResources,
-    EditResources
+    EducatorAddResources,
+    EducatorEditResources
   } from "./";
   const Stack = createStackNavigator();
 export default function Account() {
@@ -56,8 +56,8 @@ export default function Account() {
       <Stack.Screen name="AddPhoto" component={AddPhoto} />
       <Stack.Screen name="ViewPhoto" component={ViewPhoto} />
       <Stack.Screen name="EditPhoto" component={EditPhoto} />
-      <Stack.Screen name="AddResources" component={AddResources} />
-      <Stack.Screen name="EditResources" component={EditResources} />
+      <Stack.Screen name="EducatorAddResources" component={EducatorAddResources} />
+      <Stack.Screen name="EducatorEditResources" component={EducatorEditResources} />
       <Stack.Screen name="EducatorManageResources" component={EducatorManageResources} />
     </Stack.Navigator>
   );

@@ -4,7 +4,7 @@ import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import Input from "../../../components/inputs/Input";
 import SmallButton from "../../../components/buttons/SmallButton";
-export default function AddResources({ navigation }) {
+export default function EducatorAddResources({ navigation }) {
   return (
     <View style={styles.main}>
       <HeaderBack title={"Add Resources"} 

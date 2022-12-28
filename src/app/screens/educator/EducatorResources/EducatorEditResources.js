@@ -4,10 +4,12 @@ import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import Input from "../../../components/inputs/Input";
 import SmallButton from "../../../components/buttons/SmallButton";
-export default function EditResources({navigation}) {
+export default function EducatorEditResources({navigation}) {
   return (
     <View style={styles.main}>
-      <HeaderBack title={"Edit Resources"} />
+      <HeaderBack title={"Edit Resources"} 
+      onPress={() => navigation.goBack()}
+      />
       <ScrollView style={styles.container}>
     <Input label={"Question"} placeholder={"Enter Your Question"}/>
         <Input label={"Answer"} placeholder={"Enter Your Answer"}/>
@@ -22,7 +24,7 @@ export default function EditResources({navigation}) {
             color={color.white}
             backgroundColor={color.purple}
             fontFamily={"Montserrat-Bold"}
-            onPress={() => navigation.navigate("ManageResources")}
+            onPress={() => navigation.navigate("EducatorManageResources")}
           />
         </View>
       </ScrollView>

@@ -14,13 +14,13 @@ export default function ManageResources({ navigation }) {
         <TextWithButton
           label={"Post"}
           title={"Post Your Question"}
-          onPress={() => navigation.navigate("AddResources")}
+          onPress={() => navigation.navigate("EducatorAddResources")}
         />
         <Event_Card
           title={"My Question"}
           description={"My Answer"}
           date={"24/05/2023"}
-          editPress={() => navigation.navigate("EditResources")}
+          editPress={() => navigation.navigate("EducatorEditResources")}
         />
       </ScrollView>
     </View>

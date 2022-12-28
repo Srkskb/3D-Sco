@@ -23,5 +23,5 @@ export {default as AddPhoto} from '../../../screens/educator/EducatorPhotoAlbum/
 export {default as ViewPhoto} from '../../../screens/educator/EducatorPhotoAlbum/ViewPhoto'
 export {default as EditPhoto} from '../../../screens/educator/EducatorPhotoAlbum/EditPhoto'
 export {default as EducatorManageResources} from '../../../screens/educator/EducatorResources/EducatorManageResources'
-export {default as EditResources} from '../../../screens/educator/EducatorResources/EditResources'
-export {default as AddResources} from '../../../screens/educator/EducatorResources/AddResources'
+export {default as EducatorEditResources} from '../../../screens/educator/EducatorResources/EducatorEditResources'
+export {default as EducatorAddResources} from '../../../screens/educator/EducatorResources/EducatorAddResources'
