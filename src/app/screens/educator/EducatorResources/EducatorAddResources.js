@@ -65,7 +65,7 @@ export default function EducatorAddResources({ navigation }) {
 <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
-        title={"Add Picture"}
+        title={"Add Resources"}
         // onPress={() => navigation.navigate("FileCabinet")}
         onPress={() => navigation.goBack()}
       />
