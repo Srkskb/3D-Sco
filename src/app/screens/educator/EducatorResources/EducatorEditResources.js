@@ -5,25 +5,21 @@ import HeaderBack from "../../../components/header/Header";
 import Input from "../../../components/inputs/Input";
 import SmallButton from "../../../components/buttons/SmallButton";
 import { myHeadersData } from "../../../api/helper";
+import * as qs from "qs";
 import axios from "axios";
 export default function EducatorEditResources({route,navigation}) {
  const [answer,setAnswer]=useState("")
  const [question,setQuestion]=useState("")
  const loginUID = localStorage.getItem("loginUID");
- const { eventID, eventIDParam } = route.params; // ! Current Event ID
+ // const { eventID, eventIDParam } = route.params; // ! Current Event ID
  const updateEvent = () => {
   const myHeaders = myHeadersData();
-  var urlencoded = new FormData();
-  urlencoded.append("update_faq", "1");
-  urlencoded.append("Question", question);
-  urlencoded.append("Answer", answer);
-  urlencoded.append("id", eventID);
-  urlencoded.append("user_id", loginUID);
   var data = qs.stringify({
     'update_faq': '1',
     'Question': question,
     'Answer': answer,
-    'id': eventID,
+    'catID': '5',
+    'id': route.params.list.id,
     'user_id': loginUID
   });
   var config = {
@@ -31,8 +27,7 @@ export default function EducatorEditResources({route,navigation}) {
     url: 'https://3dsco.com/3discoapi/studentregistration.php',
     headers: { 
       'Accept': 'application/json', 
-      'Content-Type': 'application/x-www-form-urlencoded', 
-      'Cookie': 'PHPSESSID=8h8r2aeo9i56iqmko6mnvnfjj2'
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
     data : data
   };
@@ -70,7 +65,8 @@ export default function EducatorEditResources({route,navigation}) {
             title={"Cancel"}
             color={color.purple}
             fontFamily={"Montserrat-Medium"}
-          />
+            // onPress={()=>console.log(loginUID)}
+            />
           <SmallButton
             title="Update"
             color={color.white}
