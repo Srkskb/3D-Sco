@@ -2,7 +2,6 @@
   "expo": {
     "name": "3DSCO",
     "slug": "3DSCO",
-    "owner": "Rajan_mishra",
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon1.png",
