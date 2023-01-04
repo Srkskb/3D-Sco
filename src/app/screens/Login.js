@@ -94,7 +94,8 @@ export default function Login({ navigation }) {
   login: '1',
   email: values.email,
   password: values.password,
-  type: role_data 
+  type: role_data,
+  username:values.email
 });
 var config = {
   method: 'post',
