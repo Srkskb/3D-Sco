@@ -25,3 +25,7 @@ export {default as EditPhoto} from '../../../screens/educator/EducatorPhotoAlbum
 export {default as EducatorManageResources} from '../../../screens/educator/EducatorResources/EducatorManageResources'
 export {default as EducatorEditResources} from '../../../screens/educator/EducatorResources/EducatorEditResources'
 export {default as EducatorAddResources} from '../../../screens/educator/EducatorResources/EducatorAddResources'
+export {default as EducatorMyJournal} from '../../../screens/educator/EducatorMyJournal/EducatorMyJournal'
+export {default as EducatorEditMyJournal} from '../../../screens/educator/EducatorMyJournal/EducatorEditMyJournal'
+export {default as EducatorAddMyJournal} from '../../../screens/educator/EducatorMyJournal/EducatorAddMyJournal'
+export {default as EducatorViewJournal} from '../../../screens/educator/EducatorMyJournal/EducatorViewJournal'

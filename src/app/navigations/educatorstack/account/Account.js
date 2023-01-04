@@ -27,7 +27,11 @@ import {
     EditPhoto,
     EducatorManageResources,
     EducatorAddResources,
-    EducatorEditResources
+    EducatorEditResources,
+    EducatorMyJournal,
+    EducatorEditMyJournal,
+    EducatorViewJournal,
+    EducatorAddMyJournal
   } from "./";
   const Stack = createStackNavigator();
 export default function Account() {
@@ -59,6 +63,13 @@ export default function Account() {
       <Stack.Screen name="EducatorAddResources" component={EducatorAddResources} />
       <Stack.Screen name="EducatorEditResources" component={EducatorEditResources} />
       <Stack.Screen name="EducatorManageResources" component={EducatorManageResources} />
+      <Stack.Screen name="EducatorMyJournal" component={EducatorMyJournal} />
+      <Stack.Screen name="EducatorEditMyJournal" component={EducatorEditMyJournal} />
+      <Stack.Screen name="EducatorViewJournal" component={EducatorViewJournal} />
+      <Stack.Screen name="EducatorAddMyJournal" component={EducatorAddMyJournal} />
+
+      
+
     </Stack.Navigator>
   );
 }

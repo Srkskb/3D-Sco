@@ -94,6 +94,12 @@ export default function EducatorAccount() {
                 title={"Export Content"}
                 onPress={() => navigation.navigate("ExportContent")}
               /> */}
+
+<Account_Tabs
+                imgsrc={require("./../../../assets/images/account/journal.png")}
+                title={"My Journal"}
+                onPress={() => navigation.navigate("EducatorMyJournal")}
+              />
             </View>
           </View>
         </View>
