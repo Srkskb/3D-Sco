@@ -70,7 +70,7 @@ export default function EducatorEditBlogs({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("Blogs");
+          navigation.navigate("EducatorBlogs");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -98,7 +98,7 @@ export default function EducatorEditBlogs({ route, navigation }) {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Update Blog"}
-        onPress={() => navigation.navigate("Blogs")}
+        onPress={() => navigation.navigate("EducatorBlogs")}
       />
       <Snackbar
         visible={snackVisibleTrue}

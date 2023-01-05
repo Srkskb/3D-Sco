@@ -18,6 +18,7 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import axios from "axios";
 
 export default function EditFileCabinet({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
@@ -50,40 +51,75 @@ export default function EditFileCabinet({ route, navigation }) {
   };
 
   const updateDocument = (values) => {
-    const myHeaders = myHeadersData();
-    console.log(updateTitle, access, docId, upDescription, loginUID, image);
-    var urlencoded = new FormData();
-    urlencoded.append("update_documents", "1");
-    urlencoded.append("titel", updateTitle);
-    urlencoded.append("access", access);
-    urlencoded.append("id", docId);
-    urlencoded.append("description", upDescription);
-    urlencoded.append("student_id", loginUID);
-    urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
-    });
-    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
-      method: "POST",
-      body: urlencoded,
-      headers: {
-        myHeaders,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success == 1) {
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
-          navigation.navigate("FileCabinet");
-        } else {
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
-        }
-      });
+    // const myHeaders = myHeadersData();
+    // console.log(updateTitle, access, docId, upDescription, loginUID, image);
+    // var urlencoded = new FormData();
+    // urlencoded.append("update_documents", "1");
+    // urlencoded.append("titel", updateTitle);
+    // urlencoded.append("access", access);
+    // urlencoded.append("id", docId);
+    // urlencoded.append("description", upDescription);
+    // urlencoded.append("student_id", loginUID);
+    // urlencoded.append("image", {
+    //   uri: image, //"file:///" + image.split("file:/").join(""),
+    //   type: mime.getType(image),
+    //   name: `abc.jpg`,
+    // });
+    // fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
+    //   method: "POST",
+    //   body: urlencoded,
+    //   headers: {
+    //     myHeaders,
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     console.log(res);
+    //     if (res.success == 1) {
+    //       setSnackVisibleTrue(true);
+    //       setMessageTrue(res.message);
+    //       navigation.navigate("FileCabinet");
+    //     } else {
+    //       setSnackVisibleFalse(true);
+    //       setMessageFalse(res.message);
+    //     }
+    //   });
+    var data = new FormData();
+data.append('update_documents', '1');
+data.append('titel', updateTitle);
+data.append('access', access);
+data.append('id', docId);
+data.append('description', upDescription);
+data.append('student_id', loginUID);
+data.append('image', {
+  uri: image,//"file:///" + image.split("file:/").join(""),
+  type: mime.getType(image),
+ name: `abc.jpg`
+});
+
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=80v5ri841lnv0mm25nrbq2tl83', 
+    ...data
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+  if(response.data.success==1){
+    navigation.navigate("Filecabinet")
+  }
+})
+.catch(function (error) {
+  console.log(error);
+});
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
