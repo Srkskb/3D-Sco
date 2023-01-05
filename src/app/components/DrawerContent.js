@@ -15,12 +15,41 @@ import {
 import { Avatar, Button, Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
 import { useNavigation } from "@react-navigation/native";
+import HomeHeader from "../components/header/HomeHeader";
+import { myHeadersData } from "./../api/helper";
+import Detail from "../components/view/Detail";
+import Headline from "../components/Headline";
 
 export default function DrawerContent(props) {
     const navigation = useNavigation();
+    const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const userId = localStorage.getItem("userID");
   const userFName = localStorage.getItem("userFName");
   const userRole = localStorage.getItem("userRole");
+  const [getName, setUpName] = useState();
+  const showUserDetails = () => {
+    // console.log('loginUID',loginUID);
+    const myHeaders = myHeadersData();
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`,
+      requestOptions
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        // console.log(res);
+        setUpName(res.Profile_Detail.name);
+      })
+      .catch((error) => console.log("error", error));
+  };
+  useEffect(() => {
+    showUserDetails();
+  }, []);
   return (
     <View style={styles.container}>
       <DrawerContentScrollView {...props}>
@@ -35,7 +64,7 @@ export default function DrawerContent(props) {
           </View>
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.welcome}>Welcome</Text>
-            <Text style={styles.user_name}>{userFName}</Text>
+            <Text style={styles.user_name}>{getName}</Text>
             <Text style={styles.login}>
               Log In As{" "}
               <Text style={{ fontFamily: "Montserrat-SemiBold" }}>

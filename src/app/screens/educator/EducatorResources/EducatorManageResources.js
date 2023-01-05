@@ -94,7 +94,7 @@ axios(config)
         <Event_Card
           title={list.Question}
           description={list.Answer}
-          date={"24/05/2023"}
+          // date={"24/05/2023"}
           editPress={() => navigation.navigate("EducatorEditResources",{ list:list })}
           removePress={()=>deleteFaq(list.id)}
         />
