@@ -20,7 +20,7 @@ export default function ViewPhoto({ route, navigation }) {
           <Text style={styles.text}>Title : {title}</Text>
         </Text>
         <Text>
-          <Text style={styles.title}>Access Level: {access}</Text>
+          {/* <Text style={styles.title}>Access Level: {access}</Text> */}
         </Text>
         <Text>
           <Text style={styles.title}>Description : {description}</Text>
