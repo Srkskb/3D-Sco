@@ -24,7 +24,7 @@ export default function ParentAddFinancial({ navigation }) {
     formdata.append("Add_financial_assistance", "1");
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
-    formdata.append("type", "1");
+    formdata.append("type", "3");
     formdata.append("user_id", loginUID);
     var requestOptions = {
       method: "POST",

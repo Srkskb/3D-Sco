@@ -117,7 +117,7 @@ export default function EducatorFinancialAssistance() {
                   <Text style={styles.link}>
                     <Text style={styles.url}>Added By : </Text>
                     {list.name} 
-                    {/* ({list.user_type}) */}
+                    ({list.user_type})
                   </Text>
                 </View>
               </View>

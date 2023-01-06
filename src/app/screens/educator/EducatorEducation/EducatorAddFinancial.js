@@ -6,10 +6,12 @@ import Input from "../../../components/inputs/Input";
 import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
-export default function EducatorAddFinancial({ navigation }) {
+import UserType from "../../UserType";
+export default function EducatorAddFinancial({ route,navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState();
+  const userRole = localStorage.getItem("userRole");
   const [assetsUrl, setAssetsUrl] = useState();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -24,7 +26,7 @@ export default function EducatorAddFinancial({ navigation }) {
     formdata.append("Add_financial_assistance", "1");
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
-    formdata.append("type", "1");
+    formdata.append("type", "2");
     formdata.append("user_id", loginUID);
     var requestOptions = {
       method: "POST",
