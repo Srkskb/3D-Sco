@@ -82,7 +82,7 @@ import {
 import NavigationDrawer from "./src/app/screens/students/home_screen/NavigationDrawer";
 import RootNavigator from "./src/app/navigations/RootNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import FlashMessage from "react-native-flash-message";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -92,6 +92,7 @@ export default function App() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <RootNavigator />
+      <FlashMessage position="top" />
     </SafeAreaView>
     // <>
     //   <IconRegistry icons={EvaIconsPack} />
