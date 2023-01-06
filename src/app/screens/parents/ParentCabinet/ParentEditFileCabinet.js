@@ -59,11 +59,11 @@ export default function ParentEditFileCabinet({ route, navigation }) {
     urlencoded.append("id", docId);
     urlencoded.append("description", upDescription);
     urlencoded.append("student_id", loginUID);
-    urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
-    });
+    // urlencoded.append("image", {
+    //   uri: image, //"file:///" + image.split("file:/").join(""),
+    //   type: mime.getType(image),
+    //   name: `abc.jpg`,
+    // });
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
