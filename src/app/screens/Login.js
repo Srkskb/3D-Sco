@@ -111,23 +111,26 @@ var config = {
 
 axios(config)
 .then((response) =>{
-  // console.log(response.data.data)
-  localStorage.setItem("loginUID", response.data.data.id);
-  if(response.data.data.type=='student'){
-    navigation.navigate("DrawerNavigator");
-  }
-  if(response.data.data.type=='tutor'){
-    navigation.navigate("TutorDrawerNavigator");
-  }
-  if(response.data.data.type=='parent'){
-    navigation.navigate("ParentDrawerNavigator");
-  }
-  if(response.data.data.type=='admin'){
-    navigation.navigate("AdminDrawerNavigator");
-  }
-  if(response.data.data.type=='affiliate'){
-    navigation.navigate("AffiliateDrawerNavigator");
-  }
+  console.log(response.data.success)
+  if(response.data.success==0){
+    //add alert here
+  }else{
+    localStorage.setItem("loginUID", response.data.data.id);
+    if(response.data.data.type=='student'){
+      navigation.navigate("DrawerNavigator");
+    }
+    if(response.data.data.type=='tutor'){
+      navigation.navigate("TutorDrawerNavigator");
+    }
+    if(response.data.data.type=='parent'){
+      navigation.navigate("ParentDrawerNavigator");
+    }
+    if(response.data.data.type=='admin'){
+      navigation.navigate("AdminDrawerNavigator");
+    }
+    if(response.data.data.type=='affiliate'){
+      navigation.navigate("AffiliateDrawerNavigator");
+    }}
 })
 .catch((error)=>{
   console.log(error);
