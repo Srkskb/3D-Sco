@@ -111,7 +111,9 @@ var config = {
 axios(config)
 .then((response) =>{
   console.log(response.data.success)
-  if(response.data.success!=0){
+  if(response.data.success==0){
+    //add alert here
+  }else{
     localStorage.setItem("loginUID", response.data.data.id);
     if(response.data.data.type=='student'){
       navigation.navigate("DrawerNavigator");
