@@ -10,8 +10,8 @@ import axios from "axios";
 export default function EditResources({route,navigation}) {
   const { lastQuestion, lastQuestionParam } = route.params;
   const { lastAnswer, lastAnswerParam } = route.params;
- const [answer,setAnswer]=useState("")
- const [question,setQuestion]=useState("")
+ const [answer,setAnswer]=useState(route.params.list.Answer)
+ const [question,setQuestion]=useState(route.params.list.Question)
  const loginUID = localStorage.getItem("loginUID");
  // const { eventID, eventIDParam } = route.params; // ! Current Event ID
  const updateEvent = () => {
