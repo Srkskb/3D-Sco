@@ -97,16 +97,16 @@ export default function ParentStoreFavoriteLinks() {
   }, [filter]);
 
   // ! For Input Box Search Data List
-  useEffect(() => {
-    if (!searchTerm) return setStoreLinks(initialStoreLinks);
-    let temp = [];
-    initialStoreLinks.forEach((item) => {
-      if (item.Titel.toLowerCase().includes(searchTerm.toLowerCase()))
-        temp.push(item);
-    });
+  // useEffect(() => {
+  //   if (!searchTerm) return setStoreLinks(initialStoreLinks);
+  //   let temp = [];
+  //   initialStoreLinks.forEach((item) => {
+  //     if (item.Titel.toLowerCase().includes(searchTerm.toLowerCase()))
+  //       temp.push(item);
+  //   });
 
-    setStoreLinks(temp);
-  }, [searchTerm]);
+  //   setStoreLinks(temp);
+  // }, [searchTerm]);
   return (
     <View style={styles.container}>
       <Snackbar

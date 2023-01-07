@@ -8,8 +8,6 @@ import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
 export default function EditResources({route,navigation}) {
-  const { lastQuestion, lastQuestionParam } = route.params;
-  const { lastAnswer, lastAnswerParam } = route.params;
  const [answer,setAnswer]=useState(route.params.list.Answer)
  const [question,setQuestion]=useState(route.params.list.Question)
  const loginUID = localStorage.getItem("loginUID");
@@ -38,6 +36,8 @@ export default function EditResources({route,navigation}) {
   .then(function (response) {
     console.log(JSON.stringify(response.data));
     if(response.data.success==1){
+      setAnswer('')
+      setQuestion('')
       navigation.navigate("ManageResources")
     }
   })
@@ -55,20 +55,19 @@ export default function EditResources({route,navigation}) {
       onChangeText={(text) => setQuestion(text)}
       value={question}
       keyboardType="text"
-      name="lastQuestion"
     />
         <Input label={"Answer"} placeholder={"Enter Your Answer"}
           onChangeText={(text) => setAnswer(text)}
           value={answer}
           keyboardType="text"
-          name="lastAnswer"
+        
         />
         <View style={styles.button}>
           <SmallButton
             title={"Cancel"}
             color={color.purple}
             fontFamily={"Montserrat-Medium"}
-            // onPress={()=>console.log(loginUID)}
+            // onPress={()=>console.log(route.params.list)}
             />
           <SmallButton
             title="Update"

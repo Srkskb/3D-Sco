@@ -8,7 +8,7 @@ import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-export default function ManageResources({ navigation }) {
+export default function EducatorManageResources({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [myResourcesData, setMyResourcesData] = useState([]);
    const [color, changeColor] = useState("red");
