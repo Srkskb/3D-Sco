@@ -94,19 +94,21 @@ export default function EducatorStoreFavoriteLinks() {
   useEffect(() => {
     allLearnerList();
     navigation.addListener("focus", () => allLearnerList());
-  }, [filter]);
+  }, [navigation]);
 
   // ! For Input Box Search Data List
-  // useEffect(() => {
-  //   if (!searchTerm) return setStoreLinks(initialStoreLinks);
-  //   let temp = [];
-  //   initialStoreLinks.forEach((item) => {
-  //     if (item.Titel.toLowerCase().includes(searchTerm.toLowerCase()))
-  //       temp.push(item);
-  //   });
-
-  //   setStoreLinks(temp);
-  // }, [searchTerm]);
+  const searchText=(searchTerm) => {
+    setSearchTerm(searchTerm)
+    if (!searchTerm) return setStoreLinks(initialStoreLinks);
+    if(initialStoreLinks&&initialStoreLinks.length>0){
+        let temp = initialStoreLinks.filter((item) => {
+          if (item.Titel.toLowerCase().includes(searchTerm.toLowerCase()))
+            temp.push(item);
+        });
+    
+        // setStoreLinks(temp);
+        console.log(temp);}
+  }
   return (
     <View style={styles.container}>
       <Snackbar
@@ -156,7 +158,7 @@ export default function EducatorStoreFavoriteLinks() {
 
             <TextInput
               style={styles.input}
-              onChangeText={setSearchTerm}
+              onChangeText={(text)=>searchText(text)}
               value={searchTerm}
               placeholder={"Search title, author..."}
             />
