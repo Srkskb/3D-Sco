@@ -27,7 +27,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import * as qs from "qs";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { showMessage, hideMessage } from "react-native-flash-message";
+// import { showMessage, hideMessage } from "react-native-flash-message";
 export default function Login({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
     useTogglePasswordVisibility();
@@ -96,22 +96,20 @@ export default function Login({ navigation }) {
   email: values.email,
   password: values.password,
   type: role_data,
-  username:values.email
+  // username:values.email
 });
 var config = {
   method: 'post',
   url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
   headers: { 
     'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=fbpj6oakqd6lo2tvf4pnlblnl7'
+    'Content-Type': 'application/x-www-form-urlencoded'
   },
   data : data
 };
-
 axios(config)
 .then((response) =>{
-  console.log(response.data.success)
+  console.log(response.data)
   if(response.data.success==0){
     //add alert here
   }else{
@@ -133,7 +131,9 @@ axios(config)
     }}
 })
 .catch((error)=>{
-  console.log(error);
+  console.log(error.response.data);
+  setSnackVisibleFalse(true);
+  setMessageFalse(error.response.data.message)
 });
   };
 
