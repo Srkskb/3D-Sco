@@ -61,7 +61,7 @@ export default function EducatorStoreFavoriteLinks() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&student_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${loginUID}`,
       requestOptions
     )
       .then((res) => res.json())
