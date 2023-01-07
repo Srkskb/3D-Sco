@@ -7,13 +7,14 @@ import Event_Card from "../../../components/card/Event_Card";
 import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
-
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 export default function ManageResources({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [myResourcesData, setMyResourcesData] = useState([]);
    const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
  const loginUID = localStorage.getItem("loginUID");
+ const isFocused = useIsFocused();
   const allLearnerList = () => {
     setRefreshing(true);
 
@@ -43,8 +44,11 @@ export default function ManageResources({ navigation }) {
   };
 
   useEffect(() => {
-    allLearnerList();
-  }, []);
+    if(isFocused){
+        allLearnerList();
+      }
+      allLearnerList();
+  }, [isFocused]);
   const deleteFaq=(id)=>{
     var data = qs.stringify({
   'delete_faq': '1',
