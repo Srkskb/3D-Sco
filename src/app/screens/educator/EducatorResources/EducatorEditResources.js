@@ -8,8 +8,8 @@ import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
 export default function EducatorEditResources({route,navigation}) {
- const [answer,setAnswer]=useState("")
- const [question,setQuestion]=useState("")
+ const [answer,setAnswer]=useState(route.params.list.Answer)
+ const [question,setQuestion]=useState(route.params.list.Question)
  const loginUID = localStorage.getItem("loginUID");
  // const { eventID, eventIDParam } = route.params; // ! Current Event ID
  const updateEvent = () => {
@@ -36,6 +36,8 @@ export default function EducatorEditResources({route,navigation}) {
   .then(function (response) {
     console.log(JSON.stringify(response.data));
     if(response.data.success==1){
+      setAnswer('')
+      setQuestion('')
       navigation.navigate("EducatorManageResources")
     }
   })
@@ -65,7 +67,7 @@ export default function EducatorEditResources({route,navigation}) {
             title={"Cancel"}
             color={color.purple}
             fontFamily={"Montserrat-Medium"}
-            // onPress={()=>console.log(loginUID)}
+            // onPress={()=>console.log(route.params.list)}
             />
           <SmallButton
             title="Update"
