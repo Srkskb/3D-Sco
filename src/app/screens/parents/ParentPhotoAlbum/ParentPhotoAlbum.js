@@ -147,13 +147,13 @@ axios(config)
             <>
               {fileCabinetData.map((list, index) => (
                 <FileCabinetCard
-                  title={list.name}
+                  title={list.title}
                   access={list.access_level}
                   description={list.description}
                   onPressEdit={() =>
                     navigation.navigate("ParentEditPhoto", {
                       docId: list.id,
-                      title: list.name,
+                      title: list.title,
                       docAccess: list.access_level,
                       description: list.description,
                       docImage: list.file_name,
@@ -162,7 +162,7 @@ axios(config)
                   removePress={() => deleteEvent(list.id)}
                   onPress={() =>
                     navigation.navigate("ParentViewPhoto", {
-                      title: list.name,
+                      title: list.title,
                       access: list.access_level,
                       description: list.description,
                       image: list.file_name,

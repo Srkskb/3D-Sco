@@ -2,7 +2,7 @@
   "expo": {
     "name": "3DSCO",
     "slug": "3DSCO",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon1.png",
     "userInterfaceStyle": "light",
@@ -33,7 +33,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "618672be-525f-4730-a1ee-2c7f936af4d8"
+        "projectId": "0bdbc37d-6358-46f6-9ce0-1ec6640a66e5"
       }
     }
   }
