@@ -16,7 +16,7 @@ import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 
-export default function ParentEditBlogs({ route, navigation }) {
+export default function AffiliateEditBlogs({ route, navigation }) {
   // ** For Event Update
   const { blogID, eventIDParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -70,7 +70,7 @@ export default function ParentEditBlogs({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("Blogs");
+          navigation.navigate("AffiliateBlogs");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -98,7 +98,7 @@ export default function ParentEditBlogs({ route, navigation }) {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Update Blog"}
-        onPress={() => navigation.navigate("Blogs")}
+        onPress={() => navigation.navigate("AffiliateBlogs")}
       />
       <Snackbar
         visible={snackVisibleTrue}

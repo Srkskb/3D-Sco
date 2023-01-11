@@ -1,0 +1,1 @@
+export {default as AffiliateStudent} from '../../../screens/affiliate/AffiliateStudent/AffiliateStudent'

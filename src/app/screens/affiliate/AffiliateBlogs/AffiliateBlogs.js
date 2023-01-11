@@ -15,7 +15,7 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "./../../../components/buttons";
-export default function ParentBlogs() {
+export default function AffiliateBlogs() {
   const navigation = useNavigation();
   const [blogListData, setBlogListData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -109,7 +109,7 @@ export default function ParentBlogs() {
         <TextWithButton
           title={"My Blog"}
           label={"+Add"}
-          onPress={() => navigation.navigate("ParentAddBlogs")}
+          onPress={() => navigation.navigate("AffiliateAddBlogs")}
         />
         <View style={styles.main_box2}>
           <ScrollView
@@ -147,7 +147,7 @@ export default function ParentBlogs() {
                         <View style={styles.button_container}>
                           <ViewButton
                             onPress={() =>
-                              navigation.navigate("ParentViewBlogs", {
+                              navigation.navigate("AffiliateViewBlogs", {
                                 Titel: list.Titel,
                                 Date: moment(list && list?.Date).format("LL"),
                                 description: list.Description,
@@ -160,7 +160,7 @@ export default function ParentBlogs() {
                             <>
                               <Edit
                                 onPress={() =>
-                                  navigation.navigate("ParentEditBlogs", {
+                                  navigation.navigate("AffiliateEditBlogs", {
                                     blogID: list.id,
                                     title: list.Titel,
                                     date: moment(list && list?.Date).format(

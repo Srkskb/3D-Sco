@@ -70,7 +70,7 @@ export default function ParentEditBlogs({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("Blogs");
+          navigation.navigate("ParentBlogs");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);

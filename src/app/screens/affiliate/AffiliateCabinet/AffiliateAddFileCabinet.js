@@ -22,7 +22,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from 'mime'
 
-export default function ParentAddFileCabinet() {
+export default function AffiliateAddFileCabinet() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -75,7 +75,7 @@ export default function ParentAddFileCabinet() {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("ParentCabinet");
+          navigation.navigate("AffiliateCabinet");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);

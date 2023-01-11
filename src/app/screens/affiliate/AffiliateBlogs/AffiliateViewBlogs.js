@@ -14,7 +14,7 @@ import SmallButton from "../../../components/buttons/SmallButton";
 import CommentCard from "../../../components/card/CommentCard";
 import { myHeadersData } from "../../../api/helper";
 const{height,width}=Dimensions.get('window')
-export default function ParentViewBlogs({ route, navigation }) {
+export default function AffiliateViewBlogs({ route, navigation }) {
     const { Titel, titleParam } = route.params;
   const { Date, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
@@ -23,7 +23,7 @@ export default function ParentViewBlogs({ route, navigation }) {
     <View style={styles.container}>
       <HeaderBack
         title={"view blogs"}
-        onPress={() => navigation.navigate("ParentBlogs")}
+        onPress={() => navigation.navigate("AffiliateBlogs")}
       />
       <ScrollView
        

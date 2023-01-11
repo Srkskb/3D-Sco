@@ -1,0 +1,5 @@
+export {default as FHomeStack} from './FHome/FHomeStack'
+export {default as FStudentStack} from './FStudent/FStudentStack'
+export {default as FCalenderStack} from './FCalender/FCalenderStack'
+export {default as FAccountStack} from './FAccount/FAccountStack'
+export {default as FEducationStack} from './FEducation/FEducationStack'

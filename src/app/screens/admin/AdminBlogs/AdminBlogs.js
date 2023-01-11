@@ -14,7 +14,7 @@ import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
-import { Edit, Remove, ViewButton } from "./../../../components/buttons";
+import { Edit, Remove, ViewButton } from "../../../components/buttons";
 export default function EducatorBlogs() {
   const navigation = useNavigation();
   const [blogListData, setBlogListData] = useState([]);

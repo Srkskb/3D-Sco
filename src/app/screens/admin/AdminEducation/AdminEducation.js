@@ -7,8 +7,8 @@ import {
     TouchableOpacity,
   } from "react-native";
   import React from "react";
-  import color from "./../../../assets/themes/Color";
-  import HeaderText from "./../../../components/HeaderText";
+  import color from "../../../assets/themes/Color";
+  import HeaderText from "../../../components/HeaderText";
   import HomeHeader from "../../../components/header/HomeHeader";
   import { SafeAreaView } from "react-native-safe-area-context";
   import { useNavigation } from "@react-navigation/native";

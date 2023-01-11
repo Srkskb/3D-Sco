@@ -7,7 +7,7 @@ import {
   CityDropdown,
   StateDropdown,
   UniversityDropdown,
-} from "./../../../components/dropdown";
+} from "../../../components/dropdown";
 
 import CourseHeader from "../../../components/courselist/CourseHeader";
 import CourseData from "../../../components/courselist/CourseData";

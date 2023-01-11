@@ -4,11 +4,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
 import { FontAwesome5, Ionicons,FontAwesome } from "@expo/vector-icons";
-import {Account} from "./educatorstack"
-import {Calender} from "./educatorstack"
-import { Education } from "./educatorstack";
-import { Student } from "./educatorstack";
-import {Home} from "./educatorstack"
+import {FAccountStack} from "./affiliatestack"
+import {FCalenderStack} from "./affiliatestack"
+import { FEducationStack } from "./affiliatestack";
+import { FStudentStack } from "./affiliatestack";
+import {FHomeStack} from "./affiliatestack"
 import { HomeStack } from "./bottomstack";
 const AffiliateTab = createBottomTabNavigator();
 
@@ -21,8 +21,8 @@ export default function AffiliateTabs() {
       }}
     >
       <AffiliateTab.Screen
-        name="Home"
-        component={Home}
+        name="FHomeStack"
+        component={FHomeStack}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
@@ -32,8 +32,8 @@ export default function AffiliateTabs() {
       />
 
       <AffiliateTab.Screen
-        name="Calender"
-        component={Calender}
+        name="FCalenderStack"
+        component={FCalenderStack}
         options={{
           tabBarLabel: "Calendar",
           tabBarIcon: ({ color, size }) => (
@@ -44,8 +44,8 @@ export default function AffiliateTabs() {
       />
 
       <AffiliateTab.Screen
-        name="Education"
-        component={Education}
+        name="FEducationStack"
+        component={FEducationStack}
         options={{
           tabBarLabel: "Education",
           tabBarIcon: ({ color, size }) => (
@@ -56,8 +56,8 @@ export default function AffiliateTabs() {
       />
 
       <AffiliateTab.Screen
-        name="Student"
-        component={Student}
+        name="FStudentStack"
+        component={FStudentStack}
         options={{
           tabBarLabel: "Student",
           tabBarIcon: ({ color, size }) => (
@@ -68,8 +68,8 @@ export default function AffiliateTabs() {
       />
 
       <AffiliateTab.Screen
-        name="Account"
-        component={Account}
+        name="FAccountStack"
+        component={FAccountStack}
         options={{
           tabBarLabel: "Account",
           tabBarIcon: ({ color, size }) => (

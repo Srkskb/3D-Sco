@@ -5,7 +5,7 @@ import color from "../../../assets/themes/Color";
 import Account_Tabs from "../../../components/Account_Tabs";
 import { useNavigation } from "@react-navigation/native";
 import HomeHeader from "../../../components/header/HomeHeader";
-export default function ParentAccount() {
+export default function AffiliateAccount() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
@@ -22,19 +22,19 @@ export default function ParentAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
-                onPress={() => navigation.navigate("ParentMail")}
+                onPress={() => navigation.navigate("AffiliateMail")}
               />
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"File Cabinet"}
-                onPress={() => navigation.navigate("ParentCabinet")}
+                onPress={() => navigation.navigate("AffiliateCabinet")}
               />
 
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/unknown.png")}
                 title={"My Resources"}
-                onPress={() => navigation.navigate("ParentResources")}
+                onPress={() => navigation.navigate("AffiliateResources")}
               /> */}
 
               {/* <Account_Tabs
@@ -46,26 +46,30 @@ export default function ParentAccount() {
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"Export Content"}
-                onPress={() => navigation.navigate("ParentExportContent")}
+                onPress={() => navigation.navigate("AffiliateExportContent")}
               /> */}
                 <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/blogs.png")}
                 title={"Blogs"}
-                onPress={() => navigation.navigate("ParentBlogs")}
+                onPress={() => navigation.navigate("AffiliateBlogs")}
               />
-          
+          <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/journal.png")}
+                title={"My Journal"}
+                onPress={() => navigation.navigate("EducatorMyJournal")}
+              />
             </View>
             <View style={styles.vertical_list}>
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/calendar.png")}
                 title={"Event Calendar"}
-                onPress={() => navigation.navigate("ParentEvent")}
+                onPress={() => navigation.navigate("AffiliateEvent")}
               />
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/library.png")}
                 title={"Library Acess"}
-                onPress={() => navigation.navigate("ParentLibrary")}
+                onPress={() => navigation.navigate("AffiliateLibrary")}
               />
 
               {/* <Account_Tabs
@@ -83,13 +87,13 @@ export default function ParentAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/links.png")}
                 title={"Store Favorite Links (Weblinks)"}
-                onPress={() => navigation.navigate("ParentStoreFavoriteLinks")}
+                onPress={() => navigation.navigate("AffiliateStoreFavoriteLinks")}
               />
             
                    <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Photo Album"}
-                onPress={() => navigation.navigate("ParentPhotoAlbum")}
+                onPress={() => navigation.navigate("AffiliatePhotoAlbum")}
               />
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}

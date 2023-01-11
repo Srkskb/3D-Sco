@@ -1,0 +1,7 @@
+export {default as AffiliateEducation} from '../../../screens/affiliate/AffiliateEducation/AffiliateEducation'
+export {default as AffiliateLearnerList} from '../../../screens/affiliate/AffiliateEducation/AffiliateLearnerList'
+export {default as AffiliateInstructorList} from '../../../screens/affiliate/AffiliateEducation/AffiliateInstructorList'
+export {default as AffiliateLibrary} from '../../../screens/affiliate/AffiliateEducation/AffiliateLibrary'
+export {default as AffiliateFinancialAssistance} from '../../../screens/affiliate/AffiliateEducation/AffiliateFinancialAssistance'
+export {default as AffiliateAddFinancial} from '../../../screens/affiliate/AffiliateEducation/AffiliateAddFinancial'
+export {default as AffiliateEditFinancial} from '../../../screens/affiliate/AffiliateEducation/AffiliateEditFinancial'
