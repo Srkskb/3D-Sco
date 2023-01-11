@@ -5,7 +5,7 @@ import color from "../../../assets/themes/Color";
 import Account_Tabs from "../../../components/Account_Tabs";
 import { useNavigation } from "@react-navigation/native";
 import HomeHeader from "../../../components/header/HomeHeader";
-export default function EducatorAccount() {
+export default function AdminAccount() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
@@ -22,19 +22,19 @@ export default function EducatorAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
-                onPress={() => navigation.navigate("EducatorMail")}
+                onPress={() => navigation.navigate("AdminMail")}
               />
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"File Cabinet"}
-                onPress={() => navigation.navigate("EducatorCabinet")}
+                onPress={() => navigation.navigate("AdminCabinet")}
               />
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/unknown.png")}
                 title={"My Resources"}
-                onPress={() => navigation.navigate("EducatorResources")}
+                onPress={() => navigation.navigate("AdminResources")}
               />
 
               {/* <Account_Tabs
@@ -46,25 +46,25 @@ export default function EducatorAccount() {
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"Export Content"}
-                onPress={() => navigation.navigate("EducatorExportContent")}
+                onPress={() => navigation.navigate("AdminExportContent")}
               /> */}
                <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Photo Album"}
-                onPress={() => navigation.navigate("EducatorPhotoAlbum")}
+                onPress={() => navigation.navigate("AdminPhotoAlbum")}
               />
             </View>
             <View style={styles.vertical_list}>
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/calendar.png")}
                 title={"Event Calendar"}
-                onPress={() => navigation.navigate("EducatorEvent")}
+                onPress={() => navigation.navigate("AdminEvent")}
               />
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/library.png")}
                 title={"Library Acess"}
-                onPress={() => navigation.navigate("EducatorLibrary")}
+                onPress={() => navigation.navigate("AdminLibrary")}
               />
 
               {/* <Account_Tabs
@@ -82,12 +82,12 @@ export default function EducatorAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/links.png")}
                 title={"Store Favorite Links (Weblinks)"}
-                onPress={() => navigation.navigate("EducatorStoreFavoriteLinks")}
+                onPress={() => navigation.navigate("AdminStoreFavoriteLinks")}
               />
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/blogs.png")}
                 title={"Blogs"}
-                onPress={() => navigation.navigate("EducatorBlogs")}
+                onPress={() => navigation.navigate("AdminBlogs")}
               />
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
@@ -98,7 +98,7 @@ export default function EducatorAccount() {
 <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/journal.png")}
                 title={"My Journal"}
-                onPress={() => navigation.navigate("EducatorMyJournal")}
+                onPress={() => navigation.navigate("AdminMyJournal")}
               />
             </View>
           </View>

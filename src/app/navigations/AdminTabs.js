@@ -5,11 +5,11 @@ import { Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
 
 import { FontAwesome5, Ionicons,FontAwesome } from "@expo/vector-icons";
-import {Account} from "./educatorstack"
-import {Calender} from "./educatorstack"
-import { Education } from "./educatorstack";
-import { Student } from "./educatorstack";
-import {Home} from "./educatorstack"
+import {AAccountStack} from "./adminstack"
+import {ACalenderStack} from "./adminstack"
+import { AEducationStack } from "./adminstack";
+import { AStudentStack } from "./adminstack"
+import {AHomeStack} from "./adminstack"
 import { HomeStack } from "./bottomstack";
 const AdminTab = createBottomTabNavigator();
 
@@ -22,8 +22,8 @@ export default function AdminTabs() {
       }}
     >
       <AdminTab.Screen
-        name="Home"
-        component={Home}
+        name="AHomeStack"
+        component={AHomeStack}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
@@ -33,8 +33,8 @@ export default function AdminTabs() {
       />
 
       <AdminTab.Screen
-        name="Calender"
-        component={Calender}
+        name="ACalenderStack"
+        component={ACalenderStack}
         options={{
           tabBarLabel: "Calendar",
           tabBarIcon: ({ color, size }) => (
@@ -45,8 +45,8 @@ export default function AdminTabs() {
       />
 
       <AdminTab.Screen
-        name="Education"
-        component={Education}
+        name="AEducationStack"
+        component={AEducationStack}
         options={{
           tabBarLabel: "Education",
           tabBarIcon: ({ color, size }) => (
@@ -57,8 +57,8 @@ export default function AdminTabs() {
       />
 
       <AdminTab.Screen
-        name="Student"
-        component={Student}
+        name="AStudentStack"
+        component={AStudentStack}
         options={{
           tabBarLabel: "Student",
           tabBarIcon: ({ color, size }) => (
@@ -69,8 +69,8 @@ export default function AdminTabs() {
       />
 
       <AdminTab.Screen
-        name="Account"
-        component={Account}
+        name="AAccountStack"
+        component={AAccountStack}
         options={{
           tabBarLabel: "Account",
           tabBarIcon: ({ color, size }) => (
