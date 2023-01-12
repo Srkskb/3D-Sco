@@ -4,12 +4,12 @@ import React from "react";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
 const Access = [
-    'Private','Public','Shared'
+    'Active','In-Active'
   ];
-export default function AccessLevel({ label, ...props }) {
+export default function ActiveStatus({ label, ...props }) {
   return (
     <View>
-      {label && <Text style={styles.label_text} {...props}>{label}</Text>}
+     <Text style={styles.label_text}>Status</Text>
       
       <View style={{ flexDirection: "row" }}>
         <SelectDropdown

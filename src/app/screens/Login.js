@@ -270,7 +270,7 @@ axios(config)
                             <AppButton
                               title={"Login"}
                               onPress={handleSubmit}
-                              // onPress={()=>navigation.navigate("DrawerNavigator")}
+                              // onPress={()=>navigation.navigate("AdminDrawerNavigator")}
                               disabled={!isValid}
                               btnColor={!isValid ? "#6c757d" : color.purple}
                             />

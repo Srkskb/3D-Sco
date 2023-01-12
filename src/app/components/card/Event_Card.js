@@ -20,16 +20,12 @@ export default function Event_Card({
         <View style={styles.right_side}>
           <View style={styles.arrow_container}>
             <Text style={styles.head_text}>{title}</Text>
-            <View style={{ marginLeft: 10, justifyContent: "center" }}>
-              {/* <MaterialIcons
-                name="arrow-forward-ios"
-                size={20}
-                color={color.purple}
-              /> */}
-            </View>
           </View>
-          <Text style={styles.status_text}>{status}</Text>
+          <View>
+              <Text style={styles.status_text}>{status}</Text>
+              </View>
         </View>
+          
       </View>
       <View style={styles.text_container}>
         <Text style={styles.description_text}>{description}</Text>
@@ -66,6 +62,8 @@ const styles = StyleSheet.create({
   },
   arrow_container: {
     flexDirection: "row",
+    width:'50%',
+    flexWrap:'wrap'
   },
   text_container: {
     height: 38,

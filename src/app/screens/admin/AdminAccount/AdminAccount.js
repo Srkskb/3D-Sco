@@ -9,7 +9,7 @@ export default function AdminAccount() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation}/>
+      <HomeHeader navigation={navigation} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           <View style={styles.main_container}>
@@ -48,11 +48,22 @@ export default function AdminAccount() {
                 title={"Export Content"}
                 onPress={() => navigation.navigate("AdminExportContent")}
               /> */}
-               <Account_Tabs
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/journal.png")}
+                title={"My Journal"}
+                onPress={() => navigation.navigate("AdminMyJournal")}
+              />
+              <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Photo Album"}
                 onPress={() => navigation.navigate("AdminPhotoAlbum")}
               />
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Enrollment"}
+                onPress={() => navigation.navigate("Enrollment")}
+              />
+            
             </View>
             <View style={styles.vertical_list}>
               <Account_Tabs
@@ -94,11 +105,15 @@ export default function AdminAccount() {
                 title={"Export Content"}
                 onPress={() => navigation.navigate("ExportContent")}
               /> */}
-
-<Account_Tabs
-                imgsrc={require("./../../../assets/images/account/journal.png")}
-                title={"My Journal"}
-                onPress={() => navigation.navigate("AdminMyJournal")}
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Users"}
+                onPress={() => navigation.navigate("TopBarNavigation")}
+              />
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Courses"}
+                onPress={() => navigation.navigate("CourseTab")}
               />
             </View>
           </View>

@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
       color: color.black,
       fontSize: 13,
       fontFamily: "Montserrat-Regular",
-      // marginBottom: 5,
+      marginBottom: 5,
+      alignSelf:'flex-start'
     },
     downimg: {
       position: "absolute",
