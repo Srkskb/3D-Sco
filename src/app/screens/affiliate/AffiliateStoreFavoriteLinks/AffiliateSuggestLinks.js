@@ -8,12 +8,12 @@ import SmallButton from "../../../components/buttons/SmallButton";
 import AccessLevel from "../../../components/dropdown/AccessLevel";
 import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
 
-export default function ParentSuggestLink({ navigation }) {
+export default function AffiliateSuggestLink({ navigation }) {
   return (
     <View style={styles.container}>
       <HeaderBack
         title={"Suggest Link"}
-        onPress={() => navigation.navigate("StoreFavoriteLinks")}
+        onPress={() => navigation.navigate("AffiliateStoreFavoriteLinks")}
       />
 
       <ScrollView style={styles.main}>

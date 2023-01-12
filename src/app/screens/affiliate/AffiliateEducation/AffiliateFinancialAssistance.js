@@ -6,7 +6,7 @@ import color from "../../../assets/themes/Color";
 import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
-export default function ParentFinancialAssistance() {
+export default function AffiliateFinancialAssistance() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -101,7 +101,7 @@ export default function ParentFinancialAssistance() {
         <TextWithButton
           title={"Financial Assistance"}
           label={"+Add"}
-          onPress={() => navigation.navigate("ParentAddFinancial")}
+          onPress={() => navigation.navigate("AffiliateAddFinancial")}
         />
 
         <ScrollView>
@@ -127,7 +127,7 @@ export default function ParentFinancialAssistance() {
                     <View style={{ width: 20 }}></View>
                     <Edit
                       onPress={() =>
-                        navigation.navigate("ParentEditFinancial", {
+                        navigation.navigate("AffiliateEditFinancial", {
                           assisID: list.id,
                           assisTitle: list.Titel,
                           assisURL: list.url,

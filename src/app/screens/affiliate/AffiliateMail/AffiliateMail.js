@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-export default function ParentMail() {
+export default function AffiliateMail() {
   const navigation = useNavigation();
   const [mailListData, setMailListData] = useState([]);
   const [color, changeColor] = useState("red");

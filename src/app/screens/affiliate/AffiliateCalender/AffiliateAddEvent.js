@@ -22,7 +22,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 
 
-export default function ParentAddEvent() {
+export default function AffiliateAddEvent() {
   const navigation = useNavigation();
   const loginUID = localStorage.getItem("loginUID");
   const [access, setAccess] = useState("Private");
@@ -68,7 +68,7 @@ export default function ParentAddEvent() {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.replace("ParentCalender");
+          navigation.replace("AffiliateCalender");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);

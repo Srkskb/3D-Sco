@@ -17,7 +17,7 @@ import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
-export default function ParentAddLink() {
+export default function AffiliateAddLink() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -53,7 +53,7 @@ export default function ParentAddLink() {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("ParentStoreFavoriteLinks");
+          navigation.navigate("AffiliateStoreFavoriteLinks");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -65,7 +65,7 @@ export default function ParentAddLink() {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Suggest Link"}
-        onPress={() => navigation.navigate("ParentStoreFavoriteLinks")}
+        onPress={() => navigation.navigate("AffiliateStoreFavoriteLinks")}
       />
       <Snackbar
         visible={snackVisibleTrue}

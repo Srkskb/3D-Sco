@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 const{height,width}=Dimensions.get('window')
-export default function ParentViewPhoto({ route, navigation }) {
+export default function AffiliateViewPhoto({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { access, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
@@ -13,7 +13,7 @@ export default function ParentViewPhoto({ route, navigation }) {
     <View style={styles.container}>
       <HeaderBack
         title={"Photo Gallery"}
-        onPress={() => navigation.navigate("ParentPhotoAlbum")}
+        onPress={() => navigation.navigate("AffiliatePhotoAlbum")}
       />
       <View style={styles.inner_view}>
         <Text>

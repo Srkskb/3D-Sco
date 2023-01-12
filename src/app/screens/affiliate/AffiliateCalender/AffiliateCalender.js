@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import Event_Card from "../../../components/card/Event_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import moment from "moment";
-export default function ParentCalender() {
+export default function AffiliateCalender() {
   const navigation = useNavigation();
   const [eventList, setEventList] = useState([]);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -116,7 +116,7 @@ export default function ParentCalender() {
         <Text style={styles.event_text}>Today's Events</Text>
         <View style={styles.add_button}>
           <AppButton
-            onPress={() => navigation.navigate("ParentAddEvent")}
+            onPress={() => navigation.navigate("AffiliateAddEvent")}
             title="+ Add"
           />
         </View>
@@ -141,7 +141,7 @@ export default function ParentCalender() {
                     date={moment(list && list?.event_date).format("LL")}
                     description={list.decription}
                     editPress={() =>
-                      navigation.navigate("ParentEditEvent", {
+                      navigation.navigate("AffiliateEditEvent", {
                         eventID: list.event_id,
                         title: list.event_title,
                         status: list.access_level,
@@ -151,7 +151,7 @@ export default function ParentCalender() {
                     }
                     removePress={() => deleteEvent(list.event_id)}
                     viewPress={() =>
-                      navigation.navigate("ParentViewEventDetails", {
+                      navigation.navigate("AffiliateViewEventDetails", {
                         title: list.event_title,
                         status: list.access_level,
                         Date: moment(list && list?.event_date).format("LL"),

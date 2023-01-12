@@ -11,7 +11,7 @@ import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import axios from "axios";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
-export default function ParentPhotoAlbum() {
+export default function AffiliatePhotoAlbum() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -136,7 +136,7 @@ axios(config)
         <TextWithButton
           title={"Lists"}
           label={"+Add"}
-          onPress={() => navigation.navigate("ParentAddPhoto")}
+          onPress={() => navigation.navigate("AffiliateAddPhoto")}
         />
         <View style={{ paddingHorizontal: 10 }}>
           {fileCabinetData === undefined ? (
@@ -151,7 +151,7 @@ axios(config)
                   access={list.access_level}
                   description={list.description}
                   onPressEdit={() =>
-                    navigation.navigate("ParentEditPhoto", {
+                    navigation.navigate("AffiliateEditPhoto", {
                       docId: list.id,
                       title: list.title,
                       docAccess: list.access_level,
@@ -161,7 +161,7 @@ axios(config)
                   }
                   removePress={() => deleteEvent(list.id)}
                   onPress={() =>
-                    navigation.navigate("ParentViewPhoto", {
+                    navigation.navigate("AffiliateViewPhoto", {
                       title: list.title,
                       access: list.access_level,
                       description: list.description,

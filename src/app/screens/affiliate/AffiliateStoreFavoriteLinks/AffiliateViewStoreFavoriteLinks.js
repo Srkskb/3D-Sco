@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 
-export default function ParentViewStoreFavoriteLinks({ route, navigation }) {
+export default function AffiliateViewStoreFavoriteLinks({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { link, linkParam } = route.params;
   const { category, categoryParam } = route.params;
@@ -12,7 +12,7 @@ export default function ParentViewStoreFavoriteLinks({ route, navigation }) {
     <View style={styles.container}>
       <HeaderBack
         title={"My Project View"}
-        onPress={() => navigation.navigate("ParentStoreFavoriteLinks")}
+        onPress={() => navigation.navigate("AffiliateStoreFavoriteLinks")}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
