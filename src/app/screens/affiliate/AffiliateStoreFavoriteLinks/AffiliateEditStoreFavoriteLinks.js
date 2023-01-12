@@ -19,7 +19,7 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import { CategoryDropdown } from "../../../components/dropdown";
 
-export default function ParentEditStoreFavoriteLinks({ route, navigation }) {
+export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
   const { linkID, linkIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { link, lonkParam } = route.params;
@@ -63,7 +63,7 @@ export default function ParentEditStoreFavoriteLinks({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("ParentStoreFavoriteLinks");
+          navigation.navigate("AffiliateStoreFavoriteLinks");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);

@@ -20,7 +20,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-export default function AddMyJournal() {
+export default function AffiliateAddMyJournal() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -70,7 +70,7 @@ export default function AddMyJournal() {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("EducatorMyJournal");
+          navigation.navigate("AffiliateMyJournal");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -82,7 +82,7 @@ export default function AddMyJournal() {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Add Journal"}
-        onPress={() => navigation.navigate("EducatorMyJournal")}
+        onPress={() => navigation.navigate("AffiliateMyJournal")}
       />
       <Snackbar
         visible={snackVisibleTrue}

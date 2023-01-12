@@ -75,7 +75,7 @@
 //         if (res.success == 1) {
 //           setSnackVisibleTrue(true);
 //           setMessageTrue(res.message);
-//           navigation.navigate("ParentPhotoAlbum");
+//           navigation.navigate("AffiliatePhotoAlbum");
 //         } else {
 //           setSnackVisibleFalse(true);
 //           setMessageFalse(res.message);
@@ -289,7 +289,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from 'mime'
 
-export default function ParentAddPhoto() {
+export default function AffiliateAddPhoto() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -340,7 +340,7 @@ export default function ParentAddPhoto() {
     axios(config)
     .then((response)=>{
       if(response.data.success==1){
-      navigation.navigate("ParentPhotoAlbum")
+      navigation.navigate("AffiliatePhotoAlbum")
     }
     })
     .catch((error)=>{

@@ -20,7 +20,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 
-export default function EditMyJournal({ route, navigation }) {
+export default function AffiliateEditMyJournal({ route, navigation }) {
   const { jID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { jAccess, docAccessParam } = route.params;
@@ -78,7 +78,7 @@ export default function EditMyJournal({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("EducatorMyJournal");
+          navigation.navigate("AffiliateMyJournal");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -101,7 +101,7 @@ export default function EditMyJournal({ route, navigation }) {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Update Journal"}
-        onPress={() => navigation.navigate("EducatorMyJournal")}
+        onPress={() => navigation.navigate("AffiliateMyJournal")}
       />
       <Snackbar
         visible={snackVisibleTrue}

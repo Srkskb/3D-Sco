@@ -6,7 +6,7 @@ import Input from "../../../components/inputs/Input";
 import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
-export default function ParentAddFinancial({ navigation }) {
+export default function AffiliateAddFinancial({ navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState();
@@ -40,7 +40,7 @@ export default function ParentAddFinancial({ navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("ParentFinancialAssistance");
+          navigation.navigate("AffiliateFinancialAssistance");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -69,7 +69,7 @@ export default function ParentAddFinancial({ navigation }) {
       <View style={styles.container}>
         <HeaderBack
           title={"Add Financial"}
-          onPress={() => navigation.navigate("ParentFinancialAssistance")}
+          onPress={() => navigation.navigate("AffiliateFinancialAssistance")}
         />
 
         <ScrollView style={styles.scroll_container}>

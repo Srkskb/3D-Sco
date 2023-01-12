@@ -4,7 +4,7 @@ import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import about_us from "../../../documents/about_us";
 
-export default function ParentViewEventDetails({ route, navigation }) {
+export default function AffiliateViewEventDetails({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { status, linkParam } = route.params;
   const { Date, categoryParam } = route.params;

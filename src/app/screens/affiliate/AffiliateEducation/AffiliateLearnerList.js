@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import { FontAwesome } from "@expo/vector-icons";
-export default function ParentLearnerList() {
+export default function AffiliateLearnerList() {
   const navigation = useNavigation();
   const [learnerListData, setLearnerList] = useState([]);
   const [color, changeColor] = useState("red");

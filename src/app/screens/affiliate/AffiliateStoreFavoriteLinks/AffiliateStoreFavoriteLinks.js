@@ -18,7 +18,7 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
-export default function ParentStoreFavoriteLinks() {
+export default function AffiliateStoreFavoriteLinks() {
   const navigation = useNavigation();
   const [storeLinks, setStoreLinks] = useState([]);
   const [color, changeColor] = useState("red");
@@ -136,7 +136,7 @@ export default function ParentStoreFavoriteLinks() {
         <TextWithButton
           title={"Store Favorite Links"}
           label={"+Add"}
-          onPress={() => navigation.navigate("ParentAddLinks")}
+          onPress={() => navigation.navigate("AffiliateAddLinks")}
         />
 
         <View
@@ -187,7 +187,7 @@ export default function ParentStoreFavoriteLinks() {
                       description={list.Detail}
                       category={list.Category}
                       viewPress={() =>
-                        navigation.navigate("ParentViewStoreFavoriteLinks", {
+                        navigation.navigate("AffiliateViewStoreFavoriteLinks", {
                           title: list.Titel,
                           link: list.url,
                           description: list.Detail,
@@ -196,7 +196,7 @@ export default function ParentStoreFavoriteLinks() {
                       }
                       removePress={() => deleteProject(list.id)}
                       pressEdit={() =>
-                        navigation.navigate("ParentEditStoreFavoriteLinks", {
+                        navigation.navigate("AffiliateEditStoreFavoriteLinks", {
                           linkID: list.id,
                           title: list.Titel,
                           link: list.url,

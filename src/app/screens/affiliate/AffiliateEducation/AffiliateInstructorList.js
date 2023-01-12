@@ -8,7 +8,7 @@ import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import { FontAwesome } from "@expo/vector-icons";
 
-export default function ParentInstructorList() {
+export default function AffiliateInstructorList() {
   const navigation = useNavigation();
   const [instructorListData, setInstructorList] = useState([]);
   const [color, changeColor] = useState("red");

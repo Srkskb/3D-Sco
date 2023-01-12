@@ -13,9 +13,9 @@ import color from "../../../assets/themes/Color";
 import HomeHeader from "../../../components/header/HomeHeader";
 const banner = require("../../../assets/images/banner_home.png");
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { ParentJoin } from "../../students/account";
+// import { AffiliateJoin } from "../../students/account";
 const { height, width } = Dimensions.get("window");
-export default function ParentHomes({ navigation }) {
+export default function AffiliateHomes({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
@@ -35,7 +35,7 @@ export default function ParentHomes({ navigation }) {
         }
       >
         <View style={styles.slider_container}>{/* <ImageSlide /> */}</View>
-        {/* <ParentJoin /> */}
+        {/* <AffiliateJoin /> */}
       </ScrollView>
     </SafeAreaView>
   );
