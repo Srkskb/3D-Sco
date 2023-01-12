@@ -59,7 +59,7 @@ export default function ParentAddFileCabinet() {
       type: mime.getType(image),
       name: `abc.jpg`
     });
-    urlencoded.append("id", loginUID);
+    urlencoded.append("user_id", loginUID);
     urlencoded.append("description", values.description);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
