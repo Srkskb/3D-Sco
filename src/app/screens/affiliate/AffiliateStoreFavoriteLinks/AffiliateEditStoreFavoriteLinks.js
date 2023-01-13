@@ -46,7 +46,7 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
     urlencoded.append("category", category);
     urlencoded.append("detail", upDescription);
     urlencoded.append("url", upLink);
-    urlencoded.append("type", "3");
+    urlencoded.append("type", "5");
     urlencoded.append("id", linkID);
     urlencoded.append("user_id", loginUID);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {

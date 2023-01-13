@@ -4,7 +4,7 @@ import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import about_us from "../../../documents/about_us";
 
-export default function EducatorViewEventDetails({ route, navigation }) {
+export default function AdminViewEventDetails({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { status, linkParam } = route.params;
   const { Date, categoryParam } = route.params;

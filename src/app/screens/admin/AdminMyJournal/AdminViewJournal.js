@@ -6,7 +6,7 @@ import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
 import CommentCard from "../../../components/card/CommentCard";
 const {height,width}=Dimensions.get("window")
-export default function ViewJournal({ route, navigation }) {
+export default function AdminViewJournal({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { Date, dateParam } = route.params;
   const { description, descriptionParam } = route.params;
@@ -16,7 +16,7 @@ export default function ViewJournal({ route, navigation }) {
     <View style={styles.container}>
       <HeaderBack
         title={"view journal"}
-        onPress={() => navigation.navigate("EducatorMyJournal")}
+        onPress={() => navigation.navigate("AdminMyJournal")}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}

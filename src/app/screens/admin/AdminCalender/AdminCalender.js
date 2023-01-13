@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import Event_Card from "../../../components/card/Event_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import moment from "moment";
-export default function EducatorCalender() {
+export default function AdminCalender() {
   const navigation = useNavigation();
   const [eventList, setEventList] = useState([]);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -116,7 +116,7 @@ export default function EducatorCalender() {
         <Text style={styles.event_text}>Today's Events</Text>
         <View style={styles.add_button}>
           <AppButton
-            onPress={() => navigation.navigate("EducatorAddEvent")}
+            onPress={() => navigation.navigate("AdminAddEvent")}
             title="+ Add"
           />
         </View>
@@ -141,7 +141,7 @@ export default function EducatorCalender() {
                     date={moment(list && list?.event_date).format("LL")}
                     description={list.decription}
                     editPress={() =>
-                      navigation.navigate("EducatorEditEvent", {
+                      navigation.navigate("AdminEditEvent", {
                         eventID: list.event_id,
                         title: list.event_title,
                         status: list.access_level,
@@ -151,7 +151,7 @@ export default function EducatorCalender() {
                     }
                     removePress={() => deleteEvent(list.event_id)}
                     viewPress={() =>
-                      navigation.navigate("EducatorViewEventDetails", {
+                      navigation.navigate("AdminViewEventDetails", {
                         title: list.event_title,
                         status: list.access_level,
                         Date: moment(list && list?.event_date).format("LL"),

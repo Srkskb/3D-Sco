@@ -18,7 +18,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
 
-export default function EducatorEditEvent({ route, navigation }) {
+export default function AdminEditEvent({ route, navigation }) {
   // ** For Event Update
   const { eventID, eventIDParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -75,7 +75,7 @@ export default function EducatorEditEvent({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.replace("EducatorCalender");
+          navigation.replace("AdminCalender");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);

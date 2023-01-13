@@ -19,7 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 
-export default function EducatorEditFileCabinet({ route, navigation }) {
+export default function AdminEditFileCabinet({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { docAccess, docAccessParam } = route.params;
@@ -78,7 +78,7 @@ export default function EducatorEditFileCabinet({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("EducatorCabinet");
+          navigation.navigate("AdminCabinet");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -101,7 +101,7 @@ export default function EducatorEditFileCabinet({ route, navigation }) {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Update Document"}
-        onPress={() => navigation.navigate("EducatorCabinet")}
+        onPress={() => navigation.navigate("AdminCabinet")}
       />
       <Snackbar
         visible={snackVisibleTrue}

@@ -19,7 +19,7 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import { CategoryDropdown } from "../../../components/dropdown";
 
-export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
+export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
   const { linkID, linkIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { link, lonkParam } = route.params;
@@ -46,7 +46,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
     urlencoded.append("category", category);
     urlencoded.append("detail", upDescription);
     urlencoded.append("url", upLink);
-    urlencoded.append("type", "2");
+    urlencoded.append("type", "4");
     urlencoded.append("id", linkID);
     urlencoded.append("user_id", loginUID);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
@@ -63,7 +63,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("EducatorStoreFavoriteLinks");
+          navigation.navigate("AdminStoreFavoriteLinks");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);

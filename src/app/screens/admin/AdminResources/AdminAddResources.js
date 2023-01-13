@@ -22,7 +22,7 @@ import * as qs from "qs";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from 'mime'
-export default function EducatorAddResources({ navigation }) {
+export default function AdminAddResources({ navigation }) {
   const [question,setQuestion]=useState("");
   const [answer ,setAnswer] =useState("");
   const loginUID = localStorage.getItem("loginUID");
@@ -54,7 +54,7 @@ export default function EducatorAddResources({ navigation }) {
   .then((response)=>{
     console.log(response)
     if(response.data.success==1){
-    navigation.navigate("EducatorManageResources")
+    navigation.navigate("AdminManageResources")
   }
   })
   .catch(function (error) {

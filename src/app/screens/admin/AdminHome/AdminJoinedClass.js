@@ -7,7 +7,7 @@ import CourseData from "../../../components/courselist/CourseData";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-export default function EducatorJoinedClass() {
+export default function AdminJoinedClass() {
   const navigation = useNavigation();
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [getCourseList, setCourseList] = useState([]);

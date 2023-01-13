@@ -18,7 +18,7 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
-export default function EducatorStoreFavoriteLinks() {
+export default function AdminStoreFavoriteLinks() {
   const navigation = useNavigation();
   const [storeLinks, setStoreLinks] = useState([]);
   const [color, changeColor] = useState("red");
@@ -138,7 +138,7 @@ export default function EducatorStoreFavoriteLinks() {
         <TextWithButton
           title={"Store Favorite Links"}
           label={"+Add"}
-          onPress={() => navigation.navigate("EducatorAddLinks")}
+          onPress={() => navigation.navigate("AdminAddLinks")}
         />
 
         <View
@@ -189,7 +189,7 @@ export default function EducatorStoreFavoriteLinks() {
                       description={list.Detail}
                       category={list.Category}
                       viewPress={() =>
-                        navigation.navigate("EducatorViewStoreFavoriteLinks", {
+                        navigation.navigate("AdminViewStoreFavoriteLinks", {
                           title: list.Titel,
                           link: list.url,
                           description: list.Detail,
@@ -198,7 +198,7 @@ export default function EducatorStoreFavoriteLinks() {
                       }
                       removePress={() => deleteProject(list.id)}
                       pressEdit={() =>
-                        navigation.navigate("EducatorEditStoreFavoriteLinks", {
+                        navigation.navigate("AdminEditStoreFavoriteLinks", {
                           linkID: list.id,
                           title: list.Titel,
                           link: list.url,

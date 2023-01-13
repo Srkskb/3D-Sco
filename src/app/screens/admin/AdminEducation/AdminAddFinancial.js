@@ -7,7 +7,7 @@ import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
 import UserType from "../../UserType";
-export default function EducatorAddFinancial({ route,navigation }) {
+export default function AdminAddFinancial({ route,navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState();
@@ -26,7 +26,7 @@ export default function EducatorAddFinancial({ route,navigation }) {
     formdata.append("Add_financial_assistance", "1");
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
-    formdata.append("type", "2");
+    formdata.append("type", "4");
     formdata.append("user_id", loginUID);
     var requestOptions = {
       method: "POST",
@@ -42,7 +42,7 @@ export default function EducatorAddFinancial({ route,navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("EducatorFinancialAssistance");
+          navigation.navigate("AdminFinancialAssistance");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -71,7 +71,7 @@ export default function EducatorAddFinancial({ route,navigation }) {
       <View style={styles.container}>
         <HeaderBack
           title={"Add Financial"}
-          onPress={() => navigation.navigate("EducatorFinancialAssistance")}
+          onPress={() => navigation.navigate("AdminFinancialAssistance")}
         />
 
         <ScrollView style={styles.scroll_container}>

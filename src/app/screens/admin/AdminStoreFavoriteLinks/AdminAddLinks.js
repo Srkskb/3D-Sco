@@ -17,7 +17,7 @@ import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
-export default function EducatorAddLink() {
+export default function AdminAddLink() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -54,7 +54,7 @@ export default function EducatorAddLink() {
             if (res.success == 1) {
               setSnackVisibleTrue(true);
               setMessageTrue(res.message);
-              navigation.navigate("EducatorStoreFavoriteLinks");
+              navigation.navigate("AdminStoreFavoriteLinks");
             } else {
               setSnackVisibleFalse(true);
               setMessageFalse(res.message);
@@ -70,7 +70,7 @@ export default function EducatorAddLink() {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Suggest Link"}
-        onPress={() => navigation.navigate("EducatorStoreFavoriteLinks")}
+        onPress={() => navigation.navigate("AdminStoreFavoriteLinks")}
       />
       <Snackbar
         visible={snackVisibleTrue}

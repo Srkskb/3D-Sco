@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 const{height,width}=Dimensions.get('window')
-export default function EducatorViewContent({ route, navigation }) {
+export default function AdminViewContent({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { access, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
@@ -13,7 +13,7 @@ export default function EducatorViewContent({ route, navigation }) {
     <View style={styles.container}>
       <HeaderBack
         title={"View Document"}
-        onPress={() => navigation.navigate("EducatorCabinet")}
+        onPress={() => navigation.navigate("AdminCabinet")}
       />
       <View style={styles.inner_view}>
         <Text>

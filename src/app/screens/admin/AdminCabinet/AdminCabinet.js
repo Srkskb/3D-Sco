@@ -8,7 +8,7 @@ import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
-export default function EducatorCabinet() {
+export default function AdminCabinet() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -107,7 +107,7 @@ export default function EducatorCabinet() {
         <TextWithButton
           title={"File Cabinet"}
           label={"+Add"}
-          onPress={() => navigation.navigate("EducatorAddFileCabinet")}
+          onPress={() => navigation.navigate("AdminAddFileCabinet")}
         />
         <View style={{ paddingHorizontal: 10 }}>
           {fileCabinetData === undefined ? (
@@ -122,7 +122,7 @@ export default function EducatorCabinet() {
                   access={list.access_level}
                   description={list.description}
                   onPressEdit={() =>
-                    navigation.navigate("EducatorEditFileCabinet", {
+                    navigation.navigate("AdminEditFileCabinet", {
                       docId: list.id,
                       title: list.name,
                       docAccess: list.access_level,
@@ -132,7 +132,7 @@ export default function EducatorCabinet() {
                   }
                   removePress={() => deleteEvent(list.id)}
                   onPress={() =>
-                    navigation.navigate("EducatorViewContent", {
+                    navigation.navigate("AdminViewContent", {
                       title: list.name,
                       access: list.access_level,
                       description: list.description,

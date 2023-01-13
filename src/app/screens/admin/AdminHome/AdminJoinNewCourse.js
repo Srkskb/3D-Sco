@@ -14,7 +14,7 @@ import CourseData from "../../../components/courselist/CourseData";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
 import AppButton from "../../../components/buttons/AppButton";
-export default function EducatorJoinNewCourse() {
+export default function AdminJoinNewCourse() {
   const navigation = useNavigation();
   const countryName = localStorage.getItem("countryName");
   const stateName = localStorage.getItem("stateName");
@@ -104,7 +104,7 @@ export default function EducatorJoinNewCourse() {
                     institute={data.university}
                     date={data.CreatedDate}
                     onPress={() =>
-                      navigation.navigate("EducatorInstituteInfo", {
+                      navigation.navigate("AdminInstituteInfo", {
                         toJoinCID: data.id,
                           adminID: data.user_id,
                       })

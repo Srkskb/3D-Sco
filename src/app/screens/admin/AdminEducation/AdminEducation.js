@@ -19,7 +19,7 @@ import {
   let library = require("../../../assets/images/education/library.png");
   let instructor = require("../../../assets/images/education/instructor.png");
   
-  export default function EducatorEducation() {
+  export default function AdminEducation() {
     const navigation = useNavigation();
     return (
       <SafeAreaView style={styles.container}>
@@ -28,7 +28,7 @@ import {
           <HeaderText title={'STUDENT RESOURCES'}/>
           <View style={styles.container_boxes}>
             <View style={styles.container_items}>
-              <TouchableOpacity onPress={() => navigation.navigate("EducatorLearnerList")}>
+              <TouchableOpacity onPress={() => navigation.navigate("AdminLearnerList")}>
                 <View style={styles.inside_items}>
                   <Image style={styles.img_res} source={learner} />
                   <Text style={styles.box_text}>Learner's List</Text>
@@ -46,7 +46,7 @@ import {
                 },
               ]}
             >
-              <TouchableOpacity onPress={() => navigation.navigate("EducatorInstructorList")}>
+              <TouchableOpacity onPress={() => navigation.navigate("AdminInstructorList")}>
                 <View style={styles.inside_items}>
                   <Image style={styles.img_res} source={instructor} />
                   <Text style={[styles.box_text, { color: color.white }]}>
@@ -63,7 +63,7 @@ import {
                 { borderTopWidth: 0, borderRightWidth: 0 },
               ]}
             >
-              <TouchableOpacity onPress={() => navigation.navigate("EducatorLibrary")}>
+              <TouchableOpacity onPress={() => navigation.navigate("AdminLibrary")}>
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={library} />
                 <Text style={styles.box_text}>Library</Text>
@@ -73,7 +73,7 @@ import {
   
   
             <View style={styles.container_items}>
-              <TouchableOpacity onPress={() => navigation.navigate("EducatorFinancialAssistance")}>
+              <TouchableOpacity onPress={() => navigation.navigate("AdminFinancialAssistance")}>
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={financial} />
                 <Text style={styles.box_text}>Financial Assistance</Text>

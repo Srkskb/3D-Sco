@@ -15,7 +15,7 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
-export default function EducatorBlogs() {
+export default function AdminBlogs() {
   const navigation = useNavigation();
   const [blogListData, setBlogListData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -109,7 +109,7 @@ export default function EducatorBlogs() {
         <TextWithButton
           title={"My Blog"}
           label={"+Add"}
-          onPress={() => navigation.navigate("EducatorAddBlogs")}
+          onPress={() => navigation.navigate("AdminAddBlogs")}
         />
         <View style={styles.main_box2}>
           <ScrollView
@@ -147,7 +147,7 @@ export default function EducatorBlogs() {
                         <View style={styles.button_container}>
                           <ViewButton
                             onPress={() =>
-                              navigation.navigate("EducatorViewBlogs", {
+                              navigation.navigate("AdminViewBlogs", {
                                 Titel: list.Titel,
                                 Date: moment(list && list?.Date).format("LL"),
                                 description: list.Description,
@@ -160,7 +160,7 @@ export default function EducatorBlogs() {
                             <>
                               <Edit
                                 onPress={() =>
-                                  navigation.navigate("EducatorEditBlogs", {
+                                  navigation.navigate("AdminEditBlogs", {
                                     blogID: list.id,
                                     title: list.Titel,
                                     date: moment(list && list?.Date).format(

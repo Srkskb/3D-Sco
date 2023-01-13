@@ -9,7 +9,7 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
-export default function EducatorMyJournal() {
+export default function AdminMyJournal() {
   const navigation = useNavigation();
    const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -118,7 +118,7 @@ export default function EducatorMyJournal() {
             <TextWithButton
               title="My Journal"
               label={"+Add"}
-              onPress={() => navigation.navigate("EducatorAddMyJournal")}
+              onPress={() => navigation.navigate("AdminAddMyJournal")}
             />
             <View style={{ flex: 1 }}>
               {myJournalData === undefined ? (
@@ -134,7 +134,7 @@ export default function EducatorMyJournal() {
                       access={list.access_level}
                       description={list.detail}
                       viewPress={() =>
-                        navigation.navigate("EducatorViewJournal", {
+                        navigation.navigate("AdminViewJournal", {
                           title: list.title,
                           Date: moment(list && list?.date).format("LL"),
                           description: list.detail,
@@ -143,7 +143,7 @@ export default function EducatorMyJournal() {
                         })
                       }
                       pressEdit={() =>
-                        navigation.navigate("EducatorEditMyJournal", {
+                        navigation.navigate("AdminEditMyJournal", {
                           jID: list.id,
                           title: list.title,
                           description: list.detail,

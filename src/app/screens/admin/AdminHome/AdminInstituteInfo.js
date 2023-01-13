@@ -7,7 +7,7 @@ import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
-export default function EducatorInstituteInfo({ route, navigation }) {
+export default function AdminInstituteInfo({ route, navigation }) {
   const { adminID, adminIDParam } = route.params;
   const { toJoinCID, toJoinCIDParam } = route.params;
   const loginUID = localStorage.getItem("loginUID");
@@ -85,7 +85,7 @@ export default function EducatorInstituteInfo({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.replace("EducatorHome");
+          navigation.replace("AdminHome");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);

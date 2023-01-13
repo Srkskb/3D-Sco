@@ -8,7 +8,7 @@ import Book_Card from "../../../components/card/Book_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 
-export default function EducatorLibrary() {
+export default function AdminLibrary() {
   const navigation = useNavigation();
   const [studentLibrary, setStudentLibrary] = useState([]);
     const [color, changeColor] = useState("red");

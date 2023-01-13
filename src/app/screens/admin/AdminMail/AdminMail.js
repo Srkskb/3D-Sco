@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-export default function EducatorMail() {
+export default function AdminMail() {
   const navigation = useNavigation();
   const [mailListData, setMailListData] = useState([]);
   const [color, changeColor] = useState("red");

@@ -7,7 +7,7 @@ import HeaderText from "../../../components/HeaderText";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
-export default function MyResources() {
+export default function AdminMyResources() {
   const navigation = useNavigation();
   const [myResourcesData, setMyResourcesData] = useState([]);
    const [color, changeColor] = useState("red");
@@ -46,7 +46,7 @@ export default function MyResources() {
       />
       <View style={styles.main_box}>
         <HeaderText title={"FREQUENTLY ASKED QUESTIONS ( FAQ )"} />
-        <TextWithButton title={"Manage My Resources"} label={"Manage"} onPress={()=>navigation.navigate("EducatorManageResources")}/>
+        <TextWithButton title={"Manage My Resources"} label={"Manage"} onPress={()=>navigation.navigate("AdminManageResources")}/>
         <ScrollView refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }  >

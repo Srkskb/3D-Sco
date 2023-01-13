@@ -22,7 +22,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-export default function EducatorAddBlog() {
+export default function AdminAddBlog() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -77,7 +77,7 @@ export default function EducatorAddBlog() {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("EducatorBlogs");
+          navigation.navigate("AdminBlogs");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -89,7 +89,7 @@ export default function EducatorAddBlog() {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Add Blog"}
-        onPress={() => navigation.navigate("EducatorBlogs")}
+        onPress={() => navigation.navigate("AdminBlogs")}
       />
       <Snackbar
         visible={snackVisibleTrue}

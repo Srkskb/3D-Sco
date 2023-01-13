@@ -8,7 +8,7 @@ import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-export default function EducatorManageResources({ navigation }) {
+export default function AdminManageResources({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [myResourcesData, setMyResourcesData] = useState([]);
    const [color, changeColor] = useState("red");
@@ -85,7 +85,7 @@ axios(config)
         <TextWithButton
           label={"Post"}
           title={"Post Your Question"}
-          onPress={() => navigation.navigate("EducatorAddResources")}
+          onPress={() => navigation.navigate("AdminAddResources")}
         />
         {myResourcesData === undefined ? (
               <>
@@ -99,7 +99,7 @@ axios(config)
           title={list.Question}
           description={list.Answer}
           // date={"24/05/2023"}
-          editPress={() => navigation.navigate("EducatorEditResources",{ list:list })}
+          editPress={() => navigation.navigate("AdminEditResources",{ list:list })}
           removePress={()=>deleteFaq(list.id)}
         />
         </>

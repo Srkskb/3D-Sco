@@ -7,7 +7,7 @@ import Student_Card from "../../../components/card/Student_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function EducatorStudent({navigation}) {
+export default function AdminStudent({navigation}) {
   const [studentList, setStudentList] = useState([]);
    const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);

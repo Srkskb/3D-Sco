@@ -8,7 +8,7 @@ import Event_Card from "../../../components/card/Event_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 
-export default function EducatorExportContent() {
+export default function AdminExportContent() {
   const navigation = useNavigation();
   const [exportContentData, setExportContentData] = useState([]);
   const allLearnerList = () => {

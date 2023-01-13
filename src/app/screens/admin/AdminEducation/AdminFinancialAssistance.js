@@ -6,7 +6,7 @@ import color from "../../../assets/themes/Color";
 import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
-export default function EducatorFinancialAssistance() {
+export default function AdminFinancialAssistance() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -101,7 +101,7 @@ export default function EducatorFinancialAssistance() {
         <TextWithButton
           title={"Financial Assistance"}
           label={"+Add"}
-          onPress={() => navigation.navigate("EducatorAddFinancial")}
+          onPress={() => navigation.navigate("AdminAddFinancial")}
         />
 
         <ScrollView>
@@ -128,7 +128,7 @@ export default function EducatorFinancialAssistance() {
                     <View style={{ width: 20 }}></View>
                     <Edit
                       onPress={() =>
-                        navigation.navigate("EducatorEditFinancial", {
+                        navigation.navigate("AdminEditFinancial", {
                           assisID: list.id,
                           assisTitle: list.Titel,
                           assisURL: list.url,

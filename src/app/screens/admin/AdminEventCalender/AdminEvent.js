@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-export default function EventCalender() {
+export default function AdminEventCalender() {
   const navigation = useNavigation();
   const [eventCalenderList, setEventCalenderList] = useState([]);
   const allLearnerList = () => {

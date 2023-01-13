@@ -24,6 +24,10 @@ import {
     AffiliateAddPhoto,
     AffiliateViewPhoto,
     AffiliateEditPhoto,
+    AffiliateAddMyJournal,
+    AffiliateEditMyJournal,
+    AffiliateMyJournal,
+    AffiliateViewJournal
   } from "./";
   const Stack = createStackNavigator();
 export default function FAccountStack() {
@@ -48,9 +52,13 @@ export default function FAccountStack() {
       <Stack.Screen name="AffiliateEditBlogs" component={AffiliateEditBlogs} />
       <Stack.Screen name="AffiliatePhotoAlbum" component={AffiliatePhotoAlbum} />
       <Stack.Screen name="AffiliateExportContent" component={AffiliateExportContent} />  
-      <Stack.Screen name="AffiliateAddPhoto" component={AffiliateAddPhoto} />
+      <Stack.Screen name="AffiliateAddMyJournal" component={AffiliateAddMyJournal} />
       <Stack.Screen name="AffiliateViewPhoto" component={AffiliateViewPhoto} />
+      <Stack.Screen name="AffiliateEditMyJournal" component={AffiliateEditMyJournal} />
+      <Stack.Screen name="AffiliateMyJournal" component={AffiliateMyJournal} />
+      <Stack.Screen name="AffiliateAddPhoto" component={AffiliateAddPhoto} />
       <Stack.Screen name="AffiliateEditPhoto" component={AffiliateEditPhoto} />
+      <Stack.Screen name="AffiliateViewJournal" component={AffiliateViewJournal} />
     </Stack.Navigator>
   );
 }

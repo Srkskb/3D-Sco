@@ -21,3 +21,7 @@ export {default as AffiliatePhotoAlbum} from '../../../screens/affiliate/Affilia
 export {default as AffiliateAddPhoto} from '../../../screens/affiliate/AffiliatePhotoAlbum/AffiliateAddPhoto'
 export {default as AffiliateViewPhoto} from '../../../screens/affiliate/AffiliatePhotoAlbum/AffiliateViewPhoto'
 export {default as AffiliateEditPhoto} from '../../../screens/affiliate/AffiliatePhotoAlbum/AffiliateEditPhoto'
+export {default as AffiliateAddMyJournal} from '../../../screens/affiliate/AffiliateMyJournal/AffiliateAddMyJournal'
+export {default as AffiliateEditMyJournal} from '../../../screens/affiliate/AffiliateMyJournal/AffiliateEditMyJournal'
+export {default as AffiliateMyJournal} from '../../../screens/affiliate/AffiliateMyJournal/AffiliateMyJournal'
+export {default as AffiliateViewJournal} from '../../../screens/affiliate/AffiliateMyJournal/AffiliateViewJournal'

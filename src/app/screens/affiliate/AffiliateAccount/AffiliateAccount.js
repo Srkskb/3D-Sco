@@ -56,7 +56,7 @@ export default function AffiliateAccount() {
           <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/journal.png")}
                 title={"My Journal"}
-                onPress={() => navigation.navigate("EducatorMyJournal")}
+                onPress={() => navigation.navigate("AffiliateMyJournal")}
               />
             </View>
             <View style={styles.vertical_list}>

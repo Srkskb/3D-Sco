@@ -7,7 +7,7 @@ import Input from "../../../components/inputs/Input";
 import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
-export default function EducatorEditFinancial({ route, navigation }) {
+export default function AdminEditFinancial({ route, navigation }) {
   const { assisID, idParam } = route.params;
   const { assisTitle, titleParam } = route.params;
   const { assisURL, urlParam } = route.params;
@@ -46,7 +46,7 @@ export default function EducatorEditFinancial({ route, navigation }) {
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("EducatorFinancialAssistance");
+          navigation.navigate("AdminFinancialAssistance");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -58,7 +58,7 @@ export default function EducatorEditFinancial({ route, navigation }) {
     <View style={styles.container}>
       <HeaderBack
         title={"Update Financial"}
-        onPress={() => navigation.navigate("EducatorFinancialAssistance")}
+        onPress={() => navigation.navigate("AdminFinancialAssistance")}
       />
       <Snackbar
         visible={snackVisibleTrue}
