@@ -28,7 +28,7 @@ export default function EducatorEditFinancial({ route, navigation }) {
     formdata.append("update_financial_assistance", "1");
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
-    formdata.append("type", "1");
+    formdata.append("type", "2");
     formdata.append("user_id", loginUID);
     formdata.append("id", assisID);
 
