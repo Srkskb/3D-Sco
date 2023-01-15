@@ -17,10 +17,14 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import { UploadDocument } from "../../../../components";
 import SmallButton from "../../../../components/buttons/SmallButton";
+import { myHeadersData } from "../../../../api/helper";
+import * as qs from "qs";
+import axios from "axios";
 
 const { width, height } = Dimensions.get("window");
 export default function CreateCourse({ navigation }) {
   const [checked, setChecked] = React.useState("first");
+  const loginUID = localStorage.getItem("loginUID");
   const [end, setEnd] = React.useState("first1");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
@@ -49,6 +53,53 @@ export default function CreateCourse({ navigation }) {
     console.log(date);
     hideDatePicker2();
   };
+  const create=()=>{
+  
+var data = qs.stringify({
+  'addcourses': '1',
+  'user_id': loginUID,
+  'course_name': 'BA.PASS',
+  'language': 'English',
+  'Description': 'This is first event creted by admin everyone need be attend the event so this is very important',
+  'Syndicate': '1',
+  'export_content': 'all',
+  'Access': 'Public',
+  'notify_enroll': '0',
+  'hide_course': '0',
+  'ReleaseDate': '2022-12-27',
+  'EndDate': '2023-12-27',
+  'Banner': 'Hi, This is engineering drawing',
+  'initial_content': '2',
+  'quota': 'Unlimited',
+  'quota_other': '',
+  'filesize': '1',
+  'filesize_other': '100',
+  'Copyright': 'no',
+  'subject': 'BA',
+  'num_week': '0',
+  'Syllabus': 'three year diploma courses',
+  'JobSheet': 'semester',
+  'catID': '2' 
+});
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  data : data
+};
+
+axios(config)
+.then((response)=> {
+  console.log(JSON.stringify(response.data));
+})
+.catch((error)=> {
+  console.log(error);
+});
+
+  }
   return (
     <View style={styles.container}>
       <HeaderBack title={"Create Course"} onPress={() => navigation.goBack()} />
