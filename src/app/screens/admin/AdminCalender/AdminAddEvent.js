@@ -52,7 +52,7 @@ export default function AdminAddEvent() {
     urlencoded.append("add_event", "1");
     urlencoded.append("event_titel", values.evenTitle);
     urlencoded.append("access_level", access);
-    urlencoded.append("event_date", "2023-01-14");
+    urlencoded.append("event_date", selectedDate.toLocaleDateString());
     urlencoded.append("decription", values.eventDecription);
     urlencoded.append("user_id", loginUID);
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {

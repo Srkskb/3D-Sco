@@ -55,7 +55,7 @@ export default function AdminEventCalender() {
             ) : (
               <>
                 {eventCalenderList.map((list, index) => (
-                  <Event_Card
+                  <Event_Card key={index}
                     title={`${list.event_title}`}
                     day={"Mon"}
                     date={"08/10/2022"}

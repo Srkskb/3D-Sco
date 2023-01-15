@@ -8,6 +8,8 @@ import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import Add_Button from "../../../../components/buttons/Add_Button";
 import AccessLevel from "../../../../components/dropdown/AccessLevel";
 import Course_Card from "../../../../components/admin_required/Cards/CourseCard";
+import { myHeadersData } from "../../../../api/helper";
+
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
   return (
