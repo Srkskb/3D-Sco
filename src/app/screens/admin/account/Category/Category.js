@@ -14,11 +14,12 @@ export default function Category({ navigation }) {
       <ScrollView style={styles.container}>
         <TextWithButton label={"+Add"} title={"Categories"} onPress={()=>navigation.navigate("AddCategory")}/>
         <SelectCourse
-          label={"Select Gender"}
+          label={"Select Course"}
           onSelect={(selectedItem, index) => {
             setSelectCourse(selectedItem);
           }}
         />
+        
         <Category_Card
           title={"Backup"}
           editPress={() => navigation.navigate("EditCategory")}
