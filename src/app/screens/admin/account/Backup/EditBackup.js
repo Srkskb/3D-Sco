@@ -7,6 +7,33 @@ import SmallButton from "../../../../components/buttons/SmallButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import { UploadDocument } from "../../../../components";
 export default function EditBackup({navigation}) {
+  const EditBackup=()=>{
+    var data = new FormData();
+data.append('Update_backup', '1');
+data.append('user_id', '17');
+data.append('course_id', '12');
+data.append('title', 'room ');
+data.append('detail', 'details ');
+data.append('image', fs.createReadStream('/C:/Users/krish/Downloads/error_log-20220913.gz'));
+data.append('id', '51');
+
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    ...data.getHeaders()
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+  }
   return (
     <View style={{backgroundColor:color.white,flex:1}}>
       <HeaderBack title={"Edit Backup"} onPress={()=>navigation.goBack()}/>
