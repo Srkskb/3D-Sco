@@ -8,6 +8,32 @@ import Category_Card from "../../../../components/admin_required/Cards/Category_
 import Forum_Card from "../../../../components/admin_required/Cards/Forum_Card";
 export default function Forum({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
+
+  const DeleteForum=()=>{
+    var data = new FormData();
+data.append('delete_courses_form', '1');
+data.append('id', '36');
+data.append('user_id', '52');
+
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7', 
+    ...data.getHeaders()
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+  }
   return (
     <View style={{backgroundColor:color.white,flex:1}}>
       <HeaderBack title={"Forums"} onPress={()=>navigation.goBack()}/>

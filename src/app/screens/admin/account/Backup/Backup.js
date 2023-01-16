@@ -9,6 +9,30 @@ import Backup_Card from "../../../../components/admin_required/Cards/Backup_Card
 
 export default function Backup({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
+  const DeleteBackup=()=>{
+    var data = new FormData();
+data.append('delete_backup', '1');
+data.append('id', '52');
+
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7', 
+    ...data.getHeaders()
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+  }
   return (
     <View style={{backgroundColor:color.white,flex:1}}>
       <HeaderBack title={"Backup"} onPress={()=>navigation.goBack()} />

@@ -7,6 +7,34 @@ import SmallButton from "../../../../components/buttons/SmallButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import { UploadDocument } from "../../../../components";
 export default function AddPresentation({navigation}) {
+  const AddPresentation=()=>{
+    var data = new FormData();
+data.append('add_courses_presentation', '1');
+data.append('user_id', '176');
+data.append('presentation_title', 'kujnfhd');
+data.append('Description', 'gdfs');
+data.append('course_id', '17');
+data.append('image', fs.createReadStream('/C:/Users/admin/Downloads/262508.jpg'));
+
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7', 
+    ...data.getHeaders()
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+  }
   return (
     <View style={{backgroundColor:color.white,flex:1}}>
       <HeaderBack title={"Add Presentation"} onPress={()=>navigation.goBack()} />

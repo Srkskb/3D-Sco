@@ -8,6 +8,34 @@ import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import { UploadDocument } from "../../../../components";
 import ActiveStatus from "../../../../components/dropdown/ActiveStatus";
 export default function AddForum({navigation}) {
+  const AddForum=()=>{
+    var data = qs.stringify({
+      'add_courses_forum': '1',
+      'user_id': '176',
+      'admin_id': '176',
+      'forum_title': 'Reply',
+      'Description': 'Distance education and virtual connection in cyber...',
+      'course_id': '5',
+      'topic_id': '3' 
+    });
+    var config = {
+      method: 'post',
+      url: 'https://3dsco.com/3discoapi/studentregistration.php',
+      headers: { 
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data : data
+    };
+    
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+  }
   return (
     <View style={{backgroundColor:color.white,flex:1}}>
       <HeaderBack title={"Add Forum"} onPress={()=>navigation.goBack()} />
