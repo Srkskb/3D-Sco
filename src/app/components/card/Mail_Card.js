@@ -10,6 +10,13 @@ export default function Mail_Card({
   archive,
   sent,
   sender,
+  replyPress,
+  archivePress,
+  deletePress,
+  spamPress,
+  resendPress,
+  notSpamPress,
+  unArchivePress,
 }) {
   return (
     <View style={styles.container}>
@@ -24,28 +31,42 @@ export default function Mail_Card({
       </Text>
       {inbox && (
         <View style={{ flexDirection: "row", marginVertical: 10 }}>
-          <CardButton label={"Reply"} textColor={"green"}/>
-          <CardButton label={"Archive"} textColor={"green"}/>
+          <CardButton
+            label={"Reply"}
+            textColor={"green"}
+            onPress={replyPress}
+          />
+          <CardButton
+            label={"Archive"}
+            textColor={"green"}
+            onPress={archivePress}
+          />
           <CardButton
             label={"Delete"}
             borderColor={color.red}
             textColor={color.red}
+            onPress={deletePress}
           />
           <CardButton
             label={"Spam"}
             borderColor={color.red}
             textColor={color.red}
+            onPress={spamPress}
           />
         </View>
       )}
       {sent && (
         <View style={{ flexDirection: "row", marginVertical: 10 }}>
-          <CardButton label={"Resend"} textColor={"green"}/>
-          <CardButton label={"Edit"} textColor={"green"}/>
+          <CardButton
+            label={"Resend"}
+            textColor={"green"}
+            onPress={resendPress}
+          />
           <CardButton
             label={"Delete"}
             borderColor={color.red}
             textColor={color.red}
+            onPress={deletePress}
           />
         </View>
       )}
@@ -55,22 +76,29 @@ export default function Mail_Card({
             label={"Delete"}
             borderColor={color.red}
             textColor={color.red}
+            onPress={deletePress}
           />
           <CardButton
             label={"Not Spam"}
             borderColor={color.red}
             textColor={color.red}
+            onPress={notSpamPress}
           />
         </View>
       )}
       {archive && (
         <View style={{ flexDirection: "row", marginVertical: 10 }}>
-          <CardButton label={"Unarchive"} textColor={"green"}/>
-         
+          <CardButton
+            label={"Unarchive"}
+            textColor={"green"}
+            onPress={unArchivePress}
+          />
+
           <CardButton
             label={"Delete"}
             borderColor={color.red}
             textColor={color.red}
+            onPress={deletePress}
           />
         </View>
       )}
