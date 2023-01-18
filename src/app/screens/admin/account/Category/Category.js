@@ -23,16 +23,19 @@ export default function Category() {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
-      method: "POST",
+      method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?course_categories_list=1&catID=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1`,
       requestOptions
     )
       .then((res) => res.json())
-      .then((result) => setFileCabinetData(result.data))
+      .then((result) => {
+        console.log(result)
+        setFileCabinetData(result.data)
+      })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
@@ -114,6 +117,7 @@ export default function Category() {
           <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
+            console.log(selectedItem)
             setSelectCourse(selectedItem);
           }}
         />
@@ -126,7 +130,7 @@ export default function Category() {
             <>
               {fileCabinetData.map((list, index) => (
                 <FileCabinetCard
-                  title={list.name}
+                  title={list.Name}
                   onPressEdit={() =>
                     navigation.navigate("EditCategory", {
                       title: list.name,
