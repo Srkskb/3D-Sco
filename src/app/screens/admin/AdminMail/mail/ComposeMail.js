@@ -108,6 +108,10 @@ export default function ComposeMail({ navigation }) {
             multiline={true}
             textAlignVertical={"top"}
           />
+          <View style={{flexDirection:'row',paddingVertical:10}}>
+          <NewCheckbox/>
+          <Text style={{fontFamily:'Montserrat-Regular',marginLeft:10}}>Save in sent items</Text>
+          </View>
           <AppButton title={"Send"} btnColor={color.purple} />
         </View>
       </ScrollView>
