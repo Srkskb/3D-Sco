@@ -22,7 +22,7 @@ export default function AdminAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
-                onPress={() => navigation.navigate("AdminMail")}
+                onPress={() => navigation.navigate("AdminMailPage")}
               />
 
               <Account_Tabs
@@ -62,6 +62,11 @@ export default function AdminAccount() {
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Enrollment"}
                 onPress={() => navigation.navigate("Enrollment")}
+              />
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Instructor Request"}
+                onPress={() => navigation.navigate("InstructorRequest")}
               />
             
             </View>

@@ -20,7 +20,8 @@ import CategoryDropdown from "../../../../components/dropdown/CategoryDropdown";
 import Input2 from "../../../../components/inputs/Input2";
 import { AppButton } from "../../../../components/buttons";
 import ActiveStatus from "../../../../components/dropdown/ActiveStatus";
-export default function InstructorRequest() {
+import AccountType from "../../../../components/dropdown/AccountType";
+export default function CreateUser() {
   const [isVisibleEntry, setIsVisibleEntry] = useState(true);
   const [isVisibleEntry2, setIsVisibleEntry2] = useState(true);
   
@@ -71,7 +72,8 @@ export default function InstructorRequest() {
         </View>
         <Input label={"Email"} placeholder={"Enter Email Address"} />
         <Input label={"Name"} placeholder={"Name"} />
-        <User onSelect={(item, index) => console.log(item)} label={"Account Type"} />
+        {/* <User onSelect={(item, index) => console.log(item)} label={"Account Type"} /> */}
+        <AccountType onSelect={(item, index) => console.log(item)} label={"Account Type"} />
         <ActiveStatus  onSelect={(selectedItem, index) => {}}/>
         <Headline title={"Personal information (Optional)"} />
         <Input2 label={"Date of Birth"} placeholder={"DD-MMM-YYYY"} />

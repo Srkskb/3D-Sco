@@ -54,8 +54,11 @@ import {
   Category,
   EditCategory,
   AddCategory,
-  EnrollStudent
+  EnrollStudent,
+  InstructorRequest,
 } from "./";
+import AdminMailPage from "../../../screens/admin/AdminMail/mail/AdminMailPage";
+import ComposeMail from "../../../screens/admin/AdminMail/mail/ComposeMail";
 const Stack = createStackNavigator();
 export default function AAccountStack() {
   return (
@@ -109,6 +112,7 @@ export default function AAccountStack() {
       <Stack.Screen name="Enrollment" component={Enrollment} />
       <Stack.Screen name="EnrollStudent" component={EnrollStudent} />
       <Stack.Screen name="CourseTab" component={CourseTab} />
+      <Stack.Screen name="InstructorRequest" component={InstructorRequest} />
       {/* Courses Tab Screens */}
       <Stack.Screen name="Course" component={Course} />
       <Stack.Screen name="CreateCourse" component={CreateCourse} />
@@ -132,6 +136,10 @@ export default function AAccountStack() {
       <Stack.Screen name="Category" component={Category} />
       <Stack.Screen name="AddCategory" component={AddCategory} />
       <Stack.Screen name="EditCategory" component={EditCategory} />
+      {/* New Mail Page */}
+      <Stack.Screen name="AdminMailPage" component={AdminMailPage} />
+      <Stack.Screen name="ComposeMail" component={ComposeMail} />
+
     </Stack.Navigator>
   );
 }

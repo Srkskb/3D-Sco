@@ -30,6 +30,7 @@ export { default as TopBarNavigation } from "../../../screens/admin/account/User
 export { default as Enrollment } from "../../../screens/admin/account/Enrollment";
 export { default as EnrollStudent } from "../../../screens/admin/account/EnrollStudent";
 export { default as CourseTab } from "../../../screens/admin/account/CourseTab";
+export {default as InstructorRequest} from "../../../screens/admin/account/InstructorRequest"
 
 //------ Course -------
 export { default as Course } from "../../../screens/admin/account/Courses/Course";
@@ -66,3 +67,5 @@ export { default as EditBackup } from "../../../screens/admin/account/Backup/Edi
 export { default as Category } from "../../../screens/admin/account/Category/Category";
 export { default as AddCategory } from "../../../screens/admin/account/Category/AddCategory";
 export { default as EditCategory } from "../../../screens/admin/account/Category/EditCategory";
+
+

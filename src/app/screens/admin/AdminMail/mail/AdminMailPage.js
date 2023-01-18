@@ -9,24 +9,26 @@ import {
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
 import HeaderText from "../../../../components/HeaderText";
+import TextWithButton from "../../../../components/TextWithButton";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Users,CreateUser,MasterStudentList,EmailUser} from "./";
+import { Inbox, Spam, Archive, Sent } from "./";
 const Tab = createMaterialTopTabNavigator();
-export default function TopBarNavigation({navigation}) {
+export default function AdminMailPage({ navigation }) {
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"User"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Mail"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
-        <View style={{paddingHorizontal:10}}>
-        <HeaderText title={"User"} />
+        <View style={{ padding: 15 }}>
+          <TextWithButton
+            title={"Mails"}
+            label={"Compose Mail"}
+            onPress={() => navigation.navigate("ComposeMail")}
+          />
         </View>
 
-        <TopBar/>
+        <TopBar />
       </View>
     </View>
   );
@@ -35,46 +37,46 @@ export default function TopBarNavigation({navigation}) {
 function TopBar() {
   return (
     <Tab.Navigator
-      initialRouteName="Users"
+      initialRouteName="Inbox"
       screenOptions={{
-        tabBarIndicatorStyle: { backgroundColor: color.purple, height: 2},
+        tabBarIndicatorStyle: { backgroundColor: color.purple, height: 2 },
         // tabBarActiveTintColor: color.white,
         tabBarInactiveTintColor: color.purple,
         tabBarPressColor: "transparent",
         tabBarStyle: {
           elevation: 2,
-          backgroundColor:color.white,
+          backgroundColor: color.white,
         },
 
         tabBarLabelStyle: {
-          fontSize: 10,
+          fontSize: 14,
           textTransform: "capitalize",
           fontFamily: "Montserrat-SemiBold",
         },
       }}
     >
       <Tab.Screen
-        name="Users"
-        component={Users}
+        name="Inbox"
+        component={Inbox}
         options={{
-          tabBarLabel: "Users",
+          tabBarLabel: "Inbox",
           paddingHorizontal: 10,
         }}
       />
       <Tab.Screen
-        name="CreateUser"
-        component={CreateUser}
-        options={{ tabBarLabel: "Create New User" }}
+        name="Sent"
+        component={Sent}
+        options={{ tabBarLabel: "Sent" }}
       />
       <Tab.Screen
-        name="MasterStudentList"
-        component={MasterStudentList}
-        options={{ tabBarLabel: "Master Student List" }}
+        name="Spam"
+        component={Spam}
+        options={{ tabBarLabel: "Spam" }}
       />
       <Tab.Screen
-        name="EmailUser"
-        component={EmailUser}
-        options={{ tabBarLabel: "Email User" }}
+        name="Archive"
+        component={Archive}
+        options={{ tabBarLabel: "Archive" }}
       />
     </Tab.Navigator>
   );
@@ -86,7 +88,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
   },
   main_box: {
-
     flex: 1,
   },
   subhead_text: {
