@@ -7,7 +7,7 @@ import SmallButton from "../../../../components/buttons/SmallButton";
 import axios from "axios";
 import * as qs from "qs";
 
-export default function AddCategory({navigation}) {
+export default function AddCategory({navigation,route}) {
   const [title, setTitle]=useState("")
 
   const AddCategory =()=>{
@@ -47,6 +47,7 @@ axios(config)
             title={"Cancel"}
             color={color.purple}
             fontFamily={"Montserrat-Medium"}
+            // onPress={()=>console.log(route.name)}
           />
           <SmallButton
             title="Save"
