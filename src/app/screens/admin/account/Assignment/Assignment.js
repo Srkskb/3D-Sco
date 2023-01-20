@@ -1,65 +1,174 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import color from "../../../../assets/themes/Color";
+import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
+import { myHeadersData } from "../../../../api/helper";
+import { NoDataFound } from "../../../../components";
 import TextWithButton from "../../../../components/TextWithButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
-import Category_Card from "../../../../components/admin_required/Cards/Category_Card";
-import Forum_Card from "../../../../components/admin_required/Cards/Forum_Card";
-import Assignment_Card from "../../../../components/admin_required/Cards/AssignmentCard";
-export default function Assignment({ navigation }) {
+import FileCabinet2 from "../../../../components/card/FileCabinet2";
+import * as qs from "qs";
+import axios from "axios";
+import { Snackbar } from "react-native-paper";
+export default function Assignment() {
+  const navigation = useNavigation();
+  const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
+  const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
+  const [getMessageTrue, setMessageTrue] = useState();
+  const [getMessageFalse, setMessageFalse] = useState();
   const [selectCourse, setSelectCourse] = useState("");
-  const DeleteAssignment=()=>{
-    var data = new FormData();
-data.append('Delete_courses_assignment', '1');
-data.append('id', '13');
-
+  const [fileCabinetData, setFileCabinetData] = useState([]);
+  const [color, changeColor] = useState("red");
+  const [refreshing, setRefreshing] = useState(false);
+  const allLearnerList = () => {
+    const loginUID = localStorage.getItem("loginUID");
+    const myHeaders = myHeadersData();
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    fetch(
+      `https://3dsco.com/3discoapi/studentregistration.php?courses_assignments_list=1`,
+      requestOptions
+    )
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result)
+        setFileCabinetData(result.data)
+      })
+      .catch((error) => console.log("error", error));
+  };
+  const deleteEvent = (id) => {
+    var data = qs.stringify({
+  'Delete_courses_assignment': '1',
+  'id': id 
+});
 var config = {
   method: 'post',
   url: 'https://3dsco.com/3discoapi/studentregistration.php',
   headers: { 
-    'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7', 
-    ...data.getHeaders()
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7'
   },
   data : data
 };
 
 axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data));
+.then((response)=>{
+  if(response.data.success==1){
+    allLearnerList()
+  }
 })
-.catch(function (error) {
+.catch((error)=>{
   console.log(error);
 });
 
-  }
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+    allLearnerList();
+    setTimeout(() => {
+      changeColor("green");
+      setRefreshing(false);
+    }, 2000);
+  };
+  useEffect(() => {
+    allLearnerList();
+    navigation.addListener("focus", () => allLearnerList());
+  }, []);
+
   return (
-    <View style={{ backgroundColor: color.white, flex: 1 }}>
-      <HeaderBack title={"Assignments"} onPress={() => navigation.goBack()} />
-      <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <HeaderBack
+        title={"Assignment"}
+        onPress={() => navigation.goBack()}
+      />
+      <Snackbar
+        visible={snackVisibleTrue}
+        onDismiss={() => setSnackVisibleTrue(false)}
+        action={{ label: "Close" }}
+        theme={{ colors: { accent: "#82027D" } }}
+      >
+        {getMessageTrue}
+      </Snackbar>
+      <Snackbar
+        visible={snackVisibleFalse}
+        onDismiss={() => setSnackVisibleFalse(false)}
+        action={{ label: "Close" }}
+        theme={{ colors: { accent: "red" } }}
+      >
+        {getMessageFalse}
+      </Snackbar>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={{ paddingHorizontal: 10 }}
+      >
         <TextWithButton
+          title={"Course Category"}
           label={"+Add"}
-          title={"Assignments"}
           onPress={() => navigation.navigate("AddAssignment")}
         />
-        <SelectCourse
+          <SelectCourse
+          label={"Select Course"}
           onSelect={(selectedItem, index) => {
+            console.log(selectedItem)
             setSelectCourse(selectedItem);
           }}
         />
-        <Assignment_Card
-          title={"Assignments"}
-          description={
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-          }
-          editPress={()=>navigation.navigate("EditAssignment")}
-        />
+        <View style={{ paddingHorizontal: 10 }}>
+          {fileCabinetData === undefined ? (
+            <>
+              <NoDataFound />
+            </>
+          ) : (
+            <>
+              {fileCabinetData.map((list, index) => (
+                <FileCabinet2 key={index}
+                  title={list.assignment_title}
+                  description={list.Description}
+                  date={list.Date}
+                  onPressEdit={() =>
+                    navigation.navigate("EditAssignment", {
+                      title: list,
+                    })
+                  }
+                  removePress={() =>deleteEvent(list.id)}
+                />
+              ))}
+            </>
+          )}
+        </View>
       </ScrollView>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 15,
+    backgroundColor: color.white,
+    flex: 1,
+    textAlign: "left",
+  },
+  head: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 5,
+    alignItems: "center",
+    height: 40,
+    paddingHorizontal: 10,
+  },
+  manage: {
+    fontFamily: "Montserrat-Medium",
+    fontSize: 14,
+    color: color.dark_gray,
+  },
+  title: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 14,
+    color: color.black,
+    textTransform: "uppercase",
   },
 });

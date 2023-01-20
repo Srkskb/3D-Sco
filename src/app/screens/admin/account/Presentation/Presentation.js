@@ -84,7 +84,7 @@ axios(config)
   return (
     <View style={styles.container}>
       <HeaderBack
-        title={"Backup"}
+        title={"Presentaion"}
         onPress={() => navigation.goBack()}
       />
       <Snackbar
@@ -112,7 +112,7 @@ axios(config)
         <TextWithButton
           title={"Course Category"}
           label={"+Add"}
-          onPress={() => navigation.navigate("AddBackup")}
+          onPress={() => navigation.navigate("AddPresentation")}
         />
           <SelectCourse
           label={"Select Course"}
@@ -134,7 +134,7 @@ axios(config)
                   description={list.Description}
                   date={list.Date}
                   onPressEdit={() =>
-                    navigation.navigate("EditBackup", {
+                    navigation.navigate("EditPresentation", {
                       title: list,
                     })
                   }
