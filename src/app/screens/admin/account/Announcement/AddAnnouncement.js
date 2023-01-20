@@ -6,6 +6,7 @@ import InputField from "../../../../components/inputs/Input";
 import SmallButton from "../../../../components/buttons/SmallButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import { UploadDocument } from "../../../../components";
+import { myHeadersData } from "../../../../api/helper";
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -16,32 +17,31 @@ export default function AddAnnouncement({navigation}) {
   const loginUID = localStorage.getItem("loginUID");
   const AddAnnouncement=(values)=>{
     console.log(values.docTitle,course,loginUID,values.description,);
+    const myHeaders = myHeadersData();
     var data = new FormData();
 data.append('add_courses_announcement', '1');
 data.append('user_id', loginUID);
 data.append('announcement_title', values.title);
 data.append('Description', values.description);
-data.append('course_id', course);
-data.append('image', );
+data.append('course_id', "17");
+// data.append('image','' );
 
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7', 
-    data
-  },
-  data : data
-};
-
-axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data));
-  navigation.navigate("Announcement")
-})
-.catch(function (error) {
-  console.log(error);
-});
+fetch("https://3dsco.com/3discoapi/studentregistration.php", {
+      method: "POST",
+      body: data,
+      headers: {
+        myHeaders,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        if (res.success == 1) {
+          
+          navigation.navigate("Announcement");
+        }
+      })
   }
   return (
     <View style={{backgroundColor:color.white,flex:1}}>
@@ -149,7 +149,7 @@ axios(config)
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={()=>navigation.navigate("Announcement")}
+                      onPress={()=>console.log(loginUID)}
                     />
                     <SmallButton
                       onPress={handleSubmit}

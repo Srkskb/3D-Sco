@@ -8,6 +8,8 @@ import { NoDataFound } from "../../../../components";
 import TextWithButton from "../../../../components/TextWithButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import FileCabinetCard from "../../../../components/card/FileCabinetCard";
+import * as qs from "qs";
+import axios from "axios";
 import { Snackbar } from "react-native-paper";
 export default function Category() {
   const navigation = useNavigation();
@@ -39,34 +41,30 @@ export default function Category() {
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
-    const myHeaders = myHeadersData();
-    var requestOptions = {
-      method: "DELETE",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?delete_category=1&id=${id}&catID=${loginUID}`,
-      requestOptions
-    )
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result);
-        if (result.success === 1) {
-          setSnackVisibleTrue(true);
-          setMessageTrue(result.message);
-          let temp = [];
-          fileCabinetData.forEach((item) => {
-            if (item.id !== id) temp.push(item);
-          });
-          setFileCabinetData(temp);
-        } else {
-          setSnackVisibleFalse(true);
-          setMessageFalse(result.message);
-        }
-      })
-      .catch((error) => console.log("error", error));
+    var data = qs.stringify({
+  'delete_category': '1',
+  'id': id 
+});
+var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7'
+  },
+  data : data
+};
+
+axios(config)
+.then((response)=>{
+  if(response.data.success==1){
+    allLearnerList()
+  }
+})
+.catch((error)=>{
+  console.log(error);
+});
+
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -136,7 +134,7 @@ export default function Category() {
                       title: list,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() =>deleteEvent(list.id)}
                 />
               ))}
             </>
