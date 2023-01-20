@@ -47,7 +47,7 @@ export default function Category() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_documents=1&id=${id}&catID=${loginUID}`,
+      `https://3dsco.com/3discoapi/studentregistration.php?delete_category=1&id=${id}&catID=${loginUID}`,
       requestOptions
     )
       .then((res) => res.json())
