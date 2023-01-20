@@ -13,7 +13,7 @@ export default function EditCategory({navigation,route}) {
     var data = qs.stringify({
       'update_category': '1',
       'name': title,
-      'id': route.params.title
+      'id': route.params.title.id
     });
     var config = {
       method: 'post',
@@ -41,14 +41,14 @@ axios(config)
       <ScrollView style={styles.container}>
         <Input label={"Title"} placeholder={"Title"}
          onChangeText={(Text)=>{setTitle(Text)}}
-         value={title? title:route.params.title}
+         value={title? title:route.params.title.Name}
         />
         <View style={styles.button}>
           <SmallButton
             title={"Cancel"}
             color={color.purple}
             fontFamily={"Montserrat-Medium"}
-             onPress={()=>console.log(route.params.Name)}
+             onPress={()=>console.log(route.params.title)}
           />
           <SmallButton
             title="Update"

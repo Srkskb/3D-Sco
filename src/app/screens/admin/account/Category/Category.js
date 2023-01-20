@@ -133,7 +133,7 @@ export default function Category() {
                   title={list.Name}
                   onPressEdit={() =>
                     navigation.navigate("EditCategory", {
-                      title: list.Name,
+                      title: list,
                     })
                   }
                   removePress={() => deleteEvent(list.id)}
