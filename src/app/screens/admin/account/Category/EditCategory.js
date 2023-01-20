@@ -7,7 +7,7 @@ import SmallButton from "../../../../components/buttons/SmallButton";
 import axios from "axios";
 import * as qs from "qs";
 export default function EditCategory({navigation,route}) {
-  const [title, setTitle]=useState("")
+  const [title, setTitle]=useState(route.params.title.Name)
 
   const EditCategory =()=>{
     var data = qs.stringify({
@@ -41,14 +41,14 @@ axios(config)
       <ScrollView style={styles.container}>
         <Input label={"Title"} placeholder={"Title"}
          onChangeText={(Text)=>{setTitle(Text)}}
-         value={title? title:route.params.title.Name}
+         value={title}
         />
         <View style={styles.button}>
           <SmallButton
             title={"Cancel"}
             color={color.purple}
             fontFamily={"Montserrat-Medium"}
-             onPress={()=>console.log(route.params.title)}
+             onPress={()=>console.log(route.params.title.Name)}
           />
           <SmallButton
             title="Update"
