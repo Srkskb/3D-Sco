@@ -5,13 +5,20 @@ import { FontAwesome } from "@expo/vector-icons";
 import CardButton from "../buttons/CardButton";
 import { Edit } from "../buttons";
 
-export default function Student_Card({ name, editable }) {
+export default function Student_Card({ name, editable,email }) {
   return (
     <View style={styles.container}>
       <View style={styles.main_box}>
         <FontAwesome name="user" size={20} color="#82027D" />
         <View style={{ marginLeft: 15 }}>
           <Text style={styles.names}>{name}</Text>
+        </View>
+       
+      </View>
+      <View style={styles.main_box}>
+        <FontAwesome name="envelope-o" size={20} color="#82027D" />
+        <View style={{ marginLeft: 15 }}>
+          <Text style={styles.names}>{email}</Text>
         </View>
        
       </View>
@@ -32,6 +39,7 @@ const styles = StyleSheet.create({
   },
   main_box: {
     flexDirection: "row",
+    padding:10
 
     
   },

@@ -13,6 +13,9 @@ export default function InstructorRequestCard({
   notes,
   name,
   email,
+  contact,
+  university,
+  date,
 }) {
   return (
     <View style={styles.container}>
@@ -56,6 +59,24 @@ export default function InstructorRequestCard({
           Notes:{" "}
         </Text>
         <Text style={{ fontFamily: "Montserrat-Regular" }}>{notes}</Text>
+      </Text>
+      <Text style={{ marginVertical: 3 }}>
+        <Text style={{ fontFamily: "Montserrat-SemiBold", color: color.black }}>
+          Date:{" "}
+        </Text>
+        <Text style={{ fontFamily: "Montserrat-Regular" }}>{date}</Text>
+      </Text>
+      <Text style={{ marginVertical: 3 }}>
+        <Text style={{ fontFamily: "Montserrat-SemiBold", color: color.black }}>
+          University:{" "}
+        </Text>
+        <Text style={{ fontFamily: "Montserrat-Regular" }}>{university}</Text>
+      </Text>
+      <Text style={{ marginVertical: 3 }}>
+        <Text style={{ fontFamily: "Montserrat-SemiBold", color: color.black }}>
+          Contact:{" "}
+        </Text>
+        <Text style={{ fontFamily: "Montserrat-Regular" }}>{contact}</Text>
       </Text>
 
       <View style={styles.btn_container}>
