@@ -149,6 +149,7 @@ axios(config)
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={()=>navigation.navigate("Announcement")}
                     />
                     <SmallButton
                       onPress={handleSubmit}
