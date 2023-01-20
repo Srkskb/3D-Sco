@@ -6,6 +6,7 @@ import InputField from "../../../../components/inputs/Input";
 import SmallButton from "../../../../components/buttons/SmallButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import { UploadDocument } from "../../../../components";
+import { myHeadersData } from "../../../../api/helper";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
@@ -32,6 +33,7 @@ export default function AddBackup({navigation}) {
   };
   const AddBackup=(values)=>{
     console.log(values.docTitle,course,loginUID,values.description,image,mime.getType(image));
+    const myHeaders = myHeadersData();
     var data = new FormData();
 data.append('add_backup', '1');
 data.append('user_id', loginUID);
@@ -44,19 +46,21 @@ data.append('image', {
   name: `abc.jpg`
 }); 
 
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    data
-  },
-  data : data
-};
-
-axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data));
-    navigation.navigate("Backup");
+fetch("https://3dsco.com/3discoapi/studentregistration.php", {
+      method: "POST",
+      body: data,
+      headers: {
+        myHeaders,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        if (res.success == 1) {
+          
+          navigation.navigate("Backup");
+        }
 })
 .catch(function (error) {
   console.log(error);

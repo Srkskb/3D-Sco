@@ -11,6 +11,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import qs from 'qs';
+import { myHeadersData } from "../../../../api/helper";
 export default function AddForum({navigation}) {
   const [title, setTitle]=useState("")
   const[description,setDescription]=useState("")
@@ -19,6 +20,7 @@ export default function AddForum({navigation}) {
   const loginUID = localStorage.getItem("loginUID");
   const AddForum=(values)=>{
     console.log(values.docTitle,course,loginUID,values.description,);
+    const myHeaders = myHeadersData();
     var data = qs.stringify({
       'add_courses_forum': '1',
       'user_id': loginUID,
@@ -28,20 +30,21 @@ export default function AddForum({navigation}) {
       'course_id': course,
       'topic_id': status
     });
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7', 
-    data
-  },
-  data : data
-};
-
-axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data));
-  navigation.navigate("Forum")
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", {
+      method: "POST",
+      body: data,
+      headers: {
+        myHeaders,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        if (res.success == 1) {
+          
+          navigation.navigate("Forum");
+        }
 })
 .catch(function (error) {
   console.log(error);
