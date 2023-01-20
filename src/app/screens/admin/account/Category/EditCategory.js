@@ -13,7 +13,7 @@ export default function EditCategory({navigation,route}) {
     var data = qs.stringify({
       'update_category': '1',
       'name': title,
-      'id': route.params.list.id 
+      'id': route.params.title
     });
     var config = {
       method: 'post',
@@ -41,7 +41,7 @@ axios(config)
       <ScrollView style={styles.container}>
         <Input label={"Title"} placeholder={"Title"}
          onChangeText={(Text)=>{setTitle(Text)}}
-         value={title}
+         value={title? title:route.params.title}
         />
         <View style={styles.button}>
           <SmallButton

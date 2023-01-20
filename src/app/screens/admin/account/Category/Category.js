@@ -129,11 +129,11 @@ export default function Category() {
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinetCard
+                <FileCabinetCard key={index}
                   title={list.Name}
                   onPressEdit={() =>
                     navigation.navigate("EditCategory", {
-                      title: list.name,
+                      title: list.Name,
                     })
                   }
                   removePress={() => deleteEvent(list.id)}
