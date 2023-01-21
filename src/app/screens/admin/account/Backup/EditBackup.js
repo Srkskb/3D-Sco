@@ -13,7 +13,7 @@ import axios from "axios";
 import mime from 'mime'
 import * as ImagePicker from "expo-image-picker";
 export default function EditBackup({navigation,route}) {
-  const { title, titleParam } = route.params;
+  const { title, titleParam,id } = route.params;
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
@@ -36,40 +36,19 @@ export default function EditBackup({navigation,route}) {
       setImage(result.uri);
     }
   };
-  const EditBackup=(values)=>{
+  const EditBackupFun=(values)=>{
     console.log(values.docTitle,course,loginUID,values.description,image,mime.getType(image));
 
     const myHeaders = myHeadersData();
     var formdata = new FormData();
-    formdata.append('Update_backup', '1');
-    formdata.append('user_id', loginUID);
-    formdata.append('course_id', course);
-    formdata.append('title',values.docTitle );
-    formdata.append('detail', values.description);
-    formdata.append('image', {
-  uri: image,//"file:///" + image.split("file:/").join(""),
-  type: mime.getType(image),
-  name: `abc.jpg`
-}); 
+formdata.append("Update_backup", "1");
+formdata.append("user_id", loginUID);
+formdata.append("course_id", "12");
+formdata.append("title", values.docTitle);
+formdata.append("detail", values.description);
+formdata.append("image", );
+formdata.append("id", id);
 
-// fetch("https://3dsco.com/3discoapi/studentregistration.php", {
-//       method: "POST",
-//       body: data,
-//       headers: {
-//         myHeaders,
-//         "Content-Type": "multipart/form-data",
-//       },
-//     })
-//       .then((res) => res.json())
-//       .then((res) => {
-//         console.log(res);
-//         if (res.success == 1) {
-//           navigation.navigate("Backup");
-//         }
-// })
-// .catch(function (error) {
-//   console.log(error);
-// });
 var requestOptions = {
   method: 'POST',
   headers: myHeaders,
@@ -79,11 +58,12 @@ var requestOptions = {
 
 fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
   .then(response => response.text())
-  .then(result => console.log(result))
-  navigation.navigate("Backup")
+  .then(result => {
+    console.log(result)
+    //Add navigation here
+  })
   .catch(error => console.log('error', error));
-
-  }
+}
 
   // const onClickDoc = () => {
   //   setShowDocResults(true);
@@ -109,7 +89,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
                   .min(20, "Description must be at least 20 characters")
                   .max(250, "Description cannot be more than 50 characters"),
               })}
-              onSubmit={(values) => EditBackup(values)}
+              onSubmit={(values) => EditBackupFun(values)}
             >
               {({
                 handleChange,
@@ -209,7 +189,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                       onPress={()=>console.log(route.params)}
+                       onPress={()=>console.log(route.params.title)}
                     />
                     <SmallButton
                       onPress={handleSubmit}
