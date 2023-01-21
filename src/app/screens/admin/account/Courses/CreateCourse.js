@@ -53,9 +53,9 @@ export default function CreateCourse({ navigation }) {
     console.log(date);
     hideDatePicker2();
   };
-  const create=()=>{
+  const addCourse=()=>{
   
-var data = qs.stringify({
+    var data = qs.stringify({
   'addcourses': '1',
   'user_id': loginUID,
   'course_name': 'BA.PASS',
@@ -308,6 +308,7 @@ axios(config)
               color={color.white}
               backgroundColor={color.purple}
               fontFamily={"Montserrat-Bold"}
+              onPress={()=>addCourse()}
             />
           </View>
         </View>
