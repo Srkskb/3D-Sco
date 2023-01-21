@@ -61,6 +61,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
   .then(result => {
     console.log(result)
     //Add navigation here
+    navigation.navigate("Backup")
   })
   .catch(error => console.log('error', error));
 }
