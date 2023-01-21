@@ -30,7 +30,10 @@ export default function AdminCabinet() {
       requestOptions
     )
       .then((res) => res.json())
-      .then((result) => setFileCabinetData(result.data))
+      .then((result) => {
+        console.log(result)
+        setFileCabinetData(result.data)
+      })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
