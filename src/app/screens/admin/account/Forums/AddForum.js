@@ -28,7 +28,7 @@ export default function AddForum({navigation}) {
   'admin_id': '176',
   'forum_title':  values.docTitle,
   'Description': values.description,
-  'course_id': '5',
+  'course_id': course,
   'topic_id': '3'
 });
     var config = {
