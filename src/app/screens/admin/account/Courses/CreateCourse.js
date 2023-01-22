@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
 import Input from "../../../../components/inputs/Input";
@@ -30,6 +30,17 @@ export default function CreateCourse({ navigation }) {
   const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
   const [selectedRelease, setSelectedRelease] = useState();
   const [selectedEnd, setSelectedEnd] = useState();
+  const [courseTitle, setCourseTitle] = useState('')
+  const [languages, setLanguages] = useState([])
+  const [categoreis, setCategoreis] = useState([])
+  const [language, setLanguage] = useState('')
+  const [category, setCategory] = useState('')
+  const [Description, setDescription] = useState('')
+  const [syllabus, setsyllabus] = useState('')
+  const [jobsheet,setJobsheet] = useState('')
+  const [banner,setBanner] = useState('')
+  const [maxsize,setMaxsize] = useState('')
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -58,27 +69,27 @@ export default function CreateCourse({ navigation }) {
     var data = qs.stringify({
   'addcourses': '1',
   'user_id': loginUID,
-  'course_name': 'BA.PASS',
-  'language': 'English',
-  'Description': 'This is first event creted by admin everyone need be attend the event so this is very important',
+  'course_name': courseTitle,
+  'language': language,
+  'Description': Description,
   'Syndicate': '1',
   'export_content': 'all',
   'Access': 'Public',
   'notify_enroll': '0',
   'hide_course': '0',
-  'ReleaseDate': '2022-12-27',
-  'EndDate': '2023-12-27',
-  'Banner': 'Hi, This is engineering drawing',
+  'ReleaseDate': selectedRelease,
+  'EndDate': selectedEnd,
+  'Banner': banner,
   'initial_content': '2',
   'quota': 'Unlimited',
   'quota_other': '',
-  'filesize': '1',
+  'filesize': maxsize,
   'filesize_other': '100',
   'Copyright': 'no',
   'subject': 'BA',
   'num_week': '0',
-  'Syllabus': 'three year diploma courses',
-  'JobSheet': 'semester',
+  'Syllabus': syllabus,
+  'JobSheet': jobsheet,
   'catID': '2' 
 });
 var config = {
@@ -96,19 +107,77 @@ axios(config)
   console.log(JSON.stringify(response.data));
 })
 .catch((error)=> {
+  console.log(error.response);
+});
+
+  }
+const getlanguages=()=>{
+var config = {
+  method: 'get',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php?courses_language_list=1',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=ksrmsjn33kam2917j4475ihmv4'
+  },
+};
+
+axios(config)
+.then((response)=>{
+  console.log(JSON.stringify(response.data.data.length));
+  if(response.data.success==1&&response.data.data.length){
+      let language=response.data.data.map(i=>i.Language)
+    setLanguages(language)}else{
+      setLanguages([])
+    }
+})
+.catch((error)=>{
   console.log(error);
 });
 
   }
+  const getCategories=()=>{
+
+var config = {
+  method: 'get',
+  url: 'https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=ksrmsjn33kam2917j4475ihmv4'
+  }
+};
+
+axios(config)
+.then((response)=>{
+  console.log(JSON.stringify(response.data.data));
+  if(response.data.success==1&&response.data.data.length>0){
+    let category=response.data.data.map(i=>i.Name)
+    setCategoreis(category)}else{
+      setCategoreis([])
+    }
+})
+.catch((error)=>{
+  console.log(error);
+});
+
+  }
+  useEffect(() => {
+    getlanguages()
+    getCategories()
+  }, [])
   return (
     <View style={styles.container}>
       <HeaderBack title={"Create Course"} onPress={() => navigation.goBack()} />
 
       <ScrollView style={{ paddingHorizontal: 20 }}>
         <View style={{ marginVertical: 10 }}>
-          <CommonDropdown label={"Category"} />
-          <CommonDropdown label={"Primary Language"} />
-          <Input placeholder={"Course Title"} label={"Course Title"} />
+          <CommonDropdown label={"Category"} data={categoreis}
+          onSelect={(text)=>setCategory(text)}/>
+          <CommonDropdown label={"Primary Language"} data={languages}
+          onSelect={(text)=>setLanguage(text)}/>
+          <Input placeholder={"Course Title"} label={"Course Title"} 
+          onChangeText={(text)=>setCourseTitle(text)}/>
           <CommonDropdown label={"Topic/Subject"} />
           <Input
             placeholder={"Description"}
@@ -116,6 +185,7 @@ axios(config)
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            onChangeText={(text)=>setDescription(text)}
           />
           <Input
             placeholder={"Syllabus"}
@@ -123,6 +193,7 @@ axios(config)
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            onChangeText={(text)=>setsyllabus(text)}
           />
           <Input
             placeholder={"Job Sheets"}
@@ -130,6 +201,7 @@ axios(config)
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            onChangeText={(text)=>setJobsheet(text)}
           />
           <CommonDropdown label={"Export Content"} />
           <CommonDropdown label={"Syndicate Announcements"} />
@@ -285,16 +357,16 @@ axios(config)
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            onChangeText={(text)=>setBanner(text)}
           />
           <CommonDropdown label={"Initial Content"} />
           <CommonDropdown label={"Course Quota"} />
           <CommonDropdown label={"Max File Size"} />
           <Input
-            placeholder={"Banner"}
-            label={"Banner"}
-            multiline={true}
-            numberOfLines={6}
+            placeholder={"Max File Size"}
+            label={"Max File Size"}
             textAlignVertical={"top"}
+            onChangeText={(text)=>setMaxsize(text)}
           />
           <UploadDocument type={"Icon"} />
           <View style={styles.button}>

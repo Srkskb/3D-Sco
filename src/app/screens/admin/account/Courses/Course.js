@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
-import React from "react";
+import React, { useState,useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import TextWithButton from "../../../../components/TextWithButton";
 import color from "../../../../assets/themes/Color";
@@ -8,10 +8,12 @@ import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import Add_Button from "../../../../components/buttons/Add_Button";
 import AccessLevel from "../../../../components/dropdown/AccessLevel";
 import Course_Card from "../../../../components/admin_required/Cards/CourseCard";
+import axios from "axios";
 import { myHeadersData } from "../../../../api/helper";
 
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
+  const [courses, setCourses] = useState([])
   const DeleteCourse=()=>{
     var data = qs.stringify({
       'delete_courses': '1',
@@ -38,6 +40,32 @@ export default function Course({ navigation }) {
     });
     
   }
+  const allCourses=()=>{
+
+var config = {
+  method: 'get',
+  url: 'https://3dsco.com/3discoapi/3dicowebservce.php?Course=1',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=ksrmsjn33kam2917j4475ihmv4'
+  }
+};
+
+axios(config)
+.then((response)=>{
+  console.log(JSON.stringify(response.data));
+  setCourses(response.data.data)
+})
+.catch((error)=>{
+  console.log(error);
+});
+
+  }
+  useEffect(() => {
+    allCourses();
+    navigation.addListener("focus", () => allCourses());
+  }, []);
   return (
     <View style={styles.container}>
       <HeaderBack title={"Course"} onPress={() => navigation.goBack()} />
@@ -63,15 +91,25 @@ export default function Course({ navigation }) {
           <Add_Button title={"Filter"} />
         </View>
       </View>
-      <ScrollView style={{ paddingHorizontal: 15 }}>
-        <Course_Card
-          title={"testing"}
-          status="Private"
-          educator={"rohit"}
-          releaseDate={"09/nov/2000"}
-          endDate={"09/nov/20000"}
+      <ScrollView style={{ paddingHorizontal: 10 }}>
+      {courses === undefined ? (
+            <>
+              <NoDataFound />
+            </>
+          ) : (
+            <>
+              {courses.map((list, index) => (
+        <Course_Card key={index}
+          title={list.Courses}
+          status={list.Access}
+          educator={list.assigned_tutor}
+          releaseDate={list.ReleaseDate}
+          endDate={list.EndDate}
           editPress={()=>navigation.navigate("EditCourse")}
         />
+        ))}
+            </>
+          )}
       </ScrollView>
     </View>
   );
