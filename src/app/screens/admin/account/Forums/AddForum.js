@@ -18,36 +18,37 @@ export default function AddForum({navigation}) {
   const[status,SetStatus]=useState("Select Status")
   const[course,setCourse]=useState("Select Course")
   const loginUID = localStorage.getItem("loginUID");
-  const AddForum=(values)=>{
-    console.log(values.docTitle,course,loginUID,values.description,);
+  
+  const AddForumBut=(values)=>{
+    console.log(values.docTitle,course,loginUID,values.description,status);
     const myHeaders = myHeadersData();
     var data = qs.stringify({
-      'add_courses_forum': '1',
-      'user_id': loginUID,
-      'admin_id': "",
-      'forum_title': values.title,
-      'Description': values.description,
-      'course_id': course,
-      'topic_id': status
-    });
-    fetch("https://3dsco.com/3discoapi/studentregistration.php", {
-      method: "POST",
-      body: data,
-      headers: {
-        myHeaders,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success == 1) {
-          
+  'add_courses_forum': '1',
+  'user_id': loginUID,
+  'admin_id': '176',
+  'forum_title':  values.docTitle,
+  'Description': values.description,
+  'course_id': '5',
+  'topic_id': '3'
+});
+    var config = {
+  method: 'post',
+  url: 'https://3dsco.com/3discoapi/studentregistration.php',
+  headers: { 
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  data : data
+};
+
+axios(config)
+.then((response)=>{
+  console.log(JSON.stringify(response.data));
+  if(response.data.success == 1) {
           navigation.navigate("Forum");
         }
 })
-.catch(function (error) {
-  console.log(error);
+.catch((error)=>{
+  console.log(error.response.data.message);
 });
   }
   return (
@@ -71,7 +72,7 @@ export default function AddForum({navigation}) {
                   .min(20, "Description must be at least 20 characters")
                   .max(250, "Description cannot be more than 50 characters"),
               })}
-              onSubmit={(values) => AddForum(values)}
+              onSubmit={(values) => AddForumBut(values)}
             >
               {({
                 handleChange,
@@ -86,7 +87,7 @@ export default function AddForum({navigation}) {
 <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            setCourse(selectedItem)
+            setCourse(index)
             console.log(selectedItem, index);
             
           }}
@@ -120,7 +121,7 @@ export default function AddForum({navigation}) {
        
   <ActiveStatus  onSelect={(selectedItem, index) => {
 
-    SetStatus(selectedItem)
+    SetStatus(index)
     console.log(selectedItem, index);
   }}/>
                   {errors.selectedItem && (
