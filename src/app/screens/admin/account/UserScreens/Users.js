@@ -11,6 +11,8 @@ export default function Users() {
   var userType=["Student","Tutor","Parent","Admin","Affiliate"]
   const [userList, setUserList] = useState([])
   const [type, setType] = useState('')
+  const [matchwords, setmatchwords] = useState('')
+  const [SearchKey, setSearchKey] = useState('')
 
   const filter=()=>{
     var formdata = new FormData();
