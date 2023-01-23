@@ -56,6 +56,10 @@ import {
   AddCategory,
   EnrollStudent,
   InstructorRequest,
+  AdminAddPhoto,
+  AdminEditPhoto,
+  AdminViewPhoto,
+  AdminPhotoAlbum
 } from "./";
 import AdminMailPage from "../../../screens/admin/AdminMail/mail/AdminMailPage";
 import ComposeMail from "../../../screens/admin/AdminMail/mail/ComposeMail";
@@ -139,6 +143,10 @@ export default function AAccountStack() {
       {/* New Mail Page */}
       <Stack.Screen name="AdminMailPage" component={AdminMailPage} />
       <Stack.Screen name="ComposeMail" component={ComposeMail} />
+      <Stack.Screen name="AdminAddPhoto" component={AdminAddPhoto} />
+      <Stack.Screen name="AdminEditPhoto" component={AdminEditPhoto} />
+      <Stack.Screen name="AdminViewPhoto" component={AdminViewPhoto} />
+      <Stack.Screen name="AdminPhotoAlbum" component={AdminPhotoAlbum} />
 
     </Stack.Navigator>
   );

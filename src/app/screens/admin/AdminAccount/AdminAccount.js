@@ -53,11 +53,11 @@ export default function AdminAccount() {
                 title={"My Journal"}
                 onPress={() => navigation.navigate("AdminMyJournal")}
               />
-              {/* <Account_Tabs
+              <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Photo Album"}
                 onPress={() => navigation.navigate("AdminPhotoAlbum")}
-              /> */}
+              />
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Enrollment"}

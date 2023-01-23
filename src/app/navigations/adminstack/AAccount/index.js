@@ -67,5 +67,9 @@ export { default as EditBackup } from "../../../screens/admin/account/Backup/Edi
 export { default as Category } from "../../../screens/admin/account/Category/Category";
 export { default as AddCategory } from "../../../screens/admin/account/Category/AddCategory";
 export { default as EditCategory } from "../../../screens/admin/account/Category/EditCategory";
+export { default as AdminAddPhoto } from "../../../screens/admin/AdminPhotoAlbum/AdminAddPhoto";
+export { default as AdminEditPhoto } from "../../../screens/admin/AdminPhotoAlbum/AdminEditPhoto";
+export { default as AdminViewPhoto } from "../../../screens/admin/AdminPhotoAlbum/AdminViewPhoto";
+export { default as AdminPhotoAlbum } from "../../../screens/admin/AdminPhotoAlbum/AdminPhotoAlbum";
 
 
