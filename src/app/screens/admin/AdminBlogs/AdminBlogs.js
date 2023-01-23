@@ -37,7 +37,9 @@ export default function AdminBlogs() {
       requestOptions
     )
       .then((res) => res.json())
-      .then((result) => setBlogListData(result.data))
+      .then((result) =>{
+        console.log(result.data)
+        setBlogListData(result.data)})
       .catch((error) => console.log("error", error));
   };
   // Delete Blog
@@ -126,7 +128,7 @@ export default function AdminBlogs() {
                 ) : (
                   <>
                     {blogListData.map((list, index) => (
-                      <View style={styles.containerBlog}>
+                      <View style={styles.containerBlog} key={index}>
                         <View style={{ flexDirection: "row" }}>
                           <View style={styles.right_side}>
                             <View style={{ width: "100%" }}>
@@ -151,6 +153,7 @@ export default function AdminBlogs() {
                                 Titel: list.Titel,
                                 Date: moment(list && list?.Date).format("LL"),
                                 description: list.Description,
+                                list:list
                               })
                             }
                           />

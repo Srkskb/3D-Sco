@@ -12,12 +12,37 @@ import color from "../../../assets/themes/Color";
 import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
 import CommentCard from "../../../components/card/CommentCard";
+import axios from "axios";
 import { myHeadersData } from "../../../api/helper";
 const{height,width}=Dimensions.get('window')
 export default function AdminViewBlogs({ route, navigation }) {
     const { Titel, titleParam } = route.params;
   const { Date, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
+const [comment, setComment] = useState('')
+
+const addComment=()=>{
+  var formdata = new FormData();
+  var myHeaders = myHeadersData()
+formdata.append("comment", "1");
+formdata.append("titel", "newdocument");
+formdata.append("id", route.params.list.id);
+formdata.append("description", comment);
+formdata.append("date", "2022-08-19");
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+
+}
 
   return (
     <View style={styles.container}>
@@ -65,18 +90,21 @@ export default function AdminViewBlogs({ route, navigation }) {
             numberOfLines={5}
             textAlignVertical={"top"}
             placeholder={"Type Your Comment Here..."}
+            onChangeText={(text)=>setComment(text)}
           />
           <View style={styles.button_container}>
             <SmallButton
               title={"Cancel"}
               color={color.purple}
               fontFamily={"Montserrat-Medium"}
+              onPress={()=>console.log(route.params.list)}
             />
             <SmallButton
               title={"Submit"}
               color={color.white}
               fontFamily={"Montserrat-Bold"}
               backgroundColor={color.purple}
+              onPress={addComment}
             />
           </View>
         </View>
