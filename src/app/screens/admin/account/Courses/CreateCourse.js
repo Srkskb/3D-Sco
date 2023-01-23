@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
 import Input from "../../../../components/inputs/Input";
@@ -20,6 +20,10 @@ import SmallButton from "../../../../components/buttons/SmallButton";
 import { myHeadersData } from "../../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
+import InitialContent from "../../../../components/dropdown/admin_user/InitialContent";
+import ExportContent from "../../../../components/dropdown/admin_user/ExportContent";
+import Syndicate from "../../../../components/dropdown/admin_user/SyndicateAnnouncement";
+import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
 
 const { width, height } = Dimensions.get("window");
 export default function CreateCourse({ navigation }) {
@@ -30,16 +34,18 @@ export default function CreateCourse({ navigation }) {
   const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
   const [selectedRelease, setSelectedRelease] = useState();
   const [selectedEnd, setSelectedEnd] = useState();
-  const [courseTitle, setCourseTitle] = useState('')
-  const [languages, setLanguages] = useState([])
-  const [categoreis, setCategoreis] = useState([])
-  const [language, setLanguage] = useState('')
-  const [category, setCategory] = useState('')
-  const [Description, setDescription] = useState('')
-  const [syllabus, setsyllabus] = useState('')
-  const [jobsheet,setJobsheet] = useState('')
-  const [banner,setBanner] = useState('')
-  const [maxsize,setMaxsize] = useState('')
+  const [courseTitle, setCourseTitle] = useState("");
+  const [subject, setSubject] = useState("");
+  const [languages, setLanguages] = useState([]);
+  const [categoreis, setCategoreis] = useState([]);
+  const [language, setLanguage] = useState("");
+  const [category, setCategory] = useState("");
+  const [Description, setDescription] = useState("");
+  const [syllabus, setsyllabus] = useState("");
+  const [jobsheet, setJobsheet] = useState("");
+  const [banner, setBanner] = useState("");
+  const [maxsize, setMaxsize] = useState("");
+  const [courseQuota, setCourseQuota] = useState("");
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -64,128 +70,139 @@ export default function CreateCourse({ navigation }) {
     console.log(date);
     hideDatePicker2();
   };
-  const addCourse=()=>{
-  
+  const addCourse = () => {
     var data = qs.stringify({
-  'addcourses': '1',
-  'user_id': loginUID,
-  'course_name': courseTitle,
-  'language': language,
-  'Description': Description,
-  'Syndicate': '1',
-  'export_content': 'all',
-  'Access': 'Public',
-  'notify_enroll': '0',
-  'hide_course': '0',
-  'ReleaseDate': selectedRelease,
-  'EndDate': selectedEnd,
-  'Banner': banner,
-  'initial_content': '2',
-  'quota': 'Unlimited',
-  'quota_other': '',
-  'filesize': maxsize,
-  'filesize_other': '100',
-  'Copyright': 'no',
-  'subject': 'BA',
-  'num_week': '0',
-  'Syllabus': syllabus,
-  'JobSheet': jobsheet,
-  'catID': '2' 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
+      addcourses: "1",
+      user_id: loginUID,
+      course_name: courseTitle,
+      language: language,
+      Description: Description,
+      Syndicate: "1",
+      export_content: "all",
+      Access: "Public",
+      notify_enroll: "0",
+      hide_course: "0",
+      ReleaseDate: selectedRelease,
+      EndDate: selectedEnd,
+      Banner: banner,
+      initial_content: "2",
+      quota: "Unlimited",
+      quota_other: "",
+      filesize: maxsize,
+      filesize_other: "100",
+      Copyright: "no",
+      subject: "BA",
+      num_week: "0",
+      Syllabus: syllabus,
+      JobSheet: jobsheet,
+      catID: "2",
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((response)=> {
-  console.log(JSON.stringify(response.data));
-})
-.catch((error)=> {
-  console.log(error.response);
-});
+    axios(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
+  const getlanguages = () => {
+    var config = {
+      method: "get",
+      url: "https://3dsco.com/3discoapi/studentregistration.php?courses_language_list=1",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=ksrmsjn33kam2917j4475ihmv4",
+      },
+    };
 
-  }
-const getlanguages=()=>{
-var config = {
-  method: 'get',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php?courses_language_list=1',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=ksrmsjn33kam2917j4475ihmv4'
-  },
-};
+    axios(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data.data.length));
+        if (response.data.success == 1 && response.data.data.length) {
+          let language = response.data.data.map((i) => i.Language);
+          setLanguages(language);
+        } else {
+          setLanguages([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getCategories = () => {
+    var config = {
+      method: "get",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=ksrmsjn33kam2917j4475ihmv4",
+      },
+    };
 
-axios(config)
-.then((response)=>{
-  console.log(JSON.stringify(response.data.data.length));
-  if(response.data.success==1&&response.data.data.length){
-      let language=response.data.data.map(i=>i.Language)
-    setLanguages(language)}else{
-      setLanguages([])
-    }
-})
-.catch((error)=>{
-  console.log(error);
-});
-
-  }
-  const getCategories=()=>{
-
-var config = {
-  method: 'get',
-  url: 'https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=ksrmsjn33kam2917j4475ihmv4'
-  }
-};
-
-axios(config)
-.then((response)=>{
-  console.log(JSON.stringify(response.data.data));
-  if(response.data.success==1&&response.data.data.length>0){
-    let category=response.data.data.map(i=>i.Name)
-    setCategoreis(category)}else{
-      setCategoreis([])
-    }
-})
-.catch((error)=>{
-  console.log(error);
-});
-
-  }
+    axios(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data.data));
+        if (response.data.success == 1 && response.data.data.length > 0) {
+          let category = response.data.data.map((i) => i.Name);
+          setCategoreis(category);
+        } else {
+          setCategoreis([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
-    getlanguages()
-    getCategories()
-  }, [])
+    getlanguages();
+    getCategories();
+  }, []);
   return (
     <View style={styles.container}>
       <HeaderBack title={"Create Course"} onPress={() => navigation.goBack()} />
 
       <ScrollView style={{ paddingHorizontal: 20 }}>
         <View style={{ marginVertical: 10 }}>
-          <CommonDropdown label={"Category"} data={categoreis}
-          onSelect={(text)=>setCategory(text)}/>
-          <CommonDropdown label={"Primary Language"} data={languages}
-          onSelect={(text)=>setLanguage(text)}/>
-          <Input placeholder={"Course Title"} label={"Course Title"} 
-          onChangeText={(text)=>setCourseTitle(text)}/>
-          <CommonDropdown label={"Topic/Subject"} />
+          <CommonDropdown
+            label={"Category"}
+            data={categoreis}
+            onSelect={(text) => setCategory(text)}
+          />
+          <CommonDropdown
+            label={"Primary Language"}
+            data={languages}
+            onSelect={(text) => setLanguage(text)}
+          />
+          <Input
+            placeholder={"Course Title"}
+            label={"Course Title"}
+            onChangeText={(text) => setCourseTitle(text)}
+          />
+          <Input
+            placeholder={"Topic/Subject"}
+            label={"Topic/Subject"}
+            onChangeText={(text) => setSubject(text)}
+          />
+          {/* <CommonDropdown label={"Topic/Subject"} /> */}
           <Input
             placeholder={"Description"}
             label={"Description"}
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text)=>setDescription(text)}
+            onChangeText={(text) => setDescription(text)}
           />
           <Input
             placeholder={"Syllabus"}
@@ -193,7 +210,7 @@ axios(config)
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text)=>setsyllabus(text)}
+            onChangeText={(text) => setsyllabus(text)}
           />
           <Input
             placeholder={"Job Sheets"}
@@ -201,11 +218,13 @@ axios(config)
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text)=>setJobsheet(text)}
+            onChangeText={(text) => setJobsheet(text)}
           />
-          <CommonDropdown label={"Export Content"} />
-          <CommonDropdown label={"Syndicate Announcements"} />
-          <CommonDropdown label={"Access"} />
+          {/* <CommonDropdown label={"Export Content"} /> */}
+          <ExportContent label={"Export Content"}/>
+          <Syndicate label={"Syndicate Announcements"} />
+          <AccessLevel label={"Access"} />
+          
           <View
             style={{
               flexDirection: "row",
@@ -357,16 +376,21 @@ axios(config)
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text)=>setBanner(text)}
+            onChangeText={(text) => setBanner(text)}
           />
-          <CommonDropdown label={"Initial Content"} />
-          <CommonDropdown label={"Course Quota"} />
-          <CommonDropdown label={"Max File Size"} />
+          {/* <CommonDropdown label={"Initial Content"} /> */}
+          <InitialContent label={"Initial Content"}/>
           <Input
-            placeholder={"Max File Size"}
+            label={"Course Quota"}
+            placeholder={"in MB"}
+            onChangeText={(text) => setCourseQuota(text)}
+            keyboardType="number-pad"
+          />
+          <Input
             label={"Max File Size"}
-            textAlignVertical={"top"}
-            onChangeText={(text)=>setMaxsize(text)}
+            placeholder={"in MB"}
+            onChangeText={(text) => setMaxsize(text)}
+            keyboardType="number-pad"
           />
           <UploadDocument type={"Icon"} />
           <View style={styles.button}>
@@ -380,7 +404,7 @@ axios(config)
               color={color.white}
               backgroundColor={color.purple}
               fontFamily={"Montserrat-Bold"}
-              onPress={()=>addCourse()}
+              onPress={() => addCourse()}
             />
           </View>
         </View>

@@ -6,10 +6,10 @@ import color from "../../../../assets/themes/Color";
 import SearchEnroll from "../../../../components/admin_required/SearchEnroll";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import Add_Button from "../../../../components/buttons/Add_Button";
-import AccessLevel from "../../../../components/dropdown/AccessLevel";
 import Course_Card from "../../../../components/admin_required/Cards/CourseCard";
 import axios from "axios";
 import { myHeadersData } from "../../../../api/helper";
+import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
 
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
@@ -80,11 +80,12 @@ axios(config)
             <SearchEnroll placeholder={"Search...."} />
           </View>
           <View style={{ width: "50%" }}>
-            <AccessLevel
+            {/* <AccessLevel
               onSelect={(selectedItem, index) => {
                 console.log(selectedItem, index);
               }}
-            />
+            /> */}
+            <AccessLevel label/>
           </View>
         </View>
         <View style={styles.filter_button}>

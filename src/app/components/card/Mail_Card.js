@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
 import CardButton from "../buttons/CardButton";
@@ -10,6 +10,7 @@ export default function Mail_Card({
   archive,
   sent,
   sender,
+  onPress,
   replyPress,
   archivePress,
   deletePress,
@@ -19,7 +20,7 @@ export default function Mail_Card({
   unArchivePress,
 }) {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.6} style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
       {inbox && <Text style={styles.senderText}>From: {sender}</Text>}
@@ -29,7 +30,7 @@ export default function Mail_Card({
       <Text style={{ fontFamily: "Montserrat-Medium" }}>
         Date: <Text>12/01/2023 01:23 PM</Text>
       </Text>
-      {inbox && (
+      {/* {inbox && (
         <View style={{ flexDirection: "row", marginVertical: 10 }}>
           <CardButton
             label={"Reply"}
@@ -101,8 +102,8 @@ export default function Mail_Card({
             onPress={deletePress}
           />
         </View>
-      )}
-    </View>
+      )} */}
+    </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({

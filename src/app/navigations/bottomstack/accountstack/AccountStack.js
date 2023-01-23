@@ -33,6 +33,7 @@ import {
   EditResources,
   AddResources
 } from "./";
+
 const Stack = createStackNavigator();
 export default function AccountStack() {
   return (

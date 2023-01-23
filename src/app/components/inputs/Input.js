@@ -25,6 +25,7 @@ const Input = ({ label, error, onFocus = () => {}, ...props }) => {
           setIsfococused(false);
         }}
         {...props}
+        
       />
     </View>
   );

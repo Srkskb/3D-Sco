@@ -73,7 +73,7 @@ export default function CreateUser() {
         <Input label={"Email"} placeholder={"Enter Email Address"} />
         <Input label={"Name"} placeholder={"Name"} />
         {/* <User onSelect={(item, index) => console.log(item)} label={"Account Type"} /> */}
-        <AccountType onSelect={(item, index) => console.log(item)} label={"Account Type"} />
+        {/* <AccountType onSelect={(item, index) => console.log(item)} label={"Account Type"} /> */}
         <ActiveStatus  onSelect={(selectedItem, index) => {}}/>
         <Headline title={"Personal information (Optional)"} />
         <Input2 label={"Date of Birth"} placeholder={"DD-MMM-YYYY"} />

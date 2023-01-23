@@ -63,6 +63,8 @@ import {
 } from "./";
 import AdminMailPage from "../../../screens/admin/AdminMail/mail/AdminMailPage";
 import ComposeMail from "../../../screens/admin/AdminMail/mail/ComposeMail";
+import ViewMail from "../../../screens/admin/AdminMail/mail/ViewMail";
+import Reply from "../../../screens/admin/AdminMail/mail/Reply";
 const Stack = createStackNavigator();
 export default function AAccountStack() {
   return (
@@ -142,6 +144,9 @@ export default function AAccountStack() {
       <Stack.Screen name="EditCategory" component={EditCategory} />
       {/* New Mail Page */}
       <Stack.Screen name="AdminMailPage" component={AdminMailPage} />
+      <Stack.Screen name="ViewMail" component={ViewMail} />
+      <Stack.Screen name="Reply" component={Reply} />
+      
       <Stack.Screen name="ComposeMail" component={ComposeMail} />
       <Stack.Screen name="AdminAddPhoto" component={AdminAddPhoto} />
       <Stack.Screen name="AdminEditPhoto" component={AdminEditPhoto} />

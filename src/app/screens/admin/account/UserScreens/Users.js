@@ -7,6 +7,9 @@ import AppButton from "../../../../components/buttons/AppButton";
 import Student_Card from '../../../../components/card/Student_Card';
 import { FontAwesome } from "@expo/vector-icons";
 import { myHeadersData } from "../../../../api/helper";
+import LastLogin from "../../../../components/dropdown/admin_user/LastLogin";
+import Match from "../../../../components/dropdown/admin_user/Match";
+import AccountStatus from "../../../../components/dropdown/admin_user/AccountStatus";
 export default function Users() {
   var userType=["Student","Tutor","Parent","Admin","Affiliate"]
   const [userList, setUserList] = useState([])
@@ -45,7 +48,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
     <View style={styles.container}>
       <ScrollView>
         <Text style={styles.headline}>Account Status</Text>
-        <CommonDropdown/>
+        <AccountStatus/>
         <Text style={styles.headline}>Account Type</Text>
         <CommonDropdown data={userType} onSelect={(item,index)=>setType(index+1)}/>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -77,7 +80,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
             </View>
           </View>
           <View style={{ width: "38%" }}>
-            <CommonDropdown marginBottom={0} />
+            <Match marginBottom={0}/>
           </View>
         </View>
 
@@ -92,7 +95,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
             <CommonDropdown />
           </View>
           <View style={{ width: "38%" }}>
-            <CommonDropdown />
+            <LastLogin/>
           </View>
         </View>
 
