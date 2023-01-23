@@ -17,7 +17,7 @@ export default function CityDropdown({ label, ...props }) {
       return;
     }
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?city=1&country_id=${country_id}&state_id=${state_id}`
+      `https://3dsco.com/3discoapi/state.php?city=1&country_id=${country_id}&state_id=${state_id}`
     )
       .then((res) => res.json())
       .then((res) => {

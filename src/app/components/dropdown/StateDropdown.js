@@ -12,7 +12,7 @@ export default function StateDropdown({ label, ...props }) {
       return;
     }
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?state=1&country_id=${country_id}`
+      `https://3dsco.com/3discoapi/state.php?state=1&country_id=${country_id}`
     )
       .then((res) => res.json())
       .then((res) => {

@@ -16,7 +16,7 @@ export default function UniversityDropdown({ label, ...props }) {
       return;
     }
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?university=1&country_id=${country_id}`,
+      `https://3dsco.com/3discoapi/state.php?university=1&country_id=${country_id}`,
       {
         method: "GET",
         headers: {
