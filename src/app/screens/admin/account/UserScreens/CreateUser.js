@@ -39,7 +39,7 @@ export default function CreateUser() {
   const[university,setUniversity]=useState("")
   const[user,setUser]=useState("")
   const[gender,setGender]=useState("")
-  const[category,setCatrgory]=useState("")
+  const[category,setCategory]=useState("")
   const[type,setType]=useState("")
   const[country,setCountry]=useState("")
   const[Comment,setComment]=useState("")
@@ -153,9 +153,9 @@ export default function CreateUser() {
         <AccountType 
         // onSelect={(item, index) => console.log(item)}
          label={"Account Type"} 
-         onSelect={(item, index) => {
-          setType(item);
-          console.log(item, index);
+         onSelect={(selectedItem, index) => {
+          setType(selectedItem);
+          console.log(selectedItem, index);
         }}
         value={type}
         
@@ -195,36 +195,36 @@ export default function CreateUser() {
         <CountryDropdown
           label={"Country"}
           // onSelect={(item, index) => console.log(item)}
-          onSelect={(item, index) => {
-            setCountry(item);
-            console.log(item, index);
+          onSelect={(selectedItem, index) => {
+            setCountry(index);
+            console.log(selectedItem, index);
           }}
           value={country}
         />
         <StateDropdown
           label={"State"}
           // onSelect={(item, index) => console.log(item)}
-          onSelect={(item, index) => {
-            setState(item);
-            console.log(item, index);
+          onSelect={(selectedItem, index) => {
+            setState(index);
+            console.log(selectedItem, index);
           }}
           value={state}
         />
         <CityDropdown
           label={"City"}
           // onSelect={(item, index) => console.log(item)}
-          onSelect={(item, index) => {
-            setCity(item);
-            console.log(item, index);
+          onSelect={(selectedItem, index) => {
+            setCity(index);
+            console.log(selectedItem, index);
           }}
           value={city}
         />
         <UniversityDropdown
           label={"University"}
           // onSelect={(item, index) => console.log(item)}
-          onSelect={(item, index) => {
-            setUniversity(item);
-            console.log(item, index);
+          onSelect={(selectedItem, index) => {
+            setUniversity(index);
+            console.log(selectedItem, index);
           }}
           value={university}
         />
@@ -236,9 +236,9 @@ export default function CreateUser() {
         <CategoryDropdown
           label={"Category"}
           // onSelect={(item, index) => console.log(item)}
-          onSelect={(item, index) => {
-            setCatrgory(item);
-            console.log(item, index);
+          onSelect={(selectedItem, index) => {
+            setCategory(index);
+            console.log(selectedItem, index);
           }}
           value={category}
         />
