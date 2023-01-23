@@ -59,11 +59,11 @@ export default function EditPhoto({ route, navigation }) {
     urlencoded.append("id", docId);
     urlencoded.append("detail", upDescription);
     urlencoded.append("user_id", loginUID);
-    // urlencoded.append("image", {
-    //   uri: image, //"file:///" + image.split("file:/").join(""),
-    //   type: mime.getType(image),
-    //   name: `abc.jpg`,
-    // });
+    urlencoded.append("image", {
+      uri: image, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image),
+      name: `abc.jpg`,
+    });
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: urlencoded,

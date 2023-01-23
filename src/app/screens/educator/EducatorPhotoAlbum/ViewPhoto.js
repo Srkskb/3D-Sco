@@ -16,15 +16,15 @@ export default function ViewPhoto({ route, navigation }) {
         onPress={() => navigation.navigate("EducatorPhotoAlbum")}
       />
       <View style={styles.inner_view}>
-        <Text>
+        <View>
           <Text style={styles.text}>Title : {title}</Text>
-        </Text>
-        <Text>
+        </View>
+        <View>
           {/* <Text style={styles.title}>Access Level: {access}</Text> */}
-        </Text>
-        <Text>
+        </View>
+        <View style={{paddingVertical:6}}>
           <Text style={styles.title}>Description : {description}</Text>
-        </Text>
+        </View>
         <View style={styles.documentView}>
           <Image
             style={styles.tinyLogo}

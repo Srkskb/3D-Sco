@@ -146,7 +146,7 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinetCard
+                <FileCabinetCard key={index}
                   title={list.title}
                   access={list.access_level}
                   description={list.description}
