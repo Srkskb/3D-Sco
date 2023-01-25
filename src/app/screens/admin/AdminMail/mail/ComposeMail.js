@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import color from "../../../../assets/themes/Color";
 import Mail_Card from "../../../../components/card/Mail_Card";
 import CommonDropdown from "../../../../components/dropdown/CommonDropdown";

@@ -1,46 +1,109 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  RefreshControl,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import color from "../../../../assets/themes/Color";
 import Mail_Card from "../../../../components/card/Mail_Card";
 import { myHeadersData } from "../../../../api/helper";
-export default function Sent({navigation}) {
-  const SentMessage=()=>{
+import { NoDataFound } from "../../../../components";
+export default function Sent({ navigation }) {
+  const [mailListData, setMailListData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const loginUID = localStorage.getItem("loginUID");
+
+  const SentMessage = () => {
     var myHeaders = myHeadersData();
-myHeaders.append("Accept", "application/json");
-myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-myHeaders.append("Cookie", "PHPSESSID=eps7t254jlcdutaujp8r1jaaa0");
 
-var urlencoded = new URLSearchParams();
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
 
-var requestOptions = {
-  method: 'GET',
-  headers: myHeaders,
-  body: urlencoded,
-  redirect: 'follow'
-};
-
-fetch("https://3dsco.com/3discoapi/state.php?view_sent=1&Reciever_id=232", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-  }
+    fetch(
+      `https://3dsco.com/3discoapi/state.php?view_sent=1&Reciever_id=${loginUID}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        setMailListData(result.data);
+      })
+      .catch((error) => console.log("error", error));
+  };
+  useEffect(() => {
+    SentMessage();
+  }, []);
+  const onRefresh = () => {
+    setRefreshing(true);
+    SentMessage();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
   return (
     <View style={{ flex: 1, backgroundColor: color.white }}>
-      <ScrollView style={{}}>
-        <View style={{ margin: 15 }}>
-          <Mail_Card
-            title={"title"}
-            description={
-              "this is description this is description this is description this is description this is description this is descriptions"
-            }
-            sent
-            sender={"rohit@gmail.com"}
-            onPress={()=>navigation.navigate("ViewMail",{msgType:"sent"})}
-          />
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View style={styles.main}>
+          {mailListData === undefined ? (
+            <>
+              <NoDataFound />
+            </>
+          ) : (
+            <>
+              {mailListData.map((list, index) => (
+                <Mail_Card
+                  key={list.id}
+                  sent
+                  title={list.Subject}
+                  description={list.Message}
+                  sender={list.RecieverName}
+                  onPress={() =>
+                    navigation.navigate("ViewMail", { msgType: "sent",msg:list })
+                  }
+                />
+              ))}
+            </>
+          )}
         </View>
       </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: color.white,
+  },
+  main: {
+    paddingHorizontal: 20,
+  },
+  head: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginTop: 20,
+    alignItems: "center",
+    height: 40,
+  },
+  clear_all: {
+    fontFamily: "Montserrat-Medium",
+    fontSize: 15,
+    color: color.dark_gray,
+  },
+  day: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 16,
+    color: color.purple,
+    textTransform: "uppercase",
+  },
+});

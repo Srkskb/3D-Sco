@@ -3,93 +3,213 @@ import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import CardButton from "../../../../components/buttons/CardButton";
 import HeaderBack from "../../../../components/header/Header";
+import { Snackbar } from "react-native-paper";
 import { myHeadersData } from "../../../../api/helper";
 export default function ViewMail({ route, navigation }) {
-  const { msgType, setMessageType } = route.params;
-  const sender = "test@gmail.com";
-  const ViewMail=()=>{
-    var myHeaders = myHeadersData();
+  const { msgType, msg } = route.params;
+  const loginUID = localStorage.getItem("loginUID");
+  const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
+  const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
+  const [getMessageTrue, setMessageTrue] = useState();
+  var myHeaders = myHeadersData();
+  // const sender = "test@gmail.com";
+  // const ViewMail = () => {
 
-var formdata = new FormData();
-formdata.append("view_message", "1");
-formdata.append("id", "441");
+  //   var formdata = new FormData();
+  //   formdata.append("view_message", "1");
+  //   formdata.append("id", msg.id);
 
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: formdata,
-  redirect: 'follow'
-};
+  //   var requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: formdata,
+  //     redirect: "follow",
+  //   };
 
-fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-  }
+  //   fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  // setSnackVisibleTrue(true);
+  // setMessageTrue(result.message)
+  // })
+  //     .catch((error) => console.log("error", error));
+  // };
+
+  // useEffect(() => {
+  //   ViewMail();
+  // }, []);
+
+  const deleteMsg = () => {
+    var formdata = new FormData();
+    formdata.append("delete_message", "1");
+    formdata.append("id", msg.id);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setSnackVisibleTrue(true);
+        setMessageTrue(result.message);
+        navigation.goBack()
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const spamMsg = () => {
+    var formdata = new FormData();
+    formdata.append("spam_message", "1");
+    formdata.append("email_id", msg.id);
+    formdata.append("user_id", loginUID);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setSnackVisibleTrue(true);
+        setMessageTrue(result.message);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const archiveMsg = () => {
+    var formdata = new FormData();
+    formdata.append("achieve_message", "1");
+    formdata.append("email_id", msg.id);
+    formdata.append("user_id", loginUID);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setSnackVisibleTrue(true);
+        setMessageTrue(result.message);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const deleteSpamMsg = () => {
+    var formdata = new FormData();
+    formdata.append("delete_spam_message", "1");
+    formdata.append("id", msg.id);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setSnackVisibleTrue(true);
+        setMessageTrue(result.message);
+        navigation.goBack()
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const notSpamMsg = () => {};
+
+  const deleteArchiveMsg = () => {
+    var formdata = new FormData();
+    formdata.append("delete_achieve_message", "1");
+    formdata.append("id", msg.id);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setSnackVisibleTrue(true);
+        setMessageTrue(result.message);
+        navigation.goBack()
+      })
+      .catch((error) => console.log("error", error));
+  };
 
   return (
     <View style={styles.container}>
       <HeaderBack title={msgType} onPress={() => navigation.goBack()} />
       <ScrollView>
         <View style={{ padding: 15 }}>
-          <Text style={styles.title}>For Subject</Text>
+          <Text style={styles.title}>Subject : {msg.Subject}</Text>
           {msgType === "inbox" && (
-            <Text style={styles.senderText}>From: {sender}</Text>
+            <Text style={styles.senderText}>From: {msg.SenderName}</Text>
           )}
           {msgType === "sent" && (
-            <Text style={styles.senderText}>To: {sender}</Text>
+            <Text style={styles.senderText}>To: {msg.RecieverName}</Text>
           )}
           {msgType === "spam" && (
-            <Text style={styles.senderText}>From: {sender}</Text>
+            <Text style={styles.senderText}>From: {msg.SenderName}</Text>
           )}
           {msgType === "archive" && (
-            <Text style={styles.senderText}>From: {sender}</Text>
+            <Text style={styles.senderText}>From: {msg.SenderName}</Text>
           )}
 
           <Text style={{ fontFamily: "Montserrat-Medium" }}>
             Date: <Text>12/01/2023 01:23 PM</Text>
           </Text>
-          <Text style={styles.description}>
-            Enim magna irure nostrud consequat cupidatat nulla reprehenderit
-            adipisicing enim ad aliqua id. Occaecat eiusmod duis nisi occaecat
-            consectetur nisi incididunt. Sunt officia aliqua enim aliqua. Quis
-            nisi voluptate sint reprehenderit. Nisi ipsum amet ullamco in irure
-            Lorem. Ullamco quis anim sit officia amet laboris anim ullamco
-            officia mollit sint esse. Officia culpa ad ipsum mollit nulla nisi
-            irure reprehenderit exercitation laboris ullamco. Mollit laborum
-            deserunt velit cupidatat consequat laborum. Ex nostrud excepteur
-            labore exercitation consectetur reprehenderit laboris proident et
-            elit nulla non ullamco. Ad voluptate voluptate nostrud pariatur esse
-            elit adipisicing amet enim nulla cillum deserunt esse ex. Ex duis
-            elit qui quis in sint cupidatat deserunt commodo qui do. Tempor
-            laborum est nisi qui est qui aute sit exercitation veniam est labore
-            do incididunt. Elit dolore anim reprehenderit culpa cillum qui
-            officia nisi est officia consequat proident. Cupidatat tempor
-            cupidatat eiusmod aliquip. Sit commodo pariatur laboris ea ex anim
-            irure sint. Reprehenderit sunt in ad incididunt do non cupidatat
-            occaecat et. Incididunt magna id amet deserunt laboris qui sint.
-          </Text>
+        </View>
+        <View style={{ padding: 15 }}>
+          <Text style={styles.description}>{msg.Message}</Text>
         </View>
       </ScrollView>
-
+      <Snackbar
+        visible={snackVisibleTrue}
+        onDismiss={() => setSnackVisibleTrue(false)}
+        action={{ label: "Close" }}
+        theme={{ colors: { accent: "#82027D" } }}
+      >
+        {getMessageTrue}
+      </Snackbar>
       <View style={{ padding: 10 }}>
         {msgType === "inbox" && (
           <View style={{ flexDirection: "row", marginVertical: 10 }}>
             <CardButton
               label={"Reply"}
               textColor={"green"}
-              onPress={() => navigation.navigate("Reply")}
+              onPress={() => navigation.navigate("Reply", { msg: msg })}
             />
-            <CardButton label={"Archive"} textColor={"green"} />
+            <CardButton
+              label={"Archive"}
+              textColor={"green"}
+              onPress={archiveMsg}
+            />
             <CardButton
               label={"Delete"}
               borderColor={color.red}
               textColor={color.red}
+              onPress={deleteMsg}
             />
             <CardButton
               label={"Spam"}
               borderColor={color.red}
               textColor={color.red}
+              onPress={spamMsg}
             />
           </View>
         )}
@@ -104,6 +224,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
               label={"Delete"}
               borderColor={color.red}
               textColor={color.red}
+              onPress={deleteMsg}
             />
           </View>
         )}
@@ -113,11 +234,13 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
               label={"Delete"}
               borderColor={color.red}
               textColor={color.red}
+              onPress={deleteSpamMsg}
             />
             <CardButton
               label={"Not Spam"}
               borderColor={color.red}
               textColor={color.red}
+              onPress={notSpamMsg}
             />
           </View>
         )}
@@ -129,6 +252,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
               label={"Delete"}
               borderColor={color.red}
               textColor={color.red}
+              onPress={deleteArchiveMsg}
             />
           </View>
         )}
