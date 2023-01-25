@@ -15,8 +15,60 @@ import User from "../../../../components/dropdown/User";
 import NewCheckbox from "../../../../components/NewCheckbox";
 import HeaderBack from "../../../../components/header/Header";
 import { AppButton } from "../../../../components/buttons";
+import { myHeadersData } from "../../../../api/helper";
 const {height} =Dimensions.get("window")
 export default function ComposeMail({ navigation }) {
+
+  var userType=["Student","Tutor","Parent","Admin","Affiliate"]
+  const [userList, setUserList] = useState([])
+  const [type, setType] = useState('')
+  const ComposeMail =()=>{
+    var data = qs.stringify({
+      'add_message_for_user': '1',
+      'SenderID': '267',
+      'Subject': 'test',
+      'Message': 'this is a test of email function for educator.',
+      'RecieverID': '265' 
+    });
+    var config = {
+      method: 'post',
+      url: 'https://3dsco.com/3discoapi/studentregistration.php',
+      headers: { 
+        'Accept': 'application/json', 
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data : data
+    };
+    
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+  }
+  const GetList =()=>{
+    var myHeaders = myHeadersData();
+myHeaders.append("Cookie", "PHPSESSID=eps7t254jlcdutaujp8r1jaaa0");
+
+var formdata = new FormData();
+formdata.append("Account_type", "1");
+formdata.append("type", "1");
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+  }
   return (
     <View style={styles.container}>
       <HeaderBack
@@ -112,7 +164,9 @@ export default function ComposeMail({ navigation }) {
           <NewCheckbox/>
           <Text style={{fontFamily:'Montserrat-Regular',marginLeft:10}}>Save in sent items</Text>
           </View>
-          <AppButton title={"Send"} btnColor={color.purple} />
+          <AppButton title={"Send"} btnColor={color.purple} 
+          onPress={ComposeMail}
+          />
         </View>
       </ScrollView>
     </View>

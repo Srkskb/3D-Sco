@@ -3,9 +3,29 @@ import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import CardButton from "../../../../components/buttons/CardButton";
 import HeaderBack from "../../../../components/header/Header";
+import { myHeadersData } from "../../../../api/helper";
 export default function ViewMail({ route, navigation }) {
   const { msgType, setMessageType } = route.params;
   const sender = "test@gmail.com";
+  const ViewMail=()=>{
+    var myHeaders = myHeadersData();
+
+var formdata = new FormData();
+formdata.append("view_message", "1");
+formdata.append("id", "441");
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+  }
 
   return (
     <View style={styles.container}>

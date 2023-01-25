@@ -15,6 +15,33 @@ import HeaderBack from "../../../../components/header/Header";
 import { AppButton } from "../../../../components/buttons";
 const { height } = Dimensions.get("window");
 export default function Reply({ navigation }) {
+  const ReplyMail =()=>{
+    var data = qs.stringify({
+      'add_message_for_user': '1',
+      'SenderID': '267',
+      'Subject': 'test',
+      'Message': 'this is a test of email function for educator.',
+      'RecieverID': '265' 
+    });
+    var config = {
+      method: 'post',
+      url: 'https://3dsco.com/3discoapi/studentregistration.php',
+      headers: { 
+        'Accept': 'application/json', 
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data : data
+    };
+    
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+  }
   return (
     <View style={styles.container}>
       <HeaderBack
