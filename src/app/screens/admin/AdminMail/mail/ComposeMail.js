@@ -115,7 +115,7 @@ export default function ComposeMail({ navigation }) {
                     paddingBottom: 10,
                   }}
                 >
-                  <NewCheckbox />
+                  <NewCheckbox onPress={()=>setRecieverID(list.id)}/>
                   <Text
                     style={{ marginLeft: 10, fontFamily: "Montserrat-Medium" }}
                   >
