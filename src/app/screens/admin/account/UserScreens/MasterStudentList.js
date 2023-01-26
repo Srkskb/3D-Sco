@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl,Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Text,
+} from "react-native";
 import color from "../../../../assets/themes/Color";
 import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
@@ -8,7 +14,7 @@ import { NoDataFound } from "../../../../components";
 import TextWithButton from "../../../../components/TextWithButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import FileCabinet2 from "../../../../components/card/FileCabinet2";
-import Student_Card from '../../../../components/card/Student_Card';
+import Student_Card from "../../../../components/card/Student_Card";
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
@@ -36,36 +42,35 @@ export default function MasterStudentList() {
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result)
-        setFileCabinetData(result.data)
+        // console.log(result);
+        setFileCabinetData(result.data);
       })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
     var data = qs.stringify({
-  'delete_backup': '1',
-  'id': id 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7'
-  },
-  data : data
-};
+      delete_backup: "1",
+      id: id,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((response)=>{
-  if(response.data.success==1){
-    allLearnerList()
-  }
-})
-.catch((error)=>{
-  console.log(error);
-});
-
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          allLearnerList();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -99,7 +104,7 @@ axios(config)
         {getMessageFalse}
       </Snackbar>
 
-      <Text  title={"Master Student List"}/>
+      <Text title={"Master Student List"} />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -114,10 +119,12 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <Student_Card key={index}
-                name={list.name}
+                <Student_Card
+                  key={index}
+                  name={list.name}
                   email={list.email}
-
+                  deleteButton
+                  onPress={deleteEvent(list.id)}
                 />
               ))}
             </>

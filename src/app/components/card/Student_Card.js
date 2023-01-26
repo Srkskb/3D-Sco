@@ -5,7 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import CardButton from "../buttons/CardButton";
 import { Edit } from "../buttons";
 
-export default function Student_Card({ name, editable,email }) {
+export default function Student_Card({ name, editable, email, deleteButton,onPress }) {
   return (
     <View style={styles.container}>
       <View style={styles.main_box}>
@@ -13,18 +13,30 @@ export default function Student_Card({ name, editable,email }) {
         <View style={{ marginLeft: 15 }}>
           <Text style={styles.names}>{name}</Text>
         </View>
-       
       </View>
       <View style={styles.main_box}>
         <FontAwesome name="envelope-o" size={20} color="#82027D" />
         <View style={{ marginLeft: 15 }}>
           <Text style={styles.names}>{email}</Text>
         </View>
-       
       </View>
-      {editable &&( <View style={{flexDirection:'row',marginTop:10}}>
-        <CardButton borderColor={color.purple} label={"Edit"} textColor={color.purple}/>
-      </View>)}
+      <View style={{ flexDirection: "row", marginTop: 10 }}>
+        {editable && (
+          <CardButton
+            borderColor={color.purple}
+            label={"Edit"}
+            textColor={color.purple}
+          />
+        )}
+        {deleteButton && (
+          <CardButton
+            borderColor={color.red}
+            label={"Delete"}
+            textColor={color.red}
+            onPress={onPress}
+          />
+        )}
+      </View>
     </View>
   );
 }
@@ -39,9 +51,7 @@ const styles = StyleSheet.create({
   },
   main_box: {
     flexDirection: "row",
-    padding:10
-
-    
+    padding: 10,
   },
   names: {
     color: color.purple,
