@@ -17,6 +17,8 @@ import HeaderBack from "../../../../components/header/Header";
 import { AppButton } from "../../../../components/buttons";
 import { myHeadersData } from "../../../../api/helper";
 const { height } = Dimensions.get("window");
+import qs from "qs"
+import axios from "axios";
 export default function ComposeMail({ navigation }) {
   var userType = ["Student", "Tutor", "Parent", "Admin", "Affiliate"];
   const [userList, setUserList] = useState([]);
@@ -47,6 +49,7 @@ export default function ComposeMail({ navigation }) {
     axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
+       navigation.navigate("AdminMailPage")
       })
       .catch(function (error) {
         console.log(error);
