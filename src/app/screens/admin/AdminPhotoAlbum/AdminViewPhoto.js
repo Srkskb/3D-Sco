@@ -1,13 +1,50 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
-const{height,width}=Dimensions.get('window')
+const { height, width } = Dimensions.get("window");
+import { myHeadersData } from "../../../api/helper";
+import CommentCard from "../../../components/card/CommentCard";
+
 export default function AdminViewPhoto({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { access, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
-  const { image, imageParam } = route.params;
+  const { id, image, imageParam } = route.params;
+  const [comments, setComments] = useState([]);
+
+  const loginUID = localStorage.getItem("loginUID");
+  const myHeaders = myHeadersData();
+  const commentList = () => {
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      // `https://3dsco.com/3discoapi/studentregistration.php?photos_comments_list=1&photo_id=${id}`,
+      `https://3dsco.com/3discoapi/studentregistration.php?photos_comments_list=1&photo_id=16`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result.success == 1) setComments(result.data);
+      })
+      .catch((error) => console.log("error", error));
+  };
+  useEffect(() => {
+    commentList();
+    navigation.addListener("focus", () => commentList());
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -25,14 +62,26 @@ export default function AdminViewPhoto({ route, navigation }) {
         <Text>
           <Text style={styles.title}>Description : {description}</Text>
         </Text>
-        <View style={styles.documentView}>
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: `${image}`,
-            }}
-          />
-        </View>
+        <ScrollView style={{ paddingHorizontal: 10 }}>
+          <View style={styles.documentView}>
+            <Image
+              style={styles.tinyLogo}
+              source={{
+                uri: `${image}`,
+              }}
+            />
+          </View>
+          <View>
+            {comments.map((list, index) => (
+              <CommentCard
+                key={list.id}
+                name={list.user_id}
+                comments={list.comments}
+                CommentDate={list.Date}
+              />
+            ))}
+          </View>
+        </ScrollView>
       </View>
     </View>
   );
@@ -43,14 +92,14 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
   },
   tinyLogo: {
-    height: height/2,
-    resizeMode:'contain'
+    height: height / 2,
+    resizeMode: "contain",
   },
   img: {
     width: 300,
     height: 500,
     borderWidth: 1,
-    resizeMode:'contain'
+    resizeMode: "contain",
   },
   inner_view: {
     margin: 10,

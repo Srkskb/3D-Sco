@@ -29,13 +29,14 @@ export default function AdminPhotoAlbum() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
+      // `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=45`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => {
         setFileCabinetData(result.data)
-        console.log(result.data)
+        console.log(result)
       })
       .catch((error) => console.log("error", error));
   };
@@ -146,7 +147,7 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinetCard
+                <FileCabinetCard key={list.id}
                   title={list.title}
                   access={list.access_level}
                   description={list.description}
@@ -166,6 +167,7 @@ axios(config)
                       access: list.access_level,
                       description: list.description,
                       image: list.file_name,
+                      id:list.id
                     })
                   }
                 />
