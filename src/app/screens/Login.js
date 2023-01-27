@@ -27,6 +27,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import * as qs from "qs";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { clockRunning } from "react-native-reanimated";
 // import { showMessage, hideMessage } from "react-native-flash-message";
 export default function Login({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
@@ -55,7 +56,7 @@ export default function Login({ navigation }) {
   };
   const loginUser = async (values) => {
     var role_data = user_id;
-    // const myHeaders = myHeadersData();
+    const myHeaders = myHeadersData();
     // var urlencoded = new FormData();
     // urlencoded.append("login", "1");
     // urlencoded.append("email", values.email);
@@ -91,50 +92,81 @@ export default function Login({ navigation }) {
     //       setMessageFalse(res.message);
     //     }
     //   });
-    var data = qs.stringify({
-  login: '1',
-  email: values.email,
-  password: values.password,
-  type: role_data,
-  username:values.email
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
-axios(config)
-.then((response) =>{
-  console.log(response.data)
-  if(response.data.success==0){
-    //add alert here
-  }else{
-    localStorage.setItem("loginUID", response.data.data.id);
-    if(response.data.data.type=='student'){
-      navigation.navigate("DrawerNavigator");
+    if (role_data == 2) {
+      var formdata = new FormData();
+      formdata.append("tutor_login", "1");
+      formdata.append("email", values.email);
+      formdata.append("username", values.email);
+      formdata.append("password", values.password);
+      formdata.append("type", "2");
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      };
+
+      fetch(
+        "https://3dsco.com/3discoapi/studentregistration.php",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          if (result.success == 1) {
+            localStorage.setItem("loginUID", result.data.id);
+            navigation.navigate("TutorDrawerNavigator");
+          }
+        })
+        .catch((error) => console.log("error", error));
+    } else {
+      var data = qs.stringify({
+        login: "1",
+        email: values.email,
+        password: values.password,
+        type: role_data,
+        username: values.email,
+      });
+      var config = {
+        method: "post",
+        url: "https://3dsco.com/3discoapi/3dicowebservce.php",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data: data,
+      };
+      axios(config)
+        .then((response) => {
+          console.log(response.data);
+          if (response.success == 0) {
+            //add alert here
+          } else {
+            localStorage.setItem("loginUID", response.data.data.id);
+            if (response.data.data.type == "student") {
+              navigation.navigate("DrawerNavigator");
+            }
+            // if(response.data.data.type=='tutor'){
+            //   navigation.navigate("TutorDrawerNavigator");
+            // }
+            if (response.data.data.type == "parent") {
+              navigation.navigate("ParentDrawerNavigator");
+            }
+            if (response.data.data.type == "admin") {
+              navigation.navigate("AdminDrawerNavigator");
+            }
+            if (response.data.data.type == "affiliate") {
+              navigation.navigate("AffiliateDrawerNavigator");
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          setSnackVisibleFalse(true);
+          setMessageFalse(error.response.data.message);
+        });
     }
-    if(response.data.data.type=='tutor'){
-      navigation.navigate("TutorDrawerNavigator");
-    }
-    if(response.data.data.type=='parent'){
-      navigation.navigate("ParentDrawerNavigator");
-    }
-    if(response.data.data.type=='admin'){
-      navigation.navigate("AdminDrawerNavigator");
-    }
-    if(response.data.data.type=='affiliate'){
-      navigation.navigate("AffiliateDrawerNavigator");
-    }}
-})
-.catch((error)=>{
-  console.log(error.response.data);
-  setSnackVisibleFalse(true);
-  setMessageFalse(error.response.data.message)
-});
   };
 
   return (
@@ -184,11 +216,11 @@ axios(config)
                     validationSchema={Yup.object().shape({
                       password: Yup.string()
                         .required("Password is required")
-                        .min(5, "Your password is too short.")
-                        // .matches(
-                        //   /[a-zA-Z]/,
-                        //   "Password can only contain Latin letters."
-                        // ),
+                        .min(5, "Your password is too short."),
+                      // .matches(
+                      //   /[a-zA-Z]/,
+                      //   "Password can only contain Latin letters."
+                      // ),
                     })}
                     onSubmit={(values) => loginUser(values)}
                   >
