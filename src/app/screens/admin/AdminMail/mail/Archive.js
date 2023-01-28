@@ -39,7 +39,8 @@ export default function Archive({ navigation }) {
 };
 useEffect(() => {
   Archive();
-}, []);
+    navigation.addListener("focus", () => Archive());
+  }, []);
 const onRefresh = () => {
   setRefreshing(true);
   Archive();

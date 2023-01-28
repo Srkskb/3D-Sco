@@ -39,6 +39,7 @@ export default function Spam({ navigation }) {
   };
   useEffect(() => {
     SpamMessage();
+    navigation.addListener("focus", () => SpamMessage());
   }, []);
   const onRefresh = () => {
     setRefreshing(true);

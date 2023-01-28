@@ -34,6 +34,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
   }
   useEffect(()=>{
     Inbox()
+    navigation.addListener("focus", () => Inbox());
   },[])
   const onRefresh = () => {
     setRefreshing(true);

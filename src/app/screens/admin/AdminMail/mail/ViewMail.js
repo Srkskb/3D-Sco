@@ -43,7 +43,7 @@ export default function ViewMail({ route, navigation }) {
     var formdata = new FormData();
     formdata.append("delete_message", "1");
     formdata.append("id", msg.id);
-
+    console.log(formdata)
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -54,6 +54,7 @@ export default function ViewMail({ route, navigation }) {
     fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        console.log(result)
         setSnackVisibleTrue(true);
         setMessageTrue(result.message);
         navigation.goBack()

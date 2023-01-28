@@ -37,6 +37,7 @@ export default function Sent({ navigation }) {
   };
   useEffect(() => {
     SentMessage();
+    navigation.addListener("focus", () => SentMessage());
   }, []);
   const onRefresh = () => {
     setRefreshing(true);
