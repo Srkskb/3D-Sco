@@ -9,8 +9,12 @@ import axios from "axios";
 import qs from "qs"
 
 export default function EnrollStudent({ navigation }) {
+  const [coursesid, setCoursesid] = useState([])
   const [courses, setCourses] = useState([])
+  const [studentsid, setStudentsid] = useState([])
   const [students, setStudents] = useState([])
+  const [studentId, setStudentId] = useState('')
+  const [coursesId, setCoursesId] = useState('')
   const getStudents=()=>{
     var requestOptions = {
   method: 'GET',
@@ -25,9 +29,10 @@ export default function EnrollStudent({ navigation }) {
 fetch("https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=student", requestOptions)
   .then(response => response.json())
   .then(result => {
-    // console.log(result)
-    var students=result.data.map(i=>i.id)
-    setStudents(students)
+    // console.log(result.data)
+    var students=result.data.map(i=>i.username)
+    setStudents(result.data)
+    setStudentsid(students)
   })
   .catch(error => console.log('error', error));
   }
@@ -45,9 +50,10 @@ fetch("https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=studen
 
 axios(config)
 .then((response)=>{
-  console.log(JSON.stringify(response.data));
-  var courses=response.data.data.map(i=>i.book_id)
-  setCourses(courses)
+  // console.log(JSON.stringify(response.data));
+  var courses=response.data.data.map(i=>i.Courses)
+  setCourses(response.data.data)
+  setCoursesid(courses)
 })
 .catch((error)=>{
   console.log(error);
@@ -67,8 +73,8 @@ axios(config)
   const enroll=()=>{
     var data = qs.stringify({
   'student_select_courses': '1',
-  'course_id': '17',
-  'student_id': '198' 
+  'course_id': coursesId,
+  'student_id': studentId 
 });
 var config = {
   method: 'post',
@@ -79,6 +85,7 @@ var config = {
   },
   data : data
 };
+console.log(data)
 
 axios(config)
 .then((response)=>{
@@ -89,6 +96,25 @@ axios(config)
 });
   }
 
+  const studentid=(name)=>{
+      var id=students.filter(i=>i.username==name).map(i=>i.id)
+      console.log(id)
+      if(id.length>1){
+        setStudentId(id[0])
+      }else{
+        setStudentId(id)
+      }
+  }
+  const courseid=(name)=>{
+      var id=courses.filter(i=>i.Courses==name).map(i=>i.book_id)
+      console.log(id)
+      if(id.length>1){
+        setCoursesId(id[0])
+      }else{
+        setCoursesId(id)
+      }
+  }
+
   return (
     <View style={styles.container}>
       <HeaderBack
@@ -96,9 +122,9 @@ axios(config)
         onPress={() => navigation.goBack()}
       />
       <View style={styles.main}>
-        <CommonDropdown label={"Select Student"} data={students} />
+        <CommonDropdown label={"Select Student"} data={studentsid} onSelect={(item,index)=>{studentid(item)}}/>
 
-        <CommonDropdown label={"Select Course"} data={courses}/>
+        <CommonDropdown label={"Select Course"} data={coursesid} onSelect={(item,index)=>{courseid(item)}}/>
       </View>
       <View style={styles.title_container}>
         <AppButton title={"Enroll"} btnColor={color.purple} onPress={enroll}/>
