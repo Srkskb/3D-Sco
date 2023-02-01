@@ -22,7 +22,7 @@ export default function AffiliateAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
-                onPress={() => navigation.navigate("AffiliateMail")}
+                onPress={() => navigation.navigate("AffiliateMailPage")}
               />
 
               <Account_Tabs

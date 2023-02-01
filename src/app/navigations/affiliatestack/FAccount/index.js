@@ -1,7 +1,7 @@
 
 export {default as AffiliateAccount} from '../../../screens/affiliate/AffiliateAccount/AffiliateAccount'
-export {default as AffiliateMail} from '../../../screens/affiliate/AffiliateMail/AffiliateMail'
 export {default as AffiliateEvent} from '../../../screens/affiliate/AffiliateEventCalender/AffiliateEvent'
+export {default as AffiliateMail} from '../../../screens/affiliate/AffiliateMail/AffiliateMail'
 export {default as AffiliateCabinet}  from '../../../screens/affiliate/AffiliateCabinet/AffiliateCabinet'
 export {default as AffiliateAddFileCabinet} from '../../../screens/affiliate/AffiliateCabinet/AffiliateAddFileCabinet'
 export {default as AffiliateViewContent} from '../../../screens/affiliate/AffiliateCabinet/AffiliateViewContent'

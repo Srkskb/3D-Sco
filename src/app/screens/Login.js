@@ -147,9 +147,9 @@ export default function Login({ navigation }) {
             if (response.data.data.type == "student") {
               navigation.navigate("DrawerNavigator");
             }
-            // if(response.data.data.type=='tutor'){
-            //   navigation.navigate("TutorDrawerNavigator");
-            // }
+            if(response.data.data.type=='tutor'){
+              navigation.navigate("TutorDrawerNavigator");
+            }
             if (response.data.data.type == "parent") {
               navigation.navigate("ParentDrawerNavigator");
             }

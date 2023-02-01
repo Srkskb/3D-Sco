@@ -22,7 +22,7 @@ export default function ParentAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
-                onPress={() => navigation.navigate("ParentMail")}
+                onPress={() => navigation.navigate("ParentMailPage")}
               />
 
               <Account_Tabs

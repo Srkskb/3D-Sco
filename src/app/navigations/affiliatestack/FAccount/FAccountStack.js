@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
-    AffiliateMail,
+  AffiliateMail,
     AffiliateAccount,
     AffiliateEvent,
     AffiliateCabinet,
@@ -29,12 +29,19 @@ import {
     AffiliateMyJournal,
     AffiliateViewJournal
   } from "./";
+  import AffiliateMailPage from "../../../screens/affiliate/AffiliateMail/mail/AffiliateMailPage";
+  import ViewMail from "../../../screens/affiliate/AffiliateMail/mail/ViewMail";
+  import Reply from "../../../screens/affiliate/AffiliateMail/mail/Reply";
+  import ComposeMail from "../../../screens/affiliate/AffiliateMail/mail/ComposeMail";
   const Stack = createStackNavigator();
 export default function FAccountStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="AffiliateAccount" component={AffiliateAccount} />
-      <Stack.Screen name="AffiliateMail" component={AffiliateMail} />
+      <Stack.Screen name="AffiliateMailPage" component={AffiliateMailPage} />
+      <Stack.Screen name="ComposeMail" component={ComposeMail} />
+      <Stack.Screen name="ViewMail" component={ViewMail} />
+      <Stack.Screen name="Reply" component={Reply} />
       <Stack.Screen name="AffiliateEvent" component={AffiliateEvent} />
       <Stack.Screen name="AffiliateCabinet" component={AffiliateCabinet} />
       <Stack.Screen name="AffiliateAddFileCabinet" component={AffiliateAddFileCabinet} />

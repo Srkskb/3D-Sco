@@ -22,7 +22,7 @@ export default function Account() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
-                onPress={() => navigation.navigate("Mail")}
+                onPress={() => navigation.navigate("StudentMailPage")}
               />
 
               <Account_Tabs

@@ -22,7 +22,7 @@ export default function EducatorAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
-                onPress={() => navigation.navigate("EducatorMail")}
+                onPress={() => navigation.navigate("EducatorMailPage")}
               />
 
               <Account_Tabs

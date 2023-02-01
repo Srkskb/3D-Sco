@@ -1,57 +1,53 @@
-import React, { useState, useEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Text,
+  View,
   RefreshControl,
 } from "react-native";
-import Mail_Card from "../../../components/card/Mail_Card";
-import color from "../../../assets/themes/Color";
-import { useNavigation } from "@react-navigation/native";
-import HeaderBack from "../../../components/header/Header";
-import { myHeadersData } from "../../../api/helper";
-import { NoDataFound } from "../../../components";
-export default function ParentMailPage() {
-  const navigation = useNavigation();
+import React, { useState, useEffect } from "react";
+import color from "../../../../assets/themes/Color";
+import Mail_Card from "../../../../components/card/Mail_Card";
+import { myHeadersData } from "../../../../api/helper";
+import { NoDataFound } from "../../../../components";
+export default function Sent({ navigation }) {
   const [mailListData, setMailListData] = useState([]);
-  const [color, changeColor] = useState("red");
-  const [refreshing, setRefreshing] = React.useState(false);
-  const allLearnerList = () => {
-    const loginUID = localStorage.getItem("loginUID");
-    const myHeaders = myHeadersData();
+  const [refreshing, setRefreshing] = useState(false);
+  const loginUID = localStorage.getItem("loginUID");
+
+  const SentMessage = () => {
+    var myHeaders = myHeadersData();
+
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
+
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?mail=1&id=${loginUID}`,
+      `https://3dsco.com/3discoapi/state.php?view_sent=1&Reciever_id=${loginUID}`,
       requestOptions
     )
-      .then((res) => res.json())
-
-      .then((result) => setMailListData(result.data))
-
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        setMailListData(result.data);
+      })
       .catch((error) => console.log("error", error));
   };
+  useEffect(() => {
+    SentMessage();
+    navigation.addListener("focus", () => SentMessage());
+  }, []);
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    SentMessage();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   };
-  useEffect(() => {
-    allLearnerList();
-  }, []);
   return (
-    <View style={styles.container}>
-      <HeaderBack title={"Your Mail"} onPress={() => navigation.goBack()}/>
-      <View style={styles.head}>
-        <Text style={styles.day}>Today</Text>
-        <Text style={styles.clear_all}>Clear all</Text>
-      </View>
+    <View style={{ flex: 1, backgroundColor: color.white }}>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -66,9 +62,13 @@ export default function ParentMailPage() {
             <>
               {mailListData.map((list, index) => (
                 <Mail_Card
-                  title={"Congratulations"}
-                  description={
-                    "dolor pariatur elit ut veniam do voluptate aute minim enim ea nulla dolor pariatur elit ut veniam do."
+                  key={list.id}
+                  sent
+                  title={list.Subject}
+                  description={list.Message}
+                  sender={list.RecieverName}
+                  onPress={() =>
+                    navigation.navigate("ViewMail", { msgType: "sent",msg:list })
                   }
                 />
               ))}
@@ -79,6 +79,7 @@ export default function ParentMailPage() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

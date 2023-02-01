@@ -31,15 +31,20 @@ import {
   ClassRoom,
   ManageResources,
   EditResources,
-  AddResources
+  AddResources,
 } from "./";
-
+import StudentMailPage from "../../../screens/students/StudentMail/mail/StudentMailPage";
+import ComposeMail from "../../../screens/students/StudentMail/mail/ComposeMail";
+import ViewMail from "../../../screens/students/StudentMail/mail/ViewMail";
+import Reply from "../../../screens/students/StudentMail/mail/Reply";
 const Stack = createStackNavigator();
 export default function AccountStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Account" component={Account} />
-      <Stack.Screen name="Mail" component={Mail} />
+      <Stack.Screen name="ComposeMail" component={ComposeMail} />
+      <Stack.Screen name="ViewMail" component={ViewMail} />
+      <Stack.Screen name="Reply" component={Reply} />
       <Stack.Screen name="FileCabinet" component={FileCabinet} />
       <Stack.Screen name="AddFileCabinet" component={AddFileCabinet} />
       <Stack.Screen name="EditFileCabinet" component={EditFileCabinet} />
@@ -50,7 +55,10 @@ export default function AccountStack() {
       <Stack.Screen name="ManageResources" component={ManageResources} />
       <Stack.Screen name="EditResources" component={EditResources} />
       <Stack.Screen name="CourceRoomAccess" component={CourceRoomAccess} />
-      <Stack.Screen name="AddEditStudentCorner" component={AddEditStudentCorner} />
+      <Stack.Screen
+        name="AddEditStudentCorner"
+        component={AddEditStudentCorner}
+      />
       <Stack.Screen name="ClassRoom" component={ClassRoom} />
       <Stack.Screen name="MyJournal" component={MyJournal} />
       <Stack.Screen name="AddMyJournal" component={AddMyJournal} />
@@ -58,8 +66,14 @@ export default function AccountStack() {
       <Stack.Screen name="EditMyJournal" component={EditMyJournal} />
       <Stack.Screen name="StoreFavoriteLinks" component={StoreFavoriteLinks} />
       <Stack.Screen name="AddLink" component={AddLink} />
-      <Stack.Screen name="ViewStoreFavoriteLinks" component={ViewStoreFavoriteLinks} />
-      <Stack.Screen name="EditStoreFavoriteLinks" component={EditStoreFavoriteLinks} />
+      <Stack.Screen
+        name="ViewStoreFavoriteLinks"
+        component={ViewStoreFavoriteLinks}
+      />
+      <Stack.Screen
+        name="EditStoreFavoriteLinks"
+        component={EditStoreFavoriteLinks}
+      />
       <Stack.Screen name="MyProjects" component={MyProjects} />
       <Stack.Screen name="AddProject" component={AddProject} />
       <Stack.Screen name="ViewMyProject" component={ViewMyProjects} />
@@ -68,6 +82,7 @@ export default function AccountStack() {
       <Stack.Screen name="EditBlogs" component={EditBlogs} />
       <Stack.Screen name="AddBlog" component={AddBlog} />
       <Stack.Screen name="ViewBlogs" component={ViewBlogs} />
+      <Stack.Screen name="StudentMailPage" component={StudentMailPage} />
     </Stack.Navigator>
   );
 }
