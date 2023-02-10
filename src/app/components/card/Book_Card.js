@@ -2,9 +2,9 @@ import { View, Text,StyleSheet,Image,TouchableOpacity } from 'react-native'
 import React from 'react'
 import color from "../../assets/themes/Color"
 let book_img=require('../../assets/images/book.png')
-export default function Book_Card({title,author}) {
+export default function Book_Card({title,author,onPress}) {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} activeOpacity={0.6} onPress={onPress}>
       <View style={styles.upper_portion}>
     <Image style={styles.bookimg} source={book_img}/>
       </View>
@@ -15,11 +15,9 @@ export default function Book_Card({title,author}) {
         <Text style={styles.author}>Author: </Text>
         <Text style={styles.author_name}>{author}</Text>
         </View>
-        <TouchableOpacity>
-            <Text style={styles.download_btn}>DOWNLOAD</Text>
-        </TouchableOpacity>
+            <Text style={styles.download_btn}>View Book</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 const styles = StyleSheet.create({

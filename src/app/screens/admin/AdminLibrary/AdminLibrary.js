@@ -4,7 +4,10 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
-  TextInput,Image,TouchableOpacity,Text
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Text,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +17,7 @@ import Book_Card from "../../../components/card/Book_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import Library_Search from "../../../components/LibrarySearch";
+import TextWithButton from "../../../components/TextWithButton";
 
 export default function LibraryAccess() {
   const navigation = useNavigation();
@@ -64,39 +68,41 @@ export default function LibraryAccess() {
   }, [searchTerm]);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Library"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Library"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
-        <HeaderText title={"Library Access"} />
+        {/* <HeaderText title={"Library Access"} /> */}
         {/* <TextInput
           onChangeText={setSearchTerm}
           value={searchTerm}
           style={styles.search_text}
           
         /> */}
+        <TextWithButton
+          title={"Library Access"}
+          label={"Manage Library"}
+          onPress={() => navigation.navigate("AdminManageLibrary")}
+        />
         <View style={styles.search_box}>
-      <View style={styles.icon_box}>
-        <Image
-          style={styles.icon}
-          source={require("../../../assets/images/Search.png")}
-        />
-      </View>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.text_input}
-          onChangeText={setSearchTerm}
-          value={searchTerm}
-          placeholder={"Search title, author..."}
-        />
-      </View>
-      <TouchableOpacity style={styles.search_button}>
-        <View>
-          <Text style={styles.search_text}>SEARCH</Text>
+          <View style={styles.icon_box}>
+            <Image
+              style={styles.icon}
+              source={require("../../../assets/images/Search.png")}
+            />
+          </View>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.text_input}
+              onChangeText={setSearchTerm}
+              value={searchTerm}
+              placeholder={"Search title, author..."}
+            />
+          </View>
+          <TouchableOpacity style={styles.search_button}>
+            <View>
+              <Text style={styles.search_text}>SEARCH</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-    </View>
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -110,7 +116,7 @@ export default function LibraryAccess() {
             ) : (
               <>
                 {studentLibrary.map((list) => (
-                  <Book_Card title={list.titel} author={list.author} />
+                  <Book_Card title={list.titel} author={list.author} onPress={()=>navigation.navigate("ViewBook")}/>
                 ))}
               </>
             )}
@@ -141,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexWrap: "wrap",
   },
-    search_box: {
+  search_box: {
     borderWidth: 1,
     borderColor: color.purple,
     flexDirection: "row",

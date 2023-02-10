@@ -64,6 +64,10 @@ import {
 import AdminMailPage from "../../../screens/admin/AdminMail/mail/AdminMailPage";
 import ComposeMail from "../../../screens/admin/AdminMail/mail/ComposeMail";
 import ViewMail from "../../../screens/admin/AdminMail/mail/ViewMail";
+import AdminManageLibrary from "../../../screens/admin/AdminLibrary/AdminManageLibrary";
+import AdminAddBook from "../../../screens/admin/AdminLibrary/AdminAddBook";
+import AdminEditBook from "../../../screens/admin/AdminLibrary/AdminEditBook";
+import ViewBook from "../../../screens/admin/AdminLibrary/ViewBook";
 import Reply from "../../../screens/admin/AdminMail/mail/Reply";
 const Stack = createStackNavigator();
 export default function AAccountStack() {
@@ -153,6 +157,10 @@ export default function AAccountStack() {
       <Stack.Screen name="AdminViewPhoto" component={AdminViewPhoto} />
       <Stack.Screen name="AdminPhotoAlbum" component={AdminPhotoAlbum} />
 
+      <Stack.Screen name="AdminManageLibrary" component={AdminManageLibrary} />
+      <Stack.Screen name="AdminAddBook" component={AdminAddBook} />
+      <Stack.Screen name="AdminEditBook" component={AdminEditBook} />
+      <Stack.Screen name="ViewBook" component={ViewBook} />
     </Stack.Navigator>
   );
 }

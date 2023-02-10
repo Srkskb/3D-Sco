@@ -17,6 +17,10 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import { UploadDocument } from "../../../../components";
 import SmallButton from "../../../../components/buttons/SmallButton";
+import InitialContent from "../../../../components/dropdown/admin_user/InitialContent";
+import ExportContent from "../../../../components/dropdown/admin_user/ExportContent";
+import Syndicate from "../../../../components/dropdown/admin_user/SyndicateAnnouncement";
+import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
 
 const { width, height } = Dimensions.get("window");
 export default function EditCourse({ navigation }) {
@@ -105,7 +109,11 @@ export default function EditCourse({ navigation }) {
           <CommonDropdown label={"Category"} />
           <CommonDropdown label={"Primary Language"} />
           <Input placeholder={"Course Title"} label={"Course Title"} />
-          <CommonDropdown label={"Topic/Subject"} />
+          <Input
+            placeholder={"Topic/Subject"}
+            label={"Topic/Subject"}
+            onChangeText={(text) => setSubject(text)}
+          />
           <Input
             placeholder={"Description"}
             label={"Description"}
@@ -127,9 +135,9 @@ export default function EditCourse({ navigation }) {
             numberOfLines={6}
             textAlignVertical={"top"}
           />
-          <CommonDropdown label={"Export Content"} />
-          <CommonDropdown label={"Syndicate Announcements"} />
-          <CommonDropdown label={"Access"} />
+         <ExportContent label={"Export Content"}marginBottom={10}/>
+          <Syndicate label={"Syndicate Announcements"} marginBottom={10}/>
+          <AccessLevel label={"Access"} marginBottom={10}/>
           <View
             style={{
               flexDirection: "row",
@@ -282,9 +290,19 @@ export default function EditCourse({ navigation }) {
             numberOfLines={6}
             textAlignVertical={"top"}
           />
-          <CommonDropdown label={"Initial Content"} />
-          <CommonDropdown label={"Course Quota"} />
-          <CommonDropdown label={"Max File Size"} />
+          <InitialContent label={"Initial Content"}/>
+          <Input
+            label={"Course Quota"}
+            placeholder={"in MB"}
+            onChangeText={(text) => setCourseQuota(text)}
+            keyboardType="number-pad"
+          />
+          <Input
+            label={"Max File Size"}
+            placeholder={"in MB"}
+            onChangeText={(text) => setMaxsize(text)}
+            keyboardType="number-pad"
+          />
           <Input
             placeholder={"Banner"}
             label={"Banner"}

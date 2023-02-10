@@ -122,8 +122,8 @@ export default function AdminEditBlogs({ route, navigation }) {
             <View>
               <InputField
                 required
-                label={"Event Title"}
-                placeholder={"Event Title"}
+                label={"Blog Title"}
+                placeholder={"Blog Title"}
                 name="title"
                 onChangeText={(text) => setUpTitle(text)}
                 value={updateTitle}
@@ -131,7 +131,7 @@ export default function AdminEditBlogs({ route, navigation }) {
               />
 
               <Text style={{ marginBottom: 5 }}>
-                <Text style={styles.label_text}>Event Date</Text>
+                <Text style={styles.label_text}>Blog Date</Text>
                 <Text style={{ color: color.red }}>*</Text>
               </Text>
               <View style={styles.calendar_input}>
