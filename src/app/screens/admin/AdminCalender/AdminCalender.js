@@ -37,11 +37,14 @@ export default function AdminCalender() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
+      // `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=141`,
       requestOptions
     )
       .then((res) => res.json())
-      .then((result) => setEventList(result.data))
+      .then((result) =>{
+        console.log(result)
+        setEventList(result.data)})
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (event_id) => {
@@ -133,9 +136,10 @@ export default function AdminCalender() {
         ) : (
           <>
             {eventList &&
-              eventList.map((list) => (
+              eventList.map((list,index) => (
                 <View style={{ paddingHorizontal: 10 }}>
                   <Event_Card
+                  key={index}
                     title={list.event_title}
                     status={list.access_level}
                     date={moment(list && list?.event_date).format("LL")}

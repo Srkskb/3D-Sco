@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View,  StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import Detail from "../components/view/Detail";
 import Headline from "../components/Headline";
 import color from "../assets/themes/Color";
@@ -8,10 +8,9 @@ import { Edit } from "../components/buttons";
 import HomeHeader from "../components/header/HomeHeader";
 import { myHeadersData } from "./../api/helper";
 
-export default function ViewProfile ({navigation}) {
-   const user_id = localStorage.getItem("user_id"); // ! loged user id
+export default function ViewProfile({ navigation }) {
+  const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
-  
 
   // ! setUser data for the
   const [getName, setUpName] = useState();
@@ -35,11 +34,13 @@ export default function ViewProfile ({navigation}) {
   const [getInstitute, setUpInstitute] = useState();
   const [getSchool, setUpSchool] = useState();
   const [getCollege, setUpCollege] = useState();
+  const [loading, setLoading] = useState(false);
 
   // ! Too show user details
-  
+
   const showUserDetails = () => {
-    console.log('loginUID',loginUID);
+    console.log("loginUID", loginUID);
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -53,7 +54,8 @@ export default function ViewProfile ({navigation}) {
     )
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        console.log(res.Profile_Detail);
+        setLoading(false);
         setUpName(res.Profile_Detail.name);
         setUpEmail(res.Profile_Detail.Email);
         setUpGender(res.Profile_Detail.Gender);
@@ -76,7 +78,10 @@ export default function ViewProfile ({navigation}) {
         setUpInstitute(res.Profile_Detail.institute);
         setUpCollege(res.Profile_Detail.college);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   useEffect(() => {
     showUserDetails();
@@ -84,7 +89,22 @@ export default function ViewProfile ({navigation}) {
   return (
     <View style={styles.container}>
       {/* <HeaderBack title={"User Detail"} onPress={()=>navigation.navigate("HomeScreen")}/> */}
-      <HomeHeader navigation={navigation} title={"View Profile"}/>
+      <HomeHeader navigation={navigation} title={"View Profile"} />
+      {loading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#ffffffcc",
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 100,
+          }}
+        >
+          <ActivityIndicator size={"large"} />
+        </View>
+      ) : null}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ paddingHorizontal: 10 }}>
           {/* Personal Information */}
@@ -99,10 +119,7 @@ export default function ViewProfile ({navigation}) {
           {/* Educational Information */}
           <Headline title={"Educational Information"} />
           <Detail title={"School Name"} data={getSchool} />
-          <Detail
-            title={"College Name"}
-            data={getCollege}
-          />
+          <Detail title={"College Name"} data={getCollege} />
           <Detail title={"Country"} data={getCountry} />
           <Detail title={"State"} data={getState_id} />
           <Detail title={"City"} data={getCity_id} />
@@ -112,8 +129,12 @@ export default function ViewProfile ({navigation}) {
           <Detail title={"UserName"} data={getUsername} />
           {/* Other Preferences */}
           <Headline title={"Other Preferences"} />
-          {getGender == 'M' ? <><Detail title={"Gender"} data={"Male"} /></>:null}
-            
+          {getGender == "M" ? (
+            <>
+              <Detail title={"Gender"} data={"Male"} />
+            </>
+          ) : null}
+
           <Detail title={"Category"} data={getCategory} />
           <Detail title={"Comments"} data={getComment} />
         </View>
