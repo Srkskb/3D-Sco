@@ -17,6 +17,7 @@ import {
 import { Snackbar } from "react-native-paper";
 import color from "../assets/themes/Color";
 import { Splash } from "./../components";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppButton from "./../components/buttons/AppButton";
 import { myHeadersData, useTogglePasswordVisibility } from "../api/helper";
 import Input from "../components/inputs/Input";
@@ -29,6 +30,12 @@ import * as qs from "qs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { clockRunning } from "react-native-reanimated";
 // import { showMessage, hideMessage } from "react-native-flash-message";
+const storeData = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, value); 
+  } catch (error) {
+  }
+};
 export default function Login({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
     useTogglePasswordVisibility();
@@ -144,6 +151,7 @@ export default function Login({ navigation }) {
             //add alert here
           } else {
             localStorage.setItem("loginUID", response.data.data.id);
+            storeData('userType',JSON.stringify(response.data.data))
             if (response.data.data.type == "student") {
               navigation.navigate("DrawerNavigator");
             }
@@ -162,7 +170,7 @@ export default function Login({ navigation }) {
           }
         })
         .catch((error) => {
-          console.log(error.response.data);
+          console.log(error);
           setSnackVisibleFalse(true);
           setMessageFalse(error.response.data.message);
         });

@@ -7,16 +7,23 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Splash } from "../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 const newLocal_1 = "../assets/images/background/Background.png";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { height, width } = Dimensions.get("window");
 import AppButton from "../components/buttons/AppButton";
 import color from "../assets/themes/Color";
 import User from "../components/dropdown/User";
 import "localstorage-polyfill";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'
+const storeData = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, value); 
+  } catch (error) {
+  }
+};
 export default function UserType({ navigation }) {
   const [userID, setUserID] = useState();
   const [isDisabled, setDisabled] = useState(false);
@@ -25,6 +32,32 @@ export default function UserType({ navigation }) {
     localStorage.setItem("userID", userID);
     navigation.navigate("Login");
   };
+  useEffect(() => {
+    AsyncStorage.getItem('userType')
+    .then(data => {
+      console.log(JSON.parse(data).type)
+      if(data==null){
+      }else{
+        if (JSON.parse(data).type == "student") {
+          navigation.navigate("DrawerNavigator");
+        }
+        if(JSON.parse(data).type=='tutor'){
+          navigation.navigate("TutorDrawerNavigator");
+        }
+        if (JSON.parse(data).type == "parent") {
+          navigation.navigate("ParentDrawerNavigator");
+        }
+        if (JSON.parse(data).type == "admin") {
+          navigation.navigate("AdminDrawerNavigator");
+        }
+        if (JSON.parse(data).type == "affiliate") {
+          navigation.navigate("AffiliateDrawerNavigator");
+        }
+      }
+    })
+    
+  }, [])
+  
 
   return (
     <SafeAreaView>
@@ -42,6 +75,7 @@ export default function UserType({ navigation }) {
               <User
                 onSelect={(selectedItem, index) => {
                   setUserID(index);
+                  // storeData('userType',JSON.stringify(index))
                   console.log(selectedItem, index);
                 }}
               />
