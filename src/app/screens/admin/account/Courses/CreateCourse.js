@@ -221,10 +221,10 @@ export default function CreateCourse({ navigation }) {
             onChangeText={(text) => setJobsheet(text)}
           />
           {/* <CommonDropdown label={"Export Content"} /> */}
-          <ExportContent label={"Export Content"}/>
+          <ExportContent label={"Export Content"} />
           <Syndicate label={"Syndicate Announcements"} />
           <AccessLevel label={"Access"} />
-          
+
           <View
             style={{
               flexDirection: "row",
@@ -379,7 +379,7 @@ export default function CreateCourse({ navigation }) {
             onChangeText={(text) => setBanner(text)}
           />
           {/* <CommonDropdown label={"Initial Content"} /> */}
-          <InitialContent label={"Initial Content"}/>
+          <InitialContent label={"Initial Content"} />
           <Input
             label={"Course Quota"}
             placeholder={"in MB"}
@@ -402,6 +402,7 @@ export default function CreateCourse({ navigation }) {
             <SmallButton
               title="Save"
               color={color.white}
+              loading={loading}
               backgroundColor={color.purple}
               fontFamily={"Montserrat-Bold"}
               onPress={() => addCourse()}

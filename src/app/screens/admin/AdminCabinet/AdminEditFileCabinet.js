@@ -91,7 +91,6 @@ export default function AdminEditFileCabinet({ route, navigation }) {
 
   const onClick = () => {
     setShowResults(true);
-  
   };
   const onClickDoc = () => {
     setShowDocResults(true);
@@ -203,6 +202,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
                 />
                 <SmallButton
                   onPress={updateDocument}
+                  loading={loading}
                   title="Save"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}

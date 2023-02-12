@@ -1,4 +1,11 @@
-import { View, Text, ScrollView, StyleSheet,Image,TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
@@ -10,14 +17,14 @@ import { myHeadersData } from "../../../../api/helper";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
-import mime from 'mime'
+import mime from "mime";
 import * as ImagePicker from "expo-image-picker";
-export default function EditBackup({navigation,route}) {
-  const { title, titleParam,id } = route.params;
+export default function EditBackup({ navigation, route }) {
+  const { title, titleParam, id } = route.params;
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
-  const[course,setCourse]=useState("Select Course")
+  const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
   // const [showDocResults, setShowDocResults] = useState(false);
@@ -36,42 +43,49 @@ export default function EditBackup({navigation,route}) {
       setImage(result.uri);
     }
   };
-  const EditBackupFun=(values)=>{
-    console.log(values.docTitle,course,loginUID,values.description,image,mime.getType(image));
+  const EditBackupFun = (values) => {
+    console.log(
+      values.docTitle,
+      course,
+      loginUID,
+      values.description,
+      image,
+      mime.getType(image)
+    );
 
     const myHeaders = myHeadersData();
     var formdata = new FormData();
-formdata.append("Update_backup", "1");
-formdata.append("user_id", loginUID);
-formdata.append("course_id", "12");
-formdata.append("title", values.docTitle);
-formdata.append("detail", values.description);
-formdata.append("image", );
-formdata.append("id", id);
+    formdata.append("Update_backup", "1");
+    formdata.append("user_id", loginUID);
+    formdata.append("course_id", "12");
+    formdata.append("title", values.docTitle);
+    formdata.append("detail", values.description);
+    formdata.append("image");
+    formdata.append("id", id);
 
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: formdata,
-  redirect: 'follow'
-};
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
 
-fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-  .then(response => response.text())
-  .then(result => {
-    console.log(result)
-    //Add navigation here
-    navigation.navigate("Backup")
-  })
-  .catch(error => console.log('error', error));
-}
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        //Add navigation here
+        navigation.navigate("Backup");
+      })
+      .catch((error) => console.log("error", error));
+  };
 
   // const onClickDoc = () => {
   //   setShowDocResults(true);
   // };
   return (
-    <View style={{backgroundColor:color.white,flex:1}}>
-      <HeaderBack title={"Edit Backup"} onPress={()=>navigation.goBack()} />
+    <View style={{ backgroundColor: color.white, flex: 1 }}>
+      <HeaderBack title={"Edit Backup"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -127,14 +141,13 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
                     value={access}
                   /> */}
                   <SelectCourse
-          label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setCourse(selectedItem)
-            console.log(selectedItem, index);
-            
-          }}
-          value={course}
-        />
+                    label={"Select Course"}
+                    onSelect={(selectedItem, index) => {
+                      setCourse(selectedItem);
+                      console.log(selectedItem, index);
+                    }}
+                    value={course}
+                  />
 
                   {errors.selectedItem && (
                     <Text
@@ -171,7 +184,6 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
                     multiline={true}
                     numberOfLines={6}
                     onChangeText={handleChange("description")}
-                  
                     onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
@@ -190,12 +202,12 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                       onPress={()=>console.log(route.params.title)}
+                      onPress={() => console.log(route.params.title)}
                     />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
-                      disabled={!isValid}
+                      loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}

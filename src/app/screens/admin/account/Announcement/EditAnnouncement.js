@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import React ,{useState} from "react";
+import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
 import InputField from "../../../../components/inputs/Input";
@@ -9,43 +9,46 @@ import { UploadDocument } from "../../../../components";
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
-export default function EditAnnouncement({navigation}) {
-  const [title, setTitle]=useState("")
-  const[description,setDescription]=useState("")
-  const[course,setCourse]=useState("Select Course")
+export default function EditAnnouncement({ navigation }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
-  const EditAnnouncement=(values)=>{
-    console.log(values.docTitle,course,loginUID,values.description,);
+  const EditAnnouncement = (values) => {
+    console.log(values.docTitle, course, loginUID, values.description);
     var data = new FormData();
-data.append('Update_courses_announcement', '1');
-data.append('user_id', loginUID);
-data.append('announcement_title', values.title);
-data.append('Description', values.description);
-data.append('course_id', course);
-data.append('image', );
+    data.append("Update_courses_announcement", "1");
+    data.append("user_id", loginUID);
+    data.append("announcement_title", values.title);
+    data.append("Description", values.description);
+    data.append("course_id", course);
+    data.append("image");
 
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7', 
-    data
-  },
-  data : data
-};
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Cookie: "PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7",
+        data,
+      },
+      data: data,
+    };
 
-axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data));
-  navigation.navigate("Announcement")
-})
-.catch(function (error) {
-  console.log(error);
-});
-  }
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        navigation.navigate("Announcement");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
-    <View style={{backgroundColor:color.white,flex:1}}>
-      <HeaderBack title={"Add Announcement"} onPress={()=>navigation.goBack()} />
+    <View style={{ backgroundColor: color.white, flex: 1 }}>
+      <HeaderBack
+        title={"Add Announcement"}
+        onPress={() => navigation.goBack()}
+      />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -101,14 +104,13 @@ axios(config)
                     value={access}
                   /> */}
                   <SelectCourse
-          label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setCourse(selectedItem)
-            console.log(selectedItem, index);
-            
-          }}
-          value={course}
-        />
+                    label={"Select Course"}
+                    onSelect={(selectedItem, index) => {
+                      setCourse(selectedItem);
+                      console.log(selectedItem, index);
+                    }}
+                    value={course}
+                  />
 
                   {errors.selectedItem && (
                     <Text
@@ -149,12 +151,12 @@ axios(config)
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={()=>navigation.navigate("Announcement")}
+                      onPress={() => navigation.navigate("Announcement")}
                     />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
-                      disabled={!isValid}
+                      loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}

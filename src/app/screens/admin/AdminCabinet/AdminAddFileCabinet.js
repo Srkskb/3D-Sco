@@ -27,6 +27,7 @@ export default function AdminAddFileCabinet() {
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
@@ -47,6 +48,7 @@ export default function AdminAddFileCabinet() {
 
   const addFileCabinet = (values) => {
     console.log(values.docTitle,access,loginUID,values.description,image);
+    setLoading(true)
     const myHeaders = myHeadersData();
 
 
@@ -71,6 +73,7 @@ export default function AdminAddFileCabinet() {
     })
       .then((res) => res.json())
       .then((res) => {
+        setLoading(false)
         console.log(res);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
@@ -204,7 +207,7 @@ export default function AdminAddFileCabinet() {
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
-                      disabled={!isValid}
+                      loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}

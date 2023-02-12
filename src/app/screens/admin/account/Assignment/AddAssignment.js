@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet,Image } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Image } from "react-native";
 import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
@@ -10,12 +10,12 @@ import { myHeadersData } from "../../../../api/helper";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
-import mime from 'mime'
+import mime from "mime";
 import * as ImagePicker from "expo-image-picker";
-export default function AddAssignment({navigation}) {
-  const [title, setTitle]=useState("")
-  const[description,setDescription]=useState("")
-  const[course,setCourse]=useState("Select Course")
+export default function AddAssignment({ navigation }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
@@ -31,22 +31,29 @@ export default function AddAssignment({navigation}) {
       setImage(result.uri);
     }
   };
-  const AddAssignment=(values)=>{
-    console.log(values.docTitle,course,loginUID,values.description,image,mime.getType(image));
+  const AddAssignment = (values) => {
+    console.log(
+      values.docTitle,
+      course,
+      loginUID,
+      values.description,
+      image,
+      mime.getType(image)
+    );
     const myHeaders = myHeadersData();
     var data = new FormData();
-data.append('add_courses_assignment', '1');
-data.append('user_id', loginUID);
-data.append('course_id', course);
-data.append('assignment_title',values.docTitle );
-data.append('Description', values.description);
-data.append('image', {
-  uri: image,//"file:///" + image.split("file:/").join(""),
-  type: mime.getType(image),
-  name: `abc.jpg`
-}); 
+    data.append("add_courses_assignment", "1");
+    data.append("user_id", loginUID);
+    data.append("course_id", course);
+    data.append("assignment_title", values.docTitle);
+    data.append("Description", values.description);
+    data.append("image", {
+      uri: image, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image),
+      name: `abc.jpg`,
+    });
 
-fetch("https://3dsco.com/3discoapi/studentregistration.php", {
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: data,
       headers: {
@@ -58,18 +65,19 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          
           navigation.navigate("Assignment");
         }
-})
-.catch(function (error) {
-  console.log(error);
-});
-
-  }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
-    <View style={{backgroundColor:color.white,flex:1}}>
-      <HeaderBack title={"Add Assignment"} onPress={()=>navigation.goBack()} />
+    <View style={{ backgroundColor: color.white, flex: 1 }}>
+      <HeaderBack
+        title={"Add Assignment"}
+        onPress={() => navigation.goBack()}
+      />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -125,14 +133,13 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     value={access}
                   /> */}
                   <SelectCourse
-          label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setCourse(selectedItem)
-            console.log(selectedItem, index);
-            
-          }}
-          value={course}
-        />
+                    label={"Select Course"}
+                    onSelect={(selectedItem, index) => {
+                      setCourse(selectedItem);
+                      console.log(selectedItem, index);
+                    }}
+                    value={course}
+                  />
 
                   {errors.selectedItem && (
                     <Text
@@ -177,7 +184,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
-                      disabled={!isValid}
+                      loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}

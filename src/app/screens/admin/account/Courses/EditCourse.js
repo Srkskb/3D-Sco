@@ -54,52 +54,53 @@ export default function EditCourse({ navigation }) {
     hideDatePicker2();
   };
 
-  const EditCourse=()=>{
+  const Edit = () => {
     var data = qs.stringify({
-      'Update_courses': '1',
-      'user_id': '265',
-      'course_name': 'BA.PASSsss',
-      'language': 'English',
-      'Description': 'This is first event creted by admin everyone need be attend the event so this is very important',
-      'Syndicate': '1',
-      'export_content': 'all',
-      'Access': 'Public',
-      'notify_enroll': '0',
-      'hide_course': '0',
-      'ReleaseDate': '2022-12-27',
-      'EndDate': '2023-12-27',
-      'Banner': 'Hi, This is engineering drawing',
-      'initial_content': '2',
-      'quota': 'Unlimited',
-      'quota_other': '',
-      'filesize': '1',
-      'filesize_other': '100',
-      'Copyright': 'no',
-      'subject': 'BA',
-      'num_week': '0',
-      'Syllabus': 'three year diploma courses',
-      'JobSheet': 'semester',
-      'catID': '2',
-      'id': '46' 
+      Update_courses: "1",
+      user_id: "265",
+      course_name: "BA.PASSsss",
+      language: "English",
+      Description:
+        "This is first event creted by admin everyone need be attend the event so this is very important",
+      Syndicate: "1",
+      export_content: "all",
+      Access: "Public",
+      notify_enroll: "0",
+      hide_course: "0",
+      ReleaseDate: "2022-12-27",
+      EndDate: "2023-12-27",
+      Banner: "Hi, This is engineering drawing",
+      initial_content: "2",
+      quota: "Unlimited",
+      quota_other: "",
+      filesize: "1",
+      filesize_other: "100",
+      Copyright: "no",
+      subject: "BA",
+      num_week: "0",
+      Syllabus: "three year diploma courses",
+      JobSheet: "semester",
+      catID: "2",
+      id: "46",
     });
     var config = {
-      method: 'post',
-      url: 'https://3dsco.com/3discoapi/studentregistration.php',
-      headers: { 
-        'Accept': 'application/json', 
-        'Content-Type': 'application/x-www-form-urlencoded'
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      data : data
+      data: data,
     };
-    
+
     axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
     <View style={styles.container}>
       <HeaderBack title={"Edit Course"} onPress={() => navigation.goBack()} />
@@ -135,9 +136,9 @@ export default function EditCourse({ navigation }) {
             numberOfLines={6}
             textAlignVertical={"top"}
           />
-         <ExportContent label={"Export Content"}marginBottom={10}/>
-          <Syndicate label={"Syndicate Announcements"} marginBottom={10}/>
-          <AccessLevel label={"Access"} marginBottom={10}/>
+          <ExportContent label={"Export Content"} marginBottom={10} />
+          <Syndicate label={"Syndicate Announcements"} marginBottom={10} />
+          <AccessLevel label={"Access"} marginBottom={10} />
           <View
             style={{
               flexDirection: "row",
@@ -290,7 +291,7 @@ export default function EditCourse({ navigation }) {
             numberOfLines={6}
             textAlignVertical={"top"}
           />
-          <InitialContent label={"Initial Content"}/>
+          <InitialContent label={"Initial Content"} />
           <Input
             label={"Course Quota"}
             placeholder={"in MB"}
@@ -319,6 +320,7 @@ export default function EditCourse({ navigation }) {
             />
             <SmallButton
               title="Update"
+              loading={loading}
               color={color.white}
               backgroundColor={color.purple}
               fontFamily={"Montserrat-Bold"}

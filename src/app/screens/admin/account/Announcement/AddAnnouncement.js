@@ -154,7 +154,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
-                      disabled={!isValid}
+                      loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}

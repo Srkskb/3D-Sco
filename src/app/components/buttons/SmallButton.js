@@ -1,13 +1,15 @@
 import React from 'react'
-import { View, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, Button, StyleSheet, TouchableOpacity, Text,ActivityIndicator } from "react-native";
 import color from '../../assets/themes/Color';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'
 
-const SmallButton = ({ onPress,fontFamily, color,title,...props}) => (
+const SmallButton = ({ onPress,fontFamily,loading=false, color,title,...props}) => (
+  <>
+    {loading? <View style={[styles.appButtonContainer,{...props}]}>
+      <ActivityIndicator color={color} size={'small'}/></View>:
     <TouchableOpacity onPress={onPress} style={[styles.appButtonContainer,{...props}]}>
       <Text style={[styles.appButtonText,{color},{fontFamily}]}>{title}</Text>
-      
-    </TouchableOpacity>
+          </TouchableOpacity>}</>
   )
 export default SmallButton
   const styles = StyleSheet.create({
