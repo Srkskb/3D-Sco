@@ -25,12 +25,12 @@ export default function Sent({ navigation }) {
     };
 
     fetch(
-      `https://3dsco.com/3discoapi/state.php?view_sent=1&Reciever_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/state.php?view_sent=1&Sender_ID=${loginUID}`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        console.log(result,loginUID);
         setMailListData(result.data);
       })
       .catch((error) => console.log("error", error));

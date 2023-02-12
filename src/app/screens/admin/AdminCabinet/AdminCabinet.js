@@ -31,8 +31,8 @@ export default function AdminCabinet() {
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result)
-        setFileCabinetData(result.data)
+        console.log(result);
+        setFileCabinetData(result.data);
       })
       .catch((error) => console.log("error", error));
   };
@@ -81,10 +81,7 @@ export default function AdminCabinet() {
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"File cabinet"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"File cabinet"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -121,6 +118,7 @@ export default function AdminCabinet() {
             <>
               {fileCabinetData.map((list, index) => (
                 <FileCabinetCard
+                  key={index}
                   title={list.name}
                   access={list.access_level}
                   description={list.description}

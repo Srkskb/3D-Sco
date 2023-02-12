@@ -80,6 +80,7 @@ export default function ViewMail({ route, navigation }) {
       .then((result) => {
         setSnackVisibleTrue(true);
         setMessageTrue(result.message);
+        navigation.goBack()
       })
       .catch((error) => console.log("error", error));
   };
@@ -102,6 +103,7 @@ export default function ViewMail({ route, navigation }) {
       .then((result) => {
         setSnackVisibleTrue(true);
         setMessageTrue(result.message);
+        navigation.goBack()
       })
       .catch((error) => console.log("error", error));
   };
@@ -187,7 +189,7 @@ export default function ViewMail({ route, navigation }) {
       >
         {getMessageTrue}
       </Snackbar>
-      <View style={{ padding: 10 }}>
+      <View style={{ padding: 10,zIndex:-1000 }}>
         {msgType === "inbox" && (
           <View style={{ flexDirection: "row", marginVertical: 10 }}>
             <CardButton

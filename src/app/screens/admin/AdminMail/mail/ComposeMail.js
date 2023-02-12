@@ -45,6 +45,7 @@ export default function ComposeMail({ navigation }) {
       },
       data: data,
     };
+    console.log(data)
 
     axios(config)
       .then(function (response) {

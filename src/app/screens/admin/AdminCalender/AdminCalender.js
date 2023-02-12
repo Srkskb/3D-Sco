@@ -37,8 +37,8 @@ export default function AdminCalender() {
       redirect: "follow",
     };
     fetch(
-      // `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=141`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
+      // `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=141`,
       requestOptions
     )
       .then((res) => res.json())
