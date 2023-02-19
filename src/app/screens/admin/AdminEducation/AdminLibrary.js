@@ -59,6 +59,7 @@ export default function AdminLibrary() {
               <>
                 {studentLibrary.map((list, index) => (
                   <Book_Card
+                  key={index}
                     title={`${list.titel}`}
                     author={`${list.author}`}
                   />

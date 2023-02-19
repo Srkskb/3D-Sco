@@ -1,9 +1,17 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import { StyleSheet,View, TouchableOpacity, Text, ActivityIndicator } from "react-native";
 import color from "../../assets/themes/Color";
 
-const AppButton = ({ onPress, title, btnColor, ...props }) => (
-  <TouchableOpacity
+const AppButton = ({ onPress, title,loading=false, btnColor, ...props }) => (
+  <>
+    {loading? <View style={{
+      backgroundColor: btnColor,
+      borderRadius: 6,
+      paddingVertical: 12,
+      // paddingHorizontal: 12,
+    }}
+    {...props}>
+      <ActivityIndicator color={'white'} size={'small'}/></View>:<TouchableOpacity
     onPress={onPress}
     style={{
       backgroundColor: btnColor,
@@ -14,7 +22,7 @@ const AppButton = ({ onPress, title, btnColor, ...props }) => (
     {...props}
   >
     <Text style={styles.appButtonText}>{title}</Text>
-  </TouchableOpacity>
+  </TouchableOpacity>}</>
 );
 export default AppButton;
 const styles = StyleSheet.create({

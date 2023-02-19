@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, StatusBar } from "react-native";
+import { View, StatusBar, BackHandler } from "react-native";
 import color from "./src/app/assets/themes/Color";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
@@ -88,6 +88,10 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   useEffect(() => {
     useFonts();
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', function() {
+      return true;
+    })
+  return () => backHandler.remove()
   }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>

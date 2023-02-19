@@ -45,6 +45,7 @@ export default function Login({ navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [isVisibleEntry, setIsVisibleEntry] = useState(true);
+  const [loading, setloading] = useState(false)
   const user_id = localStorage.getItem("userID");
   const handleSignup = () => {
     if (user_id == 1) {
@@ -62,6 +63,7 @@ export default function Login({ navigation }) {
     }
   };
   const loginUser = async (values) => {
+    setloading(true)
     var role_data = user_id;
     const myHeaders = myHeadersData();
     // var urlencoded = new FormData();
@@ -120,13 +122,16 @@ export default function Login({ navigation }) {
       )
         .then((response) => response.json())
         .then((result) => {
+          setloading(false)
           console.log(result);
           if (result.success == 1) {
             localStorage.setItem("loginUID", result.data.id);
             navigation.navigate("TutorDrawerNavigator");
           }
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => {
+          setloading(false)
+          console.log("error", error)});
     } else {
       var data = qs.stringify({
         login: "1",
@@ -149,7 +154,9 @@ export default function Login({ navigation }) {
           console.log(response.data);
           if (response.success == 0) {
             //add alert here
+            setloading(false)
           } else {
+            setloading(false)
             localStorage.setItem("loginUID", response.data.data.id);
             storeData('userType',JSON.stringify(response.data.data))
             if (response.data.data.type == "student") {
@@ -171,6 +178,7 @@ export default function Login({ navigation }) {
         })
         .catch((error) => {
           console.log(error);
+          setloading(false)
           setSnackVisibleFalse(true);
           setMessageFalse(error.response.data.message);
         });
@@ -310,6 +318,7 @@ export default function Login({ navigation }) {
                             <AppButton
                               title={"Login"}
                               onPress={handleSubmit}
+                              loading={loading}
                               // onPress={()=>navigation.navigate("AdminDrawerNavigator")}
                               disabled={!isValid}
                               btnColor={!isValid ? "#6c757d" : color.purple}

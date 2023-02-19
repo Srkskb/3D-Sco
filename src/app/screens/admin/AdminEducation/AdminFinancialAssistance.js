@@ -106,7 +106,7 @@ export default function AdminFinancialAssistance() {
 
         <ScrollView>
           {assistanceData.map((list, index) => (
-            <View style={styles.financialAssis}>
+            <View key={index} style={styles.financialAssis}>
               <View style={{ flexDirection: "row" }}>
                 <View style={styles.right_view}>
                   <Text style={styles.title}>{list.Titel} </Text>

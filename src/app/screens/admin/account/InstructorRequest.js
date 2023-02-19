@@ -42,7 +42,7 @@ export default function InstructorRequest() {
     //   .catch((error) => console.log("error", error));
     var formdata = new FormData();
 formdata.append("instructor_request_list", "1");
-formdata.append("admin_id", '26');
+formdata.append("admin_id", loginUID);
 
 var requestOptions = {
   method: 'POST',
@@ -91,7 +91,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
     
     var formdata = new FormData();
     formdata.append("instructor_request_accept", "1");
-    formdata.append("tutor_id", "314");
+    formdata.append("tutor_id", loginUID);
     
     var requestOptions = {
       method: 'POST',

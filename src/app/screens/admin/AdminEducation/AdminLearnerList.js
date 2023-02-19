@@ -32,7 +32,9 @@ export default function AdminLearnerList() {
     )
       .then((res) => res.json())
 
-      .then((result) => setLearnerList(result.data))
+      .then((result) => {
+        console.log(result.data)
+        setLearnerList(result.data)})
 
       .catch((error) => console.log("error", error));
   };
@@ -68,7 +70,7 @@ export default function AdminLearnerList() {
           ) : (
             <>
               {learnerListData.map((list, index) => (
-                <View style={styles.mainBoxList}>
+                <View key={index} style={styles.mainBoxList}>
                   <FontAwesome name="user" size={20} color="#82027D" />
                   <View style={{ marginLeft: 15 }}>
                     <Text style={styles.names}>{list.name}</Text>

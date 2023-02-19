@@ -39,7 +39,7 @@ export default function UserType({ navigation }) {
   useEffect(() => {
     setLoading(true);
     AsyncStorage.getItem("userType").then((data) => {
-      console.log(JSON.parse(data).type);
+      console.log(JSON.parse(data));
       setLoading(false);
       if (data == null) {
       } else {
