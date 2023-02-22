@@ -358,7 +358,7 @@ export default function Login({ navigation }) {
                           <Text style={styles.account}>Change User Type </Text>
                           <TouchableOpacity
                             title="RegistrationForAll"
-                            onPress={() => navigation.goBack()}
+                            onPress={() => navigation.navigate("UserType")}
                           >
                             <Text style={styles.signup}>Change</Text>
                           </TouchableOpacity>
