@@ -6,11 +6,10 @@ import HeaderBack from "../../../../components/header/Header";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
 import TextWithButton from "../../../../components/TextWithButton";
-import SelectCourse from "../../../../components/admin_required/SelectCourse";
-import FileCabinetCard from "../../../../components/card/FileCabinetCard";
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
+import FileCabinetCard3 from "../../../../components/card/FileCabinetCard3";
 export default function Category() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -29,42 +28,38 @@ export default function Category() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        console.log(result)
-        setFileCabinetData(result.data)
+        console.log(result);
+        setFileCabinetData(result.data);
       })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
     var data = qs.stringify({
-  'delete_category': '1',
-  'id': id 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7'
-  },
-  data : data
-};
+      delete_category: "1",
+      id: id,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((response)=>{
-  if(response.data.success==1){
-    allLearnerList()
-  }
-})
-.catch((error)=>{
-  console.log(error);
-});
-
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          allLearnerList();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -81,10 +76,7 @@ axios(config)
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Category"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Category"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -102,23 +94,17 @@ axios(config)
         {getMessageFalse}
       </Snackbar>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
       >
-        <TextWithButton
-          title={"Course Category"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AddCategory")}
-        />
-          <SelectCourse
+        <TextWithButton title={"Course Category"} label={"+Add"} onPress={() => navigation.navigate("AddCategory")} />
+        {/* <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
             console.log(selectedItem)
             setSelectCourse(selectedItem);
           }}
-        />
+        /> */}
         <View style={{ paddingHorizontal: 10 }}>
           {fileCabinetData === undefined ? (
             <>
@@ -127,14 +113,15 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinetCard key={index}
+                <FileCabinetCard3
+                  key={index}
                   title={list.Name}
                   onPressEdit={() =>
                     navigation.navigate("EditCategory", {
                       title: list,
                     })
                   }
-                  removePress={() =>deleteEvent(list.id)}
+                  removePress={() => deleteEvent(list.id)}
                 />
               ))}
             </>
