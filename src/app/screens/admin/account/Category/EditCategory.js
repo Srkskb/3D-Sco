@@ -8,6 +8,7 @@ import axios from "axios";
 import * as qs from "qs";
 export default function EditCategory({ navigation, route }) {
   const [title, setTitle] = useState(route.params.title.Name);
+  const [loading, setLoading] = useState(false);
 
   const EditCategory = () => {
     var data = qs.stringify({

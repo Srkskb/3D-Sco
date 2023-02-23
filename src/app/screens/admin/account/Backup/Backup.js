@@ -29,42 +29,38 @@ export default function Backup() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?backup_list=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/studentregistration.php?backup_list=1`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        console.log(result)
-        setFileCabinetData(result.data)
+        console.log(result);
+        setFileCabinetData(result.data);
       })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
     var data = qs.stringify({
-  'delete_backup': '1',
-  'id': id 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7'
-  },
-  data : data
-};
+      delete_backup: "1",
+      id: id,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((response)=>{
-  if(response.data.success==1){
-    allLearnerList()
-  }
-})
-.catch((error)=>{
-  console.log(error);
-});
-
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          allLearnerList();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -81,10 +77,7 @@ axios(config)
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Backup"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Backup"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -102,20 +95,14 @@ axios(config)
         {getMessageFalse}
       </Snackbar>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
       >
-        <TextWithButton
-          title={"Course Category"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AddBackup")}
-        />
-          <SelectCourse
+        <TextWithButton title={"Course Category"} label={"+Add"} onPress={() => navigation.navigate("AddBackup")} />
+        <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            console.log(selectedItem)
+            console.log(selectedItem);
             setSelectCourse(selectedItem);
           }}
         />
@@ -127,7 +114,8 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinet2 key={index}
+                <FileCabinet2
+                  key={index}
                   title={list.title}
                   description={list.detail}
                   onPressEdit={() =>
@@ -135,7 +123,7 @@ axios(config)
                       title: list,
                     })
                   }
-                  removePress={() =>deleteEvent(list.id)}
+                  removePress={() => deleteEvent(list.id)}
                 />
               ))}
             </>

@@ -9,6 +9,7 @@ import * as qs from "qs";
 
 export default function AddCategory({ navigation, route }) {
   const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const AddCategory = () => {
     var data = qs.stringify({
