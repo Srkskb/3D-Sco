@@ -46,6 +46,7 @@ export default function CreateCourse({ navigation }) {
   const [banner, setBanner] = useState("");
   const [maxsize, setMaxsize] = useState("");
   const [courseQuota, setCourseQuota] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);

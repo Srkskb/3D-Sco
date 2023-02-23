@@ -14,6 +14,7 @@ import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel"
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
   const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(false)
   const DeleteCourse=()=>{
     var data = qs.stringify({
       'delete_courses': '1',

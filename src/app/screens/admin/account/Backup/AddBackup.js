@@ -18,6 +18,7 @@ export default function AddBackup({ navigation }) {
   const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false)
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
