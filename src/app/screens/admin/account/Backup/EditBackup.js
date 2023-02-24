@@ -283,12 +283,12 @@ export default function EditBackup({ route, navigation }) {
 
   const updateDocument = (values) => {
     const myHeaders = myHeadersData();
-    console.log(updateTitle, access, docId, upDescription, loginUID, image);
+    console.log(updateTitle, route.params.title.id, upDescription, loginUID, image);
     var urlencoded = new FormData();
     urlencoded.append("Update_backup", "1");
     urlencoded.append("title", updateTitle);
     urlencoded.append("course_id", course);
-    urlencoded.append("id", docId);
+    urlencoded.append("id", route.params.title.id);
     urlencoded.append("detail", upDescription);
     urlencoded.append("student_id", loginUID);
     // urlencoded.append("image", {
@@ -426,7 +426,8 @@ export default function EditBackup({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                <SmallButton onPress={()=>console.log(route.params.title.id)}
+                title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
                   loading={loading}
