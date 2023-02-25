@@ -32,6 +32,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(docImage);
+  const [loading, setLoading] = useState(false)
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);

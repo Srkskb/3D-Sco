@@ -13,14 +13,14 @@ import axios from "axios";
 import mime from "mime";
 import * as ImagePicker from "expo-image-picker";
 export default function EditBackup({ navigation, route }) {
-  const { title, titleParam, id } = route.params;
+  const { title, titleParam, id } = route.params.title;
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
   const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(route.params.title.file_name);
   // const [showDocResults, setShowDocResults] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -38,17 +38,17 @@ export default function EditBackup({ navigation, route }) {
     }
   };
   const EditBackupFun = (values) => {
-    console.log(values.docTitle, course, loginUID, values.description, image, mime.getType(image));
+    console.log(values.docTitle, route.params.title.course_id, loginUID, values.description, route.params.title.id, mime.getType(image));
 
     const myHeaders = myHeadersData();
     var formdata = new FormData();
     formdata.append("Update_backup", "1");
-    formdata.append("user_id", loginUID);
-    formdata.append("course_id", course);
+    formdata.append("user_id", route.params.title.user_id);
+    formdata.append("course_id", route.params.title.course_id);
     formdata.append("title", values.docTitle);
     formdata.append("detail", values.description);
     formdata.append("image", image);
-    formdata.append("id", id);
+    formdata.append("id", route.params.title.id);
 
     var requestOptions = {
       method: "POST",
@@ -119,7 +119,7 @@ export default function EditBackup({ navigation, route }) {
                   <SelectCourse
                     label={"Select Course"}
                     onSelect={(selectedItem, index) => {
-                      setCourse(selectedItem);
+                      setCourse(index);
                       console.log(selectedItem, index);
                     }}
                     value={course}
@@ -168,7 +168,7 @@ export default function EditBackup({ navigation, route }) {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(route.params.title)}
+                      onPress={() => console.log(course)}
                     />
                     <SmallButton
                       onPress={handleSubmit}
