@@ -86,12 +86,12 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
      .catch((error) => console.log("error", error));
   };
 
-  const Approve=()=>{
+  const Approve=(id)=>{
     var myHeaders = myHeadersData();
     
     var formdata = new FormData();
     formdata.append("instructor_request_accept", "1");
-    formdata.append("tutor_id", loginUID);
+    formdata.append("tutor_id", id);
     
     var requestOptions = {
       method: 'POST',
