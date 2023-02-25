@@ -44,10 +44,10 @@ export default function EditBackup({ navigation, route }) {
     var formdata = new FormData();
     formdata.append("Update_backup", "1");
     formdata.append("user_id", loginUID);
-    formdata.append("course_id", "12");
+    formdata.append("course_id", course);
     formdata.append("title", values.docTitle);
     formdata.append("detail", values.description);
-    formdata.append("image");
+    formdata.append("image", image);
     formdata.append("id", id);
 
     var requestOptions = {
