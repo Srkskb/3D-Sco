@@ -179,7 +179,7 @@ export default function ForgetPassword({ navigation }) {
                         onChangeText={handleChange("email")}
                         onBlur={handleBlur("email")}
                         value={values.email}
-                        keyboardType="text"
+                        keyboardType="default"
                       />
                       {errors.email && (
                         <Text
