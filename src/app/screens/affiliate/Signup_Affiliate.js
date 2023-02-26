@@ -184,7 +184,7 @@ export default function Signup_Affiliate({ navigation }) {
                 .required("Password is required")
                 .min(5, "Your password is too short.")
                 .matches(
-                  /[a-zA-Z]/,
+                  /[a-zA-Z0-9]/,
                   "Password can only contain Latin letters."
                 ),
               confirmpassword: Yup.string().oneOf(
