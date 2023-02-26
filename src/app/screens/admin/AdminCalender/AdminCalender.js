@@ -11,6 +11,7 @@ import { Snackbar } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { myHeadersData } from "../../../api/helper";
 import Calender_Strip from "../../../components/Calender_Strip";
+import CalendarStrip from "react-native-calendar-strip";
 import color from "../../../assets/themes/Color";
 import AppButton from "../../../components/buttons/Add_Button";
 import { NoDataFound } from "../../../components";
@@ -27,8 +28,29 @@ export default function AdminCalender() {
   const [getMessageFalse, setMessageFalse] = useState();
   const [refreshEvent, setRefreshEvent] = useReducer((x) => x + 1, 0);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('')
+  const [markedDates, setmarkedDates] = useState()
 
-  const eventListData = () => {
+  useEffect(() => {
+    getDates();
+    navigation.addListener("focus", () => getDates());
+  }, []);
+
+  const getDates=()=>{
+    let startDate = moment(); // today
+    let MarkedDates = [];
+    for (let i = 0; i < 7; i++) {
+      let date = startDate.clone().add(i, "days");
+      MarkedDates.push({
+        date
+      });
+    }
+    setmarkedDates(MarkedDates)
+    setSelectedDate(startDate)
+    eventListData(startDate)
+  }
+
+  const eventListData = (startDate) => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -43,8 +65,10 @@ export default function AdminCalender() {
     )
       .then((res) => res.json())
       .then((result) =>{
-        console.log(result)
-        setEventList(result.data)})
+        let data=result.data.filter(i=>moment(i.event_date).isSame(startDate, 'day'))
+        console.log(data)
+        setEventList(data)
+      })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (event_id) => {
@@ -61,7 +85,7 @@ export default function AdminCalender() {
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         if (result.success === 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
@@ -93,6 +117,11 @@ export default function AdminCalender() {
     }, 2000);
   };
 
+  const onDateSelected=(date)=>{
+    console.log(date)
+    eventListData(date)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <HomeHeader navigation={navigation}/>
@@ -114,7 +143,41 @@ export default function AdminCalender() {
       >
         {getMessageFalse}
       </Snackbar>
-      <Calender_Strip />
+      {/* <Calender_Strip/> */}
+      <CalendarStrip
+          scrollable
+          calendarAnimation={{ type: "parallel", duration: 30 }}
+          daySelectionAnimation={{ duration: 300, highlightColor: color.white }}
+          style={{ height: 180 }}
+          calendarHeaderStyle={{
+            color: "white",
+            fontSize: 15,
+            marginBottom: -50,
+            marginTop: 30,
+          }}
+          calendarColor={color.black}
+          dateNumberStyle={{ color: "white", fontSize: 14 }}
+          dateNameStyle={{ color: "white", fontSize: 12 }}
+          iconContainer={{ flex: 0.1 }}
+          //   customDatesStyles={{height:150}}
+          highlightDateNameStyle={{ color: "white", fontSize: 14 }}
+          highlightDateNumberStyle={{
+            color: color.white,
+            fontSize: 14,
+            backgroundColor: color.purple,
+            borderRadius: 15,
+            height: 25,
+            width: 25,
+            padding: 1.5,
+          }}
+          // markedDates={markedDates}
+          // datesBlacklist={this.datesBlacklistFunc}
+          selectedDate={selectedDate}
+          onDateSelected={date=>onDateSelected(date)}
+          // useIsoWeekday={false}
+          iconStyle={{ backgroundColor: "white" }}
+          dateContainerStyle={{ flex: 1 }}
+        />
       <View style={styles.today_event_row}>
         <Text style={styles.event_text}>Today's Events</Text>
         <View style={styles.add_button}>
@@ -137,7 +200,7 @@ export default function AdminCalender() {
           <>
             {eventList &&
               eventList.map((list,index) => (
-                <View style={{ paddingHorizontal: 10 }}>
+                <View key={index} style={{ paddingHorizontal: 10 }}>
                   <Event_Card
                   key={index}
                     title={list.event_title}

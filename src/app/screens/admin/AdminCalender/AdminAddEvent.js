@@ -18,6 +18,8 @@ import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import * as qs from "qs";
+import axios from "axios";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 
@@ -47,22 +49,28 @@ export default function AdminAddEvent() {
     hideDatePicker();
   };
   const addEventCalender = (values) => {
-    const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("add_event", "1");
-    urlencoded.append("event_titel", values.evenTitle);
-    urlencoded.append("access_level", access);
-    urlencoded.append("event_date", selectedDate.toLocaleDateString());
-    urlencoded.append("decription", values.eventDecription);
-    urlencoded.append("user_id", loginUID);
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
-      method: "POST",
-      body: urlencoded,
-      headers: {
-        myHeaders,
+    var data = qs.stringify({
+      'add_event': '1',
+      'event_titel': values.evenTitle,
+      'access_level': access,
+      'event_date': selectedDate,
+      'decription': values.eventDecription,
+      'user_id': loginUID 
+    });
+    console.log(data)
+    var config = {
+      method: 'post',
+    maxBodyLength: Infinity,
+      url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
+      headers: { 
+        'Accept': 'application/json', 
+        'Content-Type': 'application/x-www-form-urlencoded', 
+        'Cookie': 'PHPSESSID=nplr09m5e9f2rrvo5bsbia8m07'
       },
-    })
-      .then((res) => res.json())
+      data : data
+    };
+    
+    axios(config)
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
@@ -234,8 +242,8 @@ export default function AdminAddEvent() {
                   )}
 
                   <View style={styles.button}>
-                    {/* <SmallButton title={"Cancel"} color={color.purple} 
-                    fontFamily={'Montserrat-Medium'}/> */}
+                    <SmallButton title={"Cancel"} color={color.purple} 
+                    fontFamily={'Montserrat-Medium'} onPress={()=>console.log(loginUID)}/>
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
