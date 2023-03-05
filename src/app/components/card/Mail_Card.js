@@ -27,9 +27,9 @@ export default function Mail_Card({
       {sent && <Text style={styles.senderText}>To: {sender}</Text>}
       {spam && <Text style={styles.senderText}>From: {sender}</Text>}
       {archive && <Text style={styles.senderText}>From: {sender}</Text>}
-      <Text style={{ fontFamily: "Montserrat-Medium" }}>
+      {/* <Text style={{ fontFamily: "Montserrat-Medium" }}>
         Date: <Text>12/01/2023 01:23 PM</Text>
-      </Text>
+      </Text> */}
       {/* {inbox && (
         <View style={{ flexDirection: "row", marginVertical: 10 }}>
           <CardButton

@@ -22,7 +22,7 @@ import axios from "axios";
 export default function ComposeMail({ navigation }) {
   var userType = ["Student", "Tutor", "Parent", "Admin", "Affiliate"];
   const [userList, setUserList] = useState([]);
-  const [type, setType] = useState("");
+  const [ssave, setSave] = useState(true);
   const [recieverID, setRecieverID] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -30,11 +30,12 @@ export default function ComposeMail({ navigation }) {
 
   const ComposeMail = () => {
     var data = qs.stringify({
-      add_message_for_user: "1",
-      SenderID: loginUID,
-      Subject: subject,
-      Message: message,
-      RecieverID: recieverID,
+      'add_message_for_user': "1",
+      'SenderID': loginUID,
+      'Subject': subject,
+      'Message': message,
+      'RecieverID': recieverID,
+      'save':ssave? "1":"0"
     });
     var config = {
       method: "post",
@@ -174,7 +175,7 @@ export default function ComposeMail({ navigation }) {
             onChangeText={(text) =>setMessage(text)}
           />
           <View style={{ flexDirection: "row", paddingVertical: 10 }}>
-            <NewCheckbox />
+            <NewCheckbox onPress={()=>setSave(true)}/>
             <Text style={{ fontFamily: "Montserrat-Regular", marginLeft: 10 }}>
               Save in sent items
             </Text>

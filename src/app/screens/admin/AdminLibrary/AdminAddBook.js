@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
@@ -12,8 +12,25 @@ import CommonDropdown from "../../../components/dropdown/CommonDropdown";
 import Input from "../../../components/inputs/Input";
 import { UploadDocument } from "../../../components";
 import SmallButton from "../../../components/buttons/SmallButton";
+import * as DocumentPicker from 'expo-document-picker';
 
 export default function AdminAddBook({ navigation }) {
+  const [access, setAccess] = useState("Private");
+  const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
+  const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [getMessageTrue, setMessageTrue] = useState();
+  const [getMessageFalse, setMessageFalse] = useState();
+  const loginUID = localStorage.getItem("loginUID");
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
   return (
     <View style={styles.container}>
       <HeaderBack title={"Add Book"} onPress={() => navigation.goBack()} />
@@ -23,7 +40,7 @@ export default function AdminAddBook({ navigation }) {
           <Input label={"Book Title"} placeholder={"Enter Book Name"} />
           <Input label={"Author"} placeholder={"Enter Author Name"} />
           <Input label={"Publisher"} placeholder={"Enter Publisher Name"} />
-          <UploadDocument type={"Book (pdf,doc,ppt,xls)"} />
+          <UploadDocument type={"Book (pdf,doc,ppt,xls)"} onPress={pickImage} />
           <UploadDocument type={"Book Image"} />
           <Input
             label={"Description"}

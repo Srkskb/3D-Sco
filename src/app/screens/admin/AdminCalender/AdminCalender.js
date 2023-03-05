@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  RefreshControl,
+  RefreshControl,ActivityIndicator
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
@@ -30,6 +30,7 @@ export default function AdminCalender() {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedDate, setSelectedDate] = useState('')
   const [markedDates, setmarkedDates] = useState()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     getDates();
@@ -37,20 +38,22 @@ export default function AdminCalender() {
   }, []);
 
   const getDates=()=>{
-    let startDate = moment(); // today
-    let MarkedDates = [];
-    for (let i = 0; i < 7; i++) {
-      let date = startDate.clone().add(i, "days");
-      MarkedDates.push({
-        date
-      });
-    }
-    setmarkedDates(MarkedDates)
+    let startDate = moment().format(); // today
+    // let MarkedDates = [];
+    // for (let i = 0; i < 7; i++) {
+    //   let date = startDate.clone().add(i, "days");
+    //   MarkedDates.push({
+    //     date
+    //   });
+    // }
+    // setmarkedDates(MarkedDates)
     setSelectedDate(startDate)
+    console.log(startDate)
     eventListData(startDate)
   }
 
   const eventListData = (startDate) => {
+    setLoading(true)
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -68,8 +71,11 @@ export default function AdminCalender() {
         let data=result.data.filter(i=>moment(i.event_date).isSame(startDate, 'day'))
         console.log(data)
         setEventList(data)
+        setLoading(false)
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) =>{
+        setLoading(false)
+        console.log("error", error)});
   };
   const deleteEvent = (event_id) => {
     const loginUID = localStorage.getItem("loginUID");
@@ -144,9 +150,24 @@ export default function AdminCalender() {
         {getMessageFalse}
       </Snackbar>
       {/* <Calender_Strip/> */}
-      <CalendarStrip
+      {loading ? (
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#ffffffcc",
+              position: "absolute",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 100,
+            }}
+          >
+            <ActivityIndicator size={"large"} />
+          </View>
+        ) : null}
+      {loading? null:<CalendarStrip
           scrollable
-          calendarAnimation={{ type: "parallel", duration: 30 }}
+          calendarAnimation={{ type: "sequence", duration: 30 }}
           daySelectionAnimation={{ duration: 300, highlightColor: color.white }}
           style={{ height: 180 }}
           calendarHeaderStyle={{
@@ -177,7 +198,7 @@ export default function AdminCalender() {
           // useIsoWeekday={false}
           iconStyle={{ backgroundColor: "white" }}
           dateContainerStyle={{ flex: 1 }}
-        />
+        />}
       <View style={styles.today_event_row}>
         <Text style={styles.event_text}>Today's Events</Text>
         <View style={styles.add_button}>
@@ -192,7 +213,7 @@ export default function AdminCalender() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {eventList === undefined ? (
+        {eventList == undefined || [] ? (
           <>
             <NoDataFound />
           </>
