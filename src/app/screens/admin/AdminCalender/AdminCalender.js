@@ -48,11 +48,12 @@ export default function AdminCalender() {
     // }
     // setmarkedDates(MarkedDates)
     setSelectedDate(startDate)
-    console.log(startDate)
-    eventListData(startDate)
+    // eventListData(startDate)
   }
-
-  const eventListData = (startDate) => {
+  
+  const eventListData = (date) => {
+    let mdate=moment(date).format("YYYY-MM-DD")
+    console.log(mdate)
     setLoading(true)
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -68,7 +69,8 @@ export default function AdminCalender() {
     )
       .then((res) => res.json())
       .then((result) =>{
-        let data=result.data.filter(i=>moment(i.event_date).isSame(startDate, 'day'))
+        let data=result.data
+        .filter(i=>moment(i.event_date).isSame(date, 'day'))
         console.log(data)
         setEventList(data)
         setLoading(false)
@@ -124,7 +126,8 @@ export default function AdminCalender() {
   };
 
   const onDateSelected=(date)=>{
-    console.log(date)
+    // console.log(date)
+    setSelectedDate(date)
     eventListData(date)
   }
 
@@ -213,7 +216,7 @@ export default function AdminCalender() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {eventList == undefined || [] ? (
+        {eventList&&eventList.length == 0 ? (
           <>
             <NoDataFound />
           </>
