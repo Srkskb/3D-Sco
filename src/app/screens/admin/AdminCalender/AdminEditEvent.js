@@ -58,7 +58,6 @@ export default function AdminEditEvent({ route, navigation }) {
       'update_event': '1',
       'event_titel': updateTitle,
       'access_level': access,
-      'event_date': selectedDate?moment(selectedDate).format("YYYY-MM-DD"):dateData,
       'decription': updateDescription,
       'event_id': eventID,
       'user_id': loginUID
@@ -76,14 +75,14 @@ export default function AdminEditEvent({ route, navigation }) {
     };
     axios(config)
       .then((res) => {
-        console.log(res.message);
+        console.log(res.data);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
-          // navigation.replace("AdminCalender");
+          setMessageTrue(res.data.message);
+          navigation.replace("AdminCalender");
         } else {
           setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
+          setMessageFalse(res.data.message);
         }
       });
   };
@@ -161,9 +160,9 @@ export default function AdminEditEvent({ route, navigation }) {
                 </>
               ) : (
                 <>
-                  <View style={styles.selectedDataCon}>
-                    <Text>Access Level</Text>
-                    <View style={styles.selectedData}>
+                  <View style={{ marginBottom: 5 }}>
+                    <Text>Access Level<Text style={{ color: color.red }}>*</Text></Text>
+                  <View style={styles.selectedData}>
                       <Text>{status}</Text>
                       <TouchableOpacity onPress={onClick}>
                       <Entypo name="circle-with-cross" size={24} color={color.purple} />
@@ -175,7 +174,7 @@ export default function AdminEditEvent({ route, navigation }) {
 
               <Text style={{ marginBottom: 5 }}>
                 <Text style={styles.label_text}>Event Date</Text>
-                <Text style={{ color: color.red }}>*</Text>
+                {/* <Text style={{ color: color.red }}>*</Text> */}
               </Text>
               <View style={styles.calendar_input}>
                 <Text
@@ -190,7 +189,9 @@ export default function AdminEditEvent({ route, navigation }) {
                 </Text>
                 <Text></Text>
                 <View style={styles.selectDate}>
-                  <TouchableOpacity onPress={showDatePicker}>
+                  <TouchableOpacity
+                  // onPress={showDatePicker}
+                  >
                     <Entypo name="calendar" size={24} color={color.purple} />
                   </TouchableOpacity>
                 </View>
