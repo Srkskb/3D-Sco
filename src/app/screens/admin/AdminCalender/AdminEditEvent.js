@@ -17,6 +17,8 @@ import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
+import axios from "axios";
+import qs from "qs"
 
 export default function AdminEditEvent({ route, navigation }) {
   // ** For Event Update
@@ -26,7 +28,7 @@ export default function AdminEditEvent({ route, navigation }) {
   const { dateData, dateIDParam } = route.params;
   const { description, descriptionIDParam } = route.params;
   const loginUID = localStorage.getItem("loginUID");
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState(status);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -52,30 +54,33 @@ export default function AdminEditEvent({ route, navigation }) {
 
   const updateEvent = () => {
     const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("update_event", "1");
-    urlencoded.append("event_titel", updateTitle);
-    urlencoded.append("access_level", access);
-    urlencoded.append("event_date", dateData);
-    urlencoded.append("decription", updateDescription);
-    urlencoded.append("event_id", eventID);
-    urlencoded.append("user_id", loginUID);
-
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
-      method: "POST",
-      body: urlencoded,
-      headers: {
-        myHeaders,
+    var data = qs.stringify({
+      'update_event': '1',
+      'event_titel': updateTitle,
+      'access_level': access,
+      'event_date': selectedDate?moment(selectedDate).format("YYYY-MM-DD"):dateData,
+      'decription': updateDescription,
+      'event_id': eventID,
+      'user_id': loginUID
+    });
+    console.log(data)
+    var config = {
+      method: 'post',
+      url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
+      headers: { 
+        'Accept': 'application/json', 
+        'Content-Type': 'application/x-www-form-urlencoded', 
+        'Cookie': 'PHPSESSID=41mqd76dj1dbfh1dbhbrkk6jv5'
       },
-      redirect: "follow",
-    })
-      .then((res) => res.json())
+      data : data
+    };
+    axios(config)
       .then((res) => {
-        console.log(res);
+        console.log(res.message);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.replace("AdminCalender");
+          // navigation.replace("AdminCalender");
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
@@ -140,7 +145,7 @@ export default function AdminEditEvent({ route, navigation }) {
                 name="title"
                 onChangeText={(text) => setUpTitle(text)}
                 value={updateTitle}
-                keyboardType="text"
+                // keyboardType="text"
               />
               {showResults ? (
                 <>
@@ -148,6 +153,7 @@ export default function AdminEditEvent({ route, navigation }) {
                     required
                     label={"Access Level"}
                     onSelect={(selectedItem) => {
+                      console.log(selectedItem)
                       setAccess(selectedItem);
                     }}
                     placeholder={status}
@@ -160,7 +166,7 @@ export default function AdminEditEvent({ route, navigation }) {
                     <View style={styles.selectedData}>
                       <Text>{status}</Text>
                       <TouchableOpacity onPress={onClick}>
-                        <Text>close</Text>
+                      <Entypo name="circle-with-cross" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -179,7 +185,7 @@ export default function AdminEditEvent({ route, navigation }) {
                   }}
                 >
                   {selectedDate
-                    ? selectedDate.toLocaleDateString()
+                    ? moment(selectedDate).format("YYYY-MM-DD")
                     : `${dateData}`}
                 </Text>
                 <Text></Text>

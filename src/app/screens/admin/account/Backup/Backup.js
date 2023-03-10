@@ -21,7 +21,7 @@ export default function Backup() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
-  const allLearnerList = () => {
+  const allLearnerList = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -29,7 +29,7 @@ export default function Backup() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/studentregistration.php?backup_list=1`, requestOptions)
+    fetch(`https://3dsco.com/3discoapi/studentregistration.php?backup_course_id=1&course_id=${id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
@@ -55,7 +55,7 @@ export default function Backup() {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
-          allLearnerList();
+          // allLearnerList();
         }
       })
       .catch((error) => {
@@ -71,8 +71,8 @@ export default function Backup() {
     }, 2000);
   };
   useEffect(() => {
-    allLearnerList();
-    navigation.addListener("focus", () => allLearnerList());
+    // allLearnerList();
+    // navigation.addListener("focus", () => allLearnerList());
   }, []);
 
   return (
@@ -102,8 +102,8 @@ export default function Backup() {
         <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            console.log(selectedItem);
-            setSelectCourse(selectedItem);
+            console.log(index);
+            allLearnerList(index);
           }}
         />
         <View style={{ paddingHorizontal: 10 }}>

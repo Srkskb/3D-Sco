@@ -40,7 +40,7 @@ export default function AddBackup() {
   };
 
   const addFileCabinet = (values) => {
-    console.log(values.docTitle, access, loginUID, values.description, image);
+    console.log(values.docTitle, loginUID, values.description, image);
     setLoading(true);
     const myHeaders = myHeadersData();
 
@@ -48,20 +48,18 @@ export default function AddBackup() {
     urlencoded.append("add_backup", "1");
     urlencoded.append("title", values.docTitle);
     urlencoded.append("course_id", course);
-    urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
-    });
+    // urlencoded.append("image", {
+    //   uri: image, //"file:///" + image.split("file:/").join(""),
+    //   type: mime.getType(image),
+    //   name: `abc.jpg`,
+    // });
     urlencoded.append("user_id", loginUID);
     urlencoded.append("detail", values.description);
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
-      method: "POST",
+      method: 'POST',
+      headers: myHeaders,
       body: urlencoded,
-      headers: {
-        myHeaders,
-        "Content-Type": "multipart/form-data",
-      },
+      redirect: 'follow'
     })
       .then((res) => res.json())
       .then((res) => {
@@ -75,7 +73,9 @@ export default function AddBackup() {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-      });
+      }).catch(error =>{
+        setLoading(false)
+        console.log('error', error)});
   };
   return (
     <View style={styles.container}>
@@ -147,7 +147,7 @@ export default function AddBackup() {
                   <SelectCourse
                     label={"Select Course"}
                     onSelect={(selectedItem, index) => {
-                      setCourse(selectedItem);
+                      setCourse(index);
                       console.log(selectedItem, index);
                     }}
                     value={course}
