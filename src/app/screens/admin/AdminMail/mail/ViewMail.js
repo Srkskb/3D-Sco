@@ -221,7 +221,7 @@ export default function ViewMail({ route, navigation }) {
             <CardButton
               label={"Resend"}
               textColor={"green"}
-              onPress={() => navigation.navigate("Reply")}
+              onPress={() => navigation.navigate("Reply",{list:msg})}
             />
             <CardButton
               label={"Delete"}

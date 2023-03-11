@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import Input from "../../../../components/inputs/Input";
 import User from "../../../../components/dropdown/User";
@@ -14,11 +14,15 @@ import NewCheckbox from "../../../../components/NewCheckbox";
 import HeaderBack from "../../../../components/header/Header";
 import { AppButton } from "../../../../components/buttons";
 const { height } = Dimensions.get("window");
-export default function Reply({ navigation }) {
+export default function Reply({ navigation, route }) {
+  const {list } = route.params;
+const [subject, setSubject] = useState('')
+const [message, setMessage] = useState('')
+const [ssave, setSave] = useState(true);
   const ReplyMail =()=>{
     var data = qs.stringify({
       'add_message_for_user': '1',
-      'SenderID': '267',
+      'SenderID': list.SenderID,
       'Subject': 'test',
       'Message': 'this is a test of email function for educator.',
       'RecieverID': '265' 
@@ -54,7 +58,7 @@ export default function Reply({ navigation }) {
             label={"Name"}
             placeholder={"Name"}
             editable={false}
-            defaultValue={"Rohit Kumar"}
+            defaultValue={list.RecieverName}
           />
           <Input
             label={"Email"}
@@ -62,21 +66,23 @@ export default function Reply({ navigation }) {
             editable={false}
             defaultValue={"Rohit123@gmail.com"}
           />
-          <Input label={"Subject"} placeholder={"Subject"} />
+          <Input label={"Subject"} placeholder={"Subject"} onChangeText={(text)=>setSubject(text)} value={subject}/>
           <Input
             label={"Message"}
             placeholder={"Type Your Message"}
             numberOfLines={6}
             multiline={true}
+            onChangeText={(text)=>setMessage(text)}
             textAlignVertical={"top"}
+            value={message}
           />
           <View style={{ flexDirection: "row", paddingVertical: 10 }}>
-            <NewCheckbox />
+            <NewCheckbox onPress={()=>setSave(true)} value={ssave}/>
             <Text style={{ fontFamily: "Montserrat-Regular", marginLeft: 10 }}>
               Save in sent items
             </Text>
           </View>
-          <AppButton title={"Send"} btnColor={color.purple} />
+          <AppButton title={"Send"} btnColor={color.purple} onPress={()=>ReplyMail()}/>
         </View>
       </ScrollView>
     </View>
