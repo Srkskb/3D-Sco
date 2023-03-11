@@ -32,6 +32,7 @@ export default function AdminStoreFavoriteLinks() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [filter, setFilter] = useState("");
+  const [categoryList, setCategoryList] = useState([]);
   const [initialStoreLinks, setInitialStoreLinks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const user_type = localStorage.getItem("userID"); // ! user Type student or other
@@ -40,35 +41,47 @@ export default function AdminStoreFavoriteLinks() {
     setLoading(true)
     console.log(loginUID, filter,user_type);
     const myHeaders = myHeadersData();
-    var data = qs.stringify({
-  'link': '1',
-  'student_id': loginUID,
-  'category':filter,
-  'type': user_type
-});
-var config = {
-  method: 'get',
-maxBodyLength: Infinity,
-  url: 'https://3dsco.com/3discoapi/3dicowebservce.php?link=1',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=41mqd76dj1dbfh1dbhbrkk6jv5'
-  },
-  data : data
+    var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
 };
 
-axios(config)
+fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${loginUID}&type=${user_type}&category=${filter}`, requestOptions)
+  .then(response => response.json())
       .then((result) => {
-        console.log(result.data)
-        setStoreLinks(result.data.data);
-        setInitialStoreLinks(result.data.data);
+        console.log(result)
+        setStoreLinks(result.data);
+        setInitialStoreLinks(result.data);
     setLoading(false)
   })
-      .catch((error) =>{ console.log("error", error)
+      .catch((error) =>{
+      console.log("error", error)
       setLoading(false)
     });
   };
+
+  const category= () => {
+    const myHeaders = myHeadersData();
+
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
+      method: "GET",
+ 
+      headers: {
+        myHeaders,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success == 1) {
+          setCategoryList(res.data);
+          console.log(res.data);
+        } else {
+          alert("Try after sometime");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
 
   const deleteProject = (id) => {
     const loginUID = localStorage.getItem("loginUID");
@@ -110,10 +123,10 @@ axios(config)
     }, 2000);
   };
   useEffect(() => {
-    // allLearnerList();
-    // navigation.addListener("focus", () =>
-    // allLearnerList()
-    // );
+    category();
+    navigation.addListener("focus", () =>
+    category()
+    );
   }, [navigation]);
 
   // ! For Input Box Search Data List
@@ -185,9 +198,10 @@ axios(config)
         >
           <View style={styles.category_search}>
             <RoundCategory
-              onSelect={(selectedItem, index) => {
-                setFilter(index + 1);
-                console.log(index + 1);
+              onSelect={(selectedItem, index, item) => {
+                let catid = categoryList.filter(i=>i.Name===selectedItem).map(i=>i.id)
+                setFilter(catid&&catid[0]);
+                console.log(selectedItem,catid);
               }}
             />
             <TextInput
@@ -198,7 +212,7 @@ axios(config)
             />
           </View>
           <View style={styles.search_button}>
-            <TouchableOpacity onPress={allLearnerList}>
+            <TouchableOpacity onPress={()=>allLearnerList()}>
               <FontAwesome name="search" size={24} color="#fff"/>
             </TouchableOpacity>
           </View>
