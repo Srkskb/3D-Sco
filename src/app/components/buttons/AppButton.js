@@ -17,7 +17,7 @@ const AppButton = ({ onPress, title,loading=false, btnColor, ...props }) => (
       backgroundColor: btnColor,
       borderRadius: 6,
       paddingVertical: 12,
-      // paddingHorizontal: 12,
+      paddingHorizontal: 12,
     }}
     {...props}
   >
@@ -27,7 +27,7 @@ const AppButton = ({ onPress, title,loading=false, btnColor, ...props }) => (
 export default AppButton;
 const styles = StyleSheet.create({
   appButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#fff",
     alignSelf: "center",
     textTransform: "capitalize",
