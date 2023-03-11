@@ -46,18 +46,23 @@ export default function UserType({ navigation }) {
         localStorage.setItem("loginUID", JSON.parse(data).id);
         if (JSON.parse(data).type == "student") {
           navigation.navigate("DrawerNavigator");
+          localStorage.setItem("userID", 1);
         }
         if (JSON.parse(data).type == "tutor") {
           navigation.navigate("TutorDrawerNavigator");
+          localStorage.setItem("userID", 2);
         }
         if (JSON.parse(data).type == "parent") {
           navigation.navigate("ParentDrawerNavigator");
+          localStorage.setItem("userID", 3);
         }
         if (JSON.parse(data).type == "admin") {
           navigation.navigate("AdminDrawerNavigator");
+          localStorage.setItem("userID", 4);
         }
         if (JSON.parse(data).type == "affiliate") {
           navigation.navigate("AffiliateDrawerNavigator");
+          localStorage.setItem("userID", 5);
         }
       }
     });

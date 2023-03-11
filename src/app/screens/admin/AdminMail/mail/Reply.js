@@ -23,9 +23,10 @@ const [ssave, setSave] = useState(true);
     var data = qs.stringify({
       'add_message_for_user': '1',
       'SenderID': list.SenderID,
-      'Subject': 'test',
-      'Message': 'this is a test of email function for educator.',
-      'RecieverID': '265' 
+      'Subject': subject,
+      'Message': setMessage,
+      'RecieverID': '265',
+      'save':ssave? "1":"0"
     });
     var config = {
       method: 'post',

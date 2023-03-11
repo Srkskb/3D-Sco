@@ -5,7 +5,7 @@ import {
   ScrollView,
   RefreshControl,
   TextInput,
-  TouchableOpacity,
+  TouchableOpacity,ActivityIndicator
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -18,11 +18,15 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
+import qs from "qs";
+import axios from "axios";
 export default function AdminStoreFavoriteLinks() {
+  
   const navigation = useNavigation();
   const [storeLinks, setStoreLinks] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -33,23 +37,37 @@ export default function AdminStoreFavoriteLinks() {
   const user_type = localStorage.getItem("userID"); // ! user Type student or other
   const allLearnerList = () => {
     const loginUID = localStorage.getItem("loginUID");
+    setLoading(true)
     console.log(loginUID, filter,user_type);
     const myHeaders = myHeadersData();
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${loginUID}&category=${filter}&type=${user_type}`,
-      requestOptions
-    )
-      .then((res) => res.json())
+    var data = qs.stringify({
+  'link': '1',
+  'student_id': loginUID,
+  'category':filter,
+  'type': user_type
+});
+var config = {
+  method: 'get',
+maxBodyLength: Infinity,
+  url: 'https://3dsco.com/3discoapi/3dicowebservce.php?link=1',
+  headers: { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'PHPSESSID=41mqd76dj1dbfh1dbhbrkk6jv5'
+  },
+  data : data
+};
+
+axios(config)
       .then((result) => {
-        setStoreLinks(result.data);
-        setInitialStoreLinks(result.data);
-      })
-      .catch((error) => console.log("error", error));
+        console.log(result.data)
+        setStoreLinks(result.data.data);
+        setInitialStoreLinks(result.data.data);
+    setLoading(false)
+  })
+      .catch((error) =>{ console.log("error", error)
+      setLoading(false)
+    });
   };
 
   const deleteProject = (id) => {
@@ -85,15 +103,17 @@ export default function AdminStoreFavoriteLinks() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    // allLearnerList();
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    allLearnerList();
-    navigation.addListener("focus", () => allLearnerList());
+    // allLearnerList();
+    // navigation.addListener("focus", () =>
+    // allLearnerList()
+    // );
   }, [navigation]);
 
   // ! For Input Box Search Data List
@@ -111,6 +131,21 @@ export default function AdminStoreFavoriteLinks() {
   }
   return (
     <View style={styles.container}>
+      {loading ? (
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#ffffffcc",
+              position: "absolute",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 100,
+            }}
+          >
+            <ActivityIndicator size={"large"} />
+          </View>
+        ) : null}
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -155,7 +190,6 @@ export default function AdminStoreFavoriteLinks() {
                 console.log(index + 1);
               }}
             />
-
             <TextInput
               style={styles.input}
               onChangeText={(text)=>searchText(text)}
@@ -164,8 +198,8 @@ export default function AdminStoreFavoriteLinks() {
             />
           </View>
           <View style={styles.search_button}>
-            <TouchableOpacity style={styles.search_button}>
-              <FontAwesome name="search" size={24} color="#fff" />
+            <TouchableOpacity onPress={allLearnerList}>
+              <FontAwesome name="search" size={24} color="#fff"/>
             </TouchableOpacity>
           </View>
         </View>
@@ -184,6 +218,7 @@ export default function AdminStoreFavoriteLinks() {
                 <>
                   {storeLinks.map((list, index) => (
                     <WebLinkCard
+                    key={index}
                       title={list.Titel}
                       link={list.url}
                       description={list.Detail}
@@ -277,16 +312,11 @@ const styles = StyleSheet.create({
   },
   search_button: {
     backgroundColor: color.purple,
-
-    width: "28%",
+    // width: "20%",
+    paddingHorizontal:10,
     borderRadius: 100,
     alignItems: "center",
-    justifyContent: "center",
-
-    width: 45,
-    borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   category_search: {
     width: "80%",
