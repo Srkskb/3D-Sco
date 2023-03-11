@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../../components";
 import mime from "mime";
+import * as DocumentPicker from 'expo-document-picker';
 
 export default function AddBackup() {
   const navigation = useNavigation();
@@ -27,11 +28,8 @@ export default function AddBackup() {
   const [image, setImage] = useState(null);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    let result = await DocumentPicker.getDocumentAsync({
+      type:'application/zip'
     });
     console.log(result);
     if (!result.cancelled) {

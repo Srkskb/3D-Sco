@@ -12,6 +12,7 @@ import { Formik } from "formik";
 import axios from "axios";
 import mime from "mime";
 import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from 'expo-document-picker';
 export default function EditBackup({ navigation, route }) {
   const { title, titleParam, id } = route.params.title;
   const { docAccess, docAccessParam } = route.params;
@@ -26,17 +27,15 @@ export default function EditBackup({ navigation, route }) {
   const [upDescription, setUpDescription] = useState(description);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    let result = await DocumentPicker.getDocumentAsync({
+      type:'application/zip'
     });
     console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
     }
   };
+
   const EditBackupFun = (values) => {
     console.log(values.docTitle, route.params.title.course_id, loginUID, values.description, route.params.title.id, mime.getType(image));
 
