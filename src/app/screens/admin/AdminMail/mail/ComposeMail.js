@@ -175,7 +175,7 @@ export default function ComposeMail({ navigation }) {
             onChangeText={(text) =>setMessage(text)}
           />
           <View style={{ flexDirection: "row", paddingVertical: 10 }}>
-            <NewCheckbox onPress={()=>setSave(true)}/>
+            <NewCheckbox onPress={()=>setSave(true)} value={ssave}/>
             <Text style={{ fontFamily: "Montserrat-Regular", marginLeft: 10 }}>
               Save in sent items
             </Text>
