@@ -64,7 +64,7 @@ export default function Backup() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    // allLearnerList();
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
@@ -73,7 +73,8 @@ export default function Backup() {
   useEffect(() => {
     // allLearnerList();
     // navigation.addListener("focus", () => allLearnerList());
-  }, []);
+    setFileCabinetData([])
+  }, [navigation]);
 
   return (
     <View style={styles.container}>

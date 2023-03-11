@@ -19,8 +19,8 @@ export default function Spam({ navigation }) {
     var myHeaders = myHeadersData();
 
     var formdata = new FormData();
-    formdata.append("view_messagespam", "1");
-    formdata.append("id", loginUID);
+    formdata.append("spam_message_view", "1");
+    formdata.append("user_id", loginUID);
 
     var requestOptions = {
       method: "POST",
