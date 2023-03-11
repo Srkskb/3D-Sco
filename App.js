@@ -6,12 +6,7 @@ import * as eva from "@eva-design/eva";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  Login,
-  ForgetPassword,
-  UserType,
-  OTPVerification,
-} from "./src/app/screens";
+import { Login, ForgetPassword, UserType, OTPVerification } from "./src/app/screens";
 import { Signup_Admin } from "./src/app/screens/admin";
 import { RegistrationForAll, Home } from "./src/app/screens/students";
 import { Signup_Educator } from "./src/app/screens/educator";
@@ -68,17 +63,9 @@ import {
 import ViewProfile from "./src/app/screens/ViewProfile";
 import EventCalender2 from "./src/app/screens/students/account/EventCalender2";
 import UpdateProfile from "./src/app/screens/students/UpdateProfile";
-import {
-  InstituteInfo,
-  CourseDetail,
-  ClassRoom,
-} from "./src/app/screens/students/account/courses_list";
-import {
-  AddEvent,
-  Calendar,
-  ViewEventDetails,
-  EditEvent,
-} from "./src/app/screens/students/calender";
+import { InstituteInfo, CourseDetail, ClassRoom } from "./src/app/screens/students/account/courses_list";
+import { LogBox } from "react-native";
+import { AddEvent, Calendar, ViewEventDetails, EditEvent } from "./src/app/screens/students/calender";
 import NavigationDrawer from "./src/app/screens/students/home_screen/NavigationDrawer";
 import RootNavigator from "./src/app/navigations/RootNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -86,12 +73,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  LogBox.ignoreLogs(["ViewPropTypes will be removed", "ColorPropType will be removed"]);
   useEffect(() => {
     useFonts();
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', function() {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", function () {
       return true;
-    })
-  return () => backHandler.remove()
+    });
+    return () => backHandler.remove();
   }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
