@@ -95,7 +95,7 @@ axios(config)
               <>
                 {myResourcesData.map((list, index) => (
                   <>
-        <Event_Card
+        <Event_Card key={index}
           title={list.Question}
           description={list.Answer}
           // date={"24/05/2023"}

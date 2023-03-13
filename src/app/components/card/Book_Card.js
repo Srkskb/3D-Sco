@@ -9,9 +9,8 @@ export default function Book_Card({title,author,onPress}) {
     <Image style={styles.bookimg} source={book_img}/>
       </View>
       <View style={styles.bottom_portion}>
-        <Text style={styles.title}>{title}</Text>
+        <Text numberOfLines={2} style={styles.title}>{title}</Text>
         <View style={styles.author_box}>
-
         <Text style={styles.author}>Author: </Text>
         <Text style={styles.author_name}>{author}</Text>
         </View>
@@ -45,7 +44,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius:4,
         borderBottomRightRadius:4,
         padding:10
-
     },
     title:{
         fontFamily:'Montserrat-Medium',
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
         // alignSelf:'center',
         marginBottom:5,
         textTransform:'uppercase',
-        height:15,
+        minHeight:36,
     },
     author_box:{
         flexDirection:'row',

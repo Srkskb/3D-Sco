@@ -56,6 +56,7 @@ export default function Backup() {
       .then((response) => {
         if (response.data.success == 1) {
           // allLearnerList();
+          setFileCabinetData([])
         }
       })
       .catch((error) => {

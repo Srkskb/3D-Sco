@@ -47,7 +47,7 @@ export default function CreateUser() {
   const loginUID = localStorage.getItem("loginUID");
    const NewStudent=()=>{
     var myHeaders = myHeadersData();
-    
+    console.log(name)
     var formdata = new FormData();
     formdata.append("add_master_student", "1");
     formdata.append("name", name);
@@ -63,17 +63,17 @@ export default function CreateUser() {
     formdata.append("username", user);
     formdata.append("gender", gender);
     formdata.append("category", category);
-    formdata.append("type", "1");
+    formdata.append("type", type);
     formdata.append("country", country);
-    formdata.append("Comment", "test");
-    formdata.append("Organization", "tester");
-    formdata.append("Description", dob);
-    formdata.append("Experience", "fewvvwe");
-    formdata.append("Occupation", "vrewvervw");
-    formdata.append("Education", "vrewverwvr");
-    formdata.append("Levels", "vefwverewver");
-    formdata.append("institute", "vewrvervewvewr");
-    formdata.append("Tnc", "yes");
+    formdata.append("Comment", "");
+    formdata.append("Organization", "");
+    formdata.append("Description", "");
+    formdata.append("Experience", "");
+    formdata.append("Occupation", "");
+    formdata.append("Education", "");
+    formdata.append("Levels", "");
+    formdata.append("institute", "");
+    formdata.append("Tnc", "");
     formdata.append("created_by", loginUID);
     
     var requestOptions = {
@@ -84,7 +84,7 @@ export default function CreateUser() {
     };
     
     fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-      .then(response => response.text())
+      .then(response => response.json())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
 
@@ -243,7 +243,7 @@ export default function CreateUser() {
           value={category}
         />
         <AppButton title={"Continue"} btnColor={color.purple} 
-        onPress={NewStudent}
+        onPress={()=>NewStudent()}
         />
       </ScrollView>
     </View>

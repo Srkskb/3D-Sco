@@ -15,9 +15,7 @@ const Courses = [
 export default function SelectCourse({ label, ...props }) {
   const [selectItem, setSelectItem] = useState(Courses);
   return (
-    <View
-      style={{justifyContent: "center", alignItems: "center" }}
-    >
+    <View style={{justifyContent: "center", alignItems: "center" }}>
       {label && <Text style={styles.label_text}>{label}</Text>}
 
       <View style={{ flexDirection: "row" }}>

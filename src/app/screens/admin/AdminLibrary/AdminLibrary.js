@@ -18,6 +18,7 @@ import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import Library_Search from "../../../components/LibrarySearch";
 import TextWithButton from "../../../components/TextWithButton";
+import SelectCourse from "../../../components/admin_required/SelectCourse";
 
 export default function LibraryAccess() {
   const navigation = useNavigation();
@@ -26,7 +27,7 @@ export default function LibraryAccess() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const allLearnerList = () => {
+  const allLearnerList = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -35,11 +36,12 @@ export default function LibraryAccess() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${loginUID}&course_id=6`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${loginUID}&course_id=${id}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => {
+        console.log(result.data);
         setStudentLibrary(result.data);
         setInitialStudentLibrary(result.data);
       })
@@ -103,6 +105,13 @@ export default function LibraryAccess() {
             </View>
           </TouchableOpacity>
         </View>
+        <SelectCourse
+          // label={"Select Course"}
+          onSelect={(selectedItem, index) => {
+            console.log(index);
+            allLearnerList(index);
+          }}
+        />
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

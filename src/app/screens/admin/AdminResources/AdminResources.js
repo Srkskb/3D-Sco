@@ -58,8 +58,8 @@ export default function AdminMyResources() {
             ) : (
               <>
                 {myResourcesData.map((list, index) => (
-                  <>
-                    <View style={styles.faqBlock}>
+                  // <>
+                    <View key={index} style={styles.faqBlock}>
                       <View>
                         <Text style={styles.queT}>
                           Que. {index + 1} {"   "} {list.Question}
@@ -70,7 +70,7 @@ export default function AdminMyResources() {
                         </Text>
                       </View>
                     </View>
-                  </>
+                  // </>
                 ))}
               </>
             )}

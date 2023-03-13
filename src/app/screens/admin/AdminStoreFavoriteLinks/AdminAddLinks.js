@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -26,10 +26,14 @@ export default function AdminAddLink() {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [category, setCategory] = useState(0);
+  const [categoryList, setCategoryList] = useState([]);
+  const [loading, setLoading] = useState(false)
+
    const user_type = localStorage.getItem("userID"); // ! user Type student or other
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
   const addLinkForm = (values) => {
+    setLoading(true)
     console.log('category',category);
     if(category!=0||category!=undefined){
       const myHeaders = myHeadersData();
@@ -54,17 +58,45 @@ export default function AdminAddLink() {
             if (res.success == 1) {
               setSnackVisibleTrue(true);
               setMessageTrue(res.message);
+              setLoading(false)
               navigation.navigate("AdminStoreFavoriteLinks");
             } else {
               setSnackVisibleFalse(true);
               setMessageFalse(res.message);
+              setLoading(false)
             }
           });
         }else {
               setSnackVisibleFalse(true);
               setMessageFalse('Select Category');
+              setLoading(false)
             }
   };
+  useEffect(() => {
+    getcategory()
+  }, [navigation])
+  
+  const getcategory= () => {
+    const myHeaders = myHeadersData();
+
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
+      method: "GET",
+ 
+      headers: {
+        myHeaders,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success == 1) {
+          setCategoryList(res.data);
+          console.log(res.data);
+        } else {
+          alert("Try after sometime");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
@@ -143,8 +175,9 @@ export default function AdminAddLink() {
                   <CategoryDropdown
                     label={"Category"}
                     onSelect={(selectedItem, index) => {
-                      setCategory(index + 1);
-                      console.log(index + 1)
+                      let catid = categoryList.filter(i=>i.Name===selectedItem).map(i=>i.id)
+                      setCategory(catid&&catid[0]);
+                console.log(selectedItem,catid);
                     }}
 
                   />
@@ -194,6 +227,7 @@ export default function AdminAddLink() {
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
+                      loading={loading}
                       disabled={!isValid}
                       color={color.white}
                       backgroundColor={color.purple}

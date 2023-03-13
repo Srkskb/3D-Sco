@@ -16,10 +16,10 @@ import axios from "axios";
 import { myHeadersData } from "../../../api/helper";
 const{height,width}=Dimensions.get('window')
 export default function AdminViewBlogs({ route, navigation }) {
-    const { Titel, titleParam } = route.params;
-  const { Date, accessParam } = route.params;
-  const { description, descriptionParam } = route.params;
-const [comment, setComment] = useState('')
+    const { Titel, titleParam } = route.params.list;
+  const { Date, accessParam } = route.params.list;
+  const { Description, descriptionParam } = route.params.list;
+const [comment, setComment] = useState([])
 
 const addComment=()=>{
   var formdata = new FormData();
@@ -38,11 +38,41 @@ var requestOptions = {
 };
 
 fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
+  .then(response => response.json())
+  .then(result => {
+    console.log(result)
+    getComments()
+  })
   .catch(error => console.log('error', error));
 
 }
+
+const getComments=()=>{
+  var myHeaders = myHeadersData()
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`https://3dsco.com/3discoapi/state.php?comments_list=1&blog_id=${route.params.list.id}`, requestOptions)
+  .then(response => response.json())
+  .then(result =>{
+    if(result.success!=0){
+      
+    }else{
+      setComment([])
+    }
+    console.log(result)
+  })
+  .catch(error => console.log('error', error));
+}
+
+useEffect(() => {
+  getComments()
+}, [navigation])
+
 
   return (
     <View style={styles.container}>
@@ -50,9 +80,7 @@ fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
         title={"view blogs"}
         onPress={() => navigation.navigate("AdminBlogs")}
       />
-      <ScrollView
-       
-        showsVerticalScrollIndicator={false}
+      <ScrollView showsVerticalScrollIndicator={false}
       >
         <View style={styles.main}>
           <View style={styles.detail_box}>
@@ -72,7 +100,7 @@ fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
               </Text>
               <View style={styles.description}>
                 <Text style={styles.description_text}>
-                  {description} 
+                  {Description} 
                 </Text>
               </View>
             </View>
@@ -97,7 +125,7 @@ fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
               title={"Cancel"}
               color={color.purple}
               fontFamily={"Montserrat-Medium"}
-              onPress={()=>console.log(route.params.list)}
+              onPress={()=>console.log(route.params.list.id)}
             />
             <SmallButton
               title={"Submit"}
