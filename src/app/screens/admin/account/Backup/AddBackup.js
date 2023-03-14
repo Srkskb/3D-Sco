@@ -46,11 +46,11 @@ export default function AddBackup() {
     urlencoded.append("add_backup", "1");
     urlencoded.append("title", values.docTitle);
     urlencoded.append("course_id", course);
-    // urlencoded.append("image", {
-    //   uri: image, //"file:///" + image.split("file:/").join(""),
-    //   type: mime.getType(image),
-    //   name: `abc.jpg`,
-    // });
+    urlencoded.append("image", {
+      uri: image, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image),
+      name: `abc.jpg`,
+    });
     urlencoded.append("user_id", loginUID);
     urlencoded.append("detail", values.description);
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {

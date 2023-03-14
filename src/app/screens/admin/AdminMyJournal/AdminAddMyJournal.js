@@ -29,6 +29,7 @@ export default function AdminAddMyJournal() {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false)
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -43,6 +44,7 @@ export default function AdminAddMyJournal() {
   };
 
   const addFileCabinet = (values) => {
+    setLoading(true)
     console.log(values.docTitle, access, image, loginUID, values.description);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -71,9 +73,11 @@ export default function AdminAddMyJournal() {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminMyJournal");
+          setLoading(false)
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
+          setLoading(false)
         }
       });
   };
@@ -197,6 +201,7 @@ export default function AdminAddMyJournal() {
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
+                      loading={loading}
                       disabled={!isValid}
                       color={color.white}
                       backgroundColor={color.purple}

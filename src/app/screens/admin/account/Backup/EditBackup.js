@@ -46,7 +46,11 @@ export default function EditBackup({ navigation, route }) {
     formdata.append("course_id", route.params.title.course_id);
     formdata.append("title", values.docTitle);
     formdata.append("detail", values.description);
-    formdata.append("image", image);
+    formdata.append("image", {
+      uri: image, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image),
+      name: `test.zip`,
+    });
     formdata.append("id", route.params.title.id);
 
     var requestOptions = {
@@ -130,7 +134,10 @@ export default function EditBackup({ navigation, route }) {
 
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                    {image && <><Image source={require('../../../../assets/images/account/file.png')}
+                    style={styles.uploadImg} resizeMode={'contain'} />
+                    <Text style={{ fontSize: 14, marginBottom: 10 }}>{image}</Text>
+                    </>}
                   </View>
                   {/* <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
@@ -167,7 +174,7 @@ export default function EditBackup({ navigation, route }) {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(course)}
+                      onPress={() => console.log(route.params)}
                     />
                     <SmallButton
                       onPress={handleSubmit}
