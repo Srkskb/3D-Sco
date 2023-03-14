@@ -20,15 +20,18 @@ export default function AdminViewBlogs({ route, navigation }) {
   const { Date, accessParam } = route.params.list;
   const { Description, descriptionParam } = route.params.list;
 const [comment, setComment] = useState([])
+const [loading, setLoading] = useState(false)
+const loginUID = localStorage.getItem("loginUID");
 
 const addComment=()=>{
+  setLoading(true)
   var formdata = new FormData();
   var myHeaders = myHeadersData()
 formdata.append("comment", "1");
 formdata.append("titel", "newdocument");
-formdata.append("id", route.params.list.id);
+formdata.append("blog_id", route.params.list.id);
 formdata.append("description", comment);
-formdata.append("date", "2022-08-19");
+formdata.append("user_id", loginUID);
 
 var requestOptions = {
   method: 'POST',
@@ -40,10 +43,13 @@ var requestOptions = {
 fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
   .then(response => response.json())
   .then(result => {
+    setLoading(false)
     console.log(result)
     getComments()
   })
-  .catch(error => console.log('error', error));
+  .catch(error => {
+    setLoading(false)
+    console.log('error', error)});
 
 }
 
@@ -130,6 +136,7 @@ useEffect(() => {
             <SmallButton
               title={"Submit"}
               color={color.white}
+              loading={loading}
               fontFamily={"Montserrat-Bold"}
               backgroundColor={color.purple}
               onPress={addComment}

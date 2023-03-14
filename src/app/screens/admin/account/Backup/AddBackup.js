@@ -157,7 +157,10 @@ export default function AddBackup() {
 
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                    {image && <><Image source={require('../../../../assets/images/account/file.png')}
+                    style={styles.uploadImg} resizeMode={'contain'} />
+                    <Text style={{ fontSize: 14, marginBottom: 10 }}>{image.split('file:///data/user/0/com.threeDSCO.iDigital/cache/DocumentPicker/').join('')}</Text>
+                    </>}
                   </View>
                   <InputField
                     label={"Description"}
