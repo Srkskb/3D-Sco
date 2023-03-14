@@ -19,7 +19,8 @@ export default function AdminViewBlogs({ route, navigation }) {
     const { Titel, titleParam } = route.params.list;
   const { Date, accessParam } = route.params.list;
   const { Description, descriptionParam } = route.params.list;
-const [comment, setComment] = useState([])
+const [comment, setComment] = useState('')
+const [comments, setComments] = useState([])
 const [loading, setLoading] = useState(false)
 const loginUID = localStorage.getItem("loginUID");
 
@@ -45,7 +46,10 @@ fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
   .then(result => {
     setLoading(false)
     console.log(result)
+    if(result.success==1){
     getComments()
+    setComment('')
+    }
   })
   .catch(error => {
     setLoading(false)
@@ -66,9 +70,9 @@ fetch(`https://3dsco.com/3discoapi/state.php?comments_list=1&blog_id=${route.par
   .then(response => response.json())
   .then(result =>{
     if(result.success!=0){
-      
+      setComments(result.data)
     }else{
-      setComment([])
+      setComments([])
     }
     console.log(result)
   })
@@ -114,9 +118,13 @@ useEffect(() => {
           <View style={styles.comment_section}>
             <Text style={styles.comment_text}>
               <Text>comments</Text>
-              <Text>( 1 )</Text>
+              <Text> ({comments&&comments.length})</Text>
             </Text>
-            <CommentCard />
+            {comments.map((list, index) => (<CommentCard
+            key={index}
+            comments={list.titel}
+            name={list.User_name}
+            />))}
           </View>
           <Input2
             label={"Leave a Comment"}
@@ -125,6 +133,7 @@ useEffect(() => {
             textAlignVertical={"top"}
             placeholder={"Type Your Comment Here..."}
             onChangeText={(text)=>setComment(text)}
+            value={comment}
           />
           <View style={styles.button_container}>
             <SmallButton

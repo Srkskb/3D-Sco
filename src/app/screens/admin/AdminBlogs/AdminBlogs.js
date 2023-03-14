@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  RefreshControl,
+  RefreshControl,ActivityIndicator
 } from "react-native";
 import { Snackbar } from "react-native-paper";
 import HeaderBack from "../../../components/header/Header";
@@ -23,9 +23,11 @@ export default function AdminBlogs() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const loginUID = localStorage.getItem("loginUID");
+const [loading, setLoading] = useState(false)
+const loginUID = localStorage.getItem("loginUID");
   const allLearnerList = () => {
-    const loginUID = localStorage.getItem("loginUID");
+  setLoading(true)
+  const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -38,9 +40,12 @@ export default function AdminBlogs() {
     )
       .then((res) => res.json())
       .then((result) =>{
-        console.log(result.data)
+  setLoading(false)
+  console.log(result.data)
         setBlogListData(result.data)})
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false)
+        console.log("error", error)});
   };
   // Delete Blog
   const deleteBlog = (id) => {
@@ -87,6 +92,21 @@ export default function AdminBlogs() {
   }, []);
   return (
     <View style={styles.container}>
+      {loading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#ffffffcc",
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 100,
+          }}
+        >
+          <ActivityIndicator size={"large"} />
+        </View>
+      ) : null}
       <HeaderBack
         title={"Blogs"}
         onPress={() => navigation.goBack()}
