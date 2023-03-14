@@ -31,9 +31,13 @@ export default function AddBackup() {
     let result = await DocumentPicker.getDocumentAsync({
       type:'application/zip'
     });
-    console.log(result);
-    if (!result.cancelled) {
+    console.log(result.size>26214400);
+    
+    if (!result.cancelled&&result.size<26214400) {
       setImage(result.uri);
+    }else{
+      if(result.size>26214400){setSnackVisibleTrue(true)
+      setMessageTrue('Size is larger than 25MB please upload another file')}
     }
   };
 
