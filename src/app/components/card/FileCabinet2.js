@@ -9,6 +9,7 @@ export default function FileCabinet2({
   removePress,
   onPress,
   onPressEdit,
+  onPressView,
 }) {
   return (
     <View style={styles.container}>
@@ -25,16 +26,15 @@ export default function FileCabinet2({
             </View>
       <View style={styles.viewbutton}>
         <Edit onPress={onPressEdit} />
-        <View style={{ width: 40 }}></View>
-        {/* <ViewButton
-          title={"View Document"}
+        {/* <View style={{ width: 40 }}></View> */}
+        <ViewButton
+          title={"View"}
           color={color.white}
           backgroundColor={color.purple}
           fontFamily={"Montserrat-Bold"}
-          onPress={onPress}
-        /> */}
-        <View style={{ width: 60 }}></View>
-
+          onPress={onPressView}
+        />
+        {/* <View style={{ width: 60 }}></View> */}
         <Remove onPress={removePress} />
       </View>
     </View>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 20,
     borderRadius: 8,
-    marginBottom: 20,
+    marginBottom: 12,
   },
   left_side: {
     width: "10%",
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-SemiBold",
   },
   viewbutton: {
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 10,
     flexDirection: "row",

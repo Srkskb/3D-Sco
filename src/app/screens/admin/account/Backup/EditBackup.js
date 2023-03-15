@@ -19,7 +19,7 @@ export default function EditBackup({ navigation, route }) {
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
   const [loading, setLoading] = useState(false);
-  const [course, setCourse] = useState("Select Course");
+  const [course, setCourse] = useState(route.params.title.course_id);
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(route.params.title.file_name);
   // const [showDocResults, setShowDocResults] = useState(false);
@@ -118,7 +118,7 @@ export default function EditBackup({ navigation, route }) {
                       console.log(selectedItem, index);
                     }}
                     value={access}
-                  /> */}
+                  />
                   <SelectCourse
                     label={"Select Course"}
                     onSelect={(selectedItem, index) => {
@@ -126,7 +126,7 @@ export default function EditBackup({ navigation, route }) {
                       console.log(selectedItem, index);
                     }}
                     value={course}
-                  />
+                  /> */}
 
                   {errors.selectedItem && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>

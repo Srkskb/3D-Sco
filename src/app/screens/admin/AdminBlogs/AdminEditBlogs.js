@@ -15,6 +15,8 @@ import { myHeadersData } from "../../../api/helper";
 import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
+import axios from "axios";
+import qs from "qs";
 
 export default function AdminEditBlogs({ route, navigation }) {
   // ** For Event Update
@@ -31,7 +33,7 @@ export default function AdminEditBlogs({ route, navigation }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [updateDescription, setUpDescription] = useState(description);
-
+  const [loading, setLoading] = useState(false)
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -47,33 +49,39 @@ export default function AdminEditBlogs({ route, navigation }) {
   };
 
   const updateEvent = () => {
+    console.log(blogID)
+    setLoading(true)
     const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("update_blogs", "1");
-    urlencoded.append("titel", updateTitle);
-    urlencoded.append("date", selectedDate);
-    urlencoded.append("description", updateDescription);
-    urlencoded.append("id", blogID);
-    urlencoded.append("user_id", loginUID);
-
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
-      method: "POST",
-      body: urlencoded,
-      headers: {
-        myHeaders,
+    var data = qs.stringify({
+      'update_blogs': '1',
+      'id': blogID,
+      'titel': updateTitle,
+      'user_id': loginUID,
+      'description': updateDescription 
+    });
+    var config = {
+      method: 'post',
+    maxBodyLength: Infinity,
+      url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
+      headers: { 
+        'Accept': 'application/json', 
+        'Content-Type': 'application/x-www-form-urlencoded', 
+        'Cookie': 'PHPSESSID=k3uusd3c44n957mv6l05vpmf31'
       },
-      redirect: "follow",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success == 1) {
+      data : data
+    };
+    
+    axios(config)
+    .then((res) => {
+        console.log(res.data);
+        setLoading(false)
+        if (res.data.success == 1) {
           setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
+          setMessageTrue(res.data.message);
           navigation.navigate("AdminBlogs");
         } else {
           setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
+          setMessageFalse(res.data.message);
         }
       });
   };
@@ -130,7 +138,7 @@ export default function AdminEditBlogs({ route, navigation }) {
                 keyboardType="text"
               />
 
-              <Text style={{ marginBottom: 5 }}>
+              {/* <Text style={{ marginBottom: 5 }}>
                 <Text style={styles.label_text}>Blog Date</Text>
                 <Text style={{ color: color.red }}>*</Text>
               </Text>
@@ -157,7 +165,7 @@ export default function AdminEditBlogs({ route, navigation }) {
                   onConfirm={handleConfirm}
                   onCancel={hideDatePicker}
                 />
-              </View>
+              </View> */}
 
               <InputField
                 label={"Description"}
@@ -178,6 +186,7 @@ export default function AdminEditBlogs({ route, navigation }) {
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>

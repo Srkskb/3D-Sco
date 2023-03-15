@@ -58,6 +58,7 @@ fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
 }
 
 const getComments=()=>{
+  console.log(route.params.list.id)
   var myHeaders = myHeadersData()
 
 var requestOptions = {

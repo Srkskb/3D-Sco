@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl, Platform } from "react-native";
 import color from "../../../../assets/themes/Color";
 import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
@@ -9,7 +9,9 @@ import TextWithButton from "../../../../components/TextWithButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
+import * as FileSystem from 'expo-file-system';
 import axios from "axios";
+import { StorageAccessFramework } from 'expo-file-system';
 import { Snackbar } from "react-native-paper";
 export default function Backup() {
   const navigation = useNavigation();
@@ -17,7 +19,7 @@ export default function Backup() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const [selectCourse, setSelectCourse] = useState("");
+  const [selectCourse, setSelectCourse] = useState("Select Course");
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
@@ -73,9 +75,24 @@ export default function Backup() {
   };
   useEffect(() => {
     // allLearnerList();
-    // navigation.addListener("focus", () => allLearnerList());
+    navigation.addListener("focus", () => setFileCabinetData([]));
     setFileCabinetData([])
   }, [navigation]);
+
+  const downloadFile= (url) =>{
+    const uri = url
+    let fileUri = FileSystem.documentDirectory+'file.zip';
+
+
+    FileSystem.downloadAsync(uri, fileUri)
+    .then(async({ uri }) => {
+        console.log(uri)
+      })
+      .catch(error => {
+        console.error(error);
+      })
+}
+
 
   return (
     <View style={styles.container}>
@@ -107,8 +124,9 @@ export default function Backup() {
             console.log(index);
             allLearnerList(index);
           }}
+          value={selectCourse}
         />
-        <View style={{ paddingHorizontal: 10 }}>
+        <View>
           {fileCabinetData === undefined ? (
             <>
               <NoDataFound />
@@ -125,6 +143,7 @@ export default function Backup() {
                       title: list,
                     })
                   }
+                  onPressView={()=>downloadFile(list.file_name)}
                   removePress={() => deleteEvent(list.id)}
                 />
               ))}
