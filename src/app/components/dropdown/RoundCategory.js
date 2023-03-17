@@ -1,4 +1,4 @@
-import { View, Text, Image,StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import React, { useEffect, useState } from "react";
 import { myHeadersData } from "../../api/helper";
@@ -12,7 +12,7 @@ export default function RoundCategory({ label, ...props }) {
 
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
       method: "GET",
- 
+
       headers: {
         myHeaders,
       },
@@ -30,7 +30,7 @@ export default function RoundCategory({ label, ...props }) {
   }, []);
   return (
     <View>
-      <View style={{width:'80%'}}>
+      <View style={{ width: "80%" }}>
         <SelectDropdown
           data={categoryList.map((list, index) => list.Name)}
           buttonTextAfterSelection={(selectedItem, index) => {
@@ -51,22 +51,22 @@ export default function RoundCategory({ label, ...props }) {
   );
 }
 const styles = StyleSheet.create({
-    dropdown:{
-        borderRadius:50,
-        width:140,
-        height:40,
-        borderWidth:1,
-        borderColor:color.purple,
-        backgroundColor:color.white
-    },
-    text_button:{
-        fontSize:14,
-        fontFamily:'Montserrat-Regular'
-    },
-    dropdown_style:{
-        width:'80%'
-    },
-    row_text:{
-        fontFamily:'Montserrat-Medium'
-    }
+  dropdown: {
+    borderRadius: 50,
+    width: 140,
+    height: 40,
+    borderWidth: 1,
+    borderColor: color.purple,
+    backgroundColor: color.white,
+  },
+  text_button: {
+    fontSize: 14,
+    fontFamily: "Montserrat-Regular",
+  },
+  dropdown_style: {
+    width: "80%",
+  },
+  row_text: {
+    fontFamily: "Montserrat-Medium",
+  },
 });

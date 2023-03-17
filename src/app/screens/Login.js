@@ -120,7 +120,6 @@ export default function Login({ navigation }) {
         .then((result) => {
           setloading(false);
           if (result.success == 1) {
-            console.log("login", result.data);
             localStorage.setItem("loginUID", result.data.id);
             localStorage.setItem("loginData", result.data);
             navigation.navigate("TutorDrawerNavigator");

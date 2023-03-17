@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -21,10 +14,10 @@ import * as Yup from "yup";
 import * as qs from "qs";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
-import mime from 'mime'
+import mime from "mime";
 export default function AdminAddResources({ navigation }) {
-  const [question,setQuestion]=useState("");
-  const [answer ,setAnswer] =useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
   const loginUID = localStorage.getItem("loginUID");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -32,37 +25,35 @@ export default function AdminAddResources({ navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
 
   const addFileCabinet = (values) => {
-    console.log(values.docTitle,loginUID,values.description,);
     const getHeaders = myHeadersData();
     var data = qs.stringify({
-  'add_faq': '1',
-  'Question': values.docTitle,
-  'Answer': values.description,
-  'user_id': loginUID 
-});
-  var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
-  
-  axios(config)
-  .then((response)=>{
-    console.log(response)
-    if(response.data.success==1){
-    navigation.navigate("AdminManageResources")
-  }
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-};
+      add_faq: "1",
+      Question: values.docTitle,
+      Answer: values.description,
+      user_id: loginUID,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          navigation.navigate("AdminManageResources");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
-<View style={styles.container}>
+    <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Add Resources"}
@@ -104,14 +95,7 @@ export default function AdminAddResources({ navigation }) {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Question"}
@@ -123,11 +107,7 @@ export default function AdminAddResources({ navigation }) {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -140,13 +120,9 @@ export default function AdminAddResources({ navigation }) {
                   /> */}
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
-{/*  */}
+                  {/*  */}
                   <InputField
                     label={"Answer"}
                     placeholder={"Enter Your Answer"}
@@ -160,19 +136,11 @@ export default function AdminAddResources({ navigation }) {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

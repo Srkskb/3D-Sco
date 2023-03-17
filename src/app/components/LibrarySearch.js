@@ -1,27 +1,14 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import color from "../assets/themes/Color";
 export default function Library_Search() {
   return (
     <View style={styles.search_box}>
       <View style={styles.icon_box}>
-        <Image
-          style={styles.icon}
-          source={require("../assets/images/Search.png")}
-        />
+        <Image style={styles.icon} source={require("../assets/images/Search.png")} />
       </View>
       <View style={styles.input}>
-        <TextInput
-          style={styles.text_input}
-          placeholder={"Search title, author..."}
-        />
+        <TextInput style={styles.text_input} placeholder={"Search title, author..."} />
       </View>
       <TouchableOpacity style={styles.search_button}>
         <View>

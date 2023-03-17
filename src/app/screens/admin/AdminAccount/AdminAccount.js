@@ -13,12 +13,7 @@ export default function AdminAccount() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           <View style={styles.main_container}>
-            <View
-              style={[
-                styles.vertical_list,
-                { borderColor: color.gray, borderRightWidth: 1 },
-              ]}
-            >
+            <View style={[styles.vertical_list, { borderColor: color.gray, borderRightWidth: 1 }]}>
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
@@ -68,7 +63,6 @@ export default function AdminAccount() {
                 title={"Instructor Request"}
                 onPress={() => navigation.navigate("InstructorRequest")}
               />
-            
             </View>
             <View style={styles.vertical_list}>
               <Account_Tabs

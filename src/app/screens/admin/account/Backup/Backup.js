@@ -9,10 +9,11 @@ import TextWithButton from "../../../../components/TextWithButton";
 import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from "expo-file-system";
 import axios from "axios";
-import { StorageAccessFramework } from 'expo-file-system';
+import { StorageAccessFramework } from "expo-file-system";
 import { Snackbar } from "react-native-paper";
+
 export default function Backup() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -23,6 +24,7 @@ export default function Backup() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+
   const allLearnerList = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -34,8 +36,7 @@ export default function Backup() {
     fetch(`https://3dsco.com/3discoapi/studentregistration.php?backup_course_id=1&course_id=${id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
-        setFileCabinetData(result.data);
+        setFileCabinetData(result?.data);
       })
       .catch((error) => console.log("error", error));
   };
@@ -58,7 +59,7 @@ export default function Backup() {
       .then((response) => {
         if (response.data.success == 1) {
           // allLearnerList();
-          setFileCabinetData([])
+          setFileCabinetData([]);
         }
       })
       .catch((error) => {
@@ -76,23 +77,21 @@ export default function Backup() {
   useEffect(() => {
     // allLearnerList();
     navigation.addListener("focus", () => setFileCabinetData([]));
-    setFileCabinetData([])
+    // setFileCabinetData([]);
   }, [navigation]);
 
-  const downloadFile= (url) =>{
-    const uri = url
-    let fileUri = FileSystem.documentDirectory+'file.zip';
-
+  const downloadFile = (url) => {
+    const uri = url;
+    let fileUri = FileSystem.documentDirectory + "file.zip";
 
     FileSystem.downloadAsync(uri, fileUri)
-    .then(async({ uri }) => {
-        console.log(uri)
+      .then(async ({ uri }) => {
+        console.log(uri);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
-      })
-}
-
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -133,9 +132,10 @@ export default function Backup() {
             </>
           ) : (
             <>
-              {fileCabinetData.map((list, index) => (
+              {fileCabinetData?.map((list, index) => (
                 <FileCabinet2
                   key={index}
+                  list={list}
                   title={list.title}
                   description={list.detail}
                   onPressEdit={() =>
@@ -143,7 +143,7 @@ export default function Backup() {
                       title: list,
                     })
                   }
-                  onPressView={()=>downloadFile(list.file_name)}
+                  onPressView={() => downloadFile(list.file_name)}
                   removePress={() => deleteEvent(list.id)}
                 />
               ))}
