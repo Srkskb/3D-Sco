@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl, TextInput, Image, TouchableOpacity, Text } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -23,15 +14,11 @@ export default function AdminManageLibrary() {
     <View style={styles.container}>
       <HeaderBack title={"Library"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
-        <TextWithButton
-          title={"Books"}
-          label={"Add Books"}
-          onPress={() => navigation.navigate("AdminAddBook")}
-        />
+        <TextWithButton title={"Books"} label={"Add Books"} onPress={() => navigation.navigate("AdminAddBook")} />
 
         <ScrollView>
           <View style={styles.book_container}>
-            <Book_Card title={"title"} author={"author name"} onPress={()=>navigation.navigate("ViewBook")}/>
+            <Book_Card title={"title"} author={"author name"} onPress={() => navigation.navigate("ViewBook")} />
           </View>
         </ScrollView>
       </View>

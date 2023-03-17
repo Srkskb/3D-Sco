@@ -1,19 +1,31 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
+import * as DocumentPicker from "expo-document-picker";
 
-export default function UploadDocument({type, ...props }) {
+export default function UploadDocument({ type, onChange, ...props }) {
+  const pickPdf = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: type.includes("pdf") ? "application/pdf" : "image/*",
+      });
+      if (result.type === "success") {
+        onChange && onChange(result);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.label_text}>Upload {type}</Text>
       <View style={styles.outline}>
-        <TouchableOpacity {...props}>
+        {/* <TouchableOpacity {...props}> */}
+        <TouchableOpacity onPress={pickPdf}>
           <View style={styles.upload_box}>
-            <Image
-              style={styles.upload_icon}
-              source={require("../../assets/images/icons/upload-icon.png")}
-            />
+            <Image style={styles.upload_icon} source={require("../../assets/images/icons/upload-icon.png")} />
             <Text style={styles.upload_text}>Upload files</Text>
+            {/* <Button title="Pick PDF" onPress={pickPdf} style={styles.upload_text} /> */}
           </View>
         </TouchableOpacity>
       </View>

@@ -17,7 +17,7 @@ import {
 import { Snackbar } from "react-native-paper";
 import color from "../assets/themes/Color";
 import { Splash } from "./../components";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import AppButton from "./../components/buttons/AppButton";
 import { myHeadersData, useTogglePasswordVisibility } from "../api/helper";
 import Input from "../components/inputs/Input";
@@ -32,21 +32,20 @@ import { clockRunning } from "react-native-reanimated";
 // import { showMessage, hideMessage } from "react-native-flash-message";
 const storeData = async (key, value) => {
   try {
-    await AsyncStorage.setItem(key, value); 
-  } catch (error) {
-  }
+    await AsyncStorage.setItem(key, value);
+  } catch (error) {}
 };
 export default function Login({ navigation }) {
-  const { passwordVisibility, rightIcon, handlePasswordVisibility } =
-    useTogglePasswordVisibility();
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
   const newLocal_1 = "../assets/images/background/login_background.png";
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [isVisibleEntry, setIsVisibleEntry] = useState(true);
-  const [loading, setloading] = useState(false)
+  const [loading, setloading] = useState(false);
   const user_id = localStorage.getItem("userID");
+
   const handleSignup = () => {
     if (user_id == 1) {
       navigation.navigate("RegistrationForAll");
@@ -63,7 +62,7 @@ export default function Login({ navigation }) {
     }
   };
   const loginUser = async (values) => {
-    setloading(true)
+    setloading(true);
     var role_data = user_id;
     const myHeaders = myHeadersData();
     // var urlencoded = new FormData();
@@ -116,22 +115,21 @@ export default function Login({ navigation }) {
         redirect: "follow",
       };
 
-      fetch(
-        "https://3dsco.com/3discoapi/studentregistration.php",
-        requestOptions
-      )
+      fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          setloading(false)
-          console.log(result);
+          setloading(false);
           if (result.success == 1) {
+            console.log("login", result.data);
             localStorage.setItem("loginUID", result.data.id);
+            localStorage.setItem("loginData", result.data);
             navigation.navigate("TutorDrawerNavigator");
           }
         })
         .catch((error) => {
-          setloading(false)
-          console.log("error", error)});
+          setloading(false);
+          console.log("error", error);
+        });
     } else {
       var data = qs.stringify({
         login: "1",
@@ -154,15 +152,15 @@ export default function Login({ navigation }) {
           console.log(response.data);
           if (response.success == 0) {
             //add alert here
-            setloading(false)
+            setloading(false);
           } else {
-            setloading(false)
+            setloading(false);
             localStorage.setItem("loginUID", response.data.data.id);
-            storeData('userType',JSON.stringify(response.data.data))
+            storeData("userType", JSON.stringify(response.data.data));
             if (response.data.data.type == "student") {
               navigation.navigate("DrawerNavigator");
             }
-            if(response.data.data.type=='tutor'){
+            if (response.data.data.type == "tutor") {
               navigation.navigate("TutorDrawerNavigator");
             }
             if (response.data.data.type == "parent") {
@@ -178,7 +176,7 @@ export default function Login({ navigation }) {
         })
         .catch((error) => {
           console.log(error);
-          setloading(false)
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(error.response.data.message);
         });
@@ -187,21 +185,11 @@ export default function Login({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
         <StatusBar backgroundColor="#82027D" />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            scrollEnabled={true}
-            style={{ flex: 1 }}
-          >
-            <ImageBackground
-              style={{ height: "100%" }}
-              source={require(newLocal_1)}
-            >
+          <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true} style={{ flex: 1 }}>
+            <ImageBackground style={{ height: "100%" }} source={require(newLocal_1)}>
               <View style={{ flex: 1 }}>
                 <View style={{ height: height / 2.2, width: width }}>
                   <Splash />
@@ -230,9 +218,7 @@ export default function Login({ navigation }) {
                       password: "",
                     }}
                     validationSchema={Yup.object().shape({
-                      password: Yup.string()
-                        .required("Password is required")
-                        .min(5, "Your password is too short."),
+                      password: Yup.string().required("Password is required").min(5, "Your password is too short."),
                       // .matches(
                       //   /[a-zA-Z]/,
                       //   "Password can only contain Latin letters."
@@ -240,14 +226,7 @@ export default function Login({ navigation }) {
                     })}
                     onSubmit={(values) => loginUser(values)}
                   >
-                    {({
-                      handleChange,
-                      handleBlur,
-                      handleSubmit,
-                      values,
-                      errors,
-                      isValid,
-                    }) => (
+                    {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                       // <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={false}>
                       <View>
                         <View>
@@ -272,22 +251,11 @@ export default function Login({ navigation }) {
                             </Text>
                           )}
                           <View>
-                            <TouchableOpacity
-                              style={styles.icon}
-                              onPress={() => setIsVisibleEntry(!isVisibleEntry)}
-                            >
+                            <TouchableOpacity style={styles.icon} onPress={() => setIsVisibleEntry(!isVisibleEntry)}>
                               <MaterialCommunityIcons
-                                name={
-                                  isVisibleEntry === false
-                                    ? "eye-outline"
-                                    : "eye-off-outline"
-                                }
+                                name={isVisibleEntry === false ? "eye-outline" : "eye-off-outline"}
                                 size={24}
-                                color={
-                                  isVisibleEntry === false
-                                    ? color.dark_gray
-                                    : color.purple
-                                }
+                                color={isVisibleEntry === false ? color.dark_gray : color.purple}
                               />
                             </TouchableOpacity>
                             <Input
@@ -326,9 +294,7 @@ export default function Login({ navigation }) {
                           </View>
                         </View>
 
-                        <TouchableOpacity
-                          onPress={() => navigation.navigate("ForgetPassword")}
-                        >
+                        <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
                           <Text style={styles.forget}>Forget Password</Text>
                         </TouchableOpacity>
                         <View
@@ -338,13 +304,8 @@ export default function Login({ navigation }) {
                             marginTop: 15,
                           }}
                         >
-                          <Text style={styles.account}>
-                            Don't have an account?{" "}
-                          </Text>
-                          <TouchableOpacity
-                            title="RegistrationForAll"
-                            onPress={handleSignup}
-                          >
+                          <Text style={styles.account}>Don't have an account? </Text>
+                          <TouchableOpacity title="RegistrationForAll" onPress={handleSignup}>
                             <Text style={styles.signup}>Sign Up</Text>
                           </TouchableOpacity>
                         </View>
@@ -356,10 +317,7 @@ export default function Login({ navigation }) {
                           }}
                         >
                           <Text style={styles.account}>Change User Type </Text>
-                          <TouchableOpacity
-                            title="RegistrationForAll"
-                            onPress={() => navigation.navigate("UserType")}
-                          >
+                          <TouchableOpacity title="RegistrationForAll" onPress={() => navigation.navigate("UserType")}>
                             <Text style={styles.signup}>Change</Text>
                           </TouchableOpacity>
                         </View>

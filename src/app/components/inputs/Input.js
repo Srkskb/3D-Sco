@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TextInput } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
 
-const Input = ({ label, error, onFocus = () => {}, ...props }) => {
+const Input = ({ label, error, value, onChangeText = () => {}, onFocus = () => {}, ...props }) => {
   const [isfocused, setIsfococused] = React.useState(false);
   return (
     <View style={styles.input_container}>
@@ -11,11 +11,9 @@ const Input = ({ label, error, onFocus = () => {}, ...props }) => {
         <Text style={styles.asterisk}>*</Text>
       </View>
       <TextInput
-        style={[
-          styles.text_input,
-          { borderColor: isfocused ? color.purple : color.gray },
-        ]}
+        style={[styles.text_input, { borderColor: isfocused ? color.purple : color.gray }]}
         autoCorrect={false}
+        value={value}
         placeholderTextColor={color.light_gray}
         onFocus={() => {
           onFocus();
@@ -24,8 +22,8 @@ const Input = ({ label, error, onFocus = () => {}, ...props }) => {
         onBlur={() => {
           setIsfococused(false);
         }}
+        onChangeText={onChangeText}
         {...props}
-        
       />
     </View>
   );

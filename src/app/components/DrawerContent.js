@@ -1,17 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import {
-  View,
-  Text,
-  Linking,
-  Pressable,
-  Alert,
-  StyleSheet,
-} from "react-native";
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from "@react-navigation/drawer";
+import { View, Text, Linking, Pressable, Alert, StyleSheet } from "react-native";
+import { DrawerContentScrollView, DrawerItemList, DrawerItem } from "@react-navigation/drawer";
 import { Avatar, Button, Icon } from "react-native-elements";
 import color from "../assets/themes/Color";
 import { useNavigation } from "@react-navigation/native";
@@ -19,10 +8,11 @@ import HomeHeader from "../components/header/HomeHeader";
 import { myHeadersData } from "./../api/helper";
 import Detail from "../components/view/Detail";
 import Headline from "../components/Headline";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function DrawerContent(props) {
-    const navigation = useNavigation();
-    const loginUID = localStorage.getItem("loginUID"); // ! loged user type
+  const navigation = useNavigation();
+  const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const userId = localStorage.getItem("userID");
   const userFName = localStorage.getItem("userFName");
   const userRole = localStorage.getItem("userRole");
@@ -36,10 +26,7 @@ export default function DrawerContent(props) {
       redirect: "follow",
     };
 
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`, requestOptions)
       .then((res) => res.json())
       .then((res) => {
         // console.log(res);
@@ -50,6 +37,11 @@ export default function DrawerContent(props) {
   useEffect(() => {
     showUserDetails();
   }, []);
+  const handleLogout = async (props) => {
+    await AsyncStorage.removeItem("loginUID");
+    await AsyncStorage.removeItem("userData");
+    props.navigation.replace("Login");
+  };
   return (
     <View style={styles.container}>
       <DrawerContentScrollView {...props}>
@@ -80,18 +72,13 @@ export default function DrawerContent(props) {
         </View>
         <DrawerItemList {...props} />
         <DrawerItem
-        label={"Log Out"}
-        onPress={() => navigation.navigate("Login")}
-        labelStyle={{fontFamily: "Montserrat-SemiBold"}}
-        icon={({color,size})=>(
-            <Icon
-            type="material-community"
-            name="logout"
-            color="#82027D"
-            size={24}
-            style={styles.icons}
-            />
-        )}/>
+          label={"Log Out"}
+          onPress={() => handleLogout(props)}
+          labelStyle={{ fontFamily: "Montserrat-SemiBold" }}
+          icon={({ color, size }) => (
+            <Icon type="material-community" name="logout" color="#82027D" size={24} style={styles.icons} />
+          )}
+        />
       </DrawerContentScrollView>
     </View>
   );
