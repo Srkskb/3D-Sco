@@ -32,31 +32,31 @@ export default function Forum({ navigation }) {
       .catch((error) => console.log("error", error));
   };
   const DeleteForum = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
-    var data = new FormData();
-    data.append("delete_courses_form", "1");
-    data.append("id", id);
-    data.append("user_id", loginUID);
-
+    var data = qs.stringify({
+      delete_courses_form: "1",
+      id: id,
+      user_id: localStorage.getItem("loginUID"),
+    });
     var config = {
       method: "post",
       url: "https://3dsco.com/3discoapi/studentregistration.php",
       headers: {
-        Cookie: "PHPSESSID=PHPSESSID=oc9uvd5229iubq2rkau794ntg3",
-        ...data.getHeaders(),
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7",
       },
       data: data,
     };
 
     axios(config)
       .then((response) => {
+        console.log("dele for", response);
         if (response.data.success == 1) {
           // allLearnerList();
-          setForums([]);
+          setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("error", error);
       });
   };
   useEffect(() => {
