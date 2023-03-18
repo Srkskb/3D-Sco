@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import React ,{useState} from "react";
+import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
 import InputField from "../../../../components/inputs/Input";
@@ -10,50 +10,50 @@ import { UploadDocument } from "../../../../components";
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import qs from 'qs';
+import qs from "qs";
 import { myHeadersData } from "../../../../api/helper";
-export default function AddForum({navigation}) {
-  const [title, setTitle]=useState("")
-  const[description,setDescription]=useState("")
-  const[status,SetStatus]=useState("Select Status")
-  const[course,setCourse]=useState("Select Course")
+export default function AddForum({ navigation }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, SetStatus] = useState("Select Status");
+  const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
-  
-  const AddForumBut=(values)=>{
-    console.log(values.docTitle,course,loginUID,values.description,status);
+
+  const AddForumBut = (values) => {
+    console.log(values.docTitle, course, loginUID, values.description, status);
     const myHeaders = myHeadersData();
     var data = qs.stringify({
-  'add_courses_forum': '1',
-  'user_id': loginUID,
-  'admin_id': '176',
-  'forum_title':  values.docTitle,
-  'Description': values.description,
-  'course_id': course,
-  'topic_id': '3'
-});
+      add_courses_forum: "1",
+      user_id: loginUID,
+      admin_id: "176",
+      forum_title: values.docTitle,
+      Description: values.description,
+      course_id: course,
+      topic_id: status,
+    });
     var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((response)=>{
-  console.log(JSON.stringify(response.data));
-  if(response.data.success == 1) {
+    axios(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        if (response.data.success == 1) {
           navigation.navigate("Forum");
         }
-})
-.catch((error)=>{
-  console.log(error.response.data.message);
-});
-  }
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
   return (
-    <View style={{backgroundColor:color.white,flex:1}}>
-      <HeaderBack title={"Add Forum"} onPress={()=>navigation.goBack()} />
+    <View style={{ backgroundColor: color.white, flex: 1 }}>
+      <HeaderBack title={"Add Forum"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -74,25 +74,16 @@ axios(config)
               })}
               onSubmit={(values) => AddForumBut(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
-
-<SelectCourse
-          label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setCourse(index)
-            console.log(selectedItem, index);
-            
-          }}
-          value={course}
-        />
+                  <SelectCourse
+                    label={"Select Course"}
+                    onSelect={(selectedItem, index) => {
+                      setCourse(index);
+                      console.log(selectedItem, index);
+                    }}
+                    value={course}
+                  />
                   <InputField
                     label={"Forum Title"}
                     placeholder={"Forum Title"}
@@ -103,11 +94,7 @@ axios(config)
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -118,18 +105,16 @@ axios(config)
                     }}
                     value={access}
                   /> */}
-       
-  <ActiveStatus  onSelect={(selectedItem, index) => {
 
-    SetStatus(index)
-    console.log(selectedItem, index);
-  }}/>
+                  <ActiveStatus
+                    onSelect={(selectedItem, index) => {
+                      SetStatus(index);
+                      console.log(selectedItem, index);
+                    }}
+                    value={status}
+                  />
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
                   {/* <UploadDocument onPress={pickImage} /> */}
@@ -151,11 +136,7 @@ axios(config)
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
@@ -163,7 +144,7 @@ axios(config)
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={()=>navigation.navigate("Forum")}
+                      onPress={() => navigation.navigate("Forum")}
                     />
                     <SmallButton
                       onPress={handleSubmit}
