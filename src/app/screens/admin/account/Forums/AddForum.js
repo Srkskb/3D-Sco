@@ -96,15 +96,6 @@ export default function AddForum({ navigation }) {
                   {errors.docTitle && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
-                  {/* <AccessLevel
-                    required
-                    label={"Access Level"}
-                    onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem);
-                      console.log(selectedItem, index);
-                    }}
-                    value={access}
-                  /> */}
 
                   <ActiveStatus
                     onSelect={(selectedItem, index) => {
@@ -116,13 +107,6 @@ export default function AddForum({ navigation }) {
                   {errors.selectedItem && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
-
-                  {/* <UploadDocument onPress={pickImage} /> */}
-                  {/* <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
-                  </View> */}
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}

@@ -77,9 +77,6 @@ export default function EditBackup({ navigation, route }) {
       .catch((error) => console.log("error", error));
   };
 
-  // const onClickDoc = () => {
-  //   setShowDocResults(true);
-  // };
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
       <HeaderBack title={"Edit Backup"} onPress={() => navigation.goBack()} />
@@ -117,24 +114,6 @@ export default function EditBackup({ navigation, route }) {
                   {errors.docTitle && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
-                  {/* <AccessLevel
-                    required
-                    label={"Access Level"}
-                    onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem);
-                      console.log(selectedItem, index);
-                    }}
-                    value={access}
-                  />
-                  <SelectCourse
-                    label={"Select Course"}
-                    onSelect={(selectedItem, index) => {
-                      setCourse(index);
-                      console.log(selectedItem, index);
-                    }}
-                    value={course}
-                  /> */}
-
                   {errors.selectedItem && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
@@ -152,20 +131,6 @@ export default function EditBackup({ navigation, route }) {
                       </>
                     )}
                   </View>
-                  {/* <View style={styles.selectedDataCon}>
-                    <Text>Uploaded Document</Text>
-                    <View style={styles.selectedData}>
-                      {docImage && (
-                        <Image
-                          source={{ uri: docImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
-                      <TouchableOpacity onPress={onClickDoc}>
-                        <Text>close</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View> */}
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}

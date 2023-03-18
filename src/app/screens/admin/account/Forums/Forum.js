@@ -9,6 +9,7 @@ import axios from "axios";
 import Forum_Card from "../../../../components/admin_required/Cards/Forum_Card";
 import { NoDataFound } from "../../../../components";
 import { myHeadersData } from "../../../../api/helper";
+import * as qs from "qs";
 
 export default function Forum({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
@@ -53,7 +54,7 @@ export default function Forum({ navigation }) {
         console.log("dele for", response);
         if (response.data.success == 1) {
           // allLearnerList();
-          setFileCabinetData((prev) => prev.filter((item) => item.id != id));
+          setForums((prev) => prev.filter((item) => item.id != id));
         }
       })
       .catch((error) => {
