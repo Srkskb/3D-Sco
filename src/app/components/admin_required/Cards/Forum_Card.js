@@ -14,7 +14,7 @@ export default function Forum_Card({
   posted_by,
   date,
   status,
-  commentPress
+  commentPress,
 }) {
   return (
     <View style={styles.container}>
@@ -25,22 +25,14 @@ export default function Forum_Card({
       </View>
       <View style={styles.course}>
         <Text style={styles.course_name}>Posted By: </Text>
-        <Text
-          style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}
-        >
-          {posted_by}
-        </Text>
+        <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{posted_by}</Text>
       </View>
       <View style={styles.course}>
         <Text style={styles.course_name}>Date: </Text>
-        <Text
-          style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}
-        >
-          {date}
-        </Text>
+        <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{date}</Text>
       </View>
       <View style={styles.btn_container}>
-        <ViewButton onPress={viewPress} />
+        {/* <ViewButton onPress={viewPress} /> */}
         <Edit onPress={editPress} />
 
         <Remove onPress={removePress} />
@@ -56,7 +48,7 @@ const styles = StyleSheet.create({
     borderColor: color.light_skyblue,
     paddingHorizontal: 10,
     marginBottom: 10,
-    backgroundColor:color.white,
+    backgroundColor: color.white,
   },
   head_text: {
     fontSize: 16,
