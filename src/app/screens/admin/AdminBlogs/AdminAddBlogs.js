@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Button, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -22,6 +14,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 export default function AdminAddBlog() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
@@ -32,38 +25,17 @@ export default function AdminAddBlog() {
   const loginUID = localStorage.getItem("loginUID");
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    setSelectedDate(date);
-    console.log(date);
-    hideDatePicker();
-  };
   const addFileCabinet = (values) => {
-    console.log(
-      values.blogTitle,
-      access,
-      loginUID,
-      selectedDate,
-      values.description
-    );
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
-
     urlencoded.append("blogs", "1");
     urlencoded.append("titel", values.blogTitle);
-    urlencoded.append("access", access);
+    urlencoded.append("access", values.access);
     urlencoded.append("user_id", loginUID);
-    // urlencoded.append("added_by", loginUID);
-
-    urlencoded.append("date", "2022-02-01");
+    urlencoded.append("date", moment(values?.blogDate).format("YYYY-MM-DD"));
     urlencoded.append("description", values.description);
+
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
@@ -73,7 +45,7 @@ export default function AdminAddBlog() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        console.log("add bog", res);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
@@ -87,15 +59,13 @@ export default function AdminAddBlog() {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Add Blog"}
-        onPress={() => navigation.navigate("AdminBlogs")}
-      />
+      <HeaderBack title={"Add Blog"} onPress={() => navigation.navigate("AdminBlogs")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        duration={2000}
       >
         {getMessageTrue}
       </Snackbar>
@@ -109,11 +79,13 @@ export default function AdminAddBlog() {
       </Snackbar>
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{paddingVertical:10}}>
+          <View style={{ paddingVertical: 10 }}>
             <Formik
               initialValues={{
                 blogTitle: "",
                 description: "",
+                blogDate: "",
+                access: "",
               }}
               validationSchema={Yup.object().shape({
                 blogTitle: Yup.string()
@@ -122,35 +94,25 @@ export default function AdminAddBlog() {
                   .max(150, "Document Title cannot be more than 150 characters"),
                 description: Yup.string()
                   .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                
+                  .min(20, "Description must be at least 20 characters"),
+                blogDate: Yup.string().required("Date is required"),
+                access: Yup.string().required("Access is required"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue, resetForm }) => (
                 <View>
                   <InputField
                     label={"Blog Title"}
                     placeholder={"Blog Title"}
-                    name="title"
+                    name="blogTitle"
                     onChangeText={handleChange("blogTitle")}
-                    onBlur={handleBlur("blogTitle")}
+                    // onBlur={handleBlur("blogTitle")}
                     value={values.blogTitle}
                     keyboardType="text"
                   />
                   {errors.blogTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.blogTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogTitle}</Text>
                   )}
                   <Text style={{ marginBottom: 5 }}>
                     <Text style={styles.label_text}>Blog Date</Text>
@@ -163,45 +125,44 @@ export default function AdminAddBlog() {
                         fontFamily: "Montserrat-SemiBold",
                       }}
                     >
-                      {selectedDate
-                        ? selectedDate.toLocaleDateString()
-                        : "No date selected"}
+                      {values?.blogDate ? moment(values?.blogDate).format("YYYY-MM-DD") : "No date selected"}
                     </Text>
                     <View style={styles.selectDate}>
-                      <TouchableOpacity onPress={showDatePicker}>
-                        {/* <Text>Select Date</Text> */}
-                        <Entypo
-                          name="calendar"
-                          size={24}
-                          color={color.purple}
-                        />
+                      {/* <TouchableOpacity onPress={showDatePicker}> */}
+                      <TouchableOpacity onPress={(e) => setDatePickerVisibility(true)}>
+                        <Entypo name="calendar" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
 
                     <DateTimePickerModal
                       isVisible={isDatePickerVisible}
                       mode="date"
-                      date={selectedDate}
-                      onConfirm={handleConfirm}
-                      onCancel={hideDatePicker}
+                      name="blogDate"
+                      onConfirm={(e) => {
+                        setFieldValue("blogDate", e);
+                        handleChange("blogDate");
+                        setDatePickerVisibility(false);
+                      }}
+                      onCancel={() => setDatePickerVisibility(false)}
                     />
                   </View>
+                  {errors.blogDate && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogDate}</Text>
+                  )}
 
                   <AccessLevel
                     required
+                    name="access"
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
                       setAccess(selectedItem);
-                      console.log(selectedItem, index);
+                      setFieldValue("access", selectedItem);
+                      handleChange("access");
                     }}
                     value={access}
                   />
-                  {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                  {errors.access && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}
                   <InputField
                     label={"Description"}
@@ -210,28 +171,30 @@ export default function AdminAddBlog() {
                     multiline={true}
                     numberOfLines={6}
                     onChangeText={handleChange("description")}
-                    onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
-                    textAlignVertical='top'
+                    textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                  <SmallButton title={"Cancel"} color={color.purple} 
-                    fontFamily={'Montserrat-Medium'}/>
                     <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => {
+                        resetForm();
+                        navigation.navigate("AdminBlogs");
+                      }}
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                    />
+                    <SmallButton
+                      onPress={() => handleSubmit()}
                       title="Save"
                       disabled={!isValid}
                       color={color.white}
                       backgroundColor={color.purple}
-                      fontFamily={'Montserrat-Bold'}
+                      fontFamily={"Montserrat-Bold"}
                     />
                   </View>
                 </View>
@@ -263,12 +226,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 2,
     borderColor: color.gray,
-    borderRadius:8,
-    justifyContent: 'space-between',
-    paddingHorizontal:10,
-    paddingVertical:12,
-    paddingRight:20,
-    marginBottom:10
+    borderRadius: 8,
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    paddingRight: 20,
+    marginBottom: 10,
   },
   description: {
     fontFamily: "Montserrat-Medium",
