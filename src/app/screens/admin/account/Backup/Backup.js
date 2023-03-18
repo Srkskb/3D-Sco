@@ -42,9 +42,8 @@ export default function Backup() {
   };
   const deleteEvent = (id) => {
     var data = qs.stringify({
-      delete_courses_form: "1",
+      delete_backup: "1",
       id: id,
-      user_id: localStorage.getItem("loginUID"),
     });
     var config = {
       method: "post",
