@@ -3,7 +3,7 @@ import React from "react";
 import color from "../../assets/themes/Color";
 import * as DocumentPicker from "expo-document-picker";
 
-export default function UploadDocument({ type, onChange, ...props }) {
+export default function UploadDocument({ type, onChange, pickImg, ...props }) {
   const pickPdf = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -21,7 +21,11 @@ export default function UploadDocument({ type, onChange, ...props }) {
       <Text style={styles.label_text}>Upload {type}</Text>
       <View style={styles.outline}>
         {/* <TouchableOpacity {...props}> */}
-        <TouchableOpacity onPress={pickPdf}>
+        <TouchableOpacity
+          onPress={() => {
+            pickImg ? pickImg() : pickPdf();
+          }}
+        >
           <View style={styles.upload_box}>
             <Image style={styles.upload_icon} source={require("../../assets/images/icons/upload-icon.png")} />
             <Text style={styles.upload_text}>Upload files</Text>

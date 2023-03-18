@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -20,7 +13,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
-import mime from 'mime'
+import mime from "mime";
 
 export default function AdminAddPhoto() {
   const navigation = useNavigation();
@@ -31,54 +24,54 @@ export default function AdminAddPhoto() {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
-  const pickImage = async () => {
+  const pickImg = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-    console.log(result);
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result.assets[0].uri);
     }
   };
 
   const addFileCabinet = (values) => {
-    console.log(values.docTitle,loginUID,values.description,image,mime.getType(image));
     const getHeaders = myHeadersData();
     var data = new FormData();
-    data.append('add_photos', '1');
-    data.append('title', values.docTitle);
-    data.append('user_id', loginUID);
-    data.append('detail', values.description);
+    data.append("add_photos", "1");
+    data.append("title", values.docTitle);
+    data.append("user_id", loginUID);
+    data.append("detail", values.description);
     data.append("image", {
-             uri: image,//"file:///" + image.split("file:/").join(""),
-             type: mime.getType(image),
-            name: `abc.jpg`
-           });
-    
-    var config = {
-      method: 'post',
-      url: 'https://3dsco.com/3discoapi/studentregistration.php',
-      headers: { 
-        'Accept': 'application/json', 
-        'Content-Type': 'multipart/form-data', 
-        'Cookie': 'PHPSESSID=r8i6tl7an7ibqgp4kog3aa6ro7', 
-         ...data
-      },
-      data : data
-    };
-    
-    axios(config)
-    .then((response)=>{
-      if(response.data.success==1){
-      navigation.navigate("AdminPhotoAlbum")
-    }
-    })
-    .catch((error)=>{
-      console.log(error);
+      uri: image, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image),
+      name: `abc.jpg`,
     });
+    // data.append("image", image);
+
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        // "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=r8i6tl7an7ibqgp4kog3aa6ro7",
+        // ...data,
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          navigation.navigate("AdminPhotoAlbum");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <View style={styles.container}>
@@ -124,14 +117,7 @@ export default function AdminAddPhoto() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -143,11 +129,7 @@ export default function AdminAddPhoto() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -160,18 +142,12 @@ export default function AdminAddPhoto() {
                   /> */}
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
+                  <UploadDocument type={"Image"} pickImg={pickImg} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                   <InputField
                     label={"Description"}
@@ -186,15 +162,15 @@ export default function AdminAddPhoto() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
                     <SmallButton
+                      onPress={() => {
+                        resetForm();
+                        navigation.navigate("AdminPhotoAlbum");
+                      }}
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
@@ -262,4 +238,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-

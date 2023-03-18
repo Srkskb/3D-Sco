@@ -11,6 +11,7 @@ import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import axios from "axios";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
+
 export default function AdminPhotoAlbum() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -20,6 +21,7 @@ export default function AdminPhotoAlbum() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+
   const allLearnerList = () => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -30,68 +32,71 @@ export default function AdminPhotoAlbum() {
     };
     fetch(
       // `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
-      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=45`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => {
-        setFileCabinetData(result.data)
-        console.log(result)
+        setFileCabinetData(result.data);
+        console.log("fileCabinetData", result.data);
       })
       .catch((error) => console.log("error", error));
   };
+
   const deleteEvent = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     var data = qs.stringify({
-  'delete_photos': '1',
-  'user_id': loginUID,
-  'id': id 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
+      delete_photos: "1",
+      user_id: loginUID,
+      id: id,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((result) => {
-        console.log(result);
-        if (result.success === 1) {
+    axios(config)
+      .then((result) => {
+        console.log("delete", result.data);
+
+        if (result.data.success === 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
-          let temp = [];
-          fileCabinetData.forEach((item) => {
-            if (item.id !== id) temp.push(item);
-          });
-          setFileCabinetData(temp);
+          // let temp = [];
+          // fileCabinetData.forEach((item) => {
+          //   if (item.id !== id) temp.push(item);
+          // });
+          setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         } else {
           setSnackVisibleFalse(true);
-          setMessageFalse(result.message);
+          setMessageFalse(result.data.message);
         }
       })
-// fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-//       .then((res) => res.json())
-//       .then((result) => {
-//         console.log(result);
-//         if (result.success === 1) {
-//           setSnackVisibleTrue(true);
-//           setMessageTrue(result.message);
-//           let temp = [];
-//           fileCabinetData.forEach((item) => {
-//             if (item.id !== id) temp.push(item);
-//           });
-//           setFileCabinetData(temp);
-//         } else {
-//           setSnackVisibleFalse(true);
-//           setMessageFalse(result.message);
-//         }
-//       })
+      // fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      //       .then((res) => res.json())
+      //       .then((result) => {
+      //         console.log(result);
+      //         if (result.success === 1) {
+      //           setSnackVisibleTrue(true);
+      //           setMessageTrue(result.message);
+      //           let temp = [];
+      //           fileCabinetData.forEach((item) => {
+      //             if (item.id !== id) temp.push(item);
+      //           });
+      //           setFileCabinetData(temp);
+      //         } else {
+      //           setSnackVisibleFalse(true);
+      //           setMessageFalse(result.message);
+      //         }
+      //       })
       .catch((error) => console.log("error", error));
   };
+
   const onRefresh = () => {
     setRefreshing(true);
     allLearnerList();
@@ -100,6 +105,7 @@ axios(config)
       setRefreshing(false);
     }, 2000);
   };
+
   useEffect(() => {
     allLearnerList();
     navigation.addListener("focus", () => allLearnerList());
@@ -107,16 +113,14 @@ axios(config)
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Photo"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Photo"} onPress={() => navigation.goBack()} />
       <HeaderText title={"Photo Album"} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        duration={2000}
       >
         {getMessageTrue}
       </Snackbar>
@@ -129,16 +133,10 @@ axios(config)
         {getMessageFalse}
       </Snackbar>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
       >
-        <TextWithButton
-          title={"Lists"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AdminAddPhoto")}
-        />
+        <TextWithButton title={"Lists"} label={"+Add"} onPress={() => navigation.navigate("AdminAddPhoto")} />
         <View style={{ paddingHorizontal: 10 }}>
           {fileCabinetData === undefined ? (
             <>
@@ -147,17 +145,18 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinetCard key={list.id}
+                <FileCabinetCard
+                  key={list.id}
                   title={list.title}
                   access={list.access_level}
                   description={list.description}
                   onPressEdit={() =>
                     navigation.navigate("AdminEditPhoto", {
-                      docId: list.id,
-                      title: list.title,
-                      docAccess: list.access_level,
-                      description: list.description,
-                      docImage: list.file_name,
+                      docId: list?.id,
+                      title: list?.title,
+                      docAccess: list?.access_level,
+                      description: list?.description,
+                      docImage: list?.file_name,
                     })
                   }
                   removePress={() => deleteEvent(list.id)}
@@ -167,7 +166,7 @@ axios(config)
                       access: list.access_level,
                       description: list.description,
                       image: list.file_name,
-                      id:list.id
+                      id: list.id,
                     })
                   }
                 />

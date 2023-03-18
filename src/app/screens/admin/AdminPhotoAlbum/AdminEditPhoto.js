@@ -1,13 +1,5 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -31,10 +23,14 @@ export default function AdminEditPhoto({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(docImage);
+  const [image, setImage] = useState("");
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
+  console.log("docImage", docImage);
+  useEffect(() => {
+    docImage && setImage(docImage);
+  }, [docImage]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -59,11 +55,12 @@ export default function AdminEditPhoto({ route, navigation }) {
     urlencoded.append("id", docId);
     urlencoded.append("detail", upDescription);
     urlencoded.append("user_id", loginUID);
-    // urlencoded.append("image", {
-    //   uri: image, //"file:///" + image.split("file:/").join(""),
-    //   type: mime.getType(image),
-    //   name: `abc.jpg`,
-    // });
+    urlencoded.append("image", {
+      uri: image,
+      type: mime.getType(image),
+      name: `abc.jpg`,
+    });
+
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: urlencoded,
@@ -91,7 +88,6 @@ export default function AdminEditPhoto({ route, navigation }) {
 
   const onClick = () => {
     setShowResults(true);
-  
   };
   const onClickDoc = () => {
     setShowDocResults(true);
@@ -99,10 +95,7 @@ export default function AdminEditPhoto({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Photo"}
-        onPress={() => navigation.navigate("AdminPhotoAlbum")}
-      />
+      <HeaderBack title={"Update Photo"} onPress={() => navigation.navigate("AdminPhotoAlbum")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -157,11 +150,9 @@ export default function AdminEditPhoto({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument onPress={pickImage} />
+                  <UploadDocument pickImg={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                 </>
               ) : (
@@ -169,12 +160,8 @@ export default function AdminEditPhoto({ route, navigation }) {
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {docImage && (
-                        <Image
-                          source={{ uri: docImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
+                      {/* {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />} */}
+                      {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -196,11 +183,7 @@ export default function AdminEditPhoto({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                />
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
                   title="Save"
@@ -256,4 +239,3 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
-
