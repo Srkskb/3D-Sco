@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,ActivityIndicator
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { Snackbar } from "react-native-paper";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +9,7 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
+
 export default function AdminBlogs() {
   const navigation = useNavigation();
   const [blogListData, setBlogListData] = useState([]);
@@ -23,29 +18,29 @@ export default function AdminBlogs() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-const [loading, setLoading] = useState(false)
-const loginUID = localStorage.getItem("loginUID");
-  const allLearnerList = () => {
-  setLoading(true)
+  const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
+
+  const allLearnerList = () => {
+    setLoading(true);
+    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`, requestOptions)
       .then((res) => res.json())
-      .then((result) =>{
-  setLoading(false)
-  console.log(result.data)
-        setBlogListData(result.data)})
+      .then((result) => {
+        setLoading(false);
+        console.log(result.data);
+        setBlogListData(result.data);
+      })
       .catch((error) => {
-        setLoading(false)
-        console.log("error", error)});
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   // Delete Blog
   const deleteBlog = (id) => {
@@ -56,10 +51,7 @@ const loginUID = localStorage.getItem("loginUID");
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${loginUID}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
@@ -90,6 +82,7 @@ const loginUID = localStorage.getItem("loginUID");
     allLearnerList();
     navigation.addListener("focus", () => allLearnerList());
   }, []);
+
   return (
     <View style={styles.container}>
       {loading ? (
@@ -107,10 +100,7 @@ const loginUID = localStorage.getItem("loginUID");
           <ActivityIndicator size={"large"} />
         </View>
       ) : null}
-      <HeaderBack
-        title={"Blogs"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Blogs"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -128,17 +118,9 @@ const loginUID = localStorage.getItem("loginUID");
         {getMessageFalse}
       </Snackbar>
       <View style={styles.main_box}>
-        <TextWithButton
-          title={"My Blog"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AdminAddBlogs")}
-        />
+        <TextWithButton title={"My Blog"} label={"+Add"} onPress={() => navigation.navigate("AdminAddBlogs")} />
         <View style={styles.main_box2}>
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.main}>
               <View style={{ flex: 1 }}>
                 {blogListData === undefined ? (
@@ -153,14 +135,8 @@ const loginUID = localStorage.getItem("loginUID");
                           <View style={styles.right_side}>
                             <View style={{ width: "100%" }}>
                               <Text style={styles.head_text}>{list.Titel}</Text>
-                              <Text style={styles.date}>
-                                Last Updated -{" "}
-                                {moment(list && list?.Date).format("LL")}
-                              </Text>
-                              <Text
-                                style={styles.description_text}
-                                numberOfLines={1}
-                              >
+                              <Text style={styles.date}>Last Updated - {moment(list && list?.Date).format("LL")}</Text>
+                              <Text style={styles.description_text} numberOfLines={1}>
                                 {list.Description}
                               </Text>
                             </View>
@@ -173,7 +149,7 @@ const loginUID = localStorage.getItem("loginUID");
                                 Titel: list.Titel,
                                 Date: moment(list && list?.Date).format("LL"),
                                 description: list.Description,
-                                list:list
+                                list: list,
                               })
                             }
                           />
@@ -186,9 +162,7 @@ const loginUID = localStorage.getItem("loginUID");
                                   navigation.navigate("AdminEditBlogs", {
                                     blogID: list.id,
                                     title: list.Titel,
-                                    date: moment(list && list?.Date).format(
-                                      "LL"
-                                    ),
+                                    date: moment(list && list?.Date).format("LL"),
                                     description: list.Description,
                                   })
                                 }

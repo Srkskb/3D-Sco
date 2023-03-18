@@ -1,34 +1,22 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
 import CommentCard from "../../../components/card/CommentCard";
 import { myHeadersData } from "../../../api/helper";
-const{height,width}=Dimensions.get('window')
+const { height, width } = Dimensions.get("window");
+
 export default function ViewBlogs({ route, navigation }) {
-    const { Titel, titleParam } = route.params;
+  const { Titel, titleParam } = route.params;
   const { Date, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"view blogs"}
-        onPress={() => navigation.navigate("Blogs")}
-      />
-      <ScrollView
-       
-        showsVerticalScrollIndicator={false}
-      >
+      <HeaderBack title={"view blogs"} onPress={() => navigation.navigate("Blogs")} />
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.main}>
           <View style={styles.detail_box}>
             <Text style={styles.head_text}>{Titel}</Text>
@@ -39,16 +27,14 @@ export default function ViewBlogs({ route, navigation }) {
                 <Text style={styles.data}>{Date}</Text>
               </Text>
               {/* Time */}
-            
+
               {/* Posted by */}
               <Text>
                 <Text style={styles.bold_text}>Posted By: </Text>
                 <Text style={styles.data}>ArmanD suarez</Text>
               </Text>
               <View style={styles.description}>
-                <Text style={styles.description_text}>
-                  {description} 
-                </Text>
+                <Text style={styles.description_text}>{description}</Text>
               </View>
             </View>
           </View>
@@ -63,15 +49,12 @@ export default function ViewBlogs({ route, navigation }) {
             label={"Leave a Comment"}
             multiline={true}
             numberOfLines={5}
+            onChange={(e) => console.log(e)}
             textAlignVertical={"top"}
             placeholder={"Type Your Comment Here..."}
           />
           <View style={styles.button_container}>
-            <SmallButton
-              title={"Cancel"}
-              color={color.purple}
-              fontFamily={"Montserrat-Medium"}
-            />
+            <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
             <SmallButton
               title={"Submit"}
               color={color.white}
@@ -98,7 +81,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginTop: 20,
     borderRadius: 3,
-   
   },
   head_text: {
     color: color.purple,

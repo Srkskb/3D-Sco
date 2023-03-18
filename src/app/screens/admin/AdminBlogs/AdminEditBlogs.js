@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -17,6 +10,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import qs from "qs";
+import moment from "moment";
 
 export default function AdminEditBlogs({ route, navigation }) {
   // ** For Event Update
@@ -33,7 +27,7 @@ export default function AdminEditBlogs({ route, navigation }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [updateDescription, setUpDescription] = useState(description);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -49,41 +43,41 @@ export default function AdminEditBlogs({ route, navigation }) {
   };
 
   const updateEvent = () => {
-    console.log(blogID)
-    setLoading(true)
+    console.log(blogID);
+    setLoading(true);
     const myHeaders = myHeadersData();
     var data = qs.stringify({
-      'update_blogs': '1',
-      'id': blogID,
-      'titel': updateTitle,
-      'user_id': loginUID,
-      'description': updateDescription 
+      update_blogs: "1",
+      id: blogID,
+      titel: updateTitle,
+      user_id: loginUID,
+      description: updateDescription,
+      date: moment(new Date()).format("YYYY-MM-DD"),
     });
     var config = {
-      method: 'post',
-    maxBodyLength: Infinity,
-      url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
-      headers: { 
-        'Accept': 'application/json', 
-        'Content-Type': 'application/x-www-form-urlencoded', 
-        'Cookie': 'PHPSESSID=k3uusd3c44n957mv6l05vpmf31'
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=k3uusd3c44n957mv6l05vpmf31",
       },
-      data : data
+      data: data,
     };
-    
-    axios(config)
-    .then((res) => {
-        console.log(res.data);
-        setLoading(false)
-        if (res.data.success == 1) {
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.data.message);
-          navigation.navigate("AdminBlogs");
-        } else {
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.data.message);
-        }
-      });
+
+    axios(config).then((res) => {
+      console.log(res.data);
+      setLoading(false);
+      if (res.data.success == 1) {
+        setSnackVisibleTrue(true);
+        setMessageTrue(res.data.message);
+        navigation.navigate("AdminBlogs");
+      } else {
+        setSnackVisibleFalse(true);
+        setMessageFalse(res.data.message);
+      }
+    });
   };
   return (
     <View style={styles.container}>
@@ -104,10 +98,7 @@ export default function AdminEditBlogs({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Blog"}
-        onPress={() => navigation.navigate("AdminBlogs")}
-      />
+      <HeaderBack title={"Update Blog"} onPress={() => navigation.navigate("AdminBlogs")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}

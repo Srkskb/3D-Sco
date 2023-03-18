@@ -6,15 +6,9 @@ const Input2 = ({ label, error, onFocus = () => {}, ...props }) => {
   const [isfocused, setIsfococused] = React.useState(false);
   return (
     <View style={styles.input_container}>
-      <View style={styles.label_box}>
-        {label &&(<Text style={styles.label_text}>{label}</Text>)}
-        
-      </View>
+      <View style={styles.label_box}>{label && <Text style={styles.label_text}>{label}</Text>}</View>
       <TextInput
-        style={[
-          styles.text_input,
-          { borderColor: isfocused ? color.purple : color.gray },
-        ]}
+        style={[styles.text_input, { borderColor: isfocused ? color.purple : color.gray }]}
         autoCorrect={false}
         placeholderTextColor={color.light_gray}
         onFocus={() => {
