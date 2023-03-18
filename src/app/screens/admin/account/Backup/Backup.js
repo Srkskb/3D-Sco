@@ -24,7 +24,7 @@ export default function Backup() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
-
+  console.log("fileCabinetData", fileCabinetData);
   const allLearnerList = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -42,8 +42,9 @@ export default function Backup() {
   };
   const deleteEvent = (id) => {
     var data = qs.stringify({
-      delete_backup: "1",
+      delete_courses_form: "1",
       id: id,
+      user_id: localStorage.getItem("loginUID"),
     });
     var config = {
       method: "post",
@@ -57,13 +58,14 @@ export default function Backup() {
 
     axios(config)
       .then((response) => {
+        console.log("dele for", response);
         if (response.data.success == 1) {
           // allLearnerList();
-          setFileCabinetData([]);
+          setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("error", error);
       });
   };
   const onRefresh = () => {
