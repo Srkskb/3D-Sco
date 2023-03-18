@@ -109,7 +109,7 @@ export default function AdminViewBlogs({ route, navigation }) {
               <Text> ({comments && comments.length})</Text>
             </Text>
             {comments.map((list, index) => (
-              <CommentCard key={index} comments={list.titel} name={list.User_name} />
+              <CommentCard key={index} comments={list.Comment_detail} name={list.User_name} />
             ))}
           </View>
           <Input2

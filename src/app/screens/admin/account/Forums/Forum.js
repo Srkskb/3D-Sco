@@ -9,6 +9,7 @@ import axios from "axios";
 import Forum_Card from "../../../../components/admin_required/Cards/Forum_Card";
 import { NoDataFound } from "../../../../components";
 import { myHeadersData } from "../../../../api/helper";
+
 export default function Forum({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [forums, setForums] = useState([]);
