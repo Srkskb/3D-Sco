@@ -49,7 +49,6 @@ export default function Users() {
     fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log("result", result);
         if (result.data != null) {
           setUserList(result.data);
           setStatusData(initialObj);
@@ -117,7 +116,6 @@ export default function Users() {
               // onSelect={(item, index) => console.log(item)}
               onSelect={(selectedItem, index) => {
                 // setCategory(selectedItem);
-                setFieldValue("category", selectedItem.id);
               }}
               // value={category}
             />
