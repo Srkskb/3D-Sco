@@ -13,6 +13,7 @@ import axios from "axios";
 import mime from "mime";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
+
 export default function EditBackup({ navigation, route }) {
   const { title, titleParam, id } = route.params.title;
   const { docAccess, docAccessParam } = route.params;

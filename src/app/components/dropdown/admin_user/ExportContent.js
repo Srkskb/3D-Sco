@@ -4,10 +4,10 @@ import SelectDropdown from "react-native-select-dropdown";
 import React from "react";
 const down_img = require("../../../assets/images/down.png");
 const Value = [
-  "Export Content",
-  "Not available on any of the pages",
-  "Available only for top level pages",
-  "Available on every page",
+  { name: "Export Content", id: "1" },
+  { name: "Not available on any of the pages", id: "2" },
+  { name: "Available only for top level pages", id: "3" },
+  { name: "Available on every page", id: "4" },
 ];
 export default function ExportContent({ label, ...props }) {
   return (
@@ -21,12 +21,11 @@ export default function ExportContent({ label, ...props }) {
         <SelectDropdown
           data={Value}
           buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
+            return selectedItem.name;
           }}
           rowTextForSelection={(item, index) => {
-            return item;
+            return item.name;
           }}
-          onSelect={(selectedItem, index) => {}}
           buttonStyle={styles.dropdown}
           buttonTextStyle={styles.text_button}
           rowTextStyle={styles.row_text}

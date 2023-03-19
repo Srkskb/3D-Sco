@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import TextWithButton from "../../../../components/TextWithButton";
 import color from "../../../../assets/themes/Color";
@@ -10,63 +10,66 @@ import Course_Card from "../../../../components/admin_required/Cards/CourseCard"
 import axios from "axios";
 import { myHeadersData } from "../../../../api/helper";
 import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
+import Loader from "../../../../utils/Loader";
 
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
-  const [courses, setCourses] = useState([])
-  const [loading, setLoading] = useState(false)
-  const DeleteCourse=()=>{
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const DeleteCourse = () => {
     var data = qs.stringify({
-      'delete_courses': '1',
-      'id': '49',
-      'user_id': '232' 
+      delete_courses: "1",
+      id: "49",
+      user_id: "232",
     });
     var config = {
-      method: 'post',
-      url: 'https://3dsco.com/3discoapi/studentregistration.php',
-      headers: { 
-        'Accept': 'application/json', 
-        'Content-Type': 'application/x-www-form-urlencoded', 
-        'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7'
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7",
       },
-      data : data
+      data: data,
     };
-    
+
     axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    
-  }
-  const allCourses=()=>{
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  const allCourses = () => {
+    setLoading(true);
+    var config = {
+      method: "get",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php?Course=1",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=ksrmsjn33kam2917j4475ihmv4",
+      },
+    };
 
-var config = {
-  method: 'get',
-  url: 'https://3dsco.com/3discoapi/3dicowebservce.php?Course=1',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=ksrmsjn33kam2917j4475ihmv4'
-  }
-};
+    axios(config)
+      .then((response) => {
+        setCourses(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
 
-axios(config)
-.then((response)=>{
-  console.log(JSON.stringify(response.data));
-  setCourses(response.data.data)
-})
-.catch((error)=>{
-  console.log(error);
-});
-
-  }
   useEffect(() => {
     allCourses();
     navigation.addListener("focus", () => allCourses());
   }, []);
+
   return (
     <View style={styles.container}>
       <HeaderBack title={"Course"} onPress={() => navigation.goBack()} />
@@ -86,33 +89,38 @@ axios(config)
                 console.log(selectedItem, index);
               }}
             /> */}
-            <AccessLevel label/>
+            <AccessLevel label />
           </View>
         </View>
         <View style={styles.filter_button}>
           <Add_Button title={"Filter"} />
         </View>
       </View>
-      <ScrollView style={{ paddingHorizontal: 10 }}>
-      {courses === undefined ? (
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView style={{ paddingHorizontal: 10 }}>
+          {courses === undefined ? (
             <>
               <NoDataFound />
             </>
           ) : (
             <>
               {courses.map((list, index) => (
-        <Course_Card key={index}
-          title={list.Courses}
-          status={list.Access}
-          educator={list.assigned_tutor}
-          releaseDate={list.ReleaseDate}
-          endDate={list.EndDate}
-          editPress={()=>navigation.navigate("EditCourse")}
-        />
-        ))}
+                <Course_Card
+                  key={index}
+                  title={list.Courses}
+                  status={list.Access}
+                  educator={list.assigned_tutor}
+                  releaseDate={list.ReleaseDate}
+                  endDate={list.EndDate}
+                  editPress={() => navigation.navigate("EditCourse", { editData: list })}
+                />
+              ))}
             </>
           )}
-      </ScrollView>
+        </ScrollView>
+      )}
     </View>
   );
 }

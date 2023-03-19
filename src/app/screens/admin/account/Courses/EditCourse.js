@@ -1,12 +1,5 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from "react-native";
+import React, { useEffect, useState } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
 import Input from "../../../../components/inputs/Input";
@@ -21,15 +14,74 @@ import InitialContent from "../../../../components/dropdown/admin_user/InitialCo
 import ExportContent from "../../../../components/dropdown/admin_user/ExportContent";
 import Syndicate from "../../../../components/dropdown/admin_user/SyndicateAnnouncement";
 import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
-
+import CategoryDropdown from "../../../../components/dropdown/CategoryDropdown";
+import LanguageDropdown from "../../../../components/dropdown/LanguageDropdown";
+import * as ImagePicker from "expo-image-picker";
 const { width, height } = Dimensions.get("window");
-export default function EditCourse({ navigation }) {
+import * as qs from "qs";
+import axios from "axios";
+
+export default function EditCourse({ navigation, route }) {
+  const { editData } = route.params;
   const [checked, setChecked] = React.useState("first");
   const [end, setEnd] = React.useState("first1");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
   const [selectedRelease, setSelectedRelease] = useState();
   const [selectedEnd, setSelectedEnd] = useState();
+  const [loading, setLoading] = useState(false);
+  const [editCourseData, setEditCourseData] = useState({
+    category: "",
+    language: "",
+    title: "",
+    subject: "",
+    desc: "",
+    syllabus: "",
+    sheets: "",
+    content: "",
+    announcement: "",
+    access: "",
+    releaseDate: "",
+    endDate: "",
+    initialContent: "",
+    courseQuota: "",
+    maxFileSize: "",
+    banner: "",
+    icon: "",
+    syndicate: "",
+    exportContent: "",
+    id: "",
+    userId: "",
+  });
+
+  useEffect(() => {
+    if (editData) {
+      setEditCourseData((prev) => ({
+        ...prev,
+        category: editData.categorie,
+        language: editData.Language,
+        title: editData.Courses,
+        subject: editData.subject,
+        desc: editData.Description,
+        syllabus: editData.Syllabus,
+        sheets: editData.JobSheet,
+        content: editData.export_content,
+        announcement: editData.Syndicate,
+        access: editData.Access,
+        releaseDate: editData.ReleaseDate,
+        endDate: editData.EndDate,
+        banner: editData.Banner,
+        initialContent: editData.Initial_content,
+        courseQuota: editData.quota,
+        maxFileSize: editData.filesize,
+        icon: editData.icon,
+        syndicate: editData.Syndicate,
+        exportContent: editData.export_content,
+        id: editData.id,
+        userId: editData.user_id,
+      }));
+    }
+  }, [editData]);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -45,61 +97,81 @@ export default function EditCourse({ navigation }) {
 
   const handleConfirmRelease = (date) => {
     setSelectedRelease(date);
-    console.log(date);
     hideDatePicker();
   };
   const handleConfirmEnd = (date) => {
     setSelectedEnd(date);
-    console.log(date);
     hideDatePicker2();
   };
 
   const Edit = () => {
     var data = qs.stringify({
       Update_courses: "1",
-      user_id: "265",
-      course_name: "BA.PASSsss",
-      language: "English",
-      Description:
-        "This is first event creted by admin everyone need be attend the event so this is very important",
-      Syndicate: "1",
-      export_content: "all",
-      Access: "Public",
+      user_id: editCourseData.userId,
+      course_name: editCourseData.title,
+      language: editCourseData.language,
+      Description: editCourseData.desc,
+      Syndicate: editCourseData.syndicate,
+      export_content: editCourseData.exportContent,
+      Access: editCourseData.access,
       notify_enroll: "0",
       hide_course: "0",
-      ReleaseDate: "2022-12-27",
-      EndDate: "2023-12-27",
-      Banner: "Hi, This is engineering drawing",
-      initial_content: "2",
-      quota: "Unlimited",
+      ReleaseDate: editCourseData.releaseDate,
+      EndDate: editCourseData.endDate,
+      Banner: editCourseData.banner,
+      initial_content: editCourseData.initialContent,
+      quota: editCourseData.courseQuota,
       quota_other: "",
-      filesize: "1",
-      filesize_other: "100",
+      filesize: editCourseData.maxFileSize,
       Copyright: "no",
-      subject: "BA",
+      subject: editCourseData.subject,
       num_week: "0",
-      Syllabus: "three year diploma courses",
-      JobSheet: "semester",
-      catID: "2",
+      Syllabus: editCourseData.syllabus,
+      JobSheet: editCourseData.sheets,
+      catID: editCourseData.category,
+      // id: editCourseData.id,
       id: "46",
     });
     var config = {
-      method: "post",
-      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      method: "POST",
+      // url: "https://3dsco.com/3discoapi/studentregistration.php",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
       },
-      data: data,
+      body: data,
     };
-
-    axios(config)
+    // axios(config)
+    console.log("ENter");
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
+        console.log("response", response);
+        navigation.goBack();
       })
       .catch(function (error) {
         console.log(error);
       });
+    // var data = new FormData();
+    // data.append("add_photos", "1");
+    // data.append("title", values.docTitle);
+    // data.append("user_id", loginUID);
+    // data.append("detail", values.description);
+  };
+  const pickImg = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      console.log("image", result.assets[0].uri);
+      setEditCourseData((prev) => ({
+        ...prev,
+        icon: result.assets[0].uri,
+      }));
+    }
   };
   return (
     <View style={styles.container}>
@@ -107,13 +179,48 @@ export default function EditCourse({ navigation }) {
 
       <ScrollView style={{ paddingHorizontal: 20 }}>
         <View style={{ marginVertical: 10 }}>
-          <CommonDropdown label={"Category"} />
-          <CommonDropdown label={"Primary Language"} />
-          <Input placeholder={"Course Title"} label={"Course Title"} />
+          {/* <CommonDropdown label={"Category"} /> */}
+          <CategoryDropdown
+            label={"Category"}
+            name="category"
+            onSelect={(selectedItem, index) => {
+              setEditCourseData((prev) => ({
+                ...prev,
+                category: selectedItem.id,
+              }));
+            }}
+          />
+          {/* <CommonDropdown label={"Primary Language"} /> */}
+          <LanguageDropdown
+            label={"Primary Language"}
+            onSelect={(selectedItem, index) => {
+              setEditCourseData((prev) => ({
+                ...prev,
+                language: selectedItem.id,
+              }));
+            }}
+          />
+          <Input
+            placeholder={"Course Title"}
+            label={"Course Title"}
+            value={editCourseData.title}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                title: text,
+              }))
+            }
+          />
           <Input
             placeholder={"Topic/Subject"}
             label={"Topic/Subject"}
-            onChangeText={(text) => setSubject(text)}
+            value={editCourseData.subject}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                subject: text,
+              }))
+            }
           />
           <Input
             placeholder={"Description"}
@@ -121,6 +228,13 @@ export default function EditCourse({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            value={editCourseData.desc}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                desc: text,
+              }))
+            }
           />
           <Input
             placeholder={"Syllabus"}
@@ -128,6 +242,13 @@ export default function EditCourse({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            value={editCourseData.syllabus}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                syllabus: text,
+              }))
+            }
           />
           <Input
             placeholder={"Job Sheets"}
@@ -135,10 +256,44 @@ export default function EditCourse({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            value={editCourseData.sheets}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                sheets: text,
+              }))
+            }
           />
-          <ExportContent label={"Export Content"} marginBottom={10} />
-          <Syndicate label={"Syndicate Announcements"} marginBottom={10} />
-          <AccessLevel label={"Access"} marginBottom={10} />
+          <ExportContent
+            label={"Export Content"}
+            marginBottom={10}
+            onSelect={(selectedItem, index) => {
+              setEditCourseData((prev) => ({
+                ...prev,
+                syndicate: selectedItem.name,
+              }));
+            }}
+          />
+          <Syndicate
+            label={"Syndicate Announcements"}
+            marginBottom={10}
+            onSelect={(selectedItem, index) => {
+              setEditCourseData((prev) => ({
+                ...prev,
+                syndicate: selectedItem.name,
+              }));
+            }}
+          />
+          <AccessLevel
+            label={"Access"}
+            marginBottom={10}
+            onSelect={(selectedItem, index) => {
+              setEditCourseData((prev) => ({
+                ...prev,
+                access: selectedItem.id,
+              }));
+            }}
+          />
           <View
             style={{
               flexDirection: "row",
@@ -197,20 +352,11 @@ export default function EditCourse({ navigation }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedRelease
-                    ? selectedRelease.toLocaleDateString()
-                    : "No date selected"}
-                  {`  `}
-                  {selectedRelease
-                    ? selectedRelease.toLocaleTimeString()
-                    : "No date selected"}
+                  {selectedRelease ? selectedRelease.toLocaleDateString() : "No date selected"}
                 </Text>
               </Text>
               <View style={styles.selectDate}>
-                <TouchableOpacity
-                  style={{ position: "absolute", bottom: 22, right: 20 }}
-                  onPress={showDatePicker}
-                >
+                <TouchableOpacity style={{ position: "absolute", bottom: 22, right: 20 }} onPress={showDatePicker}>
                   {/* <Text>Select Date</Text> */}
                   <Entypo name="calendar" size={24} color={color.purple} />
                 </TouchableOpacity>
@@ -253,21 +399,11 @@ export default function EditCourse({ navigation }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedEnd
-                    ? selectedEnd.toLocaleDateString()
-                    : "No date selected"}
-                  {`  `}
-
-                  {selectedEnd
-                    ? selectedEnd.toLocaleTimeString()
-                    : "No date selected"}
+                  {selectedEnd ? selectedEnd.toLocaleDateString() : "No date selected"}
                 </Text>
               </Text>
               <View style={styles.selectDate}>
-                <TouchableOpacity
-                  style={{ position: "absolute", bottom: 22, right: 20 }}
-                  onPress={showDatePicker2}
-                >
+                <TouchableOpacity style={{ position: "absolute", bottom: 22, right: 20 }} onPress={showDatePicker2}>
                   {/* <Text>Select Date</Text> */}
                   <Entypo name="calendar" size={24} color={color.purple} />
                 </TouchableOpacity>
@@ -284,41 +420,63 @@ export default function EditCourse({ navigation }) {
               />
             </View>
           </View>
-          <Input
-            placeholder={"Banner"}
-            label={"Banner"}
-            multiline={true}
-            numberOfLines={6}
-            textAlignVertical={"top"}
+          <InitialContent
+            label={"Initial Content"}
+            onSelect={(selectedItem, index) => {
+              setEditCourseData((prev) => ({
+                ...prev,
+                initialContent: selectedItem,
+              }));
+            }}
           />
-          <InitialContent label={"Initial Content"} />
           <Input
             label={"Course Quota"}
             placeholder={"in MB"}
-            onChangeText={(text) => setCourseQuota(text)}
             keyboardType="number-pad"
+            value={editCourseData.courseQuota}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                courseQuota: text,
+              }))
+            }
           />
           <Input
             label={"Max File Size"}
             placeholder={"in MB"}
-            onChangeText={(text) => setMaxsize(text)}
             keyboardType="number-pad"
+            value={editCourseData.maxFileSize}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                maxFileSize: text,
+              }))
+            }
           />
           <Input
+            value={editCourseData.banner}
             placeholder={"Banner"}
             label={"Banner"}
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
+            onChangeText={(text) =>
+              setEditCourseData((prev) => ({
+                ...prev,
+                banner: text,
+              }))
+            }
           />
-          <UploadDocument type={"Icon"} />
+          <UploadDocument type={"Icon"} pickImg={pickImg} />
+          <View style={styles.uploadCon}>
+            {!!editCourseData?.icon?.length && (
+              <Image source={{ uri: editCourseData?.icon }} style={styles.uploadImg} />
+            )}
+          </View>
           <View style={styles.button}>
+            <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
             <SmallButton
-              title={"Cancel"}
-              color={color.purple}
-              fontFamily={"Montserrat-Medium"}
-            />
-            <SmallButton
+              onPress={() => Edit()}
               title="Update"
               loading={loading}
               color={color.white}
@@ -383,5 +541,8 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     marginTop: 20,
+  },
+  uploadCon: {
+    textAlign: "center",
   },
 });
