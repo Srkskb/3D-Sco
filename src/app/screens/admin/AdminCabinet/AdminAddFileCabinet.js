@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -20,8 +13,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
-import mime from 'mime'
-import * as DocumentPicker from 'expo-document-picker';
+import mime from "mime";
+import * as DocumentPicker from "expo-document-picker";
 
 export default function AdminAddFileCabinet() {
   const navigation = useNavigation();
@@ -43,19 +36,18 @@ export default function AdminAddFileCabinet() {
   };
 
   const addFileCabinet = (values) => {
-    console.log(values.docTitle,access,loginUID,values.description,image);
-    setLoading(true)
+    console.log(values.docTitle, access, loginUID, values.description, image);
+    setLoading(true);
     const myHeaders = myHeadersData();
-
 
     var urlencoded = new FormData();
     urlencoded.append("add_documents", "1");
     urlencoded.append("titel", values.docTitle);
     urlencoded.append("access", access);
     urlencoded.append("image", {
-      uri: image,//"file:///" + image.split("file:/").join(""),
+      uri: image, //"file:///" + image.split("file:/").join(""),
       type: mime.getType(image),
-      name: `abc.jpg`
+      name: `abc.jpg`,
     });
     urlencoded.append("user_id", loginUID);
     urlencoded.append("description", values.description);
@@ -69,7 +61,7 @@ export default function AdminAddFileCabinet() {
     })
       .then((res) => res.json())
       .then((res) => {
-        setLoading(false)
+        setLoading(false);
         console.log(res);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
@@ -125,14 +117,7 @@ export default function AdminAddFileCabinet() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -144,11 +129,7 @@ export default function AdminAddFileCabinet() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   <AccessLevel
                     required
@@ -161,18 +142,12 @@ export default function AdminAddFileCabinet() {
                   />
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                   <InputField
                     label={"Description"}
@@ -187,19 +162,11 @@ export default function AdminAddFileCabinet() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
