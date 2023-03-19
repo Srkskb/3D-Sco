@@ -8,7 +8,7 @@ import HomeHeader from "../components/header/HomeHeader";
 import { myHeadersData } from "./../api/helper";
 import Detail from "../components/view/Detail";
 import Headline from "../components/Headline";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function DrawerContent(props) {
   const navigation = useNavigation();
@@ -40,7 +40,8 @@ export default function DrawerContent(props) {
   const handleLogout = async (props) => {
     await AsyncStorage.removeItem("loginUID");
     await AsyncStorage.removeItem("userData");
-    props.navigation.replace("Login");
+    await AsyncStorage.removeItem("userType");
+    props.navigation.replace("UserType");
   };
   return (
     <View style={styles.container}>

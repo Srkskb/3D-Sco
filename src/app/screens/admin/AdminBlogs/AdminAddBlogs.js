@@ -81,6 +81,8 @@ export default function AdminAddBlog() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ paddingVertical: 10 }}>
             <Formik
+              validateOnBlur={false}
+              validateOnChange={false}
               initialValues={{
                 blogTitle: "",
                 description: "",

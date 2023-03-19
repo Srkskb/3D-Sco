@@ -11,7 +11,7 @@ import { List } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import Profile from "./../../../assets/images/demo.png";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const TabNavigator = createBottomTabNavigator({
   Home: {
@@ -100,7 +100,9 @@ export default function DrawerJs() {
   const handleLogout = async () => {
     await AsyncStorage.removeItem("loginUID");
     await AsyncStorage.removeItem("userData");
-    navigation.replace("Login");
+    await AsyncStorage.removeItem("userType");
+
+    navigation.replace("UserType");
   };
   const navigationView = () => (
     <View style={[styles.container, styles.navigationContainer]}>

@@ -12,21 +12,19 @@ import React, { useEffect, useState } from "react";
 import { Splash } from "../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 const newLocal_1 = "../assets/images/background/Background.png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-community/async-storage";
 const { height, width } = Dimensions.get("window");
 import AppButton from "../components/buttons/AppButton";
 import color from "../assets/themes/Color";
 import User from "../components/dropdown/User";
 import "localstorage-polyfill";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 const storeData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (error) {}
 };
+
 export default function UserType({ navigation }) {
   const [userID, setUserID] = useState();
   const [isDisabled, setDisabled] = useState(false);
@@ -38,34 +36,39 @@ export default function UserType({ navigation }) {
   };
   useEffect(() => {
     setLoading(true);
-    AsyncStorage.getItem("userType").then((data) => {
-      console.log(JSON.parse(data));
-      setLoading(false);
-      if (data == null) {
-      } else {
-        localStorage.setItem("loginUID", JSON.parse(data).id);
-        if (JSON.parse(data).type == "student") {
-          navigation.navigate("DrawerNavigator");
-          localStorage.setItem("userID", 1);
+    AsyncStorage.getItem("userType")
+      .then((res) => JSON.parse(res))
+      .then((data) => {
+        setLoading(false);
+        if (data == null) {
+        } else {
+          // localStorage.setItem("loginUID", JSON.parse(data).id);
+          if (data == "student") {
+            navigation.navigate("DrawerNavigator");
+            localStorage.setItem("userID", 1);
+          }
+          if (data == "tutor") {
+            navigation.navigate("TutorDrawerNavigator");
+            localStorage.setItem("userID", 2);
+          }
+          if (data == "parent") {
+            navigation.navigate("ParentDrawerNavigator");
+            localStorage.setItem("userID", 3);
+          }
+          console.log("enter");
+          if (data == "admin") {
+            navigation.navigate("AdminDrawerNavigator");
+            localStorage.setItem("userID", 4);
+          }
+          if (data == "affiliate") {
+            navigation.navigate("AffiliateDrawerNavigator");
+            localStorage.setItem("userID", 5);
+          }
         }
-        if (JSON.parse(data).type == "tutor") {
-          navigation.navigate("TutorDrawerNavigator");
-          localStorage.setItem("userID", 2);
-        }
-        if (JSON.parse(data).type == "parent") {
-          navigation.navigate("ParentDrawerNavigator");
-          localStorage.setItem("userID", 3);
-        }
-        if (JSON.parse(data).type == "admin") {
-          navigation.navigate("AdminDrawerNavigator");
-          localStorage.setItem("userID", 4);
-        }
-        if (JSON.parse(data).type == "affiliate") {
-          navigation.navigate("AffiliateDrawerNavigator");
-          localStorage.setItem("userID", 5);
-        }
-      }
-    });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (

@@ -4,9 +4,8 @@ import React from "react";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
 const UserAccount = [
-  "Select Option",
-  "Student",
-  "Educator"
+  { name: "Student", id: "1" },
+  { name: "Educator", id: "2" },
 ];
 export default function AccountType({ label, ...props }) {
   return (
@@ -19,10 +18,10 @@ export default function AccountType({ label, ...props }) {
           defaultValue={"this.state.selectValue"}
           data={UserAccount}
           buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
+            return selectedItem.name;
           }}
           rowTextForSelection={(item, index) => {
-            return item;
+            return item.name;
           }}
           buttonStyle={styles.dropdown}
           buttonTextStyle={styles.text_button}

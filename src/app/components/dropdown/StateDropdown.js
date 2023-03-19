@@ -1,39 +1,59 @@
+import AsyncStorage from "@react-native-community/async-storage";
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { View, Text, Image } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
+
 export default function StateDropdown({ label, ...props }) {
   const [getStateList, setStateList] = useState([]);
-  const country_id = localStorage.getItem("countryId");
-  useEffect(() => {
+  const fetch = async () => {
+    const myData = await AsyncStorage.getItem("userData");
+    const { country_id } = JSON.parse(myData);
+    // if (country_id == null || (country_id === "" && state_id == null) || state_id === "") {
+    //   return;
+    // }
 
-    if (country_id == null || country_id === "") {
-      return;
-    }
-    fetch(
-      `https://3dsco.com/3discoapi/state.php?state=1&country_id=${country_id}`
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        setStateList(res.data);
-      });
-  }, [country_id]);
+    axios.get(`https://3dsco.com/3discoapi/state.php?state=1&country_id=${country_id}`).then(function (res) {
+      // console.log("state list", res.data);
+      if (res.data.success == 1) {
+        // setCityList(res.data.data);
+        setStateList(res.data.data);
+      } else {
+        console.log("State list can't fetch right now");
+      }
+    });
+  };
+
+  useEffect(() => {
+    // if (country_id == null || country_id === "") {
+    //   return;
+    // }
+    // const myData = await AsyncStorage.getItem("userData");
+    // const { country_id, state_id } = JSON.parse(myData);
+    // fetch(`https://3dsco.com/3discoapi/state.php?state=1&country_id=${country_id}`)
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     setStateList(res.data);
+    //   });
+    fetch();
+  }, []);
 
   return (
     <View>
       <Text style={styles.label_text}>{label}</Text>
       <View style={{ flexDirection: "row" }}>
         <SelectDropdown
-          data={getStateList && getStateList.map((list, index) => list.name)}
+          data={getStateList && getStateList.map((list, index) => ({ name: list.name, id: list.state_id }))}
           buttonTextAfterSelection={(selectedItem, index) => {
             localStorage.setItem("stateID", getStateList[index].state_id);
             localStorage.setItem("stateName", getStateList[index].name);
 
-            return selectedItem;
+            return selectedItem.name;
           }}
           rowTextForSelection={(item, index) => {
-            return item;
+            return item.name;
           }}
           buttonStyle={styles.dropdown}
           buttonTextStyle={styles.text_button}

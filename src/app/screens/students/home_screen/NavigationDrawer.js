@@ -11,7 +11,7 @@ import HomeScreen from "./HomeScreen";
 import { useNavigation } from "@react-navigation/native";
 import Profile from "./../../../assets/images/demo.png";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function NavigationDrawer({ backPress }) {
   const drawer = useRef(null);
   const Drawer = createDrawerNavigator();
@@ -34,7 +34,9 @@ export default function NavigationDrawer({ backPress }) {
   const handleLogout = async () => {
     await AsyncStorage.removeItem("loginUID");
     await AsyncStorage.removeItem("userData");
-    navigation.replace("Login");
+    await AsyncStorage.removeItem("userType");
+
+    navigation.replace("UserType");
   };
 
   const navigationView = () => (

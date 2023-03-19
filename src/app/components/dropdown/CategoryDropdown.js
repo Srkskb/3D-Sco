@@ -13,7 +13,7 @@ export default function CategoryDropdown({ label, ...props }) {
 
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
       method: "GET",
- 
+
       headers: {
         myHeaders,
       },
@@ -22,7 +22,6 @@ export default function CategoryDropdown({ label, ...props }) {
       .then((res) => {
         if (res.success == 1) {
           setCategoryList(res.data);
-        
         } else {
           alert("Try after sometime");
         }
@@ -34,16 +33,14 @@ export default function CategoryDropdown({ label, ...props }) {
       <Text style={styles.label_text}>{label}</Text>
       <View style={{ flexDirection: "row" }}>
         <SelectDropdown
-          data={categoryList.map((list) => list.Name)}
-          buttonTextAfterSelection={(selectedItem,index) => {
-             localStorage.setItem("catID", categoryList[index].id);
-             
-            return selectedItem;
-          }}
+          data={categoryList.map((list) => ({ name: list.Name, id: list.id }))}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            localStorage.setItem("catID", categoryList[index].id);
 
-        
+            return selectedItem.name;
+          }}
           rowTextForSelection={(item, index) => {
-            return item;
+            return item.name;
           }}
           buttonStyle={styles.dropdown}
           buttonTextStyle={styles.text_button}
