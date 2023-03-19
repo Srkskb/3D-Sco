@@ -4,55 +4,71 @@ import color from "../../../../assets/themes/Color";
 import CommonDropdown from "../../../../components/dropdown/CommonDropdown";
 import { Ionicons } from "@expo/vector-icons";
 import AppButton from "../../../../components/buttons/AppButton";
-import Student_Card from '../../../../components/card/Student_Card';
+import Student_Card from "../../../../components/card/Student_Card";
 import { FontAwesome } from "@expo/vector-icons";
 import { myHeadersData } from "../../../../api/helper";
 import LastLogin from "../../../../components/dropdown/admin_user/LastLogin";
 import Match from "../../../../components/dropdown/admin_user/Match";
 import AccountStatus from "../../../../components/dropdown/admin_user/AccountStatus";
+import CategoryDropdown from "../../../../components/dropdown/CategoryDropdown";
+
 export default function Users() {
-  var userType=["Student","Tutor","Parent","Admin","Affiliate"]
-  const [userList, setUserList] = useState([])
-  const [type, setType] = useState('')
-  const [matchwords, setmatchwords] = useState('')
-  const [SearchKey, setSearchKey] = useState('')
+  var userType = [{ name: "Student" }, { name: "Tutor" }, { name: "Parent" }, { name: "Admin" }, { name: "Affiliate" }];
+  const [userList, setUserList] = useState([]);
+  const [type, setType] = useState("");
+  const initialObj = {
+    status: "",
+    days: "",
+  };
+  const [statusData, setStatusData] = useState(initialObj);
 
-  const filter=()=>{
+  const filter = () => {
     var formdata = new FormData();
-  var myHeaders = myHeadersData()
-formdata.append("Account_filter", "1");
-formdata.append("created_by", "");
-formdata.append("admin_status", "1");
-formdata.append("type", type);
-formdata.append("SearchKey", "");
-formdata.append("cat_id", "");
-formdata.append("days", "10");
-formdata.append("match_word", "");
+    // var myHeaders = myHeadersData();
+    formdata.append("Account_filter", "1");
+    formdata.append("days", statusData.days);
+    formdata.append("admin_status", statusData.status);
+    // formdata.append("created_by", "");
+    // formdata.append("type", type);
+    // formdata.append("SearchKey", "");
+    // formdata.append("cat_id", "");
+    // formdata.append("match_word", "");
 
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: formdata,
-  redirect: 'follow'
-};
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
 
-fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-  .then(response => response.json())
-  .then(result => {
-    console.log(result)
-    if(result.data!=null){
-      setUserList(result.data)
-    }
-  })
-  .catch(error => console.log('error', error));
-  }
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      // redirect: "follow",
+    };
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("result", result);
+        if (result.data != null) {
+          setUserList(result.data);
+          setStatusData(initialObj);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
         <Text style={styles.headline}>Account Status</Text>
-        <AccountStatus/>
+        <AccountStatus
+          onSelect={(item) => {
+            console.log("item", item);
+            setStatusData((prev) => ({ ...prev, status: item.id }));
+          }}
+        />
         <Text style={styles.headline}>Account Type</Text>
-        <CommonDropdown data={userType} onSelect={(item,index)=>setType(index+1)}/>
+        <CommonDropdown value={userType} onSelect={(item, index) => setType(index + 1)} />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={styles.input}>
             <View
@@ -82,7 +98,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
             </View>
           </View>
           <View style={{ width: "38%" }}>
-            <Match marginBottom={0}/>
+            <Match marginBottom={0} />
           </View>
         </View>
 
@@ -94,10 +110,20 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
           }}
         >
           <View style={{ width: "58%" }}>
-            <CommonDropdown />
+            {/* <CommonDropdown /> */}
+            <CategoryDropdown
+              label={"Category"}
+              name="category"
+              // onSelect={(item, index) => console.log(item)}
+              onSelect={(selectedItem, index) => {
+                // setCategory(selectedItem);
+                setFieldValue("category", selectedItem.id);
+              }}
+              // value={category}
+            />
           </View>
           <View style={{ width: "38%" }}>
-            <LastLogin/>
+            <LastLogin />
           </View>
         </View>
 
@@ -125,7 +151,9 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
                 fontFamily: "Montserrat-Regular",
                 fontSize: 12,
               }}
+              keyboardType="numeric"
               placeholder={""}
+              onChangeText={(text) => setStatusData((prev) => ({ ...prev, days: text }))}
             />
           </View>
           <View>
@@ -135,7 +163,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
         <View style={styles.btnContainer}>
           <AppButton title={"Filter"} btnColor={color.purple} onPress={filter} />
         </View>
-        <View style={{ paddingHorizontal:2 }}>
+        <View style={{ paddingHorizontal: 2 }}>
           {userList === undefined ? (
             <>
               <NoDataFound />
@@ -144,26 +172,25 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
             <>
               {userList.map((list, index) => (
                 <View style={styles.boxcontainer} key={index}>
-      <View style={styles.main_box}>
-        <FontAwesome name="user" size={20} color="#82027D" />
-        <View style={{ marginLeft: 15 }}>
-          <Text style={styles.names}>{list.name}</Text>
-        </View>
-       
-      </View>
-      <View style={styles.main_box}>
-        <FontAwesome name="envelope-o" size={20} color="#82027D" />
-        <View style={{ marginLeft: 15 }}>
-          <Text style={styles.names}>{list.Email}</Text>
-        </View>
-      </View>
-      <View style={styles.main_box}>
-        <FontAwesome name="clock-o" size={20} color="#82027D" />
-        <View style={{ marginLeft: 15 }}>
-          <Text style={styles.names}>{list.last_login}</Text>
-        </View>
-      </View>
-    </View>
+                  <View style={styles.main_box}>
+                    <FontAwesome name="user" size={20} color="#82027D" />
+                    <View style={{ marginLeft: 15 }}>
+                      <Text style={styles.names}>{list.name}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.main_box}>
+                    <FontAwesome name="envelope-o" size={20} color="#82027D" />
+                    <View style={{ marginLeft: 15 }}>
+                      <Text style={styles.names}>{list.Email}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.main_box}>
+                    <FontAwesome name="clock-o" size={20} color="#82027D" />
+                    <View style={{ marginLeft: 15 }}>
+                      <Text style={styles.names}>{list.last_login}</Text>
+                    </View>
+                  </View>
+                </View>
               ))}
             </>
           )}
@@ -189,7 +216,7 @@ const styles = StyleSheet.create({
   },
   main_box: {
     flexDirection: "row",
-    padding:10
+    padding: 10,
   },
   names: {
     color: color.purple,

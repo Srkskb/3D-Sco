@@ -4,6 +4,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import React from "react";
 const down_img = require("../../assets/images/down.png");
 // const Value = ["Data 1", "Data 2", "Data 3"];
+
 export default function CommonDropdown({ label, value, onChange, ...props }) {
   return (
     <View>
