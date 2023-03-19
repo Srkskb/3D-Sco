@@ -10,36 +10,40 @@ import Course_Card from "../../../components/admin_required/Cards/CourseCard";
 import axios from "axios";
 import qs from "qs";
 import Course_Card1 from "../../../components/admin_required/Cards/Course_Card1";
-
+import Loader from "../../../utils/Loader";
 const { width, height } = Dimensions.get("window");
 export default function Enrollment({ navigation }) {
   const [courses, setCourses] = useState([]);
-  const DeleteCourse = () => {
-    var data = qs.stringify({
-      delete_courses: "1",
-      id: "49",
-      user_id: "232",
-    });
-    var config = {
-      method: "post",
-      url: "https://3dsco.com/3discoapi/studentregistration.php",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7",
-      },
-      data: data,
-    };
+  const [loading, setLoading] = useState(true);
 
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  // const DeleteCourse = () => {
+  //   var data = qs.stringify({
+  //     delete_courses: "1",
+  //     id: "49",
+  //     user_id: "232",
+  //   });
+  //   var config = {
+  //     method: "post",
+  //     url: "https://3dsco.com/3discoapi/studentregistration.php",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //       Cookie: "PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7",
+  //     },
+  //     data: data,
+  //   };
+
+  //   axios(config)
+  //     .then(function (response) {
+  //       console.log(JSON.stringify(response.data));
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // };
+
   const allCourses = () => {
+    setLoading(true);
     var config = {
       method: "post",
       url: `https://3dsco.com/3discoapi/studentregistration.php?select_course_list=1`,
@@ -51,17 +55,19 @@ export default function Enrollment({ navigation }) {
 
     axios(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         setCourses(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   useEffect(() => {
     allCourses();
     navigation.addListener("focus", () => allCourses());
   }, []);
+
   return (
     <View style={styles.container}>
       <HeaderBack title={"Enrollment"} onPress={() => navigation.goBack()} />
@@ -92,27 +98,31 @@ export default function Enrollment({ navigation }) {
           <Add_Button title={"Filter"} />
         </View>
       </View>
-      <ScrollView style={{ paddingHorizontal: 10 }}>
-        {courses === undefined ? (
-          <>
-            <NoDataFound />
-          </>
-        ) : (
-          <>
-            {courses.map((list, index) => (
-              <Course_Card1
-                key={index}
-                title={list.name}
-                status={list.Access}
-                educator={list.Email}
-                // releaseDate={list.ReleaseDate}
-                // endDate={list.EndDate}
-                editPress={() => navigation.navigate("EditCourse")}
-              />
-            ))}
-          </>
-        )}
-      </ScrollView>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView style={{ paddingHorizontal: 10 }}>
+          {courses === undefined ? (
+            <>
+              <NoDataFound />
+            </>
+          ) : (
+            <>
+              {courses.map((list, index) => (
+                <Course_Card1
+                  key={index}
+                  title={list.name}
+                  status={list.Access}
+                  educator={list.Email}
+                  // releaseDate={list.ReleaseDate}
+                  // endDate={list.EndDate}
+                  editPress={() => navigation.navigate("EditCourse")}
+                />
+              ))}
+            </>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 }

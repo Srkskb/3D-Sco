@@ -1,135 +1,157 @@
 import { View, Text, StyleSheet } from "react-native";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../components/header/Header";
 import TextWithButton from "../../../components/TextWithButton";
 import color from "../../../assets/themes/Color";
 import CommonDropdown from "../../../components/dropdown/CommonDropdown";
 import AppButton from "../../../components/buttons/AppButton";
 import axios from "axios";
-import qs from "qs"
+import qs from "qs";
+import Loader from "../../../utils/Loader";
 
 export default function EnrollStudent({ navigation }) {
-  const [coursesid, setCoursesid] = useState([])
-  const [courses, setCourses] = useState([])
-  const [studentsid, setStudentsid] = useState([])
-  const [students, setStudents] = useState([])
-  const [studentId, setStudentId] = useState('')
-  const [coursesId, setCoursesId] = useState('')
-  const getStudents=()=>{
+  const [courses, setCourses] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [enrollData, setEnrollData] = useState({
+    studentId: "",
+    courseId: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const getStudents = () => {
     var requestOptions = {
-  method: 'GET',
-  headers: { 
-        'Accept': 'application/json', 
-        'Content-Type': 'application/x-www-form-urlencoded', 
-        'Cookie': 'PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7'
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7",
       },
-  redirect: 'follow'
-};
+      redirect: "follow",
+    };
 
-fetch("https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=student", requestOptions)
-  .then(response => response.json())
-  .then(result => {
-    // console.log(result.data)
-    var students=result.data.map(i=>i.username)
-    setStudents(result.data)
-    setStudentsid(students)
-  })
-  .catch(error => console.log('error', error));
-  }
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=student", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setStudents(result.data);
+      })
+      .catch((error) => console.log("error", error));
+  };
 
-  const allCourses=()=>{
-
+  const allCourses = () => {
     var config = {
-      method: 'post',
+      method: "post",
       url: `https://3dsco.com/3discoapi/3dicowebservce.php?Course=1`,
-      headers: { 
-        'Content-Type': 'application/x-www-form-urlencoded', 
-        'Cookie': 'PHPSESSID=r6ql44dbgph86daul5dqicpgk4'
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=r6ql44dbgph86daul5dqicpgk4",
       },
     };
 
-axios(config)
-.then((response)=>{
-  // console.log(JSON.stringify(response.data));
-  var courses=response.data.data.map(i=>i.Courses)
-  setCourses(response.data.data)
-  setCoursesid(courses)
-})
-.catch((error)=>{
-  console.log(error);
-});
-
-  }
+    axios(config)
+      .then((response) => {
+        setCourses(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     allCourses();
     getStudents();
     navigation.addListener("focus", () => {
-      allCourses()
-      getStudents()
-  });
+      allCourses();
+      getStudents();
+    });
   }, []);
 
-  const enroll=()=>{
+  const enroll = () => {
+    setLoading(true);
     var data = qs.stringify({
-  'student_select_courses': '1',
-  'course_id': coursesId,
-  'student_id': studentId 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=3pdofu5ljq7br6tupov2ev6au1'
-  },
-  data : data
-};
-console.log(data)
+      student_select_courses: "1",
+      course_id: enrollData.courseId,
+      student_id: enrollData.studentId,
+    });
+    // var config = {
+    //   method: "post",
+    //   url: "https://3dsco.com/3discoapi/studentregistration.php",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //     Cookie: "PHPSESSID=3pdofu5ljq7br6tupov2ev6au1",
+    //   },
+    //   data: data,
+    // };
+    // console.log(data);
 
-axios(config)
-.then((response)=>{
-  console.log(JSON.stringify(response.data));
-})
-.catch((error)=>{
-  console.log(error);
-});
-  }
+    // axios(config)
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (response.success) {
+    //       navigation.navigate("Enrollment");
+    //     } else {
+    //       console.log("Error", response.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log("error", error);
+    //   });
+    var adminFormData = new FormData();
+    adminFormData.append("student_select_courses", "1");
+    adminFormData.append("course_id", enrollData.courseId);
+    adminFormData.append("student_id", enrollData.studentId);
 
-  const studentid=(name)=>{
-      var id=students.filter(i=>i.username==name).map(i=>i.id)
-      console.log(id)
-      if(id.length>1){
-        setStudentId(id[0])
-      }else{
-        setStudentId(id)
-      }
-  }
-  const courseid=(name)=>{
-      var id=courses.filter(i=>i.Courses==name).map(i=>i.book_id)
-      console.log(id)
-      if(id.length>1){
-        setCoursesId(id[0])
-      }else{
-        setCoursesId(id)
-      }
-  }
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    // myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: data,
+      // body: adminFormData,
+    };
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      // .then((response) => response.json())
+      .then((response) => {
+        console.log("response", response);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      })
+      .finally(() => setLoading(false));
+  };
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Enroll a student"}
-        onPress={() => navigation.goBack()}
-      />
-      <View style={styles.main}>
-        <CommonDropdown label={"Select Student"} data={studentsid} onSelect={(item,index)=>{studentid(item)}}/>
+      <HeaderBack title={"Enroll a student"} onPress={() => navigation.goBack()} />
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <View style={styles.main}>
+            <CommonDropdown
+              label={"Select Student"}
+              value={students}
+              onSelect={(item, index) => {
+                setEnrollData((prev) => ({ ...prev, studentId: item.id }));
+              }}
+            />
 
-        <CommonDropdown label={"Select Course"} data={coursesid} onSelect={(item,index)=>{courseid(item)}}/>
-      </View>
-      <View style={styles.title_container}>
-        <AppButton title={"Enroll"} btnColor={color.purple} onPress={enroll}/>
-        <View style={styles.inner_view}></View>
-      </View>
+            <CommonDropdown
+              label={"Select Course"}
+              value={courses.map((course) => ({ id: course.book_id, name: course.Courses }))}
+              onSelect={(item, index) => {
+                setEnrollData((prev) => ({ ...prev, courseId: item.id }));
+              }}
+            />
+          </View>
+          <View style={styles.title_container}>
+            <AppButton title={"Enroll"} btnColor={color.purple} onPress={enroll} />
+            <View style={styles.inner_view}></View>
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -149,7 +171,7 @@ const styles = StyleSheet.create({
   },
   title_container: {
     // flex: 1,
-    padding:15
+    padding: 15,
   },
   inner_view: {
     justifyContent: "center",
