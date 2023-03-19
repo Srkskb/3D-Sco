@@ -115,6 +115,7 @@ export default function EnrollStudent({ navigation }) {
       // .then((response) => response.json())
       .then((response) => {
         console.log("response", response);
+        navigation.navigate("Enrollment");
       })
       .catch((err) => {
         console.log("err", err);
