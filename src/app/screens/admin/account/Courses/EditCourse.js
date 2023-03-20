@@ -270,7 +270,7 @@ export default function EditCourse({ navigation, route }) {
             onSelect={(selectedItem, index) => {
               setEditCourseData((prev) => ({
                 ...prev,
-                syndicate: selectedItem.name,
+                exportContent: selectedItem.name,
               }));
             }}
           />

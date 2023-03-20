@@ -14,7 +14,7 @@ export default function Course_Card({
   educator,
   status,
   releaseDate,
-  endDate
+  endDate,
 }) {
   return (
     <View style={styles.container}>
@@ -25,32 +25,20 @@ export default function Course_Card({
       </View>
       <View style={styles.course}>
         <Text style={styles.course_name}>Educator: </Text>
-        <Text
-          style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}
-        >
-          {educator}
-        </Text>
+        <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{educator}</Text>
       </View>
       <View style={styles.course}>
         <Text style={styles.course_name}>Release Date: </Text>
-        <Text
-          style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}
-        >
-          {releaseDate}
-        </Text>
+        <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{releaseDate}</Text>
       </View>
       <View style={styles.course}>
         <Text style={styles.course_name}>End Date: </Text>
-        <Text
-          style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}
-        >
-          {endDate}
-        </Text>
+        <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{endDate}</Text>
       </View>
       <View style={styles.btn_container}>
         {/* <ViewButton onPress={viewPress} /> */}
         <Edit onPress={editPress} />
-<View style={{width:20}}/>
+        <View style={{ width: 20 }} />
         <Remove onPress={removePress} />
       </View>
     </View>

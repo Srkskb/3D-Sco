@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
@@ -24,30 +17,23 @@ import InitialContent from "../../../../components/dropdown/admin_user/InitialCo
 import ExportContent from "../../../../components/dropdown/admin_user/ExportContent";
 import Syndicate from "../../../../components/dropdown/admin_user/SyndicateAnnouncement";
 import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
+import LanguageDropdown from "../../../../components/dropdown/LanguageDropdown";
+import moment from "moment/moment";
+import CategoryDropdown from "../../../../components/dropdown/CategoryDropdown";
+import AsyncStorage from "@react-native-community/async-storage";
+import * as ImagePicker from "expo-image-picker";
 
 const { width, height } = Dimensions.get("window");
 export default function CreateCourse({ navigation }) {
-  const [checked, setChecked] = React.useState("first");
+  const [checked, setChecked] = React.useState("first1");
+  const [checked2, setChecked2] = React.useState("first1");
   const loginUID = localStorage.getItem("loginUID");
-  const [end, setEnd] = React.useState("first1");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
   const [selectedRelease, setSelectedRelease] = useState();
   const [selectedEnd, setSelectedEnd] = useState();
-  const [courseTitle, setCourseTitle] = useState("");
-  const [subject, setSubject] = useState("");
-  const [languages, setLanguages] = useState([]);
   const [categoreis, setCategoreis] = useState([]);
-  const [language, setLanguage] = useState("");
-  const [category, setCategory] = useState("");
-  const [Description, setDescription] = useState("");
-  const [syllabus, setsyllabus] = useState("");
-  const [jobsheet, setJobsheet] = useState("");
-  const [banner, setBanner] = useState("");
-  const [maxsize, setMaxsize] = useState("");
-  const [courseQuota, setCourseQuota] = useState("");
-  const [loading, setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -71,130 +57,143 @@ export default function CreateCourse({ navigation }) {
     console.log(date);
     hideDatePicker2();
   };
-  const addCourse = () => {
+  const [courseData, setCourseData] = useState({
+    courseName: "",
+    language: "",
+    description: "",
+    syndicate: "",
+    exportContent: "",
+    access: "",
+    releaseDate: moment(new Date()).format("YYYY-MM-DD"),
+    endDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)).format("YYYY-MM-DD"),
+    banner: "",
+    initialContent: "",
+    quota: "",
+    quota_other: "",
+    fileSize: "",
+    fileSizeOther: "",
+    copyright: "",
+    subject: "",
+    numWeek: "",
+    syllabus: "",
+    jobSheet: "",
+    catId: "",
+    icon: "",
+    releaseOn: false,
+    endOn: false,
+  });
+  const addCourse = async () => {
+    setLoading(true);
+    const myData = await AsyncStorage.getItem("userData");
+
     var data = qs.stringify({
       addcourses: "1",
-      user_id: loginUID,
-      course_name: courseTitle,
-      language: language,
-      Description: Description,
-      Syndicate: "1",
-      export_content: "all",
-      Access: "Public",
+      user_id: myData.id,
+      course_name: courseData.courseName,
+      language: courseData.language,
+      Description: courseData.description,
+      Syndicate: courseData.syndicate,
+      export_content: courseData.exportContent,
+      Access: courseData.access,
       notify_enroll: "0",
       hide_course: "0",
-      ReleaseDate: selectedRelease,
-      EndDate: selectedEnd,
-      Banner: banner,
-      initial_content: "2",
-      quota: "Unlimited",
+      ReleaseDate: courseData.releaseDate,
+      EndDate: courseData.endDate,
+      Banner: courseData.banner,
+      initial_content: courseData.initialContent,
+      quota: courseData.quota,
       quota_other: "",
-      filesize: maxsize,
-      filesize_other: "100",
+      filesize: courseData.fileSize,
+      filesize_other: "10",
       Copyright: "no",
-      subject: "BA",
+      subject: courseData.subject,
       num_week: "0",
-      Syllabus: syllabus,
-      JobSheet: jobsheet,
-      catID: "2",
+      Syllabus: courseData.syllabus,
+      JobSheet: courseData.jobSheet,
+      catID: courseData.catId,
     });
     var config = {
-      method: "post",
-      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
       },
-      data: data,
+      body: data,
     };
-
-    axios(config)
+    console.log("data", data);
+    // axios(config)
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        console.log("Create course", response);
       })
       .catch((error) => {
         console.log(error.response);
       });
   };
-  const getlanguages = () => {
-    var config = {
-      method: "get",
-      url: "https://3dsco.com/3discoapi/studentregistration.php?courses_language_list=1",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=ksrmsjn33kam2917j4475ihmv4",
-      },
-    };
 
-    axios(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data.data.length));
-        if (response.data.success == 1 && response.data.data.length) {
-          let language = response.data.data.map((i) => i.Language);
-          setLanguages(language);
-        } else {
-          setLanguages([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const pickImg = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      console.log("image", result.assets[0].uri);
+      setCourseData((prev) => ({
+        ...prev,
+        icon: result.assets[0].uri,
+      }));
+    }
   };
-  const getCategories = () => {
-    var config = {
-      method: "get",
-      url: "https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=ksrmsjn33kam2917j4475ihmv4",
-      },
-    };
-
-    axios(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data.data));
-        if (response.data.success == 1 && response.data.data.length > 0) {
-          let category = response.data.data.map((i) => i.Name);
-          setCategoreis(category);
-        } else {
-          setCategoreis([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  useEffect(() => {
-    getlanguages();
-    getCategories();
-  }, []);
   return (
     <View style={styles.container}>
       <HeaderBack title={"Create Course"} onPress={() => navigation.goBack()} />
 
       <ScrollView style={{ paddingHorizontal: 20 }}>
         <View style={{ marginVertical: 10 }}>
-          <CommonDropdown
+          <CategoryDropdown
             label={"Category"}
-            data={categoreis}
-            onSelect={(text) => setCategory(text)}
+            name="category"
+            onSelect={(selectedItem, index) => {
+              setCourseData((prev) => ({
+                ...prev,
+                catId: selectedItem.id,
+              }));
+            }}
           />
-          <CommonDropdown
+
+          <LanguageDropdown
             label={"Primary Language"}
-            data={languages}
-            onSelect={(text) => setLanguage(text)}
+            onSelect={(selectedItem, index) => {
+              setCourseData((prev) => ({
+                ...prev,
+                language: selectedItem.id,
+              }));
+            }}
           />
           <Input
             placeholder={"Course Title"}
             label={"Course Title"}
-            onChangeText={(text) => setCourseTitle(text)}
+            value={courseData?.courseName}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                courseName: text,
+              }))
+            }
           />
           <Input
             placeholder={"Topic/Subject"}
             label={"Topic/Subject"}
-            onChangeText={(text) => setSubject(text)}
+            value={courseData?.subject}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                subject: text,
+              }))
+            }
           />
           {/* <CommonDropdown label={"Topic/Subject"} /> */}
           <Input
@@ -203,7 +202,13 @@ export default function CreateCourse({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text) => setDescription(text)}
+            value={courseData?.description}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                description: text,
+              }))
+            }
           />
           <Input
             placeholder={"Syllabus"}
@@ -211,7 +216,13 @@ export default function CreateCourse({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text) => setsyllabus(text)}
+            value={courseData?.syllabus}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                syllabus: text,
+              }))
+            }
           />
           <Input
             placeholder={"Job Sheets"}
@@ -219,12 +230,45 @@ export default function CreateCourse({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text) => setJobsheet(text)}
+            value={courseData?.jobSheet}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                jobSheet: text,
+              }))
+            }
           />
           {/* <CommonDropdown label={"Export Content"} /> */}
-          <ExportContent label={"Export Content"} />
-          <Syndicate label={"Syndicate Announcements"} />
-          <AccessLevel label={"Access"} />
+          <ExportContent
+            label={"Export Content"}
+            marginBottom={10}
+            onSelect={(selectedItem, index) => {
+              setCourseData((prev) => ({
+                ...prev,
+                exportContent: selectedItem.name,
+              }));
+            }}
+          />
+          <Syndicate
+            label={"Syndicate Announcements"}
+            marginBottom={10}
+            onSelect={(selectedItem, index) => {
+              setCourseData((prev) => ({
+                ...prev,
+                syndicate: selectedItem.name,
+              }));
+            }}
+          />
+          <AccessLevel
+            label={"Access"}
+            marginBottom={10}
+            onSelect={(selectedItem, index) => {
+              setCourseData((prev) => ({
+                ...prev,
+                access: selectedItem.id,
+              }));
+            }}
+          />
 
           <View
             style={{
@@ -262,7 +306,14 @@ export default function CreateCourse({ navigation }) {
               <RadioButton
                 value="first"
                 status={checked === "first" ? "checked" : "unchecked"}
-                onPress={() => setChecked("first")}
+                onPress={() => {
+                  setCourseData((prev) => ({
+                    ...prev,
+                    releaseOn: false,
+                    releaseDate: moment(new Date()).format("YYYY-MM-DD"),
+                  }));
+                  setChecked("first");
+                }}
                 color={color.purple}
               />
               <Text style={styles.radioText}>Release Immediately</Text>
@@ -271,105 +322,124 @@ export default function CreateCourse({ navigation }) {
               <RadioButton
                 value="second"
                 status={checked === "second" ? "checked" : "unchecked"}
-                onPress={() => setChecked("second")}
+                onPress={() => {
+                  setCourseData((prev) => ({
+                    ...prev,
+                    releaseOn: !prev.releaseOn,
+                  }));
+                  setChecked("second");
+                }}
                 color={color.purple}
               />
               <Text style={styles.radioText}>Release on</Text>
             </View>
-            <View>
-              <Text style={styles.calendar_input}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontFamily: "Montserrat-SemiBold",
-                  }}
-                >
-                  {selectedRelease
-                    ? selectedRelease.toLocaleDateString()
-                    : "No date selected"}
-                  {`  `}
-                  {selectedRelease
-                    ? selectedRelease.toLocaleTimeString()
-                    : "No date selected"}
+            {courseData.releaseOn && (
+              <View>
+                <Text style={styles.calendar_input}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: "Montserrat-SemiBold",
+                    }}
+                  >
+                    {courseData.releaseDate ? moment(courseData.releaseDate).format("YYYY-MM-DD") : "No date selected"}
+                  </Text>
                 </Text>
-              </Text>
-              <View style={styles.selectDate}>
-                <TouchableOpacity
-                  style={{ position: "absolute", bottom: 22, right: 20 }}
-                  onPress={showDatePicker}
-                >
-                  {/* <Text>Select Date</Text> */}
-                  <Entypo name="calendar" size={24} color={color.purple} />
-                </TouchableOpacity>
-              </View>
+                <View style={styles.selectDate}>
+                  <TouchableOpacity
+                    style={{ position: "absolute", bottom: 22, right: 20 }}
+                    onPress={() => setDatePickerVisibility(true)}
+                  >
+                    {/* <Text>Select Date</Text> */}
+                    <Entypo name="calendar" size={24} color={color.purple} />
+                  </TouchableOpacity>
+                </View>
 
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="datetime"
-                date={selectedRelease}
-                onConfirm={handleConfirmRelease}
-                onCancel={hideDatePicker}
-              />
-            </View>
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  date={selectedRelease}
+                  onConfirm={(e) =>
+                    setCourseData((prev) => ({
+                      ...prev,
+                      releaseDate: moment(e).format("YYYY-MM-DD"),
+                    }))
+                  }
+                  onCancel={hideDatePicker}
+                />
+              </View>
+            )}
           </View>
           <View>
             <Text style={styles.radioText}>End Date</Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <RadioButton
                 value="first1"
-                status={end === "first1" ? "checked" : "unchecked"}
-                onPress={() => setEnd("first1")}
+                status={checked2 === "first1" ? "checked" : "unchecked"}
                 color={color.purple}
+                onPress={() => {
+                  setCourseData((prev) => ({
+                    ...prev,
+                    endOn: false,
+                    endDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)).format(
+                      "YYYY-MM-DD"
+                    ),
+                  }));
+                  setChecked2("first1");
+                }}
               />
               <Text style={styles.radioText}>No End Date</Text>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <RadioButton
                 value="second1"
-                status={end === "second1" ? "checked" : "unchecked"}
-                onPress={() => setEnd("second1")}
+                status={checked2 === "second1" ? "checked" : "unchecked"}
+                onPress={() => {
+                  setCourseData((prev) => ({
+                    ...prev,
+                    endOn: !prev.endOn,
+                  }));
+                  setChecked2("second1");
+                }}
                 color={color.purple}
               />
               <Text style={styles.radioText}>End on</Text>
             </View>
-            <View>
-              <Text style={styles.calendar_input}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontFamily: "Montserrat-SemiBold",
-                  }}
-                >
-                  {selectedEnd
-                    ? selectedEnd.toLocaleDateString()
-                    : "No date selected"}
-                  {`  `}
-
-                  {selectedEnd
-                    ? selectedEnd.toLocaleTimeString()
-                    : "No date selected"}
+            {courseData.endOn && (
+              <View>
+                <Text style={styles.calendar_input}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: "Montserrat-SemiBold",
+                    }}
+                  >
+                    {courseData.endDate ? moment(courseData.endDate).format("YYYY-MM-DD") : "No date selected"}
+                  </Text>
                 </Text>
-              </Text>
-              <View style={styles.selectDate}>
-                <TouchableOpacity
-                  style={{ position: "absolute", bottom: 22, right: 20 }}
-                  onPress={showDatePicker2}
-                >
-                  {/* <Text>Select Date</Text> */}
-                  <Entypo name="calendar" size={24} color={color.purple} />
-                </TouchableOpacity>
-              </View>
+                <View style={styles.selectDate}>
+                  <TouchableOpacity style={{ position: "absolute", bottom: 22, right: 20 }} onPress={showDatePicker2}>
+                    {/* <Text>Select Date</Text> */}
+                    <Entypo name="calendar" size={24} color={color.purple} />
+                  </TouchableOpacity>
+                </View>
 
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible2}
-                mode="datetime"
-                date={selectedEnd}
-                onConfirm={handleConfirmEnd}
-                onCancel={hideDatePicker2}
-                is24Hour={true}
-                // isDarkModeEnabled={true}
-              />
-            </View>
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible2}
+                  mode="date"
+                  date={selectedEnd}
+                  onConfirm={(e) =>
+                    setCourseData((prev) => ({
+                      ...prev,
+                      endDate: moment(e).format("YYYY-MM-DD"),
+                    }))
+                  }
+                  onCancel={hideDatePicker2}
+                  is24Hour={true}
+                  // isDarkModeEnabled={true}
+                />
+              </View>
+            )}
           </View>
           <Input
             placeholder={"Banner"}
@@ -377,33 +447,54 @@ export default function CreateCourse({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(text) => setBanner(text)}
+            value={courseData?.banner}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                banner: text,
+              }))
+            }
           />
-          {/* <CommonDropdown label={"Initial Content"} /> */}
-          <InitialContent label={"Initial Content"} />
+          <InitialContent
+            label={"Initial Content"}
+            onSelect={(selectedItem, index) => {
+              setCourseData((prev) => ({
+                ...prev,
+                initialContent: selectedItem,
+              }));
+            }}
+          />
           <Input
             label={"Course Quota"}
             placeholder={"in MB"}
-            onChangeText={(text) => setCourseQuota(text)}
             keyboardType="number-pad"
+            value={courseData?.quota}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                quota: text,
+              }))
+            }
           />
           <Input
             label={"Max File Size"}
             placeholder={"in MB"}
-            onChangeText={(text) => setMaxsize(text)}
             keyboardType="number-pad"
+            value={courseData?.fileSize}
+            onChangeText={(text) =>
+              setCourseData((prev) => ({
+                ...prev,
+                fileSize: text,
+              }))
+            }
           />
-          <UploadDocument type={"Icon"} />
+          <UploadDocument type={"Icon"} pickImg={pickImg} />
           <View style={styles.button}>
-            <SmallButton
-              title={"Cancel"}
-              color={color.purple}
-              fontFamily={"Montserrat-Medium"}
-            />
+            <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
             <SmallButton
               title="Save"
               color={color.white}
-              loading={loading}
+              // loading={loading}
               backgroundColor={color.purple}
               fontFamily={"Montserrat-Bold"}
               onPress={() => addCourse()}

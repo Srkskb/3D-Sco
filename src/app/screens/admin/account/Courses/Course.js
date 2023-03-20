@@ -17,11 +17,11 @@ export default function Course({ navigation }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const DeleteCourse = () => {
+  const DeleteCourse = (id, userId) => {
     var data = qs.stringify({
       delete_courses: "1",
-      id: "49",
-      user_id: "232",
+      id: id,
+      user_id: userId,
     });
     var config = {
       method: "post",
@@ -29,19 +29,20 @@ export default function Course({ navigation }) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7",
+        Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
       },
       data: data,
     };
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
+        console.log("response", response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
   };
+
   const allCourses = () => {
     setLoading(true);
     var config = {
@@ -114,6 +115,7 @@ export default function Course({ navigation }) {
                   educator={list.assigned_tutor}
                   releaseDate={list.ReleaseDate}
                   endDate={list.EndDate}
+                  removePress={() => DeleteCourse(list.id, list.user_id)}
                   editPress={() => navigation.navigate("EditCourse", { editData: list })}
                 />
               ))}
