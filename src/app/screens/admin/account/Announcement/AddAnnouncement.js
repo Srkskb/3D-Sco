@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import React ,{useState} from "react";
+import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
 import InputField from "../../../../components/inputs/Input";
@@ -10,23 +10,24 @@ import { myHeadersData } from "../../../../api/helper";
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
-export default function AddAnnouncement({navigation}) {
-  const [title, setTitle]=useState("")
-  const[description,setDescription]=useState("")
-  const[course,setCourse]=useState("Select Course")
+export default function AddAnnouncement({ navigation }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
-  const AddAnnouncement=(values)=>{
-    console.log(values.docTitle,course,loginUID,values.description,);
+  const AddAnnouncement = (values) => {
+    console.log(values.docTitle, course, loginUID, values.description);
     const myHeaders = myHeadersData();
     var data = new FormData();
-data.append('add_courses_announcement', '1');
-data.append('user_id', loginUID);
-data.append('announcement_title', values.title);
-data.append('Description', values.description);
-data.append('course_id', "17");
-// data.append('image','' );
+    data.append("add_courses_announcement", "1");
+    data.append("user_id", loginUID);
+    data.append("announcement_title", values.title);
+    data.append("Description", values.description);
+    data.append("course_id", "17");
+    // data.append('image','' );
 
-fetch("https://3dsco.com/3discoapi/studentregistration.php", {
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: data,
       headers: {
@@ -38,14 +39,13 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          
           navigation.navigate("Announcement");
         }
-      })
-  }
+      });
+  };
   return (
-    <View style={{backgroundColor:color.white,flex:1}}>
-      <HeaderBack title={"Add Announcement"} onPress={()=>navigation.goBack()} />
+    <View style={{ backgroundColor: color.white, flex: 1 }}>
+      <HeaderBack title={"Add Announcement"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -66,14 +66,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
               })}
               onSubmit={(values) => AddAnnouncement(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -85,11 +78,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -101,21 +90,16 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     value={access}
                   /> */}
                   <SelectCourse
-          label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setCourse(selectedItem)
-            console.log(selectedItem, index);
-            
-          }}
-          value={course}
-        />
+                    label={"Select Course"}
+                    onSelect={(selectedItem, index) => {
+                      setCourse(selectedItem);
+                      console.log(selectedItem, index);
+                    }}
+                    value={course}
+                  />
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
                   {/* <UploadDocument onPress={pickImage} /> */}
@@ -137,11 +121,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
@@ -149,7 +129,7 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={()=>console.log(loginUID)}
+                      onPress={() => console.log(loginUID)}
                     />
                     <SmallButton
                       onPress={handleSubmit}

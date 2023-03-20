@@ -12,9 +12,10 @@ import { Formik } from "formik";
 export default function EditAnnouncement({ navigation }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
-  const EditAnnouncement = (values) => {
+  const EditAnnouncement = (values, id) => {
     console.log(values.docTitle, course, loginUID, values.description);
     var data = new FormData();
     data.append("Update_courses_announcement", "1");
@@ -23,6 +24,7 @@ export default function EditAnnouncement({ navigation }) {
     data.append("Description", values.description);
     data.append("course_id", course);
     data.append("image");
+    data.append("id", id);
 
     var config = {
       method: "post",
@@ -45,10 +47,7 @@ export default function EditAnnouncement({ navigation }) {
   };
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
-      <HeaderBack
-        title={"Add Announcement"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Add Announcement"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -69,14 +68,7 @@ export default function EditAnnouncement({ navigation }) {
               })}
               onSubmit={(values) => EditAnnouncement(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -88,11 +80,7 @@ export default function EditAnnouncement({ navigation }) {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -113,11 +101,7 @@ export default function EditAnnouncement({ navigation }) {
                   />
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
                   {/* <UploadDocument onPress={pickImage} /> */}
@@ -139,11 +123,7 @@ export default function EditAnnouncement({ navigation }) {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
