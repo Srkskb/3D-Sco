@@ -8,6 +8,7 @@ import SelectCourse from "../../../../components/admin_required/SelectCourse";
 import Add_Button from "../../../../components/buttons/Add_Button";
 import Course_Card from "../../../../components/admin_required/Cards/CourseCard";
 import axios from "axios";
+import qs from "qs";
 import { myHeadersData } from "../../../../api/helper";
 import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
 import Loader from "../../../../utils/Loader";
