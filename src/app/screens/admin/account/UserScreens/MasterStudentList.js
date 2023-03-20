@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  Text,
-} from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl, Text } from "react-native";
 import color from "../../../../assets/themes/Color";
 import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
@@ -36,10 +30,7 @@ export default function MasterStudentList() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?Master_student_list=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/studentregistration.php?Master_student_list=1`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         // console.log(result);
@@ -48,29 +39,53 @@ export default function MasterStudentList() {
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
-    var data = qs.stringify({
-      delete_backup: "1",
-      id: id,
-    });
-    var config = {
-      method: "post",
-      url: "https://3dsco.com/3discoapi/studentregistration.php",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7",
-      },
-      data: data,
+    // var data = qs.stringify({
+    //   delete_master_student: "1",
+    //   user_id: id,
+    // });
+    // var config = {
+    //   method: "post",
+    //   url: "https://3dsco.com/3discoapi/studentregistration.php",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //     Cookie: "PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7",
+    //   },
+    //   data: data,
+    // };
+
+    // axios(config)
+    //   .then((response) => {
+    //     if (response.data.success == 1) {
+    //       allLearnerList();
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+
+    var myHeaders = new Headers();
+    myHeaders.append("Cookie", "PHPSESSID=biu0ai9dsjhq5kum8rlc4s60e7");
+
+    var formdata = new FormData();
+    formdata.append("delete_master_student", "1");
+    formdata.append("user_id", id);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
     };
 
-    axios(config)
-      .then((response) => {
-        if (response.data.success == 1) {
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result.success == 1) {
           allLearnerList();
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log("error", error));
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -106,9 +121,7 @@ export default function MasterStudentList() {
 
       <Text title={"Master Student List"} />
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
       >
         <View style={{ paddingHorizontal: 10 }}>
