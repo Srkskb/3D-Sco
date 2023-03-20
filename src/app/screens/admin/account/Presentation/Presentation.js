@@ -21,7 +21,7 @@ export default function Presentation() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
-  const allLearnerList = () => {
+  const allLearnerList = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -30,43 +30,42 @@ export default function Presentation() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?courses_presentation_list=1`,
+      `https://3dsco.com/3discoapi/studentregistration.php?courses_presentation_listbycourses=1&course_id=${id}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result)
-        setFileCabinetData(result.data)
+        console.log(result);
+        setFileCabinetData(result?.data);
       })
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     var data = qs.stringify({
-  'delete_courses_presentation': '1',
-  'id': id ,
-  'user_id':loginUID
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Content-Type': 'application/x-www-form-urlencoded', 
-    'Cookie': 'PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7'
-  },
-  data : data
-};
+      delete_courses_presentation: "1",
+      id: id,
+      user_id: loginUID,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=n1c8fh1ku6qq1haio8jmfnchv7",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((response)=>{
-  if(response.data.success==1){
-    allLearnerList()
-  }
-})
-.catch((error)=>{
-  console.log(error);
-});
-
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          allLearnerList();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -77,16 +76,13 @@ axios(config)
     }, 2000);
   };
   useEffect(() => {
-    allLearnerList();
-    navigation.addListener("focus", () => allLearnerList());
+    // allLearnerList();
+    navigation.addListener("focus", () => setFileCabinetData([]));
   }, []);
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Presentaion"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Presentaion"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -104,9 +100,7 @@ axios(config)
         {getMessageFalse}
       </Snackbar>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
       >
         <TextWithButton
@@ -114,11 +108,12 @@ axios(config)
           label={"+Add"}
           onPress={() => navigation.navigate("AddPresentation")}
         />
-          <SelectCourse
+        <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            console.log(selectedItem)
             setSelectCourse(selectedItem);
+            console.log(index);
+            allLearnerList(index);
           }}
         />
         <View style={{ paddingHorizontal: 10 }}>
@@ -129,7 +124,8 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinet2 key={index}
+                <FileCabinet2
+                  key={index}
                   title={list.assignment_title}
                   description={list.Description}
                   date={list.Date}
@@ -138,7 +134,7 @@ axios(config)
                       title: list,
                     })
                   }
-                  removePress={() =>deleteEvent(list.id)}
+                  removePress={() => deleteEvent(list.id)}
                 />
               ))}
             </>

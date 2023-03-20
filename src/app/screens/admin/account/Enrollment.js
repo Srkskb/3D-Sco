@@ -5,10 +5,12 @@ import TextWithButton from "../../../components/TextWithButton";
 import color from "../../../assets/themes/Color";
 import SearchEnroll from "../../../components/admin_required/SearchEnroll";
 import SelectCourse from "../../../components/admin_required/SelectCourse";
+import { myHeadersData } from "../../../api/helper";
 import Add_Button from "../../../components/buttons/Add_Button";
 import Course_Card from "../../../components/admin_required/Cards/CourseCard";
 import axios from "axios";
 import qs from "qs";
+import { NoDataFound } from "../../../components";
 import Course_Card1 from "../../../components/admin_required/Cards/Course_Card1";
 import Loader from "../../../utils/Loader";
 const { width, height } = Dimensions.get("window");
@@ -42,26 +44,40 @@ export default function Enrollment({ navigation }) {
   //     });
   // };
 
-  const allCourses = () => {
+  const allCourses = (id) => {
     setLoading(true);
-    var config = {
-      method: "post",
-      url: `https://3dsco.com/3discoapi/studentregistration.php?select_course_list=1`,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=r6ql44dbgph86daul5dqicpgk4",
-      },
-    };
+    // var config = {
+    //   method: "post",
+    //   url: `https://3dsco.com/3discoapi/studentregistration.php?enroll_course_id=1&course_id=${id}`,
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //     Cookie: "PHPSESSID=r6ql44dbgph86daul5dqicpgk4",
+    //   },
+    // };
 
-    axios(config)
-      .then((response) => {
-        setCourses(response.data.data);
+    // axios(config)
+    //   .then((response) => {
+    //     setCourses(response.data?.data);
+    //     setLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     setLoading(false);
+    //   });
+    const myHeaders = myHeadersData();
+    var requestOptions = {
+      method: "Get",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    fetch(`https://3dsco.com/3discoapi/studentregistration.php?enroll_course_id=1&course_id=${id}`, requestOptions)
+      .then((res) => res.json())
+      .then((result) => {
+        setCourses(result.data?.data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+      .catch((error) => console.log("error", error));
+    setLoading(false);
   };
   useEffect(() => {
     allCourses();
@@ -90,6 +106,7 @@ export default function Enrollment({ navigation }) {
             <SelectCourse
               onSelect={(selectedItem, index) => {
                 console.log(selectedItem, index);
+                allCourses(index);
               }}
             />
           </View>
