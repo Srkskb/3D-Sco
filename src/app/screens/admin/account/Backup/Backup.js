@@ -82,12 +82,13 @@ export default function Backup() {
   }, [navigation]);
 
   const downloadFile = (url) => {
+    console.log("url", url);
     const uri = url;
     let fileUri = FileSystem.documentDirectory + "file.zip";
 
     FileSystem.downloadAsync(uri, fileUri)
-      .then(async ({ uri }) => {
-        console.log(uri);
+      .then(async (res) => {
+        console.log("uri res", res);
       })
       .catch((error) => {
         console.error(error);

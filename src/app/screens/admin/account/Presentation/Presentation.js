@@ -111,7 +111,7 @@ export default function Presentation() {
         <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            setSelectCourse(selectedItem);
+            setSelectCourse(selectedItem.id);
             console.log(index);
             allLearnerList(index);
           }}

@@ -15,12 +15,12 @@ export default function ActiveStatus({ label, ...props }) {
 
       <View style={{ flexDirection: "row" }}>
         <SelectDropdown
-          data={Access.map((item) => item.name)}
+          data={Access.map((item) => ({ name: item.name, id: item.id }))}
           buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
+            return selectedItem.name;
           }}
           rowTextForSelection={(item, index) => {
-            return item;
+            return item.name;
           }}
           buttonStyle={styles.dropdown}
           buttonTextStyle={styles.text_button}

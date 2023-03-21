@@ -106,7 +106,7 @@ export default function Enrollment({ navigation }) {
             <SelectCourse
               onSelect={(selectedItem, index) => {
                 console.log(selectedItem, index);
-                allCourses(index);
+                allCourses(selectedItem.id);
               }}
             />
           </View>

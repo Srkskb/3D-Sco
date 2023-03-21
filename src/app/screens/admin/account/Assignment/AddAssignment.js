@@ -115,7 +115,7 @@ export default function AddAssignment({ navigation }) {
                   <SelectCourse
                     label={"Select Course"}
                     onSelect={(selectedItem, index) => {
-                      setCourse(selectedItem);
+                      setCourse(selectedItem.id);
                       console.log(selectedItem, index);
                     }}
                     value={course}

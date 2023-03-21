@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
 import InputField from "../../../../components/inputs/Input";
@@ -9,12 +9,15 @@ import { UploadDocument } from "../../../../components";
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
-export default function EditAnnouncement({ navigation }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+
+export default function EditAnnouncement({ navigation, route }) {
+  const { description, title } = route?.params;
   const [loading, setLoading] = useState(false);
-  const [course, setCourse] = useState("Select Course");
-  const loginUID = localStorage.getItem("loginUID");
+  const [editData, setEditData] = useState({});
+  useEffect(() => {
+    setEditData(route?.params);
+  }, [route.params]);
+
   const EditAnnouncement = (values, id) => {
     console.log(values.docTitle, course, loginUID, values.description);
     var data = new FormData();
@@ -52,28 +55,24 @@ export default function EditAnnouncement({ navigation }) {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
-              initialValues={{
-                docTitle: "",
-                description: "",
-              }}
+              initialValues={editData}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters")
-                  .max(50, "Document Title cannot be more than 50 characters"),
-                description: Yup.string()
+                  .min(3, "Document Title must be at least 3 characters"),
+                Description: Yup.string()
                   .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                  .min(20, "Description must be at least 20 characters"),
+                course: Yup.string().required("Course is required"),
               })}
               onSubmit={(values) => EditAnnouncement(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
                     placeholder={"Document Title"}
-                    name="title"
+                    name="docTitle"
                     onChangeText={handleChange("docTitle")}
                     onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
@@ -93,15 +92,14 @@ export default function EditAnnouncement({ navigation }) {
                   /> */}
                   <SelectCourse
                     label={"Select Course"}
+                    name="course"
                     onSelect={(selectedItem, index) => {
-                      setCourse(selectedItem);
-                      console.log(selectedItem, index);
+                      setFieldValue("course", selectedItem.id);
                     }}
-                    value={course}
                   />
 
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                  {errors.course && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
                   )}
 
                   {/* <UploadDocument onPress={pickImage} /> */}
@@ -113,17 +111,17 @@ export default function EditAnnouncement({ navigation }) {
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
-                    name="description"
+                    name="Description"
                     multiline={true}
                     numberOfLines={6}
-                    onChangeText={handleChange("description")}
-                    onBlur={handleBlur("description")}
+                    onChangeText={handleChange("Description")}
+                    onBlur={handleBlur("Description")}
                     value={values.description}
                     keyboardType="default"
                     textAlignVertical="top"
                   />
-                  {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                  {errors.Description && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.Description}</Text>
                   )}
 
                   <View style={styles.button}>

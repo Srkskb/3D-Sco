@@ -38,7 +38,6 @@ export default function AddAnnouncement({ navigation }) {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (res.success == 1) {
           navigation.navigate("Announcement");
         }
@@ -92,7 +91,7 @@ export default function AddAnnouncement({ navigation }) {
                     label={"Select Course"}
                     name="course"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("course", selectedItem);
+                      setFieldValue("course", selectedItem.id);
                       console.log(selectedItem);
                     }}
                     // value={course}

@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl, TextInput, Image, TouchableOpacity, Text } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -62,8 +53,7 @@ export default function LibraryAccess() {
     if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
     let temp = [];
     initialStudentLibrary.forEach((item) => {
-      if (item.titel.toLowerCase().includes(searchTerm.toLowerCase()))
-        temp.push(item);
+      if (item.titel.toLowerCase().includes(searchTerm.toLowerCase())) temp.push(item);
     });
 
     setStudentLibrary(temp);
@@ -86,10 +76,7 @@ export default function LibraryAccess() {
         />
         <View style={styles.search_box}>
           <View style={styles.icon_box}>
-            <Image
-              style={styles.icon}
-              source={require("../../../assets/images/Search.png")}
-            />
+            <Image style={styles.icon} source={require("../../../assets/images/Search.png")} />
           </View>
           <View style={styles.input}>
             <TextInput
@@ -109,14 +96,10 @@ export default function LibraryAccess() {
           // label={"Select Course"}
           onSelect={(selectedItem, index) => {
             console.log(index);
-            allLearnerList(index);
+            allLearnerList(selectedItem.id);
           }}
         />
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
             {studentLibrary === undefined ? (
               <>
@@ -125,7 +108,7 @@ export default function LibraryAccess() {
             ) : (
               <>
                 {studentLibrary.map((list) => (
-                  <Book_Card title={list.titel} author={list.author} onPress={()=>navigation.navigate("ViewBook")}/>
+                  <Book_Card title={list.titel} author={list.author} onPress={() => navigation.navigate("ViewBook")} />
                 ))}
               </>
             )}

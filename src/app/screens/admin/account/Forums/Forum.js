@@ -10,11 +10,15 @@ import Forum_Card from "../../../../components/admin_required/Cards/Forum_Card";
 import { NoDataFound } from "../../../../components";
 import { myHeadersData } from "../../../../api/helper";
 import * as qs from "qs";
+import Loader from "../../../../utils/Loader";
 
 export default function Forum({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [forums, setForums] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const allForumList = (id) => {
+    setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -28,10 +32,17 @@ export default function Forum({ navigation }) {
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result.data);
-        setForums(result?.data);
+        if (result?.data?.length) {
+          setForums(result?.data);
+        } else {
+          setForums([]);
+        }
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const DeleteForum = (id) => {
     var data = qs.stringify({
@@ -73,31 +84,28 @@ export default function Forum({ navigation }) {
         <SelectCourse
           onSelect={(selectedItem, index) => {
             setSelectCourse(selectedItem);
-            console.log(index);
-            allForumList(index);
+            allForumList(selectedItem.id);
           }}
-          value={selectCourse}
+          // value={selectCourse}
         />
-        {forums === undefined ? (
-          <>
-            <NoDataFound />
-          </>
+        {loading ? (
+          <Loader />
+        ) : forums?.length ? (
+          forums.map((list, index) => (
+            <Forum_Card
+              key={index}
+              title={list.forum_title}
+              editPress={() => navigation.navigate("EditForum")}
+              // viewPress={() => navigation.navigate("ViewForum")}
+              status={"Active"}
+              posted_by={"Deepak"}
+              date={list.Date}
+              viewPress={() => navigation.navigate("ViewForum")}
+              removePress={() => DeleteForum(list.id)}
+            />
+          ))
         ) : (
-          <>
-            {forums.map((list, index) => (
-              <Forum_Card
-                key={index}
-                title={list.forum_title}
-                editPress={() => navigation.navigate("EditForum")}
-                // viewPress={() => navigation.navigate("ViewForum")}
-                status={"Active"}
-                posted_by={"Deepak"}
-                date={list.Date}
-                viewPress={() => navigation.navigate("ViewForum")}
-                removePress={() => DeleteForum(list.id)}
-              />
-            ))}
-          </>
+          <NoDataFound />
         )}
       </ScrollView>
     </View>

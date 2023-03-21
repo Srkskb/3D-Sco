@@ -12,42 +12,44 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import qs from "qs";
 import { myHeadersData } from "../../../../api/helper";
-export default function AddForum({ navigation }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, SetStatus] = useState("Select Status");
-  const [course, setCourse] = useState("Select Course");
-  const loginUID = localStorage.getItem("loginUID");
+import AsyncStorage from "@react-native-community/async-storage";
 
-  const AddForumBut = (values) => {
-    const myHeaders = myHeadersData();
-    console.log("values", values);
+export default function AddForum({ navigation }) {
+  const AddForumBut = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     var data = qs.stringify({
       add_courses_forum: "1",
-      user_id: loginUID,
-      admin_id: "176",
-      forum_title: values.docTitle,
+      user_id: myData.id,
+      admin_id: myData.id,
+      forum_title: values.forumTitle,
       Description: values.description,
-      course_id: course,
-      topic_id: status,
+      course_id: values.course,
+      topic_id: values.status,
     });
     var config = {
-      method: "post",
-      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
       },
-      data: data,
+      body: data,
     };
+    console.log("values", data);
 
-    axios(config)
+    // axios(config)
+    await fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
+      .then((response) => response.json())
       .then((response) => {
-        if (response.data.success == 1) {
+        console.log("add forum", response);
+        if (response?.success == 1) {
           navigation.navigate("Forum");
+        } else {
+          console.log("some issue in add forum");
         }
       })
       .catch((error) => {
-        console.log(error.response.data.message);
+        console.log("error", error);
       });
   };
   return (
@@ -77,7 +79,7 @@ export default function AddForum({ navigation }) {
                     label={"Select Course"}
                     name="course"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("course", selectedItem);
+                      setFieldValue("course", selectedItem.id);
                     }}
                   />
                   {errors.course && (
@@ -99,8 +101,7 @@ export default function AddForum({ navigation }) {
                   <ActiveStatus
                     name="status"
                     onSelect={(selectedItem, index) => {
-                      console.log(selectedItem);
-                      setFieldValue("status", selectedItem);
+                      setFieldValue("status", selectedItem.id);
                     }}
                   />
                   {errors.status && (

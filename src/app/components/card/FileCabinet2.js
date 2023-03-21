@@ -12,38 +12,38 @@ export default function FileCabinet2({
   removePress,
   onPress,
   onPressEdit,
-  // onPressView,
+  onPressView,
 }) {
-  const onPressView = async () => {
-    // const fileUrl = list?.file_name;
-    // Linking.openURL(fileUrl);
-    // const { uri: localUri } = await FileSystem.downloadAsync(remoteUri, FileSystem.documentDirectory + 'name.ext');
-    fetch(list?.file_name)
-      .then((response) => {
-        // Check if the response is successful
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        // Get the binary data from the response
-        return response.arrayBuffer();
-      })
-      .then((data) => {
-        console.log("data", data);
-        // Convert the binary data to a Blob object
-        const blob = new Blob([data], { type: "application/zip" });
-        console.log("blob", blob);
-        // Save the Blob object to a file
-        // console.log("RNFS.DocumentDirectoryPath", RNFS.DocumentDirectoryPath);
-        // const filePath = RNFS.DocumentDirectoryPath + "/file.zip";
-        // return RNFS.writeFile(filePath, blob, "binary");
-      })
-      .then(() => {
-        console.log("File downloaded successfully");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const onPressView = async () => {
+  //   // const fileUrl = list?.file_name;
+  //   // Linking.openURL(fileUrl);
+  //   // const { uri: localUri } = await FileSystem.downloadAsync(remoteUri, FileSystem.documentDirectory + 'name.ext');
+  //   fetch(list?.file_name)
+  //     .then((response) => {
+  //       // Check if the response is successful
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       // Get the binary data from the response
+  //       return response.arrayBuffer();
+  //     })
+  //     .then((data) => {
+  //       console.log("data", data);
+  //       // Convert the binary data to a Blob object
+  //       const blob = new Blob([data], { type: "application/zip" });
+  //       console.log("blob", blob);
+  //       // Save the Blob object to a file
+  //       // console.log("RNFS.DocumentDirectoryPath", RNFS.DocumentDirectoryPath);
+  //       // const filePath = RNFS.DocumentDirectoryPath + "/file.zip";
+  //       // return RNFS.writeFile(filePath, blob, "binary");
+  //     })
+  //     .then(() => {
+  //       console.log("File downloaded successfully");
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row" }}>

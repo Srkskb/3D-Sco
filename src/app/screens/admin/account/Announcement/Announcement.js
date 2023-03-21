@@ -11,6 +11,8 @@ import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
+import Loader from "../../../../utils/Loader";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function Announcement() {
   const navigation = useNavigation();
@@ -18,13 +20,16 @@ export default function Announcement() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
+  const [loading, setLoading] = useState(false);
   const [selectCourse, setSelectCourse] = useState("");
-  const [fileCabinetData, setFileCabinetData] = useState([]);
+  const [announcementList, setAnnouncementList] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
 
   const allLearnerList = (id) => {
+    console.log(id);
     const loginUID = localStorage.getItem("loginUID");
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "POST",
@@ -37,17 +42,25 @@ export default function Announcement() {
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
-        setFileCabinetData(result?.data);
+        console.log("result", result);
+        if (result?.data?.length) {
+          setAnnouncementList(result?.data);
+        } else {
+          setAnnouncementList([]);
+        }
+        setLoading(false);
       })
       .catch((error) => console.log("error", error));
   };
-  const deleteEvent = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+  const deleteEvent = async (id) => {
+    setLoading(true);
+    // const loginUID = localStorage.getItem("loginUID");
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     var data = qs.stringify({
-      delete_courses_Announcement: "1",
+      Delete_courses_Announcement: "1",
       id: id,
-      user_id: loginUID,
+      user_id: myData.id,
     });
     var config = {
       method: "post",
@@ -58,11 +71,16 @@ export default function Announcement() {
       },
       data: data,
     };
+    console.log("del", data);
 
     axios(config)
       .then((response) => {
-        if (response.data.success == 1) {
-          allLearnerList();
+        console.log("delete", response);
+        if (response.status == 200) {
+          setAnnouncementList((prev) => prev.filter((item) => item.id != id));
+          setLoading(false);
+        } else {
+          setLoading(false);
         }
       })
       .catch((error) => {
@@ -79,7 +97,7 @@ export default function Announcement() {
   };
   useEffect(() => {
     // allLearnerList();
-    navigation.addListener("focus", () => setFileCabinetData([]));
+    navigation.addListener("focus", () => setAnnouncementList([]));
   }, []);
 
   return (
@@ -114,32 +132,34 @@ export default function Announcement() {
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
             setSelectCourse(selectedItem);
-            console.log("selectedItem", selectedItem);
-            allLearnerList(selectedItem);
+            allLearnerList(selectedItem.id);
           }}
           value={selectCourse}
         />
         <View style={{ paddingHorizontal: 10 }}>
-          {fileCabinetData === undefined ? (
-            <>
-              <NoDataFound />
-            </>
+          {loading ? (
+            <Loader />
           ) : (
             <>
-              {fileCabinetData.map((list, index) => (
-                <FileCabinet2
-                  key={index}
-                  title={list.announcement_title}
-                  description={list.Description}
-                  date={list.Date}
-                  onPressEdit={() =>
-                    navigation.navigate("EditAnnouncement", {
-                      title: list,
-                    })
-                  }
-                  removePress={() => deleteEvent(list.id)}
-                />
-              ))}
+              {announcementList?.length ? (
+                announcementList.map((list, index) => (
+                  <FileCabinet2
+                    key={index}
+                    title={list.announcement_title}
+                    description={list.Description}
+                    date={list.Date}
+                    onPressEdit={() =>
+                      navigation.navigate("EditAnnouncement", {
+                        title: list.announcement_title,
+                        description: list.Description,
+                      })
+                    }
+                    removePress={() => deleteEvent(list.id)}
+                  />
+                ))
+              ) : (
+                <NoDataFound />
+              )}
             </>
           )}
         </View>

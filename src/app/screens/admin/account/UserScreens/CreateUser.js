@@ -238,7 +238,7 @@ export default function CreateUser({ navigation }) {
                 <ActiveStatus
                   name="status"
                   onSelect={(selectedItem, index) => {
-                    setFieldValue("status", selectedItem);
+                    setFieldValue("status", selectedItem.name);
                   }}
                   // value={status}
                 />
