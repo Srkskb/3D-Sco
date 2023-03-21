@@ -14,55 +14,63 @@ export default function EditAnnouncement({ navigation, route }) {
   const { description, title } = route?.params;
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
+
   useEffect(() => {
     setEditData(route?.params);
   }, [route.params]);
 
-  const EditAnnouncement = (values, id) => {
-    console.log(values.docTitle, course, loginUID, values.description);
+  const EditAnnouncement = (values) => {
+    console.log("values", values);
+    setLoading(true);
     var data = new FormData();
     data.append("Update_courses_announcement", "1");
-    data.append("user_id", loginUID);
-    data.append("announcement_title", values.title);
+    data.append("user_id", values.userId);
+    data.append("announcement_title", values.docTitle);
     data.append("Description", values.description);
-    data.append("course_id", course);
-    data.append("image");
-    data.append("id", id);
-
+    data.append("course_id", values.course);
+    // data.append("image");
+    data.append("id", values.id);
+    var myHeaders = new Headers();
+    // myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
     var config = {
-      method: "post",
-      url: "https://3dsco.com/3discoapi/studentregistration.php",
-      headers: {
-        Cookie: "PHPSESSID=hc3kbqpelmbu5cl5em37e2j4j7",
-        data,
-      },
-      data: data,
+      method: "POST",
+      headers: myHeaders,
+      body: data,
     };
 
-    axios(config)
+    // axios(config)
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
+      .then((res) => res.json())
+
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        navigation.navigate("Announcement");
+        if (response.success == 1) {
+          navigation.navigate("Announcement");
+        } else {
+          console.log("Something issue in edit announcement");
+        }
+        setLoading(false);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("error", error);
+        setLoading(false);
       });
   };
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
-      <HeaderBack title={"Add Announcement"} onPress={() => navigation.goBack()} />
+      <HeaderBack title={"Edit Announcement"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
+              enableReinitialize
               initialValues={editData}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
                   .min(3, "Document Title must be at least 3 characters"),
-                Description: Yup.string()
-                  .required("Description is required")
-                  .min(20, "Description must be at least 20 characters"),
+                description: Yup.string().required("Description is required"),
                 course: Yup.string().required("Course is required"),
               })}
               onSubmit={(values) => EditAnnouncement(values)}
@@ -111,17 +119,17 @@ export default function EditAnnouncement({ navigation, route }) {
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
-                    name="Description"
+                    name="description"
                     multiline={true}
                     numberOfLines={6}
-                    onChangeText={handleChange("Description")}
-                    onBlur={handleBlur("Description")}
+                    onChangeText={handleChange("description")}
+                    onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
                     textAlignVertical="top"
                   />
-                  {errors.Description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.Description}</Text>
+                  {errors.description && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>

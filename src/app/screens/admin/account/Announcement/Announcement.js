@@ -150,8 +150,10 @@ export default function Announcement() {
                     date={list.Date}
                     onPressEdit={() =>
                       navigation.navigate("EditAnnouncement", {
-                        title: list.announcement_title,
+                        docTitle: list.announcement_title,
                         description: list.Description,
+                        id: list.id,
+                        userId: list.user_id,
                       })
                     }
                     removePress={() => deleteEvent(list.id)}
