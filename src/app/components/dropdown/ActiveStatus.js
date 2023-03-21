@@ -3,17 +3,19 @@ import SelectDropdown from "react-native-select-dropdown";
 import React from "react";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
+
 const Access = [
-    'Active','In-Active'
-  ];
+  { name: "Active", id: "0" },
+  { name: "In-Active", id: "1" },
+];
 export default function ActiveStatus({ label, ...props }) {
   return (
     <View>
-     <Text style={styles.label_text}>Status</Text>
-      
+      <Text style={styles.label_text}>Status</Text>
+
       <View style={{ flexDirection: "row" }}>
         <SelectDropdown
-          data={Access}
+          data={Access.map((item) => item.name)}
           buttonTextAfterSelection={(selectedItem, index) => {
             return selectedItem;
           }}
@@ -31,4 +33,3 @@ export default function ActiveStatus({ label, ...props }) {
     </View>
   );
 }
-

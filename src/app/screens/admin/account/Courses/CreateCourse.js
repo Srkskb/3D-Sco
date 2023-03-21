@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
@@ -139,6 +139,7 @@ export default function CreateCourse({ navigation }) {
       aspect: [4, 3],
       quality: 1,
     });
+    console.log(result);
     if (!result.cancelled) {
       console.log("image", result.assets[0].uri);
       setCourseData((prev) => ({
@@ -489,6 +490,9 @@ export default function CreateCourse({ navigation }) {
             }
           />
           <UploadDocument type={"Icon"} pickImg={pickImg} />
+          <View style={styles.uploadCon}>
+            {courseData.icon && <Image source={{ uri: courseData.icon }} style={styles.uploadImg} />}
+          </View>
           <View style={styles.button}>
             <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
             <SmallButton
@@ -557,5 +561,8 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     marginTop: 20,
+  },
+  uploadCon: {
+    textAlign: "center",
   },
 });

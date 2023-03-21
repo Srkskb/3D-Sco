@@ -10,21 +10,21 @@ import { myHeadersData } from "../../../../api/helper";
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AddAnnouncement({ navigation }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
-  const AddAnnouncement = (values) => {
-    console.log(values.docTitle, course, loginUID, values.description);
+
+  const handleAddAnnouncement = async (values) => {
     const myHeaders = myHeadersData();
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var data = new FormData();
     data.append("add_courses_announcement", "1");
-    data.append("user_id", loginUID);
-    data.append("announcement_title", values.title);
+    data.append("user_id", myData.id);
+    data.append("announcement_title", values.docTitle);
     data.append("Description", values.description);
-    data.append("course_id", "17");
+    data.append("course_id", values.course);
     // data.append('image','' );
 
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
@@ -33,6 +33,7 @@ export default function AddAnnouncement({ navigation }) {
       headers: {
         myHeaders,
         "Content-Type": "multipart/form-data",
+        Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
       },
     })
       .then((res) => res.json())
@@ -53,25 +54,23 @@ export default function AddAnnouncement({ navigation }) {
               initialValues={{
                 docTitle: "",
                 description: "",
+                course: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters")
-                  .max(50, "Document Title cannot be more than 50 characters"),
-                description: Yup.string()
-                  .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                  .min(3, "Document Title must be at least 3 characters"),
+                description: Yup.string().required("Description is required"),
+                course: Yup.string().required("Course is required"),
               })}
-              onSubmit={(values) => AddAnnouncement(values)}
+              onSubmit={(values) => handleAddAnnouncement(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
                     placeholder={"Document Title"}
-                    name="title"
+                    name="docTitle"
                     onChangeText={handleChange("docTitle")}
                     onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
@@ -91,15 +90,16 @@ export default function AddAnnouncement({ navigation }) {
                   /> */}
                   <SelectCourse
                     label={"Select Course"}
+                    name="course"
                     onSelect={(selectedItem, index) => {
-                      setCourse(selectedItem);
-                      console.log(selectedItem, index);
+                      setFieldValue("course", selectedItem);
+                      console.log(selectedItem);
                     }}
-                    value={course}
+                    // value={course}
                   />
 
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                  {errors.course && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
                   )}
 
                   {/* <UploadDocument onPress={pickImage} /> */}
@@ -129,10 +129,10 @@ export default function AddAnnouncement({ navigation }) {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(loginUID)}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                       title="Save"
                       loading={loading}
                       color={color.white}

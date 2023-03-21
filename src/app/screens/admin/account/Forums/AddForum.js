@@ -20,8 +20,8 @@ export default function AddForum({ navigation }) {
   const loginUID = localStorage.getItem("loginUID");
 
   const AddForumBut = (values) => {
-    console.log(values.docTitle, course, loginUID, values.description, status);
     const myHeaders = myHeadersData();
+    console.log("values", values);
     var data = qs.stringify({
       add_courses_forum: "1",
       user_id: loginUID,
@@ -42,7 +42,6 @@ export default function AddForum({ navigation }) {
 
     axios(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         if (response.data.success == 1) {
           navigation.navigate("Forum");
         }
@@ -59,53 +58,53 @@ export default function AddForum({ navigation }) {
           <View>
             <Formik
               initialValues={{
-                docTitle: "",
+                course: "",
+                forumTitle: "",
+                status: "",
                 description: "",
               }}
               validationSchema={Yup.object().shape({
-                docTitle: Yup.string()
-                  .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters")
-                  .max(50, "Document Title cannot be more than 50 characters"),
-                description: Yup.string()
-                  .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                course: Yup.string().required("Course is required"),
+                forumTitle: Yup.string().required("Forum Title is required"),
+                status: Yup.string().required("Status is required"),
+                description: Yup.string().required("Description is required"),
               })}
               onSubmit={(values) => AddForumBut(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <SelectCourse
                     label={"Select Course"}
+                    name="course"
                     onSelect={(selectedItem, index) => {
-                      setCourse(index);
-                      console.log(selectedItem, index);
+                      setFieldValue("course", selectedItem);
                     }}
-                    value={course}
                   />
+                  {errors.course && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
+                  )}
                   <InputField
                     label={"Forum Title"}
                     placeholder={"Forum Title"}
-                    name="title"
-                    onChangeText={handleChange("docTitle")}
-                    onBlur={handleBlur("docTitle")}
-                    value={values.docTitle}
+                    name="forumTitle"
+                    onChangeText={handleChange("forumTitle")}
+                    onBlur={handleBlur("forumTitle")}
+                    value={values.forumTitle}
                     keyboardType="text"
                   />
-                  {errors.docTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
+                  {errors.forumTitle && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.forumTitle}</Text>
                   )}
 
                   <ActiveStatus
+                    name="status"
                     onSelect={(selectedItem, index) => {
-                      SetStatus(index);
-                      console.log(selectedItem, index);
+                      console.log(selectedItem);
+                      setFieldValue("status", selectedItem);
                     }}
-                    value={status}
                   />
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                  {errors.status && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.status}</Text>
                   )}
                   <InputField
                     label={"Description"}
@@ -131,7 +130,7 @@ export default function AddForum({ navigation }) {
                       onPress={() => navigation.navigate("Forum")}
                     />
                     <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                       title="Save"
                       disabled={!isValid}
                       color={color.white}

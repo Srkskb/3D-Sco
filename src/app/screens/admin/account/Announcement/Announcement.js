@@ -11,6 +11,7 @@ import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
+
 export default function Announcement() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -21,6 +22,7 @@ export default function Announcement() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+
   const allLearnerList = (id) => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -112,8 +114,8 @@ export default function Announcement() {
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
             setSelectCourse(selectedItem);
-            console.log(index);
-            allLearnerList(index);
+            console.log("selectedItem", selectedItem);
+            allLearnerList(selectedItem);
           }}
           value={selectCourse}
         />
