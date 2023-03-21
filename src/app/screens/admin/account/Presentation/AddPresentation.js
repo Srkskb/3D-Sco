@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet,Image } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Image } from "react-native";
 import React, { useState } from "react";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
@@ -10,13 +10,12 @@ import { myHeadersData } from "../../../../api/helper";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
-import mime from 'mime'
+import mime from "mime";
 import * as ImagePicker from "expo-image-picker";
-export default function AddPresentation({navigation}) {
-  const [title, setTitle]=useState("")
-  const[description,setDescription]=useState("")
-  const[course,setCourse]=useState("Select Course")
-  const loginUID = localStorage.getItem("loginUID");
+import AsyncStorage from "@react-native-community/async-storage";
+
+export default function AddPresentation({ navigation }) {
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
 
   const pickImage = async () => {
@@ -31,22 +30,25 @@ export default function AddPresentation({navigation}) {
       setImage(result.uri);
     }
   };
-  const AddPresentation=(values)=>{
-    console.log(values.docTitle,course,loginUID,values.description,image,mime.getType(image));
+  const AddPresentation = async (values) => {
+    console.log(values);
+    setLoading(true);
     const myHeaders = myHeadersData();
-    var data = new FormData();
-data.append('add_courses_presentation', '1');
-data.append('user_id', loginUID);
-data.append('course_id', course);
-data.append('presentation_title',values.docTitle );
-data.append('Description', values.description);
-data.append('image', {
-  uri: image,//"file:///" + image.split("file:/").join(""),
-  type: mime.getType(image),
-  name: `abc.jpg`
-}); 
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
 
-fetch("https://3dsco.com/3discoapi/studentregistration.php", {
+    var data = new FormData();
+    data.append("add_courses_presentation", "1");
+    data.append("user_id", myData.id);
+    data.append("course_id", values.course);
+    data.append("presentation_title", values.preTitle);
+    data.append("Description", values.description);
+    data.append("image", {
+      uri: image, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image),
+      name: `abc.jpg`,
+    });
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: data,
       headers: {
@@ -56,64 +58,53 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        console.log("res", res);
         if (res.success == 1) {
-          
           navigation.navigate("Presentation");
         }
-})
-.catch(function (error) {
-  console.log(error);
-});
-
-  }
+        setLoading(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setLoading(false);
+      });
+  };
   return (
-    <View style={{backgroundColor:color.white,flex:1}}>
-      <HeaderBack title={"Add Presentation"} onPress={()=>navigation.goBack()} />
+    <View style={{ backgroundColor: color.white, flex: 1 }}>
+      <HeaderBack title={"Add Presentation"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
               initialValues={{
-                docTitle: "",
+                preTitle: "",
+                course: "",
                 description: "",
+                image: "",
               }}
               validationSchema={Yup.object().shape({
-                docTitle: Yup.string()
-                  .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters")
-                  .max(50, "Document Title cannot be more than 50 characters"),
-                description: Yup.string()
-                  .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                preTitle: Yup.string()
+                  .required("Presentation Title is required")
+                  .min(3, "Presentation Title must be at least 3 characters"),
+                course: Yup.string().required("Course is required"),
+                description: Yup.string().required("Description is required"),
+                // icon: Yup.string().required("Icon is required"),
               })}
               onSubmit={(values) => AddPresentation(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Presentation Title"}
                     placeholder={"Presentation Title"}
-                    name="title"
-                    onChangeText={handleChange("docTitle")}
-                    onBlur={handleBlur("docTitle")}
-                    value={values.docTitle}
+                    name="preTitle"
+                    onChangeText={handleChange("preTitle")}
+                    onBlur={handleBlur("preTitle")}
+                    value={values.preTitle}
                     keyboardType="text"
                   />
-                  {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                  {errors.preTitle && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.preTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -125,24 +116,17 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     value={access}
                   /> */}
                   <SelectCourse
-          label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setCourse(selectedItem)
-            console.log(selectedItem, index);
-            
-          }}
-          value={course}
-        />
+                    label={"Select Course"}
+                    onSelect={(selectedItem, index) => {
+                      setFieldValue("course", selectedItem.id);
+                    }}
+                    value={values.course}
+                  />
 
-                  {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                  {errors.course && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
                   )}
 
-                 
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -156,28 +140,19 @@ fetch("https://3dsco.com/3discoapi/studentregistration.php", {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
- <UploadDocument onPress={pickImage} />
+                  <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                   <View style={styles.button}>
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
-                    <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                       title="Save"
                       disabled={!isValid}
+                      loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}

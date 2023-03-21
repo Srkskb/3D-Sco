@@ -11,6 +11,8 @@ import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
+import Loader from "../../../../utils/Loader";
+
 export default function Presentation() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -21,13 +23,14 @@ export default function Presentation() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const allLearnerList = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      redirect: "follow",
     };
     fetch(
       `https://3dsco.com/3discoapi/studentregistration.php?courses_presentation_listbycourses=1&course_id=${id}`,
@@ -37,8 +40,12 @@ export default function Presentation() {
       .then((result) => {
         console.log(result);
         setFileCabinetData(result?.data);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteEvent = (id) => {
     const loginUID = localStorage.getItem("loginUID");
@@ -99,48 +106,51 @@ export default function Presentation() {
       >
         {getMessageFalse}
       </Snackbar>
-      <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        style={{ paddingHorizontal: 10 }}
-      >
-        <TextWithButton
-          title={"Course Category"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AddPresentation")}
-        />
-        <SelectCourse
-          label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setSelectCourse(selectedItem.id);
-            console.log(index);
-            allLearnerList(index);
-          }}
-        />
-        <View style={{ paddingHorizontal: 10 }}>
-          {fileCabinetData === undefined ? (
-            <>
-              <NoDataFound />
-            </>
-          ) : (
-            <>
-              {fileCabinetData.map((list, index) => (
-                <FileCabinet2
-                  key={index}
-                  title={list.assignment_title}
-                  description={list.Description}
-                  date={list.Date}
-                  onPressEdit={() =>
-                    navigation.navigate("EditPresentation", {
-                      title: list,
-                    })
-                  }
-                  removePress={() => deleteEvent(list.id)}
-                />
-              ))}
-            </>
-          )}
-        </View>
-      </ScrollView>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          style={{ paddingHorizontal: 10 }}
+        >
+          <TextWithButton
+            title={"Course Category"}
+            label={"+Add"}
+            onPress={() => navigation.navigate("AddPresentation")}
+          />
+          <SelectCourse
+            label={"Select Course"}
+            onSelect={(selectedItem, index) => {
+              allLearnerList(selectedItem.id);
+              console.log(selectedItem.id);
+            }}
+          />
+          <View style={{ paddingHorizontal: 10 }}>
+            {fileCabinetData === undefined ? (
+              <>
+                <NoDataFound />
+              </>
+            ) : (
+              <>
+                {fileCabinetData.map((list, index) => (
+                  <FileCabinet2
+                    key={index}
+                    title={list.assignment_title}
+                    description={list.Description}
+                    date={list.Date}
+                    onPressEdit={() =>
+                      navigation.navigate("EditPresentation", {
+                        title: list,
+                      })
+                    }
+                    removePress={() => deleteEvent(list.id)}
+                  />
+                ))}
+              </>
+            )}
+          </View>
+        </ScrollView>
+      )}
     </View>
   );
 }
