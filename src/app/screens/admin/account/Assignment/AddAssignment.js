@@ -18,6 +18,7 @@ export default function AddAssignment({ navigation }) {
   const [course, setCourse] = useState("Select Course");
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,14 +33,7 @@ export default function AddAssignment({ navigation }) {
     }
   };
   const AddAssignment = (values) => {
-    console.log(
-      values.docTitle,
-      course,
-      loginUID,
-      values.description,
-      image,
-      mime.getType(image)
-    );
+    console.log(values.docTitle, course, loginUID, values.description, image, mime.getType(image));
     const myHeaders = myHeadersData();
     var data = new FormData();
     data.append("add_courses_assignment", "1");
@@ -74,10 +68,7 @@ export default function AddAssignment({ navigation }) {
   };
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
-      <HeaderBack
-        title={"Add Assignment"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Add Assignment"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -98,14 +89,7 @@ export default function AddAssignment({ navigation }) {
               })}
               onSubmit={(values) => AddAssignment(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Assignment Title"}
@@ -117,11 +101,7 @@ export default function AddAssignment({ navigation }) {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -142,18 +122,12 @@ export default function AddAssignment({ navigation }) {
                   />
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                   <InputField
                     label={"Description"}
@@ -168,19 +142,11 @@ export default function AddAssignment({ navigation }) {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
