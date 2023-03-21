@@ -14,7 +14,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../../components";
 import mime from "mime";
-import * as DocumentPicker from 'expo-document-picker';
+import * as DocumentPicker from "expo-document-picker";
 
 export default function AddBackup() {
   const navigation = useNavigation();
@@ -29,15 +29,17 @@ export default function AddBackup() {
 
   const pickImage = async () => {
     let result = await DocumentPicker.getDocumentAsync({
-      type:'application/zip'
+      type: "application/zip",
     });
-    console.log(result.size>26214400);
-    
-    if (!result.cancelled&&result.size<26214400) {
+    console.log(result.size > 26214400);
+
+    if (!result.cancelled && result.size < 26214400) {
       setImage(result.uri);
-    }else{
-      if(result.size>26214400){setSnackVisibleTrue(true)
-      setMessageTrue('Size is larger than 25MB please upload another file')}
+    } else {
+      if (result.size > 26214400) {
+        setSnackVisibleTrue(true);
+        setMessageTrue("Size is larger than 25MB please upload another file");
+      }
     }
   };
 
@@ -58,10 +60,10 @@ export default function AddBackup() {
     urlencoded.append("user_id", loginUID);
     urlencoded.append("detail", values.description);
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
-      method: 'POST',
+      method: "POST",
       headers: myHeaders,
       body: urlencoded,
-      redirect: 'follow'
+      redirect: "follow",
     })
       .then((res) => res.json())
       .then((res) => {
@@ -75,9 +77,11 @@ export default function AddBackup() {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-      }).catch(error =>{
-        setLoading(false)
-        console.log('error', error)});
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   return (
     <View style={styles.container}>
@@ -161,10 +165,18 @@ export default function AddBackup() {
 
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && <><Image source={require('../../../../assets/images/account/file.png')}
-                    style={styles.uploadImg} resizeMode={'contain'} />
-                    <Text style={{ fontSize: 14, marginBottom: 10 }}>{image.split('file:///data/user/0/com.threeDSCO.iDigital/cache/DocumentPicker/').join('')}</Text>
-                    </>}
+                    {image && (
+                      <>
+                        <Image
+                          source={require("../../../../assets/images/account/file.png")}
+                          style={styles.uploadImg}
+                          resizeMode={"contain"}
+                        />
+                        <Text style={{ fontSize: 14, marginBottom: 10 }}>
+                          {image.split("file:///data/user/0/com.threeDSCO.iDigital/cache/DocumentPicker/").join("")}
+                        </Text>
+                      </>
+                    )}
                   </View>
                   <InputField
                     label={"Description"}
