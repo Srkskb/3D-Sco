@@ -11,7 +11,6 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 
 export default function EditAnnouncement({ navigation, route }) {
-  const { description, title } = route?.params;
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
 

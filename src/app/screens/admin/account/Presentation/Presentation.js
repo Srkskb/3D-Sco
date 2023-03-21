@@ -140,7 +140,9 @@ export default function Presentation() {
                     date={list.Date}
                     onPressEdit={() =>
                       navigation.navigate("EditPresentation", {
-                        title: list,
+                        preTitle: list.assignment_title,
+                        id: list?.id,
+                        description: list.Description,
                       })
                     }
                     removePress={() => deleteEvent(list.id)}

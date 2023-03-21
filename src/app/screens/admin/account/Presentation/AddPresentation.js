@@ -33,7 +33,6 @@ export default function AddPresentation({ navigation }) {
   const AddPresentation = async (values) => {
     console.log(values);
     setLoading(true);
-    const myHeaders = myHeadersData();
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
 
     var data = new FormData();
@@ -42,19 +41,21 @@ export default function AddPresentation({ navigation }) {
     data.append("course_id", values.course);
     data.append("presentation_title", values.preTitle);
     data.append("Description", values.description);
-    data.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
-    });
+    // data.append("image", {
+    //   uri: image, //"file:///" + image.split("file:/").join(""),
+    //   type: mime.getType(image),
+    //   name: `abc.jpg`,
+    // });
+
+    var myHeaders = new Headers();
+    // myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5'");
 
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: data,
-      headers: {
-        myHeaders,
-        "Content-Type": "multipart/form-data",
-      },
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
