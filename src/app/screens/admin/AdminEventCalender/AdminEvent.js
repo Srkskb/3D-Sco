@@ -10,12 +10,19 @@ import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import { AppButton } from "../../../components/buttons";
 import { NoDataFound } from "../../../components";
+import Loader from "../../../utils/Loader";
+import AsyncStorage from "@react-native-community/async-storage";
+import qs from "qs";
+
 export default function AdminEventCalender() {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   const [eventCalenderList, setEventCalenderList] = useState([]);
-  const [deletePop, setDeletePop] = useState(false)
-  const [id, setid] = useState('')
+  const [deletePop, setDeletePop] = useState(false);
+  const [id, setId] = useState("");
+
   const allLearnerList = () => {
+    setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -23,79 +30,126 @@ export default function AdminEventCalender() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`, requestOptions)
       .then((res) => res.json())
-
-      .then((result) =>{
-        console.log(result.data)
-        setEventCalenderList(result.data)})
-
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        if (result?.data?.length) {
+          setEventCalenderList(result.data);
+        } else {
+          setEventCalenderList([]);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
+
+  const handleDelete = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    var data = qs.stringify({
+      delete_event: "1",
+      event_id: id,
+      user_id: myData.id,
+    });
+
+    var myHeaders = new Headers();
+    // myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: data,
+    };
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.success == 1) {
+          setEventCalenderList((prev) => prev.filter((item) => item.event_id != id));
+          setId("");
+          setDeletePop(false);
+        } else {
+          console.log("Something issue in event api");
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
+  };
+
   useEffect(() => {
     allLearnerList();
   }, []);
+
   return (
     <View style={styles.container}>
-      
       <HeaderBack
         title={"Event Calender"}
         // onPress={() => navigation.navigate("Account")}
         onPress={() => navigation.goBack()}
       />
-      
+
       <View style={{ paddingHorizontal: 10 }}>
         <HeaderText title={"Event Calender"} />
       </View>
       <Manage title={"event lists"} />
-      <ScrollView>
-        <View style={styles.main}>
-          <View style={{ flex: 1 }}>
-            {eventCalenderList === undefined ? (
-              <>
-                <NoDataFound />
-              </>
-            ) : (
-              <>
-                {eventCalenderList.map((list, index) => (
-                  <Event_Card key={index}
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView>
+          <View style={styles.main}>
+            <View style={{ flex: 1 }}>
+              {eventCalenderList ? (
+                eventCalenderList?.map((list, index) => (
+                  <Event_Card
+                    key={index}
                     title={`${list.event_title}`}
-                    day={"Mon"}
-                    date={"08/10/2022"}
-                    removePress={()=>{setid(list.event_id);setDeletePop(true)}}
+                    // day={"Mon"}
+                    // editPress={navigation.navigate("")}
+                    date={list?.event_date}
+                    removePress={() => {
+                      setId(list.event_id);
+                      setDeletePop(true);
+                    }}
                   />
-                ))}
-              </>
-            )}
+                ))
+              ) : (
+                <NoDataFound />
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      )}
+      {deletePop ? (
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: "#ccccccaa",
+            zindex: 100,
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ width: "80%", backgroundColor: "#fff", padding: "6%" }}>
+            <View style={styles.arrow_container}>
+              <Text style={styles.head_text}>Delete Event</Text>
+            </View>
+            <View style={styles.text_container}>
+              <Text style={styles.description_text}>Are you sure want to delete the Event?</Text>
+            </View>
+            <View style={styles.button_container}>
+              <AppButton title={"cancel"} btnColor={color.purple} onPress={() => setDeletePop(false)} />
+              <AppButton title={"Delete"} btnColor={color.purple} onPress={() => handleDelete(id)} />
+            </View>
           </View>
         </View>
-      </ScrollView>
-      {deletePop? <View style={{position:'absolute',backgroundColor:'#ccccccaa',zindex:100,width:'100%',height:'100%',
-    justifyContent: 'center',alignItems: 'center'}}>
-      <View style={{width:'80%',backgroundColor:'#fff',padding:'6%'}}>
-      <View style={styles.arrow_container}>
-            <Text style={styles.head_text}>Delete Event</Text>
-      </View>
-      <View style={styles.text_container}>
-        <Text style={styles.description_text}>Are you sure want to delete the Event?</Text>
-      </View>
-      <View style={styles.button_container}>
-      <AppButton
-            title={"cancel"}
-            btnColor={color.purple}
-            onPress={()=>setDeletePop(false)}
-          />
-          <AppButton
-            title={"Send"}
-            btnColor={color.purple}
-            onPress={()=>console.log('first')}
-          />
-      </View>
-      </View>
-      </View>:null}
+      ) : null}
     </View>
   );
 }
@@ -128,8 +182,8 @@ const styles = StyleSheet.create({
   },
   arrow_container: {
     flexDirection: "row",
-    width:'50%',
-    flexWrap:'wrap'
+    width: "50%",
+    flexWrap: "wrap",
   },
   text_container: {
     // height: 38,

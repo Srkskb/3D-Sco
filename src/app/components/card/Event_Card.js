@@ -5,15 +5,7 @@ import { CheckBoxC } from "..";
 import { MaterialIcons } from "react-native-vector-icons";
 import { ViewButton, Edit, Remove } from "../buttons";
 
-export default function Event_Card({
-  status,
-  title,
-  description,
-  date,
-  editPress,
-  removePress,
-  viewPress,
-}) {
+export default function Event_Card({ status, title, description, date, editPress, removePress, viewPress }) {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row" }}>
@@ -22,10 +14,9 @@ export default function Event_Card({
             <Text style={styles.head_text}>{title}</Text>
           </View>
           <View>
-              <Text style={styles.status_text}>{status}</Text>
-              </View>
+            <Text style={styles.status_text}>{status}</Text>
+          </View>
         </View>
-          
       </View>
       <View style={styles.text_container}>
         <Text style={styles.description_text}>{description}</Text>
@@ -62,8 +53,8 @@ const styles = StyleSheet.create({
   },
   arrow_container: {
     flexDirection: "row",
-    width:'50%',
-    flexWrap:'wrap'
+    width: "50%",
+    flexWrap: "wrap",
   },
   text_container: {
     height: 38,

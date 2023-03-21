@@ -1,11 +1,5 @@
 import React, { useEffect, useState, useReducer } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,ActivityIndicator
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
@@ -19,6 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 import Event_Card from "../../../components/card/Event_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AdminCalender() {
   const navigation = useNavigation();
   const [eventList, setEventList] = useState([]);
@@ -28,16 +24,16 @@ export default function AdminCalender() {
   const [getMessageFalse, setMessageFalse] = useState();
   const [refreshEvent, setRefreshEvent] = useReducer((x) => x + 1, 0);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('')
-  const [markedDates, setmarkedDates] = useState()
-  const [loading, setLoading] = useState(false)
+  const [selectedDate, setSelectedDate] = useState("");
+  const [markedDates, setmarkedDates] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getDates();
     navigation.addListener("focus", () => getDates());
   }, []);
 
-  const getDates=()=>{
+  const getDates = () => {
     let startDate = moment().format(); // today
     // let MarkedDates = [];
     // for (let i = 0; i < 7; i++) {
@@ -47,15 +43,17 @@ export default function AdminCalender() {
     //   });
     // }
     // setmarkedDates(MarkedDates)
-    setSelectedDate(startDate)
+    setSelectedDate(startDate);
     // eventListData(startDate)
-  }
-  
-  const eventListData = (date) => {
-    let mdate=moment(date).format("YYYY-MM-DD")
-    console.log(mdate)
-    setLoading(true)
-    const loginUID = localStorage.getItem("loginUID");
+  };
+
+  const eventListData = async (date) => {
+    let mdate = moment(date).format("YYYY-MM-DD");
+    console.log(mdate);
+    setLoading(true);
+    // const loginUID = localStorage.getItem("loginUID");
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -63,21 +61,21 @@ export default function AdminCalender() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`,
       // `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=141`,
       requestOptions
     )
       .then((res) => res.json())
-      .then((result) =>{
-        let data=result.data
-        .filter(i=>moment(i.event_date).isSame(date, 'day'))
-        console.log(data)
-        setEventList(data)
-        setLoading(false)
+      .then((result) => {
+        let data = result.data.filter((i) => moment(i.event_date).isSame(date, "day"));
+        console.log(data);
+        setEventList(data);
+        setLoading(false);
       })
-      .catch((error) =>{
-        setLoading(false)
-        console.log("error", error)});
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteEvent = (event_id) => {
     const loginUID = localStorage.getItem("loginUID");
@@ -125,21 +123,21 @@ export default function AdminCalender() {
     }, 2000);
   };
 
-  const onDateSelected=(date)=>{
+  const onDateSelected = (date) => {
     // console.log(date)
-    setSelectedDate(date)
-    eventListData(date)
-  }
+    setSelectedDate(date);
+    eventListData(date);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation}/>
+      <HomeHeader navigation={navigation} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -148,27 +146,28 @@ export default function AdminCalender() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
       {/* <Calender_Strip/> */}
       {loading ? (
-          <View
-            style={{
-              width: "100%",
-              height: "100%",
-              backgroundColor: "#ffffffcc",
-              position: "absolute",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 100,
-            }}
-          >
-            <ActivityIndicator size={"large"} />
-          </View>
-        ) : null}
-      {loading? null:<CalendarStrip
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#ffffffcc",
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 100,
+          }}
+        >
+          <ActivityIndicator size={"large"} />
+        </View>
+      ) : null}
+      {loading ? null : (
+        <CalendarStrip
           scrollable
           calendarAnimation={{ type: "sequence", duration: 30 }}
           daySelectionAnimation={{ duration: 300, highlightColor: color.white }}
@@ -197,36 +196,30 @@ export default function AdminCalender() {
           // markedDates={markedDates}
           // datesBlacklist={this.datesBlacklistFunc}
           selectedDate={selectedDate}
-          onDateSelected={date=>onDateSelected(date)}
+          onDateSelected={(date) => onDateSelected(date)}
           // useIsoWeekday={false}
           iconStyle={{ backgroundColor: "white" }}
           dateContainerStyle={{ flex: 1 }}
-        />}
+        />
+      )}
       <View style={styles.today_event_row}>
         <Text style={styles.event_text}>Today's Events</Text>
         <View style={styles.add_button}>
-          <AppButton
-            onPress={() => navigation.navigate("AdminAddEvent")}
-            title="+ Add"
-          />
+          <AppButton onPress={() => navigation.navigate("AdminAddEvent")} title="+ Add" />
         </View>
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        {eventList&&eventList.length == 0 ? (
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        {eventList && eventList.length == 0 ? (
           <>
             <NoDataFound />
           </>
         ) : (
           <>
             {eventList &&
-              eventList.map((list,index) => (
+              eventList.map((list, index) => (
                 <View key={index} style={{ paddingHorizontal: 10 }}>
                   <Event_Card
-                  key={index}
+                    key={index}
                     title={list.event_title}
                     status={list.access_level}
                     date={moment(list && list?.event_date).format("LL")}
