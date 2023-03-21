@@ -13,7 +13,7 @@ export default function AdminMyResources() {
   const [myResourcesData, setMyResourcesData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
-  const user_id = localStorage.getItem("loginUID");
+  // const user_id = localStorage.getItem("loginUID");
 
   const allLearnerList = () => {
     const myHeaders = myHeadersData();
@@ -56,7 +56,7 @@ export default function AdminMyResources() {
             ) : (
               <>
                 {myResourcesData
-                  .filter((item) => item.user_id == user_id)
+                  // .filter((item) => item.user_id == user_id)
                   .map((list, index) => (
                     // <>
                     <View key={index} style={styles.faqBlock}>

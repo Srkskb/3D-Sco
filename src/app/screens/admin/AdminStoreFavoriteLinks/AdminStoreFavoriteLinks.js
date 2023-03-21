@@ -131,7 +131,7 @@ export default function AdminStoreFavoriteLinks() {
   }, [filter]);
 
   const searchText = (searchTerm) => {
-    const filteredData = storeLinks.filter((el) => {
+    const filteredData = storeLinks?.filter((el) => {
       if (searchTerm === "") {
         return storeLinks;
       } else {
@@ -194,7 +194,7 @@ export default function AdminStoreFavoriteLinks() {
           <View style={styles.category_search}>
             <RoundCategory
               onSelect={(selectedItem, index, item) => {
-                let catid = categoryList.filter((i) => i.Name === selectedItem).map((i) => i.id);
+                let catid = categoryList?.filter((i) => i.Name === selectedItem).map((i) => i.id);
                 setFilter(catid && catid[0]);
                 setSearchTerm("");
               }}

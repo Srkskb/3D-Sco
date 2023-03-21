@@ -11,6 +11,7 @@ import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import axios from "axios";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AdminPhotoAlbum() {
   const navigation = useNavigation();
@@ -43,11 +44,13 @@ export default function AdminPhotoAlbum() {
       .catch((error) => console.log("error", error));
   };
 
-  const deleteEvent = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+  const deleteEvent = async (id) => {
+    // const loginUID = localStorage.getItem("loginUID");
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     var data = qs.stringify({
       delete_photos: "1",
-      user_id: loginUID,
+      user_id: myData.id,
       id: id,
     });
     var config = {

@@ -8,15 +8,24 @@ import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AdminManageResources({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [myResourcesData, setMyResourcesData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
-  const loginUID = localStorage.getItem("loginUID");
+  // const loginUID = localStorage.getItem("loginUID");
+  const [userId, setUserId] = useState("");
   const isFocused = useIsFocused();
 
+  const fetchUserId = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setUserId(myData.id);
+  };
+  useEffect(() => {
+    fetchUserId();
+  }, []);
   const allLearnerList = () => {
     setRefreshing(true);
     const myHeaders = myHeadersData();
@@ -29,6 +38,7 @@ export default function AdminManageResources({ navigation }) {
       .then((res) => res.json())
       .then((result) => {
         setMyResourcesData(result.data);
+        console.log("data", result.data);
         setRefreshing(false);
       })
       .catch((error) => console.log("error", error));
@@ -94,18 +104,20 @@ export default function AdminManageResources({ navigation }) {
           </>
         ) : (
           <>
-            {myResourcesData.map((list, index) => (
-              <>
-                <Event_Card
-                  key={index}
-                  title={list.Question}
-                  description={list.Answer}
-                  // date={"24/05/2023"}
-                  editPress={() => navigation.navigate("AdminEditResources", { list: list })}
-                  removePress={() => deleteFaq(list.id)}
-                />
-              </>
-            ))}
+            {myResourcesData
+              .filter((item) => item.user_id == userId)
+              .map((list, index) => (
+                <>
+                  <Event_Card
+                    key={index}
+                    title={list.Question}
+                    description={list.Answer}
+                    // date={"24/05/2023"}
+                    editPress={() => navigation.navigate("AdminEditResources", { list: list })}
+                    removePress={() => deleteFaq(list.id)}
+                  />
+                </>
+              ))}
           </>
         )}
       </ScrollView>
