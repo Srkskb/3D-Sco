@@ -14,9 +14,11 @@ import { NoDataFound } from "../../../components";
 import Course_Card1 from "../../../components/admin_required/Cards/Course_Card1";
 import Loader from "../../../utils/Loader";
 const { width, height } = Dimensions.get("window");
+
 export default function Enrollment({ navigation }) {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [selectCourseId, setSelectCourseId] = useState("");
 
   // const DeleteCourse = () => {
   //   var data = qs.stringify({
@@ -44,45 +46,37 @@ export default function Enrollment({ navigation }) {
   //     });
   // };
 
-  const allCourses = (id) => {
+  const allCourses = () => {
     setLoading(true);
-    // var config = {
-    //   method: "post",
-    //   url: `https://3dsco.com/3discoapi/studentregistration.php?enroll_course_id=1&course_id=${id}`,
-    //   headers: {
-    //     "Content-Type": "application/x-www-form-urlencoded",
-    //     Cookie: "PHPSESSID=r6ql44dbgph86daul5dqicpgk4",
-    //   },
-    // };
 
-    // axios(config)
-    //   .then((response) => {
-    //     setCourses(response.data?.data);
-    //     setLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     setLoading(false);
-    //   });
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "Get",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/studentregistration.php?enroll_course_id=1&course_id=${id}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/studentregistration.php?enroll_course_id=1&course_id=${selectCourseId}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
-        setCourses(result.data?.data);
+        if (result?.data?.length) {
+          setCourses(result?.data);
+        } else {
+          setCourses([]);
+        }
         setLoading(false);
       })
-      .catch((error) => console.log("error", error));
-    setLoading(false);
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
-  useEffect(() => {
-    allCourses();
-    navigation.addListener("focus", () => allCourses());
-  }, []);
+  // useEffect(() => {
+  //   allCourses();
+  //   navigation.addListener("focus", () => allCourses());
+  // }, []);
 
   return (
     <View style={styles.container}>
@@ -98,45 +92,35 @@ export default function Enrollment({ navigation }) {
             <SearchEnroll placeholder={"Search...."} />
           </View>
           <View style={{ width: "50%" }}>
-            {/* <AccessLevel
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
-              }}
-            /> */}
             <SelectCourse
               onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
-                allCourses(selectedItem.id);
+                setSelectCourseId(selectedItem.id);
               }}
             />
           </View>
         </View>
         <View style={styles.filter_button}>
-          <Add_Button title={"Filter"} />
+          <Add_Button title={"Filter"} onPress={() => allCourses()} />
         </View>
       </View>
       {loading ? (
         <Loader />
       ) : (
         <ScrollView style={{ paddingHorizontal: 10 }}>
-          {courses === undefined ? (
-            <>
-              <NoDataFound />
-            </>
+          {courses?.length ? (
+            courses.map((list, index) => (
+              <Course_Card1
+                key={index}
+                title={list.name}
+                status={list.Access}
+                educator={list.Email}
+                // releaseDate={list.ReleaseDate}
+                // endDate={list.EndDate}
+                editPress={() => navigation.navigate("EditCourse")}
+              />
+            ))
           ) : (
-            <>
-              {courses.map((list, index) => (
-                <Course_Card1
-                  key={index}
-                  title={list.name}
-                  status={list.Access}
-                  educator={list.Email}
-                  // releaseDate={list.ReleaseDate}
-                  // endDate={list.EndDate}
-                  editPress={() => navigation.navigate("EditCourse")}
-                />
-              ))}
-            </>
+            <NoDataFound />
           )}
         </ScrollView>
       )}

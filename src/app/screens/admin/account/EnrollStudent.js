@@ -18,6 +18,7 @@ export default function EnrollStudent({ navigation }) {
     courseId: "",
   });
   const [loading, setLoading] = useState(false);
+
   const getStudents = () => {
     var requestOptions = {
       method: "GET",
@@ -37,68 +38,27 @@ export default function EnrollStudent({ navigation }) {
       .catch((error) => console.log("error", error));
   };
 
-  const allCourses = () => {
-    var config = {
-      method: "post",
-      url: `https://3dsco.com/3discoapi/3dicowebservce.php?Course=1`,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=r6ql44dbgph86daul5dqicpgk4",
-      },
-    };
-
-    axios(config)
-      .then((response) => {
-        setCourses(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   useEffect(() => {
-    allCourses();
     getStudents();
     navigation.addListener("focus", () => {
-      allCourses();
       getStudents();
     });
   }, []);
 
   const enroll = () => {
+    if (enrollData.studentId == "" && enrollData.courseId == "") {
+      return console.log("Please enter all fields");
+    }
     setLoading(true);
     var data = qs.stringify({
       student_select_courses: "1",
       course_id: enrollData.courseId,
       student_id: enrollData.studentId,
     });
-    // var config = {
-    //   method: "post",
-    //   url: "https://3dsco.com/3discoapi/studentregistration.php",
-    //   headers: {
-    //     "Content-Type": "application/x-www-form-urlencoded",
-    //     Cookie: "PHPSESSID=3pdofu5ljq7br6tupov2ev6au1",
-    //   },
-    //   data: data,
-    // };
-    // console.log(data);
-
-    // axios(config)
-    //   .then((response) => {
-    //     console.log(response);
-    //     if (response.success) {
-    //       navigation.navigate("Enrollment");
-    //     } else {
-    //       console.log("Error", response.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log("error", error);
-    //   });
-    var adminFormData = new FormData();
-    adminFormData.append("student_select_courses", "1");
-    adminFormData.append("course_id", enrollData.courseId);
-    adminFormData.append("student_id", enrollData.studentId);
+    // var adminFormData = new FormData();
+    // adminFormData.append("student_select_courses", "1");
+    // adminFormData.append("course_id", enrollData.courseId);
+    // adminFormData.append("student_id", enrollData.studentId);
 
     const myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -113,8 +73,9 @@ export default function EnrollStudent({ navigation }) {
       // body: adminFormData,
     };
     fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-      // .then((response) => response.json())
+      .then((response) => response.json())
       .then((response) => {
+        console.log("response", response);
         if (response.success == 1) {
           navigation.navigate("Enrollment");
         } else {
@@ -130,44 +91,40 @@ export default function EnrollStudent({ navigation }) {
   return (
     <View style={styles.container}>
       <HeaderBack title={"Enroll a student"} onPress={() => navigation.goBack()} />
-      {loading ? (
-        <Loader />
-      ) : (
-        <>
-          <View style={styles.main}>
-            <CommonDropdown
-              label={"Select Student"}
-              value={students}
-              onSelect={(item, index) => {
-                setEnrollData((prev) => ({ ...prev, studentId: item.id }));
-                console.log(item);
-              }}
-            />
+      <>
+        <View style={styles.main}>
+          <CommonDropdown
+            label={"Select Student"}
+            value={students}
+            onSelect={(item, index) => {
+              setEnrollData((prev) => ({ ...prev, studentId: item.id }));
+              console.log(item);
+            }}
+          />
 
-            {/* <CommonDropdown
+          {/* <CommonDropdown
               label={"Select Course"}
               value={courses.map((course) => ({ id: course.book_id, name: course.Courses }))}
               onSelect={(item, index) => {
                 setEnrollData((prev) => ({ ...prev, courseId: item.id }));
               }}
             /> */}
-            <SelectCourse
-              label={"Select Course"}
-              name="course"
-              value={courses.map((course) => ({ id: course.book_id, name: course.Courses }))}
-              onSelect={(item, index) => {
-                setEnrollData((prev) => ({ ...prev, courseId: item.id }));
-                console.log(item);
-              }}
-              // value={course}
-            />
-          </View>
-          <View style={styles.title_container}>
-            <AppButton title={"Enroll"} btnColor={color.purple} onPress={enroll} />
-            <View style={styles.inner_view}></View>
-          </View>
-        </>
-      )}
+          <SelectCourse
+            label={"Select Course"}
+            name="course"
+            // value={courses.map((course) => ({ id: course.book_id, name: course.Courses }))}
+            onSelect={(item, index) => {
+              setEnrollData((prev) => ({ ...prev, courseId: item.id }));
+              console.log(item);
+            }}
+            // value={course}
+          />
+        </View>
+        <View style={styles.title_container}>
+          <AppButton title={"Enroll"} btnColor={color.purple} onPress={enroll} loading={loading} />
+          <View style={styles.inner_view}></View>
+        </View>
+      </>
     </View>
   );
 }

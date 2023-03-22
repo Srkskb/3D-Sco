@@ -6,19 +6,12 @@ const down_img = require("../../assets/images/down.png");
 import { styles } from "./Styles";
 import AsyncStorage from "@react-native-community/async-storage";
 import axios from "axios";
-const Courses = [
-  { id: 0, name: "Select Course" },
-  { id: 1, name: "B.Sc.- Information Technology." },
-  { id: 2, name: "B.Sc- Nursing." },
-  { id: 3, name: "BPharma- Bachelor of Pharmacy." },
-  { id: 4, name: "B.Sc- Interior Design." },
-  { id: 5, name: "BDS- Bachelor of Dental Surgery." },
-];
+
 export default function SelectCourse({ label, ...props }) {
   const [selectItem, setSelectItem] = useState([]);
 
   const fetch = async () => {
-    const myData = await AsyncStorage.getItem("userData");
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
 
     axios
       .get(`https://3dsco.com/3discoapi/3dicowebservce.php?courses_list=1&user_id=${myData.id}`)
