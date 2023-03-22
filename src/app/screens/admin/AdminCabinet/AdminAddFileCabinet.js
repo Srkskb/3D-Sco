@@ -16,6 +16,7 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AdminAddFileCabinet() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
@@ -27,42 +28,44 @@ export default function AdminAddFileCabinet() {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
-  const pickImage = async () => {
+  const pickImg = async () => {
+    console.log("first");
     let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
   const addFileCabinet = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log(values.docTitle, access, loginUID, values.description, image);
+    console.log(values);
     setLoading(true);
-    const myHeaders = myHeadersData();
+
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
 
     var urlencoded = new FormData();
     urlencoded.append("add_documents", "1");
     urlencoded.append("titel", values.docTitle);
-    urlencoded.append("access", access);
+    urlencoded.append("access", values.access);
     urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
+
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
-      headers: {
-        myHeaders,
-        "Content-Type": "multipart/form-data",
-      },
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
-        setLoading(false);
         console.log(res);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
@@ -72,7 +75,9 @@ export default function AdminAddFileCabinet() {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-      });
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   };
   return (
     <View style={styles.container}>
@@ -105,25 +110,25 @@ export default function AdminAddFileCabinet() {
               initialValues={{
                 docTitle: "",
                 description: "",
+                access: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters")
-                  .max(50, "Document Title cannot be more than 50 characters"),
+                  .min(3, "Document Title must be at least 3 characters"),
+                access: Yup.string().required("Access is required"),
                 description: Yup.string()
                   .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                  .min(20, "Description must be at least 20 characters"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
                     placeholder={"Document Title"}
-                    name="title"
+                    name="docTitle"
                     onChangeText={handleChange("docTitle")}
                     onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
@@ -133,23 +138,20 @@ export default function AdminAddFileCabinet() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   <AccessLevel
-                    required
+                    // required
                     label={"Access Level"}
+                    name="access"
                     onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem);
-                      console.log(selectedItem, index);
+                      setFieldValue("access", selectedItem);
                     }}
-                    value={access}
+                    // value={access}
                   />
-
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                  {errors.access && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}
 
-                  <UploadDocument type={"(pdf, doc, ppt,xls)"} onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
 });

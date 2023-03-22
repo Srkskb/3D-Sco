@@ -2,19 +2,18 @@ import React from "react";
 import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
-const{height,width}=Dimensions.get('window')
+const { height, width } = Dimensions.get("window");
+import mime from "mime";
+
 export default function AdminViewContent({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { access, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { image, imageParam } = route.params;
-
+  console.log("image", image);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"View Document"}
-        onPress={() => navigation.navigate("AdminCabinet")}
-      />
+      <HeaderBack title={"View Document"} onPress={() => navigation.navigate("AdminCabinet")} />
       <View style={styles.inner_view}>
         <Text>
           <Text style={styles.text}>Title : {title}</Text>
@@ -26,12 +25,14 @@ export default function AdminViewContent({ route, navigation }) {
           <Text style={styles.title}>Description : {description}</Text>
         </Text>
         <View style={styles.documentView}>
-          <Image
+          <Text>Pdf Name:</Text>
+          <Text>{image.split("https://3dsco.com/images/")[1]}</Text>
+          {/* <Image
             style={styles.tinyLogo}
             source={{
               uri: `${image}`,
             }}
-          />
+          /> */}
         </View>
       </View>
     </View>
@@ -43,14 +44,14 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
   },
   tinyLogo: {
-    height: height/2,
-    resizeMode:'contain'
+    height: height / 2,
+    resizeMode: "contain",
   },
   img: {
     width: 300,
     height: 500,
     borderWidth: 1,
-    resizeMode:'contain'
+    resizeMode: "contain",
   },
   inner_view: {
     margin: 10,
