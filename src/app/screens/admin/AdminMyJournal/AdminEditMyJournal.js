@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -19,7 +11,7 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminEditMyJournal({ route, navigation }) {
   const { jID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -49,15 +41,16 @@ export default function AdminEditMyJournal({ route, navigation }) {
     }
   };
 
-  const updateDocument = () => {
-    console.log(updateTitle,access,upDescription,loginUID,jID,image)
+  const updateDocument = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log(updateTitle, access, upDescription, loginUID, jID, image);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("update_journals", "1");
     urlencoded.append("titel", updateTitle);
     urlencoded.append("access_level", access);
     urlencoded.append("description", upDescription);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("id", jID);
     urlencoded.append("image", {
       uri: image, //"file:///" + image.split("file:/").join(""),
@@ -91,7 +84,6 @@ export default function AdminEditMyJournal({ route, navigation }) {
 
   const onClick = () => {
     setShowResults(true);
-  
   };
   const onClickDoc = () => {
     setShowDocResults(true);
@@ -99,10 +91,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Journal"}
-        onPress={() => navigation.navigate("AdminMyJournal")}
-      />
+      <HeaderBack title={"Update Journal"} onPress={() => navigation.navigate("AdminMyJournal")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -159,9 +148,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
                 <>
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                 </>
               ) : (
@@ -169,12 +156,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {jImage && (
-                        <Image
-                          source={{ uri: jImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
+                      {jImage && <Image source={{ uri: jImage }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -196,11 +178,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                />
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
                   title="Save"

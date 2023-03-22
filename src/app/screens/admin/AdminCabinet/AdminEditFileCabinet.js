@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -18,7 +10,7 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminEditFileCabinet({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -32,7 +24,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(docImage);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -50,7 +42,8 @@ export default function AdminEditFileCabinet({ route, navigation }) {
     }
   };
 
-  const updateDocument = (values) => {
+  const updateDocument = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, loginUID, image);
     var urlencoded = new FormData();
@@ -59,7 +52,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
     urlencoded.append("access", access);
     urlencoded.append("id", docId);
     urlencoded.append("description", upDescription);
-    urlencoded.append("student_id", loginUID);
+    urlencoded.append("student_id", myData.id);
     // urlencoded.append("image", {
     //   uri: image, //"file:///" + image.split("file:/").join(""),
     //   type: mime.getType(image),
@@ -99,10 +92,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Document"}
-        onPress={() => navigation.navigate("AdminCabinet")}
-      />
+      <HeaderBack title={"Update Document"} onPress={() => navigation.navigate("AdminCabinet")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -159,9 +149,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
                 <>
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                 </>
               ) : (
@@ -169,12 +157,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {docImage && (
-                        <Image
-                          source={{ uri: docImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
+                      {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -196,11 +179,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                />
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
                   loading={loading}

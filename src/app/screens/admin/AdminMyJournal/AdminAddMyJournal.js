@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -20,6 +13,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminAddMyJournal() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
@@ -29,7 +23,7 @@ export default function AdminAddMyJournal() {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -43,8 +37,9 @@ export default function AdminAddMyJournal() {
     }
   };
 
-  const addFileCabinet = (values) => {
-    setLoading(true)
+  const addFileCabinet = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setLoading(true);
     console.log(values.docTitle, access, image, loginUID, values.description);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -56,7 +51,7 @@ export default function AdminAddMyJournal() {
       type: mime.getType(image),
       name: `abc.jpg`,
     });
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
@@ -73,21 +68,18 @@ export default function AdminAddMyJournal() {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminMyJournal");
-          setLoading(false)
+          setLoading(false);
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
-          setLoading(false)
+          setLoading(false);
         }
       });
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Add Journal"}
-        onPress={() => navigation.navigate("AdminMyJournal")}
-      />
+      <HeaderBack title={"Add Journal"} onPress={() => navigation.navigate("AdminMyJournal")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -123,14 +115,7 @@ export default function AdminAddMyJournal() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Journal Title"}
@@ -142,11 +127,7 @@ export default function AdminAddMyJournal() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   <AccessLevel
                     required
@@ -159,18 +140,12 @@ export default function AdminAddMyJournal() {
                   />
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                   <InputField
                     label={"Description"}
@@ -185,19 +160,11 @@ export default function AdminAddMyJournal() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

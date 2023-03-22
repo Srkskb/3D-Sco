@@ -21,7 +21,7 @@ import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
 import qs from "qs";
 import axios from "axios";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminStoreFavoriteLinks() {
   const navigation = useNavigation();
 
@@ -41,7 +41,8 @@ export default function AdminStoreFavoriteLinks() {
   const [initialStoreLinks, setInitialStoreLinks] = useState([]);
   const user_type = localStorage.getItem("userID"); // ! user Type student or other
 
-  const allLearnerList = (text = "") => {
+  const allLearnerList = async (text = "") => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     setLoading(true);
     const myHeaders = myHeadersData();
@@ -52,7 +53,7 @@ export default function AdminStoreFavoriteLinks() {
     };
 
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${loginUID}&type=${user_type}&category=${filter}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${user_type}&category=${filter}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -87,7 +88,8 @@ export default function AdminStoreFavoriteLinks() {
       .catch((error) => console.log("error", error));
   };
 
-  const deleteProject = (id) => {
+  const deleteProject = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -95,7 +97,7 @@ export default function AdminStoreFavoriteLinks() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${loginUID}`, requestOptions)
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         if (result.success === 1) {
