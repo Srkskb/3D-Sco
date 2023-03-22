@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -18,8 +11,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
 import axios from "axios";
-import qs from "qs"
-
+import qs from "qs";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminEditEvent({ route, navigation }) {
   // ** For Event Update
   const { eventID, eventIDParam } = route.params; // ! Current Event ID
@@ -52,39 +45,39 @@ export default function AdminEditEvent({ route, navigation }) {
     hideDatePicker();
   };
 
-  const updateEvent = () => {
+  const updateEvent = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var data = qs.stringify({
-      'update_event': '1',
-      'event_titel': updateTitle,
-      'access_level': access,
-      'decription': updateDescription,
-      'event_id': eventID,
-      'user_id': loginUID
+      update_event: "1",
+      event_titel: updateTitle,
+      access_level: access,
+      decription: updateDescription,
+      event_id: eventID,
+      user_id: myData.id,
     });
-    console.log(data)
+    console.log(data);
     var config = {
-      method: 'post',
-      url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
-      headers: { 
-        'Accept': 'application/json', 
-        'Content-Type': 'application/x-www-form-urlencoded', 
-        'Cookie': 'PHPSESSID=41mqd76dj1dbfh1dbhbrkk6jv5'
+      method: "post",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=41mqd76dj1dbfh1dbhbrkk6jv5",
       },
-      data : data
+      data: data,
     };
-    axios(config)
-      .then((res) => {
-        console.log(res.data);
-        if (res.success == 1) {
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.data.message);
-          navigation.replace("AdminCalender");
-        } else {
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.data.message);
-        }
-      });
+    axios(config).then((res) => {
+      console.log(res.data);
+      if (res.status == 200) {
+        setSnackVisibleTrue(true);
+        setMessageTrue(res.data.message);
+        navigation.goBack();
+      } else {
+        setSnackVisibleFalse(true);
+        setMessageFalse(res.data.message);
+      }
+    });
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
@@ -93,7 +86,6 @@ export default function AdminEditEvent({ route, navigation }) {
   };
   return (
     <View style={styles.container}>
-      
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -111,10 +103,7 @@ export default function AdminEditEvent({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Event"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Update Event"} onPress={() => navigation.goBack()} />
       {/* <NavigationDrawer backPress={() => navigation.navigate("HomeScreen")} /> */}
       {/* <NavigationDrawer backPress={() => navigation.navigate("AddEvent")}/> */}
       <Snackbar
@@ -152,7 +141,7 @@ export default function AdminEditEvent({ route, navigation }) {
                     required
                     label={"Access Level"}
                     onSelect={(selectedItem) => {
-                      console.log(selectedItem)
+                      console.log(selectedItem);
                       setAccess(selectedItem);
                     }}
                     placeholder={status}
@@ -161,11 +150,13 @@ export default function AdminEditEvent({ route, navigation }) {
               ) : (
                 <>
                   <View style={{ marginBottom: 5 }}>
-                    <Text>Access Level<Text style={{ color: color.red }}>*</Text></Text>
-                  <View style={styles.selectedData}>
+                    <Text>
+                      Access Level<Text style={{ color: color.red }}>*</Text>
+                    </Text>
+                    <View style={styles.selectedData}>
                       <Text>{status}</Text>
                       <TouchableOpacity onPress={onClick}>
-                      <Entypo name="circle-with-cross" size={24} color={color.purple} />
+                        <Entypo name="circle-with-cross" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -183,9 +174,7 @@ export default function AdminEditEvent({ route, navigation }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedDate
-                    ? moment(selectedDate).format("YYYY-MM-DD")
-                    : `${dateData}`}
+                  {selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : `${dateData}`}
                 </Text>
                 <Text></Text>
                 <View style={styles.selectDate}>

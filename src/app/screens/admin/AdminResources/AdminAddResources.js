@@ -15,6 +15,8 @@ import * as qs from "qs";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminAddResources({ navigation }) {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -24,13 +26,14 @@ export default function AdminAddResources({ navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
 
-  const addFileCabinet = (values) => {
+  const addFileCabinet = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = qs.stringify({
       add_faq: "1",
       Question: values.docTitle,
       Answer: values.description,
-      user_id: loginUID,
+      user_id: myData.id,
     });
     var config = {
       method: "post",

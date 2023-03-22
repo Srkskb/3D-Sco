@@ -58,11 +58,12 @@ export default function AdminManageResources({ navigation }) {
     allLearnerList();
   }, [isFocused]);
 
-  const deleteFaq = (id) => {
+  const deleteFaq = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var data = qs.stringify({
       delete_faq: "1",
       id: id,
-      user_id: loginUID,
+      user_id: myData.id,
     });
     var config = {
       method: "post",
