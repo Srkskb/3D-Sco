@@ -14,7 +14,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminAddPhoto() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -36,12 +36,13 @@ export default function AdminAddPhoto() {
     }
   };
 
-  const addFileCabinet = (values) => {
+  const addFileCabinet = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = new FormData();
     data.append("add_photos", "1");
     data.append("title", values.docTitle);
-    data.append("user_id", loginUID);
+    data.append("user_id", myData.id);
     data.append("detail", values.description);
     data.append("image", {
       uri: image, //"file:///" + image.split("file:/").join(""),

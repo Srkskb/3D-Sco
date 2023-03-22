@@ -6,6 +6,7 @@ import color from "../../../assets/themes/Color";
 import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminFinancialAssistance() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -34,13 +35,14 @@ export default function AdminFinancialAssistance() {
       })
       .catch((error) => console.log("error", error));
   };
-  const deleteBlog = (id) => {
+  const deleteBlog = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
     var formdata = new FormData();
     formdata.append("delete_financial_assistance", "1");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     formdata.append("id", id);
     var requestOptions = {
       method: "POST",
@@ -92,10 +94,7 @@ export default function AdminFinancialAssistance() {
       >
         {getMessageFalse}
       </Snackbar>
-      <HeaderBack
-        title={"Financial assistance"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Financial assistance"} onPress={() => navigation.goBack()} />
 
       <View style={styles.main_box}>
         <TextWithButton
@@ -116,8 +115,7 @@ export default function AdminFinancialAssistance() {
                   </Text>
                   <Text style={styles.link}>
                     <Text style={styles.url}>Added By : </Text>
-                    {list.name} 
-                    ({list.user_type})
+                    {list.name}({list.user_type})
                   </Text>
                 </View>
               </View>

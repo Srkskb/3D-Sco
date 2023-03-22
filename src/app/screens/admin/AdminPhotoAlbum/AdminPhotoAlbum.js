@@ -23,7 +23,8 @@ export default function AdminPhotoAlbum() {
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
 
-  const allLearnerList = () => {
+  const allLearnerList = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -33,7 +34,7 @@ export default function AdminPhotoAlbum() {
     };
     fetch(
       // `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
-      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

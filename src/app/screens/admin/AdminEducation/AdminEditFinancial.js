@@ -7,6 +7,7 @@ import Input from "../../../components/inputs/Input";
 import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminEditFinancial({ route, navigation }) {
   const { assisID, idParam } = route.params;
   const { assisTitle, titleParam } = route.params;
@@ -19,7 +20,8 @@ export default function AdminEditFinancial({ route, navigation }) {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const updateFinancialAssets = () => {
+  const updateFinancialAssets = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
@@ -29,7 +31,7 @@ export default function AdminEditFinancial({ route, navigation }) {
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
     formdata.append("type", "4");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     formdata.append("id", assisID);
 
     var requestOptions = {
@@ -56,10 +58,7 @@ export default function AdminEditFinancial({ route, navigation }) {
   };
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Update Financial"}
-        onPress={() => navigation.navigate("AdminFinancialAssistance")}
-      />
+      <HeaderBack title={"Update Financial"} onPress={() => navigation.navigate("AdminFinancialAssistance")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}

@@ -10,7 +10,7 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminEditPhoto({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -45,7 +45,8 @@ export default function AdminEditPhoto({ route, navigation }) {
     }
   };
 
-  const updateDocument = (values) => {
+  const updateDocument = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, loginUID, image);
     var urlencoded = new FormData();
@@ -54,7 +55,7 @@ export default function AdminEditPhoto({ route, navigation }) {
     // urlencoded.append("access", access);
     urlencoded.append("id", docId);
     urlencoded.append("detail", upDescription);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("image", {
       uri: image,
       type: mime.getType(image),
