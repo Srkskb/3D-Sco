@@ -11,7 +11,7 @@ import { NoDataFound } from "../../../../components";
 import { myHeadersData } from "../../../../api/helper";
 import * as qs from "qs";
 import Loader from "../../../../utils/Loader";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function Forum({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [forums, setForums] = useState([]);
@@ -44,11 +44,12 @@ export default function Forum({ navigation }) {
         console.log("error", error);
       });
   };
-  const DeleteForum = (id) => {
+  const DeleteForum = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var data = qs.stringify({
       delete_courses_form: "1",
       id: id,
-      user_id: localStorage.getItem("loginUID"),
+      user_id: myData.id,
     });
     var config = {
       method: "post",
