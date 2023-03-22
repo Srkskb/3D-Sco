@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../components/header/Header";
 import TextWithButton from "../../../components/TextWithButton";
@@ -8,6 +8,7 @@ import AppButton from "../../../components/buttons/AppButton";
 import axios from "axios";
 import qs from "qs";
 import Loader from "../../../utils/Loader";
+import SelectCourse from "../../../components/admin_required/SelectCourse";
 
 export default function EnrollStudent({ navigation }) {
   const [courses, setCourses] = useState([]);
@@ -114,8 +115,11 @@ export default function EnrollStudent({ navigation }) {
     fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
       // .then((response) => response.json())
       .then((response) => {
-        console.log("response", response);
-        navigation.navigate("Enrollment");
+        if (response.success == 1) {
+          navigation.navigate("Enrollment");
+        } else {
+          Alert.alert(response.message);
+        }
       })
       .catch((err) => {
         console.log("err", err);
@@ -136,15 +140,26 @@ export default function EnrollStudent({ navigation }) {
               value={students}
               onSelect={(item, index) => {
                 setEnrollData((prev) => ({ ...prev, studentId: item.id }));
+                console.log(item);
               }}
             />
 
-            <CommonDropdown
+            {/* <CommonDropdown
               label={"Select Course"}
               value={courses.map((course) => ({ id: course.book_id, name: course.Courses }))}
               onSelect={(item, index) => {
                 setEnrollData((prev) => ({ ...prev, courseId: item.id }));
               }}
+            /> */}
+            <SelectCourse
+              label={"Select Course"}
+              name="course"
+              value={courses.map((course) => ({ id: course.book_id, name: course.Courses }))}
+              onSelect={(item, index) => {
+                setEnrollData((prev) => ({ ...prev, courseId: item.id }));
+                console.log(item);
+              }}
+              // value={course}
             />
           </View>
           <View style={styles.title_container}>
