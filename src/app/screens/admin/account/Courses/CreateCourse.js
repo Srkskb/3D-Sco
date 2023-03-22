@@ -22,10 +22,12 @@ import moment from "moment/moment";
 import CategoryDropdown from "../../../../components/dropdown/CategoryDropdown";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as ImagePicker from "expo-image-picker";
-
+import mime from "mime";
+import * as DocumentPicker from "expo-document-picker";
 const { width, height } = Dimensions.get("window");
+
 export default function CreateCourse({ navigation }) {
-  const [checked, setChecked] = React.useState("first1");
+  const [checked, setChecked] = React.useState("first");
   const [checked2, setChecked2] = React.useState("first1");
   const loginUID = localStorage.getItem("loginUID");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -34,6 +36,8 @@ export default function CreateCourse({ navigation }) {
   const [selectedEnd, setSelectedEnd] = useState();
   const [categoreis, setCategoreis] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -82,72 +86,102 @@ export default function CreateCourse({ navigation }) {
     releaseOn: false,
     endOn: false,
   });
+
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
+    if (result.uri) {
+      setImage(result);
+    }
+  };
   const addCourse = async () => {
     setLoading(true);
-    const myData = await AsyncStorage.getItem("userData");
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
 
-    var data = qs.stringify({
-      addcourses: "1",
-      user_id: myData.id,
-      course_name: courseData.courseName,
-      language: courseData.language,
-      Description: courseData.description,
-      Syndicate: courseData.syndicate,
-      export_content: courseData.exportContent,
-      Access: courseData.access,
-      notify_enroll: "0",
-      hide_course: "0",
-      ReleaseDate: courseData.releaseDate,
-      EndDate: courseData.endDate,
-      Banner: courseData.banner,
-      initial_content: courseData.initialContent,
-      quota: courseData.quota,
-      quota_other: "",
-      filesize: courseData.fileSize,
-      filesize_other: "10",
-      Copyright: "no",
-      subject: courseData.subject,
-      num_week: "0",
-      Syllabus: courseData.syllabus,
-      JobSheet: courseData.jobSheet,
-      catID: courseData.catId,
+    var formdata = new FormData();
+    formdata.append("addcourses", "1");
+    formdata.append("user_id", myData.id);
+    formdata.append("course_name", courseData.courseName);
+    formdata.append("language", courseData.language);
+    formdata.append("Description", courseData.description);
+    formdata.append("Syndicate", courseData.syndicate);
+    formdata.append("export_content", courseData.exportContent);
+    formdata.append("Access", courseData.access);
+    formdata.append("notify_enroll", "0");
+    formdata.append("hide_course", "0");
+    formdata.append("ReleaseDate", courseData.releaseDate);
+    formdata.append("EndDate", courseData.endDate);
+    formdata.append("Banner", courseData.banner);
+    formdata.append("initial_content", courseData.initialContent);
+    formdata.append("quota", courseData.quota);
+    formdata.append("quota_other", "");
+    formdata.append("filesize", courseData.fileSize);
+    formdata.append("filesize_other", "10");
+    formdata.append("Copyright", "no");
+    formdata.append("subject", courseData.subject);
+    formdata.append("num_week", "0");
+    formdata.append("Syllabus", courseData.syllabus);
+    formdata.append("JobSheet", courseData.jobSheet);
+    // formdata.append("catID", courseData.catId);
+    formdata.append("catID", "2");
+    formdata.append("file_icon", {
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
+    // })
+
     var config = {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "multipart/form-data",
         Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
       },
-      body: data,
+      body: formdata,
     };
-    console.log("data", data);
+    console.log("data", formdata);
     // axios(config)
     fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
+      .then((response) => response.json())
+
       .then((response) => {
         console.log("Create course", response);
+        if (response.success) {
+          navigation.goBack();
+        } else {
+          Alert.alert("Some issue", response.message, [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
       })
       .catch((error) => {
         console.log(error.response);
       });
   };
 
-  const pickImg = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    console.log(result);
-    if (!result.cancelled) {
-      console.log("image", result.assets[0].uri);
-      setCourseData((prev) => ({
-        ...prev,
-        icon: result.assets[0].uri,
-      }));
-    }
-  };
+  // const pickImg = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+  //   console.log(result);
+  //   if (!result.cancelled) {
+  //     console.log("image", result.assets[0].uri);
+  //     setCourseData((prev) => ({
+  //       ...prev,
+  //       icon: result.assets[0].uri,
+  //     }));
+  //   }
+  // };
   return (
     <View style={styles.container}>
       <HeaderBack title={"Create Course"} onPress={() => navigation.goBack()} />
@@ -264,9 +298,10 @@ export default function CreateCourse({ navigation }) {
             label={"Access"}
             marginBottom={10}
             onSelect={(selectedItem, index) => {
+              console.log(selectedItem);
               setCourseData((prev) => ({
                 ...prev,
-                access: selectedItem.id,
+                access: selectedItem,
               }));
             }}
           />
@@ -490,9 +525,7 @@ export default function CreateCourse({ navigation }) {
             }
           />
           <UploadDocument type={"Icon"} pickImg={pickImg} />
-          <View style={styles.uploadCon}>
-            {courseData.icon && <Image source={{ uri: courseData.icon }} style={styles.uploadImg} />}
-          </View>
+          <View>{image?.name && <Text style={styles.uploadCon}>{image?.name}</Text>}</View>
           <View style={styles.button}>
             <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
             <SmallButton
@@ -563,6 +596,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   uploadCon: {
-    textAlign: "center",
+    color: "red",
+    textAlign: "right",
   },
 });

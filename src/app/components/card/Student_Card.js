@@ -5,7 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import CardButton from "../buttons/CardButton";
 import { Edit } from "../buttons";
 
-export default function Student_Card({ name, editable, email, deleteButton,onPress }) {
+export default function Student_Card({ name, editable, email, deleteButton, onPress }) {
   return (
     <View style={styles.container}>
       <View style={styles.main_box}>
@@ -21,20 +21,9 @@ export default function Student_Card({ name, editable, email, deleteButton,onPre
         </View>
       </View>
       <View style={{ flexDirection: "row", marginTop: 10 }}>
-        {editable && (
-          <CardButton
-            borderColor={color.purple}
-            label={"Edit"}
-            textColor={color.purple}
-          />
-        )}
+        {editable && <CardButton borderColor={color.purple} label={"Edit"} textColor={color.purple} />}
         {deleteButton && (
-          <CardButton
-            borderColor={color.red}
-            label={"Delete"}
-            textColor={color.red}
-            onPress={onPress}
-          />
+          <CardButton borderColor={color.red} label={"Delete"} textColor={color.red} onPress={() => onPress()} />
         )}
       </View>
     </View>

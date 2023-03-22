@@ -12,6 +12,7 @@ import Student_Card from "../../../../components/card/Student_Card";
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
+
 export default function MasterStudentList() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -22,8 +23,8 @@ export default function MasterStudentList() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+
   const allLearnerList = () => {
-    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "POST",
@@ -39,6 +40,7 @@ export default function MasterStudentList() {
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = (id) => {
+    console.log("Enter hua main");
     // var data = qs.stringify({
     //   delete_master_student: "1",
     //   user_id: id,
@@ -137,7 +139,7 @@ export default function MasterStudentList() {
                   name={list.name}
                   email={list.email}
                   deleteButton
-                  onPress={deleteEvent(list.id)}
+                  onPress={() => deleteEvent(list.id)}
                 />
               ))}
             </>

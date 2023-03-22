@@ -9,11 +9,22 @@ import { UploadDocument } from "../../../../components";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as DocumentPicker from "expo-document-picker";
+import mime from "mime";
 
 export default function EditPresentation({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
+  const [image, setImage] = useState(null);
 
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
+    if (result.uri) {
+      setImage(result);
+    }
+  };
   useEffect(() => {
     setEditData(route?.params);
   }, [route.params]);
@@ -21,7 +32,7 @@ export default function EditPresentation({ navigation, route }) {
   const editPresentation = async (values) => {
     console.log("values", values);
     setLoading(true);
-    const myData = await AsyncStorage.getItem("userData");
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
 
     var data = new FormData();
     data.append("update_courses_presentation", "1");
@@ -29,7 +40,11 @@ export default function EditPresentation({ navigation, route }) {
     data.append("presentation_title", values.preTitle);
     data.append("Description", values.description);
     data.append("course_id", values.course);
-    // data.append("image", fs.createReadStream("/C:/Users/krish/Downloads/4941665926887.jpg"));
+    data.append("image", {
+      uri: image.uri,
+      type: mime.getType(image.uri),
+      name: image.name,
+    });
     data.append("id", values.id);
 
     var myHeaders = new Headers();
@@ -107,7 +122,9 @@ export default function EditPresentation({ navigation, route }) {
               {errors.description && (
                 <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
               )}
-              <UploadDocument type={"File"} />
+              <UploadDocument type={"File"} pickImg={pickImg} />
+              <View>{image && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+
               <View style={styles.button}>
                 <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
@@ -134,5 +151,9 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     marginTop: 20,
+  },
+  uploadCon: {
+    textAlign: "right",
+    color: "red",
   },
 });

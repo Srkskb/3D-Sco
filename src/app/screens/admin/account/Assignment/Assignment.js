@@ -11,6 +11,8 @@ import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
+import AsyncStorage from "@react-native-community/async-storage";
+
 export default function Assignment() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -21,21 +23,31 @@ export default function Assignment() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
-  const allLearnerList = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
-    const myHeaders = myHeadersData();
+  const [courseId, setCourseId] = useState("");
+
+  const allLearnerList = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
+    var data = new FormData();
+    data.append("courses_assignments_list", "1");
+    data.append("course_id", id);
+    data.append("user_id", myData.id);
+
+    var myHeaders = new Headers();
+    // myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5'");
+
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      redirect: "follow",
+      // redirect: "follow",
+      body: data,
     };
-    fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?courses_assignments_list=1&course_id=${id}`,
-      requestOptions
-    )
+
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         setFileCabinetData(result?.data);
       })
       .catch((error) => console.log("error", error));
@@ -58,7 +70,7 @@ export default function Assignment() {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
-          allLearnerList();
+          setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         }
       })
       .catch((error) => {
@@ -67,7 +79,7 @@ export default function Assignment() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    courseId && allLearnerList(courseId);
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
@@ -77,6 +89,9 @@ export default function Assignment() {
     // allLearnerList();
     navigation.addListener("focus", () => setFileCabinetData([]));
   }, []);
+  useEffect(() => {
+    courseId && allLearnerList(courseId);
+  }, [courseId]);
 
   return (
     <View style={styles.container}>
@@ -105,9 +120,8 @@ export default function Assignment() {
         <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            setSelectCourse(selectedItem);
-            console.log(index);
-            allLearnerList(index);
+            // setSelectCourse(selectedItem);
+            setCourseId(selectedItem.id);
           }}
         />
         <View style={{ paddingHorizontal: 10 }}>
@@ -125,7 +139,11 @@ export default function Assignment() {
                   date={list.Date}
                   onPressEdit={() =>
                     navigation.navigate("EditAssignment", {
-                      title: list,
+                      // title: list,
+                      title: list.assignment_title,
+                      description: list.Description,
+                      id: list.id,
+                      userId: list.user_id,
                     })
                   }
                   removePress={() => deleteEvent(list.id)}

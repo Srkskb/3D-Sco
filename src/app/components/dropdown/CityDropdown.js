@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import axios from "axios";
 const down_img = require("../../assets/images/down.png");
 
-export default function CityDropdown({ label, ...props }) {
+export default function CityDropdown({ label, stateId, countryId, ...props }) {
   const [getCityList, setCityList] = useState([]);
   // const country_id = localStorage.getItem("countryId");
   // const state_id = localStorage.getItem("stateID");
@@ -18,9 +18,12 @@ export default function CityDropdown({ label, ...props }) {
     // if (country_id == null || (country_id === "" && state_id == null) || state_id === "") {
     //   return;
     // }
-
     axios
-      .get(`https://3dsco.com/3discoapi/state.php?city=1&country_id=${country_id}&state_id=${state_id}`)
+      .get(
+        `https://3dsco.com/3discoapi/state.php?city=1&country_id=${countryId || country_id}&state_id=${
+          stateId || state_id
+        }`
+      )
       .then(function (res) {
         if (res.data.success == 1) {
           setCityList(res.data.data);
@@ -30,8 +33,8 @@ export default function CityDropdown({ label, ...props }) {
       });
   };
   useEffect(() => {
-    !getCityList.length && fetch();
-  }, []);
+    fetch();
+  }, [countryId, stateId]);
 
   return (
     <View>

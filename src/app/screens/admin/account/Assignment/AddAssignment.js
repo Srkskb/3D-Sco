@@ -12,6 +12,9 @@ import { Formik } from "formik";
 import axios from "axios";
 import mime from "mime";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-community/async-storage";
+import * as DocumentPicker from "expo-document-picker";
+
 export default function AddAssignment({ navigation }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -20,50 +23,62 @@ export default function AddAssignment({ navigation }) {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  // const pickImage = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+  //   console.log(result);
+  //   if (!result.cancelled) {
+  //     setImage(result.uri);
+  //   }
+  // };
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
-  const AddAssignment = (values) => {
-    console.log(values.docTitle, course, loginUID, values.description, image, mime.getType(image));
-    const myHeaders = myHeadersData();
+  const addAssignment = async (values) => {
+    setLoading(true);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     var data = new FormData();
     data.append("add_courses_assignment", "1");
-    data.append("user_id", loginUID);
-    data.append("course_id", course);
+    data.append("user_id", myData.id);
+    data.append("course_id", values.course);
     data.append("assignment_title", values.docTitle);
     data.append("Description", values.description);
     data.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
 
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: data,
-      headers: {
-        myHeaders,
-        "Content-Type": "multipart/form-data",
-      },
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        console.log("res", res);
         if (res.success == 1) {
           navigation.navigate("Assignment");
+          setLoading(false);
         }
       })
       .catch(function (error) {
         console.log(error);
+        setLoading(false);
       });
   };
   return (
@@ -76,25 +91,27 @@ export default function AddAssignment({ navigation }) {
               initialValues={{
                 docTitle: "",
                 description: "",
+                course: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
                   .min(3, "Document Title must be at least 3 characters")
                   .max(50, "Document Title cannot be more than 50 characters"),
+                course: Yup.string().required("Course is required"),
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters")
                   .max(250, "Description cannot be more than 50 characters"),
               })}
-              onSubmit={(values) => AddAssignment(values)}
+              onSubmit={(values) => addAssignment(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Assignment Title"}
                     placeholder={"Assignment Title"}
-                    name="title"
+                    name="docTitle"
                     onChangeText={handleChange("docTitle")}
                     onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
@@ -113,22 +130,24 @@ export default function AddAssignment({ navigation }) {
                     value={access}
                   /> */}
                   <SelectCourse
+                    name="course"
                     label={"Select Course"}
                     onSelect={(selectedItem, index) => {
-                      setCourse(selectedItem.id);
-                      console.log(selectedItem, index);
+                      setFieldValue("course", selectedItem.id);
                     }}
-                    value={course}
+                    value={values.course}
                   />
 
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                  {errors.course && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
+                  <UploadDocument pickImg={pickImg} />
+                  {/* <View style={styles.uploadCon}>
                     {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
-                  </View>
+                  </View> */}
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -148,7 +167,7 @@ export default function AddAssignment({ navigation }) {
                   <View style={styles.button}>
                     <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                       title="Save"
                       loading={loading}
                       color={color.white}
@@ -211,6 +230,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
 });

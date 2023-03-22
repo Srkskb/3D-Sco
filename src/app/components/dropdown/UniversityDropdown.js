@@ -7,7 +7,7 @@ import { myHeadersData } from "../../api/helper";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
 
-export default function UniversityDropdown({ label, ...props }) {
+export default function UniversityDropdown({ label, countryId, ...props }) {
   const [getUniversityList, setUniversityList] = useState([]);
   // const country_id = localStorage.getItem("countryId");
   // const { country_id } = JSON.parse(localStorage.getItem("loginData"));
@@ -19,18 +19,20 @@ export default function UniversityDropdown({ label, ...props }) {
     //   return;
     // }
 
-    axios.get(`https://3dsco.com/3discoapi/state.php?university=1&country_id=${country_id}`).then(function (res) {
-      if (res.data.success == 1) {
-        setUniversityList(res.data.data);
-      } else {
-        console.log("university list can't fetch right now");
-      }
-    });
+    axios
+      .get(`https://3dsco.com/3discoapi/state.php?university=1&country_id=${countryId || country_id}`)
+      .then(function (res) {
+        if (res.data.success == 1) {
+          setUniversityList(res.data.data);
+        } else {
+          console.log("university list can't fetch right now");
+        }
+      });
   };
 
   useEffect(() => {
-    !getUniversityList.length && fetch();
-  }, [getUniversityList]);
+    fetch();
+  }, [getUniversityList, countryId]);
   // useEffect(
   // (async) => {
   //   const myHeaders = myHeadersData();

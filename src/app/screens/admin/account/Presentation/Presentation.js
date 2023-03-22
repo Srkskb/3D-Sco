@@ -12,6 +12,7 @@ import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import Loader from "../../../../utils/Loader";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function Presentation() {
   const navigation = useNavigation();
@@ -24,6 +25,7 @@ export default function Presentation() {
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [courseId, setCourseId] = useState("");
 
   const allLearnerList = (id) => {
     setLoading(true);
@@ -47,12 +49,14 @@ export default function Presentation() {
         console.log("error", error);
       });
   };
-  const deleteEvent = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+  const deleteEvent = async (id) => {
+    // const loginUID = localStorage.getItem("loginUID");
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     var data = qs.stringify({
       delete_courses_presentation: "1",
       id: id,
-      user_id: loginUID,
+      user_id: myData.id,
     });
     var config = {
       method: "post",
@@ -66,8 +70,10 @@ export default function Presentation() {
 
     axios(config)
       .then((response) => {
+        console.log(response);
         if (response.data.success == 1) {
-          allLearnerList();
+          // allLearnerList();
+          setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         }
       })
       .catch((error) => {
@@ -76,16 +82,16 @@ export default function Presentation() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    courseId && allLearnerList(courseId);
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    // allLearnerList();
+    courseId && allLearnerList(courseId);
     navigation.addListener("focus", () => setFileCabinetData([]));
-  }, []);
+  }, [courseId]);
 
   return (
     <View style={styles.container}>
@@ -121,7 +127,7 @@ export default function Presentation() {
           <SelectCourse
             label={"Select Course"}
             onSelect={(selectedItem, index) => {
-              allLearnerList(selectedItem.id);
+              setCourseId(selectedItem.id);
               console.log(selectedItem.id);
             }}
           />

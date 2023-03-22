@@ -6,7 +6,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
 
-export default function StateDropdown({ label, ...props }) {
+export default function StateDropdown({ label, countryId, ...props }) {
   const [getStateList, setStateList] = useState([]);
   const fetch = async () => {
     const myData = await AsyncStorage.getItem("userData");
@@ -15,30 +15,23 @@ export default function StateDropdown({ label, ...props }) {
     //   return;
     // }
 
-    axios.get(`https://3dsco.com/3discoapi/state.php?state=1&country_id=${country_id}`).then(function (res) {
-      // console.log("state list", res.data);
-      if (res.data.success == 1) {
-        // setCityList(res.data.data);
-        setStateList(res.data.data);
-      } else {
-        console.log("State list can't fetch right now");
-      }
-    });
+    axios
+      .get(`https://3dsco.com/3discoapi/state.php?state=1&country_id=${countryId || country_id}`)
+      .then(function (res) {
+        // console.log("state list", res.data);
+        if (res.data.success == 1) {
+          // setCityList(res.data.data);
+          console.log(res.data.data);
+          setStateList(res.data.data);
+        } else {
+          console.log("State list can't fetch right now");
+        }
+      });
   };
 
   useEffect(() => {
-    // if (country_id == null || country_id === "") {
-    //   return;
-    // }
-    // const myData = await AsyncStorage.getItem("userData");
-    // const { country_id, state_id } = JSON.parse(myData);
-    // fetch(`https://3dsco.com/3discoapi/state.php?state=1&country_id=${country_id}`)
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     setStateList(res.data);
-    //   });
     fetch();
-  }, []);
+  }, [countryId]);
 
   return (
     <View>

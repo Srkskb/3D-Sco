@@ -29,6 +29,7 @@ export default function CreateUser({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const createNewStudent = (values) => {
+    console.log(values);
     setLoading(true);
     var formdata = new FormData();
     formdata.append("username", values.userName);
@@ -310,7 +311,7 @@ export default function CreateUser({ navigation }) {
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
                     // setCountry(selectedItem.id);
-                    // console.log("sss", selectedItem);
+                    console.log("sss", selectedItem);
                     setFieldValue("country", selectedItem.id);
                   }}
                   // value={country}
@@ -321,6 +322,8 @@ export default function CreateUser({ navigation }) {
                 <StateDropdown
                   label={"State"}
                   name="state"
+                  disabled={!values?.country}
+                  countryId={values.country}
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
                     // setState(selectedItem.id);
@@ -333,6 +336,9 @@ export default function CreateUser({ navigation }) {
                 <CityDropdown
                   label={"City"}
                   name="city"
+                  stateId={values.state}
+                  countryId={values.country}
+                  disabled={!values?.country}
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
                     // setCity(selectedItem.id);
@@ -345,6 +351,7 @@ export default function CreateUser({ navigation }) {
                 <UniversityDropdown
                   name="university"
                   label={"University"}
+                  countryId={values.country}
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
                     // setUniversity(selectedItem.id);

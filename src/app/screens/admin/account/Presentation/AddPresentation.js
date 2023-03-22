@@ -11,26 +11,24 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
 import mime from "mime";
-import * as ImagePicker from "expo-image-picker";
+// import * as ImagePicker from "expo-image-picker";
+
+import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AddPresentation({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
-  const AddPresentation = async (values) => {
+  const addPresentation = async (values) => {
     console.log(values);
     setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -41,14 +39,14 @@ export default function AddPresentation({ navigation }) {
     data.append("course_id", values.course);
     data.append("presentation_title", values.preTitle);
     data.append("Description", values.description);
-    // data.append("image", {
-    //   uri: image, //"file:///" + image.split("file:/").join(""),
-    //   type: mime.getType(image),
-    //   name: `abc.jpg`,
-    // });
-
+    data.append("image", {
+      uri: image.uri,
+      type: mime.getType(image.uri),
+      name: image.name,
+    });
+    // console.log("data", data);
     var myHeaders = new Headers();
-    // myHeaders.append("Accept", "application/json");
+    myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "multipart/form-data");
     myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5'");
 
@@ -91,7 +89,7 @@ export default function AddPresentation({ navigation }) {
                 description: Yup.string().required("Description is required"),
                 // icon: Yup.string().required("Icon is required"),
               })}
-              onSubmit={(values) => AddPresentation(values)}
+              onSubmit={(values) => addPresentation(values)}
             >
               {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
@@ -119,6 +117,7 @@ export default function AddPresentation({ navigation }) {
                   <SelectCourse
                     label={"Select Course"}
                     onSelect={(selectedItem, index) => {
+                      console.log(selectedItem);
                       setFieldValue("course", selectedItem.id);
                     }}
                     value={values.course}
@@ -143,10 +142,8 @@ export default function AddPresentation({ navigation }) {
                   {errors.description && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
-                  </View>
+                  <UploadDocument pickImg={pickImg} />
+                  <View>{image && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                   <View style={styles.button}>
                     <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
@@ -214,6 +211,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
 });

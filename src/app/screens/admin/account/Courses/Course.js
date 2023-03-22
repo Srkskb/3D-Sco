@@ -12,6 +12,7 @@ import qs from "qs";
 import { myHeadersData } from "../../../../api/helper";
 import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
 import Loader from "../../../../utils/Loader";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
@@ -19,6 +20,7 @@ export default function Course({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const DeleteCourse = (id, userId) => {
+    console.log("first", id, userId);
     var data = qs.stringify({
       delete_courses: "1",
       id: id,
@@ -38,17 +40,20 @@ export default function Course({ navigation }) {
     axios(config)
       .then(function (response) {
         console.log("response", response.data);
+        setCourses((prev) => prev.filter((item) => item.id != id));
       })
       .catch(function (error) {
         console.log(error);
       });
   };
 
-  const allCourses = () => {
+  const allCourses = async (access) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     setLoading(true);
     var config = {
       method: "get",
-      url: "https://3dsco.com/3discoapi/3dicowebservce.php?Course=1",
+      url: `https://3dsco.com/3discoapi/3dicowebservce.php?courses_list=1&user_id=${myData.id}&Access=${access}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
@@ -91,7 +96,13 @@ export default function Course({ navigation }) {
                 console.log(selectedItem, index);
               }}
             /> */}
-            <AccessLevel label />
+            <AccessLevel
+              label
+              onSelect={(selectedItem, index) => {
+                console.log(selectedItem, index);
+                allCourses(selectedItem);
+              }}
+            />
           </View>
         </View>
         <View style={styles.filter_button}>
@@ -111,7 +122,7 @@ export default function Course({ navigation }) {
               {courses.map((list, index) => (
                 <Course_Card
                   key={index}
-                  title={list.Courses}
+                  title={list.Course}
                   status={list.Access}
                   educator={list.assigned_tutor}
                   releaseDate={list.ReleaseDate}
