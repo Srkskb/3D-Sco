@@ -13,6 +13,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminAddMyJournal() {
   const navigation = useNavigation();
@@ -24,16 +25,12 @@ export default function AdminAddMyJournal() {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
@@ -47,9 +44,9 @@ export default function AdminAddMyJournal() {
     urlencoded.append("titel", values.docTitle);
     urlencoded.append("access_level", access);
     urlencoded.append("image", {
-      uri: image,
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
@@ -143,10 +140,8 @@ export default function AdminAddMyJournal() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -226,6 +221,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
 });

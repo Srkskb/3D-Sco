@@ -12,6 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as DocumentPicker from "expo-document-picker";
 export default function AdminEditMyJournal({ route, navigation }) {
   const { jID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -28,16 +29,12 @@ export default function AdminEditMyJournal({ route, navigation }) {
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
   const [access, setAccess] = useState(jAccess);
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
@@ -53,9 +50,9 @@ export default function AdminEditMyJournal({ route, navigation }) {
     urlencoded.append("user_id", myData.id);
     urlencoded.append("id", jID);
     urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
@@ -146,10 +143,8 @@ export default function AdminEditMyJournal({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                 </>
               ) : (
                 <>
@@ -221,7 +216,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
   selectedData: {
     flexDirection: "row",
