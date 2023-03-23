@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 const { height, width } = Dimensions.get("window");
@@ -25,6 +25,9 @@ export default function AdminViewContent({ route, navigation }) {
           <Text style={styles.title}>Description : {description}</Text>
         </Text>
         <View style={styles.documentView}>
+          <TouchableOpacity>
+            <Image source={require("../../../assets/images/whatever.png")} />
+          </TouchableOpacity>
           <Text>Pdf Name:</Text>
           <Text>{image.split("https://3dsco.com/images/")[1]}</Text>
           {/* <Image
@@ -70,5 +73,8 @@ const styles = StyleSheet.create({
   },
   documentView: {
     marginTop: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
 });
