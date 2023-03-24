@@ -8,18 +8,21 @@ import Category_Card from "../../../../components/admin_required/Cards/Category_
 import axios from "axios";
 import Forum_Card from "../../../../components/admin_required/Cards/Forum_Card";
 import { NoDataFound } from "../../../../components";
+
 import { myHeadersData } from "../../../../api/helper";
 import * as qs from "qs";
 import Loader from "../../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
+import { useIsFocused } from "@react-navigation/native";
+
 export default function Forum({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [forums, setForums] = useState([]);
   const [loading, setLoading] = useState(false);
+  const isFocused = useIsFocused();
 
   const allForumList = (id) => {
     setLoading(true);
-    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "POST",
@@ -44,6 +47,11 @@ export default function Forum({ navigation }) {
         console.log("error", error);
       });
   };
+  useEffect(() => {
+    console.log("Enter hua", selectCourse);
+
+    selectCourse && allForumList(selectCourse);
+  }, [selectCourse, isFocused]);
   const DeleteForum = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var data = qs.stringify({
@@ -63,7 +71,6 @@ export default function Forum({ navigation }) {
 
     axios(config)
       .then((response) => {
-        console.log("dele for", response);
         if (response.data.success == 1) {
           // allLearnerList();
           setForums((prev) => prev.filter((item) => item.id != id));
@@ -73,10 +80,10 @@ export default function Forum({ navigation }) {
         console.log("error", error);
       });
   };
-  useEffect(() => {
-    // allForumList();
-    navigation.addListener("focus", () => setForums([]));
-  }, []);
+  // useEffect(() => {
+  //   // allForumList();
+  //   navigation.addListener("focus", () => allForumList(selectCourse));
+  // }, []);
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
       <HeaderBack title={"Forums"} onPress={() => navigation.goBack()} />
@@ -84,8 +91,8 @@ export default function Forum({ navigation }) {
         <TextWithButton label={"+Add"} title={"Forum Lists"} onPress={() => navigation.navigate("AddForum")} />
         <SelectCourse
           onSelect={(selectedItem, index) => {
-            setSelectCourse(selectedItem);
-            allForumList(selectedItem.id);
+            setSelectCourse(selectedItem.id);
+            // allForumList(selectedItem.id);
           }}
           // value={selectCourse}
         />
@@ -96,7 +103,15 @@ export default function Forum({ navigation }) {
             <Forum_Card
               key={index}
               title={list.forum_title}
-              editPress={() => navigation.navigate("EditForum")}
+              editPress={() =>
+                navigation.navigate("EditForum", {
+                  description: list.Description,
+                  forumTitle: list.forum_title,
+                  id: list.id,
+                  userId: list.user_id,
+                  course: list.course_id,
+                })
+              }
               // viewPress={() => navigation.navigate("ViewForum")}
               status={"Active"}
               posted_by={"Deepak"}

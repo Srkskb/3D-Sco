@@ -10,6 +10,8 @@ import { NoDataFound } from "../../../components";
 import Library_Search from "../../../components/LibrarySearch";
 import TextWithButton from "../../../components/TextWithButton";
 import SelectCourse from "../../../components/admin_required/SelectCourse";
+import AsyncStorage from "@react-native-community/async-storage";
+import Loader from "../../../utils/Loader";
 
 export default function LibraryAccess() {
   const navigation = useNavigation();
@@ -17,9 +19,13 @@ export default function LibraryAccess() {
   const [initialStudentLibrary, setInitialStudentLibrary] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [courseId, setCourseId] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const allLearnerList = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+  const allLearnerList = async (id) => {
+    setLoading(true);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -27,27 +33,36 @@ export default function LibraryAccess() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${loginUID}&course_id=${id}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData.id}&course_id=${id}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result.data);
-        setStudentLibrary(result.data);
-        setInitialStudentLibrary(result.data);
+        console.log(result);
+        if (result.success) {
+          setStudentLibrary(result.data);
+          setInitialStudentLibrary(result.data);
+        } else {
+          setStudentLibrary([]);
+          setInitialStudentLibrary([]);
+        }
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    allLearnerList(courseId);
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    allLearnerList();
-  }, []);
+    courseId && allLearnerList(courseId);
+  }, [courseId]);
 
   useEffect(() => {
     if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
@@ -95,21 +110,26 @@ export default function LibraryAccess() {
         <SelectCourse
           // label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            console.log(index);
-            allLearnerList(selectedItem.id);
+            setCourseId(selectedItem.id);
           }}
         />
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
-            {studentLibrary === undefined ? (
-              <>
-                <NoDataFound />
-              </>
+            {loading ? (
+              <Loader />
             ) : (
               <>
-                {studentLibrary.map((list) => (
-                  <Book_Card title={list.titel} author={list.author} onPress={() => navigation.navigate("ViewBook")} />
-                ))}
+                {studentLibrary?.length ? (
+                  studentLibrary.map((list) => (
+                    <Book_Card
+                      title={list.titel}
+                      author={list.author}
+                      onPress={() => navigation.navigate("ViewBook", { list })}
+                    />
+                  ))
+                ) : (
+                  <NoDataFound />
+                )}
               </>
             )}
           </View>

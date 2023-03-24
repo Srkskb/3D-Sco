@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl, Platform } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl, Platform, Linking } from "react-native";
 import color from "../../../../assets/themes/Color";
 import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
@@ -11,6 +11,8 @@ import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
+// import * as MediaLibrary from "expo-media-library";
+// import { requestPermissionsAsync } from "expo-media-library";
 import { StorageAccessFramework } from "expo-file-system";
 import { Snackbar } from "react-native-paper";
 
@@ -82,17 +84,79 @@ export default function Backup() {
   }, [navigation]);
 
   const downloadFile = (url) => {
-    console.log("url", url);
-    const uri = url;
-    let fileUri = FileSystem.documentDirectory + "file.zip";
+    Linking.openURL(url);
+    return;
+    // console.log("url", url);
+    // const fileUri = url;
+    // const downloads = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+    // console.log("Downloads:", downloads);
+    // // const fileUri = 'https://example.com/file.pdf'; // replace with your file URL
+    // const fileExtension = fileUri.split(".").pop(); // get the file extension
+    // console.log(FileSystem.documentDirectory + "file." + fileExtension, "pathhhhh");
+    // const downloadResumable = FileSystem.createDownloadResumable(
+    //   fileUri,
+    //   FileSystem.documentDirectory + "file." + fileExtension
+    // );
 
-    FileSystem.downloadAsync(uri, fileUri)
-      .then(async (res) => {
-        console.log("uri res", res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // try {
+    //   const { uri } = await downloadResumable.downloadAsync();
+    //   console.log("File downloaded at:", uri);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+    // let filePath = FileSystem.documentDirectory + "Images/";
+    // let filename = "file.zip";
+    // saveQRAsImage(filePath, filename, uri);
+    // FileSystem.downloadAsync(uri, fileUri)
+    //   .then(async (res) => {
+    //     const permission = await requestPermissionsAsync();
+    //     if (permission.status === "granted") {
+    //       MediaLibrary.createAssetAsync(res.uri)
+    //         .then((asset) => {
+    //           console.log("asset", asset);
+    //           MediaLibrary.createAlbumAsync("myfolder", asset)
+    //             .then((res) => {
+    //               console.log(res);
+    //             })
+    //             .catch((error) => {
+    //               console.log(error);
+    //             });
+    //         })
+    //         .catch((er) => console.log(er));
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+    // };
+    // const saveQRAsImage = async (qrImagesDirectory, fileName, imageSource) => {
+    //   //Get folder
+    //   const folder = await FileSystem.getInfoAsync(qrImagesDirectory);
+    //   console.log(folder, "folder");
+    //   // Check if folder does not exist, create one furthermore
+    //   if (!folder.exists) {
+    //     await FileSystem.makeDirectoryAsync(qrImagesDirectory).then((res) =>
+    //       console.log(res, "exists").catch((er) => console.log(er, "err exists"))
+    //     );
+    //   }
+
+    // Write file into the source of program
+    // await FileSystem.writeAsStringAsync(qrImagesDirectory + fileName, imageSource, {
+    //   encoding: FileSystem.EncodingType.Base64,
+    // })
+    //   .then((res) => console.log(res, "finalres"))
+    //   .catch((er) => console.log(er, "lasterr"));
+
+    // const ans = await FileSystem.getInfoAsync(qrImagesDirectory + fileName);
+
+    // Make the file accessible through mobile phone
+    // FileSystem.getContentUriAsync(ans.uri).then((cUri) => {
+    //   //Open save image options
+    //   IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+    //     data: cUri,
+    //     flags: 1,
+    //   });
+    // });
   };
 
   return (

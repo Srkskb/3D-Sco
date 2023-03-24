@@ -28,21 +28,21 @@ export default function AddForum({ navigation }) {
       topic_id: values.status,
     });
     var config = {
-      method: "POST",
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
         Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
       },
-      body: data,
+      data: data,
     };
     console.log("values", data);
 
-    // axios(config)
-    await fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
-      .then((response) => response.json())
+    axios(config)
       .then((response) => {
-        console.log("add forum", response);
-        if (response?.success == 1) {
+        console.log("add forum", response.data);
+        if (response.data?.success == 1) {
           navigation.navigate("Forum");
         } else {
           console.log("some issue in add forum");
