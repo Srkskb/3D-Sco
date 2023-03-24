@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl, Linking } from "react-native";
 import color from "../../../../assets/themes/Color";
 import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
@@ -137,6 +137,9 @@ export default function Assignment() {
                   title={list.assignment_title}
                   description={list.Description}
                   date={list.Date}
+                  onPressView={() => {
+                    Linking.openURL(list.file_name);
+                  }}
                   onPressEdit={() =>
                     navigation.navigate("EditAssignment", {
                       // title: list,
