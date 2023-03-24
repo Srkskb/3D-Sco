@@ -14,6 +14,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AdminAddBlog() {
   const navigation = useNavigation();
@@ -26,13 +27,15 @@ export default function AdminAddBlog() {
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const addFileCabinet = (values) => {
+  const addFileCabinet = async (values) => {
+    const data = JSON.parse(await AsyncStorage.getItem("userData"));
+
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("blogs", "1");
     urlencoded.append("titel", values.blogTitle);
     urlencoded.append("access", values.access);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", data.id);
     urlencoded.append("date", moment(values?.blogDate).format("YYYY-MM-DD"));
     urlencoded.append("description", values.description);
 

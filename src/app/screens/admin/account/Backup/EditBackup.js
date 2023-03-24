@@ -27,26 +27,17 @@ export default function EditBackup({ navigation, route }) {
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
 
-  const pickImage = async () => {
+  const pickImg = async () => {
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/zip",
     });
     console.log(result);
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result);
     }
   };
 
   const EditBackupFun = (values) => {
-    console.log(
-      values.docTitle,
-      route.params.title.course_id,
-      loginUID,
-      values.description,
-      route.params.title.id,
-      mime.getType(image)
-    );
-
     const myHeaders = myHeadersData();
     var formdata = new FormData();
     formdata.append("Update_backup", "1");
@@ -55,9 +46,9 @@ export default function EditBackup({ navigation, route }) {
     formdata.append("title", values.docTitle);
     formdata.append("detail", values.description);
     formdata.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `test.zip`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     formdata.append("id", route.params.title.id);
 
@@ -119,16 +110,16 @@ export default function EditBackup({ navigation, route }) {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
+                  <UploadDocument pickImg={pickImg} />
                   <View style={styles.uploadCon}>
-                    {image && (
+                    {image.name && (
                       <>
                         <Image
                           source={require("../../../../assets/images/account/file.png")}
                           style={styles.uploadImg}
                           resizeMode={"contain"}
                         />
-                        <Text style={{ fontSize: 14, marginBottom: 10 }}>{image}</Text>
+                        <Text style={{ fontSize: 14, marginBottom: 10 }}>{image.name}</Text>
                       </>
                     )}
                   </View>

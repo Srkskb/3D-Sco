@@ -9,6 +9,7 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AdminBlogs() {
   const navigation = useNavigation();
@@ -20,8 +21,20 @@ export default function AdminBlogs() {
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const data = JSON.parse(await AsyncStorage.getItem("userData"));
+    setUserId(data?.id);
+    allLearnerList();
+  };
 
   const allLearnerList = () => {
+    console.log("Enter");
     setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -44,14 +57,14 @@ export default function AdminBlogs() {
   };
   // Delete Blog
   const deleteBlog = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+    // const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${loginUID}`, requestOptions)
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${userId}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
@@ -78,10 +91,9 @@ export default function AdminBlogs() {
     }, 2000);
   };
 
-  useEffect(() => {
-    allLearnerList();
-    navigation.addListener("focus", () => allLearnerList());
-  }, []);
+  // useEffect(() => {
+  //   navigation.addListener("focus", () => allLearnerList());
+  // }, []);
 
   return (
     <View style={styles.container}>
@@ -120,7 +132,7 @@ export default function AdminBlogs() {
       <View style={styles.main_box}>
         <TextWithButton title={"My Blog"} label={"+Add"} onPress={() => navigation.navigate("AdminAddBlogs")} />
         <View style={styles.main_box2}>
-          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}>
             <View style={styles.main}>
               <View style={{ flex: 1 }}>
                 {blogListData === undefined ? (
@@ -155,7 +167,7 @@ export default function AdminBlogs() {
                           />
                           <View style={{ width: 20 }}></View>
 
-                          {list.added_by === loginUID ? (
+                          {list.added_by == userId ? (
                             <>
                               <Edit
                                 onPress={() =>

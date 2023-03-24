@@ -15,6 +15,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../../components";
 import mime from "mime";
 import * as DocumentPicker from "expo-document-picker";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AddBackup() {
   const navigation = useNavigation();
@@ -24,17 +25,18 @@ export default function AddBackup() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [course, setCourse] = useState("Select Course");
-  const loginUID = localStorage.getItem("loginUID");
+  // const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
-  const pickImage = async () => {
+  const pickImg = async () => {
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/zip",
     });
-    console.log(result.size > 26214400);
+    // console.log(result.size > 26214400);
+    console.log(result);
 
     if (!result.cancelled && result.size < 26214400) {
-      setImage(result.uri);
+      setImage(result);
     } else {
       if (result.size > 26214400) {
         setSnackVisibleTrue(true);
@@ -43,22 +45,29 @@ export default function AddBackup() {
     }
   };
 
-  const addFileCabinet = (values) => {
-    console.log(values.docTitle, loginUID, values.description, image);
+  const addFileCabinet = async (values) => {
+    console.log("values", values);
+    const data = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
-    const myHeaders = myHeadersData();
+    // const myHeaders = myHeadersData();
 
     var urlencoded = new FormData();
     urlencoded.append("add_backup", "1");
     urlencoded.append("title", values.docTitle);
-    urlencoded.append("course_id", course);
-    urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
-    });
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("course_id", values.course);
+    urlencoded.append("user_id", data.id);
     urlencoded.append("detail", values.description);
+    urlencoded.append("image", {
+      uri: image.uri,
+      type: mime.getType(image.uri),
+      name: image.name,
+    });
+
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=8us3uou5gm35l17b3eo0lfb334");
+
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       headers: myHeaders,
@@ -67,6 +76,7 @@ export default function AddBackup() {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log("res", res);
         setLoading(false);
         console.log(res);
         if (res.success == 1) {
@@ -114,20 +124,20 @@ export default function AddBackup() {
               initialValues={{
                 docTitle: "",
                 description: "",
+                course: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters")
-                  .max(50, "Document Title cannot be more than 50 characters"),
+                  .min(3, "Document Title must be at least 3 characters"),
+                course: Yup.string().required("course is required"),
                 description: Yup.string()
                   .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                  .min(20, "Description must be at least 20 characters"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -152,29 +162,29 @@ export default function AddBackup() {
                   /> */}
                   <SelectCourse
                     label={"Select Course"}
+                    name="course"
                     onSelect={(selectedItem, index) => {
-                      setCourse(index);
-                      console.log(selectedItem, index);
+                      // setCourse(index);
+                      // console.log(selectedItem, index);
+                      setFieldValue("course", selectedItem.id);
                     }}
-                    value={course}
+                    // value={course}
                   />
 
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                  {errors.course && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
+                  <UploadDocument pickImg={pickImg} />
                   <View style={styles.uploadCon}>
-                    {image && (
+                    {image?.name && (
                       <>
                         <Image
                           source={require("../../../../assets/images/account/file.png")}
                           style={styles.uploadImg}
                           resizeMode={"contain"}
                         />
-                        <Text style={{ fontSize: 14, marginBottom: 10 }}>
-                          {image.split("file:///data/user/0/com.threeDSCO.iDigital/cache/DocumentPicker/").join("")}
-                        </Text>
+                        <Text style={{ fontSize: 14, marginBottom: 10 }}>{image?.name}</Text>
                       </>
                     )}
                   </View>

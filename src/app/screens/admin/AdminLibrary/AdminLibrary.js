@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl, TextInput, Image, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Text,
+  Linking,
+} from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -124,7 +134,8 @@ export default function LibraryAccess() {
                     <Book_Card
                       title={list.titel}
                       author={list.author}
-                      onPress={() => navigation.navigate("ViewBook", { list })}
+                      // onPress={() => navigation.navigate("ViewBook", { list })}
+                      onPress={() => Linking.openURL(list.pdf)}
                     />
                   ))
                 ) : (

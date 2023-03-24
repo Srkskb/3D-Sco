@@ -13,6 +13,7 @@ import * as DocumentPicker from "expo-document-picker";
 import adminServices from "../../../services/admin/adminServices";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
+import SelectCourse from "../../../components/admin_required/SelectCourse";
 
 export default function AdminAddBook({ navigation }) {
   const [access, setAccess] = useState("Private");
@@ -90,11 +91,18 @@ export default function AdminAddBook({ navigation }) {
       <HeaderBack title={"Add Book"} onPress={() => navigation.goBack()} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.scroll_view}>
-          <CommonDropdown
+          {/* <CommonDropdown
             value={courseList.map((item) => ({ name: item?.Course, id: item?.id }))}
             label={"Course"}
             marginBottom={10}
             onChange={(item) => setBookData((prev) => ({ ...prev, course_id: item?.id }))}
+          /> */}
+          <SelectCourse
+            onSelect={(selectedItem, index) => {
+              console.log(selectedItem);
+              // setSelectCourseId(selectedItem.id);
+              setBookData((prev) => ({ ...prev, course_id: selectedItem?.id }));
+            }}
           />
           <Input
             value={bookData?.title}

@@ -61,6 +61,7 @@ export default function Enrollment({ navigation }) {
     )
       .then((res) => res.json())
       .then((result) => {
+        console.log("result", result);
         if (result?.data?.length) {
           setCourses(result?.data);
         } else {
@@ -94,6 +95,7 @@ export default function Enrollment({ navigation }) {
           <View style={{ width: "50%" }}>
             <SelectCourse
               onSelect={(selectedItem, index) => {
+                console.log(selectedItem);
                 setSelectCourseId(selectedItem.id);
               }}
             />
