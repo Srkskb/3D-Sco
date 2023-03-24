@@ -11,7 +11,7 @@ import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import qs from "qs";
 import moment from "moment";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminEditBlogs({ route, navigation }) {
   // ** For Event Update
   const { blogID, eventIDParam } = route.params; // ! Current Event ID
@@ -42,7 +42,8 @@ export default function AdminEditBlogs({ route, navigation }) {
     hideDatePicker();
   };
 
-  const updateEvent = () => {
+  const updateEvent = async () => {
+    const Mydata = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(blogID);
     setLoading(true);
     const myHeaders = myHeadersData();
@@ -50,7 +51,7 @@ export default function AdminEditBlogs({ route, navigation }) {
       update_blogs: "1",
       id: blogID,
       titel: updateTitle,
-      user_id: loginUID,
+      user_id: Mydata.id,
       description: updateDescription,
       date: moment(new Date()).format("YYYY-MM-DD"),
     });
