@@ -64,139 +64,139 @@ export default function Login({ navigation }) {
   const loginUser = async (values) => {
     setloading(true);
     var role_data = user_id;
-    const myHeaders = myHeadersData();
+    // const myHeaders = myHeadersData();
 
-    if (role_data == 2) {
-      var formdata = new FormData();
-      formdata.append("tutor_login", "1");
-      formdata.append("email", values.email);
-      formdata.append("username", values.email);
-      formdata.append("password", values.password);
-      formdata.append("type", "2");
+    // if (role_data == 2) {
+    //   var formdata = new FormData();
+    //   formdata.append("tutor_login", "1");
+    //   formdata.append("email", values.email);
+    //   formdata.append("username", values.email);
+    //   formdata.append("password", values.password);
+    //   formdata.append("type", "2");
 
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-      fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
+    //   var requestOptions = {
+    //     method: "POST",
+    //     headers: myHeaders,
+    //     body: formdata,
+    //     redirect: "follow",
+    //   };
+    //   fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+    //     .then((response) => response.json())
+    //     .then((result) => {
+    //       setloading(false);
+    //       if (result.success == 1) {
+    //         localStorage.setItem("loginUID", result.data.id);
+    //         localStorage.setItem("loginData", JSON.stringify(result.data));
+    //         navigation.navigate("TutorDrawerNavigator");
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       setloading(false);
+    //       console.log("error", error);
+    //     });
+    // } else {
+    var data = qs.stringify({
+      login: "1",
+      email: values.email,
+      password: values.password,
+      type: role_data,
+      username: values.email,
+    });
+
+    // var config = {
+    //   method: "post",
+    //   url: "https://3dsco.com/3discoapi/3dicowebservce.php",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   data: data,
+    // };
+    // axios(config)
+    //   .then((response) => {
+    //     console.log("login data", response.data);
+    //     if (response.data.success == 0) {
+    //       //add alert here
+    //       setloading(false);
+    //     } else {
+    //       setloading(false);
+    //       localStorage.setItem("loginUID", response.data.data.id);
+    //       localStorage.setItem("loginData", JSON.stringify(response.data.data));
+    //       storeData("userType", response.data.data.type);
+    //       storeData("userData", response.data.data);
+    //       if (response.data.data.type == "student") {
+    //         navigation.navigate("DrawerNavigator");
+    //       }
+    //       if (response.data.data.type == "tutor") {
+    //         navigation.navigate("TutorDrawerNavigator");
+    //       }
+    //       if (response.data.data.type == "parent") {
+    //         navigation.navigate("ParentDrawerNavigator");
+    //       }
+    //       if (response.data.data.type == "admin") {
+    //         navigation.navigate("AdminDrawerNavigator");
+    //       }
+    //       if (response.data.data.type == "affiliate") {
+    //         navigation.navigate("AffiliateDrawerNavigator");
+    //       }
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setloading(false);
+    //     setSnackVisibleFalse(true);
+    //     setMessageFalse(error.response?.data?.message);
+    //   });
+    var adminFormData = new FormData();
+    adminFormData.append("login", "1");
+    adminFormData.append("email", values.email);
+    adminFormData.append("password", values.password);
+    adminFormData.append("type", role_data);
+    adminFormData.append("username", values.email);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: adminFormData,
+    };
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.success == 0) {
+          //add alert here
+          console.log(response);
           setloading(false);
-          if (result.success == 1) {
-            localStorage.setItem("loginUID", result.data.id);
-            localStorage.setItem("loginData", JSON.stringify(result.data));
+        } else {
+          setloading(false);
+          localStorage.setItem("loginUID", response.data.id);
+          localStorage.setItem("loginData", JSON.stringify(response.data));
+          storeData("userType", response.data.type);
+          storeData("userData", response.data);
+          if (response.data.type == "student") {
+            navigation.navigate("DrawerNavigator");
+          }
+          if (response.data.type == "tutor") {
             navigation.navigate("TutorDrawerNavigator");
           }
-        })
-        .catch((error) => {
-          setloading(false);
-          console.log("error", error);
-        });
-    } else {
-      var data = qs.stringify({
-        login: "1",
-        email: values.email,
-        password: values.password,
-        type: role_data,
-        username: values.email,
-      });
-
-      // var config = {
-      //   method: "post",
-      //   url: "https://3dsco.com/3discoapi/3dicowebservce.php",
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Content-Type": "application/x-www-form-urlencoded",
-      //   },
-      //   data: data,
-      // };
-      // axios(config)
-      //   .then((response) => {
-      //     console.log("login data", response.data);
-      //     if (response.data.success == 0) {
-      //       //add alert here
-      //       setloading(false);
-      //     } else {
-      //       setloading(false);
-      //       localStorage.setItem("loginUID", response.data.data.id);
-      //       localStorage.setItem("loginData", JSON.stringify(response.data.data));
-      //       storeData("userType", response.data.data.type);
-      //       storeData("userData", response.data.data);
-      //       if (response.data.data.type == "student") {
-      //         navigation.navigate("DrawerNavigator");
-      //       }
-      //       if (response.data.data.type == "tutor") {
-      //         navigation.navigate("TutorDrawerNavigator");
-      //       }
-      //       if (response.data.data.type == "parent") {
-      //         navigation.navigate("ParentDrawerNavigator");
-      //       }
-      //       if (response.data.data.type == "admin") {
-      //         navigation.navigate("AdminDrawerNavigator");
-      //       }
-      //       if (response.data.data.type == "affiliate") {
-      //         navigation.navigate("AffiliateDrawerNavigator");
-      //       }
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setloading(false);
-      //     setSnackVisibleFalse(true);
-      //     setMessageFalse(error.response?.data?.message);
-      //   });
-      var adminFormData = new FormData();
-      adminFormData.append("login", "1");
-      adminFormData.append("email", values.email);
-      adminFormData.append("password", values.password);
-      adminFormData.append("type", role_data);
-      adminFormData.append("username", values.email);
-
-      const myHeaders = new Headers();
-      myHeaders.append("Accept", "application/json");
-      myHeaders.append("Content-Type", "multipart/form-data");
-      myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: adminFormData,
-      };
-      fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.success == 0) {
-            //add alert here
-            setloading(false);
-          } else {
-            setloading(false);
-            localStorage.setItem("loginUID", response.data.id);
-            localStorage.setItem("loginData", JSON.stringify(response.data));
-            storeData("userType", response.data.type);
-            storeData("userData", response.data);
-            if (response.data.type == "student") {
-              navigation.navigate("DrawerNavigator");
-            }
-            if (response.data.type == "tutor") {
-              navigation.navigate("TutorDrawerNavigator");
-            }
-            if (response.data.type == "parent") {
-              navigation.navigate("ParentDrawerNavigator");
-            }
-            if (response.data.type == "admin") {
-              navigation.navigate("AdminDrawerNavigator");
-            }
-            if (response.data.type == "affiliate") {
-              navigation.navigate("AffiliateDrawerNavigator");
-            }
+          if (response.data.type == "parent") {
+            navigation.navigate("ParentDrawerNavigator");
           }
-        })
-        .catch((error) => {
-          setloading(false);
-          setSnackVisibleFalse(true);
-          setMessageFalse(error.response?.data?.message);
-        });
-    }
+          if (response.data.type == "admin") {
+            navigation.navigate("AdminDrawerNavigator");
+          }
+          if (response.data.type == "affiliate") {
+            navigation.navigate("AffiliateDrawerNavigator");
+          }
+        }
+      })
+      .catch((error) => {
+        setloading(false);
+        setSnackVisibleFalse(true);
+        setMessageFalse(error.response?.data?.message);
+      });
   };
 
   return (
