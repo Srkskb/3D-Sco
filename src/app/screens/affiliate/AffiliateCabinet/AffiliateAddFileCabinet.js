@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -14,13 +7,13 @@ import { AccessLevel } from "../../../components/dropdown";
 import SmallButton from "../../../components/buttons/SmallButton";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
-
+import AsyncStorage from "@react-native-community/async-storage";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
-import mime from 'mime'
+import mime from "mime";
 
 export default function AffiliateAddFileCabinet() {
   const navigation = useNavigation();
@@ -45,21 +38,21 @@ export default function AffiliateAddFileCabinet() {
     }
   };
 
-  const addFileCabinet = (values) => {
-    console.log(values.docTitle,access,loginUID,values.description,image);
+  const addFileCabinet = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log(values.docTitle, access, loginUID, values.description, image);
     const myHeaders = myHeadersData();
-
 
     var urlencoded = new FormData();
     urlencoded.append("add_documents", "1");
     urlencoded.append("titel", values.docTitle);
     urlencoded.append("access", access);
     urlencoded.append("image", {
-      uri: image,//"file:///" + image.split("file:/").join(""),
+      uri: image, //"file:///" + image.split("file:/").join(""),
       type: mime.getType(image),
-      name: `abc.jpg`
+      name: `abc.jpg`,
     });
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
@@ -126,14 +119,7 @@ export default function AffiliateAddFileCabinet() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -145,11 +131,7 @@ export default function AffiliateAddFileCabinet() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   <AccessLevel
                     required
@@ -162,18 +144,12 @@ export default function AffiliateAddFileCabinet() {
                   />
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
                   <UploadDocument onPress={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                   <InputField
                     label={"Description"}
@@ -188,19 +164,11 @@ export default function AffiliateAddFileCabinet() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
