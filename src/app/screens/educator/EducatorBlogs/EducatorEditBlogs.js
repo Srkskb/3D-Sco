@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -15,6 +8,7 @@ import { myHeadersData } from "../../../api/helper";
 import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function EducatorEditBlogs({ route, navigation }) {
   // ** For Event Update
@@ -46,7 +40,8 @@ export default function EducatorEditBlogs({ route, navigation }) {
     hideDatePicker();
   };
 
-  const updateEvent = () => {
+  const updateEvent = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("update_blogs", "1");
@@ -54,7 +49,7 @@ export default function EducatorEditBlogs({ route, navigation }) {
     urlencoded.append("date", selectedDate);
     urlencoded.append("description", updateDescription);
     urlencoded.append("id", blogID);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
 
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
       method: "POST",
@@ -96,10 +91,7 @@ export default function EducatorEditBlogs({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Blog"}
-        onPress={() => navigation.navigate("EducatorBlogs")}
-      />
+      <HeaderBack title={"Update Blog"} onPress={() => navigation.navigate("EducatorBlogs")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}

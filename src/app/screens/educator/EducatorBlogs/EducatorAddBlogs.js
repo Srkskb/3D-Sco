@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Button, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -22,6 +14,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorAddBlog() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
@@ -45,21 +38,16 @@ export default function EducatorAddBlog() {
     console.log(date);
     hideDatePicker();
   };
-  const addFileCabinet = (values) => {
-    console.log(
-      values.blogTitle,
-      access,
-      loginUID,
-      selectedDate,
-      values.description
-    );
+  const addFileCabinet = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log(values.blogTitle, access, loginUID, selectedDate, values.description);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
 
     urlencoded.append("blogs", "1");
     urlencoded.append("titel", values.blogTitle);
     urlencoded.append("access", access);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     // urlencoded.append("added_by", loginUID);
 
     urlencoded.append("date", "2022-02-01");
@@ -87,10 +75,7 @@ export default function EducatorAddBlog() {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Add Blog"}
-        onPress={() => navigation.navigate("EducatorBlogs")}
-      />
+      <HeaderBack title={"Add Blog"} onPress={() => navigation.navigate("EducatorBlogs")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -109,7 +94,7 @@ export default function EducatorAddBlog() {
       </Snackbar>
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{paddingVertical:10}}>
+          <View style={{ paddingVertical: 10 }}>
             <Formik
               initialValues={{
                 blogTitle: "",
@@ -122,19 +107,11 @@ export default function EducatorAddBlog() {
                   .max(150, "Document Title cannot be more than 150 characters"),
                 description: Yup.string()
                   .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                
+                  .min(20, "Description must be at least 20 characters"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Blog Title"}
@@ -146,11 +123,7 @@ export default function EducatorAddBlog() {
                     keyboardType="text"
                   />
                   {errors.blogTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.blogTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogTitle}</Text>
                   )}
                   <Text style={{ marginBottom: 5 }}>
                     <Text style={styles.label_text}>Event Date</Text>
@@ -163,18 +136,12 @@ export default function EducatorAddBlog() {
                         fontFamily: "Montserrat-SemiBold",
                       }}
                     >
-                      {selectedDate
-                        ? selectedDate.toLocaleDateString()
-                        : "No date selected"}
+                      {selectedDate ? selectedDate.toLocaleDateString() : "No date selected"}
                     </Text>
                     <View style={styles.selectDate}>
                       <TouchableOpacity onPress={showDatePicker}>
                         {/* <Text>Select Date</Text> */}
-                        <Entypo
-                          name="calendar"
-                          size={24}
-                          color={color.purple}
-                        />
+                        <Entypo name="calendar" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
 
@@ -197,11 +164,7 @@ export default function EducatorAddBlog() {
                     value={access}
                   />
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
                   <InputField
                     label={"Description"}
@@ -213,25 +176,20 @@ export default function EducatorAddBlog() {
                     onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
-                    textAlignVertical='top'
+                    textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                  <SmallButton title={"Cancel"} color={color.purple} 
-                    fontFamily={'Montserrat-Medium'}/>
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
                       disabled={!isValid}
                       color={color.white}
                       backgroundColor={color.purple}
-                      fontFamily={'Montserrat-Bold'}
+                      fontFamily={"Montserrat-Bold"}
                     />
                   </View>
                 </View>
@@ -263,12 +221,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 2,
     borderColor: color.gray,
-    borderRadius:8,
-    justifyContent: 'space-between',
-    paddingHorizontal:10,
-    paddingVertical:12,
-    paddingRight:20,
-    marginBottom:10
+    borderRadius: 8,
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    paddingRight: 20,
+    marginBottom: 10,
   },
   description: {
     fontFamily: "Montserrat-Medium",

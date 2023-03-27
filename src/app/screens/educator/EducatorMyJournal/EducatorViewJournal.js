@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, Dimensions, TouchableOpacity } from "react-native";
 import React from "react";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
 import CommentCard from "../../../components/card/CommentCard";
-const {height,width}=Dimensions.get("window")
-export default function ViewJournal({ route, navigation }) {
+const { height, width } = Dimensions.get("window");
+export default function EducatorViewJournal({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { Date, dateParam } = route.params;
   const { description, descriptionParam } = route.params;
@@ -14,14 +14,8 @@ export default function ViewJournal({ route, navigation }) {
   const { image, imageParam } = route.params;
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"view journal"}
-        onPress={() => navigation.navigate("EducatorMyJournal")}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.scroll_view}
-      >
+      <HeaderBack title={"view journal"} onPress={() => navigation.navigate("EducatorMyJournal")} />
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll_view}>
         <View style={styles.detail_box}>
           <Text style={styles.head_text}>{title}</Text>
           <View style={styles.detail}>
@@ -39,12 +33,17 @@ export default function ViewJournal({ route, navigation }) {
               <Text style={styles.description_text}>{description}</Text>
             </View>
             <View style={styles.documentView}>
-              <Image
-                style={styles.tinyLogo}
-                source={{
-                  uri: `${image}`,
-                }}
-              />
+              <TouchableOpacity>
+                <Image source={require("../../../assets/images/whatever.png")} />
+              </TouchableOpacity>
+              <Text>Pdf Name:</Text>
+              <Text>{image.split("https://3dsco.com/images/")[1]}</Text>
+              {/* <Image
+            style={styles.tinyLogo}
+            source={{
+              uri: `${image}`,
+            }}
+          /> */}
             </View>
           </View>
         </View>
@@ -91,10 +90,13 @@ const styles = StyleSheet.create({
   },
   documentView: {
     marginTop: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
   tinyLogo: {
-    height: height/2,
-    resizeMode:'contain'
+    height: height / 2,
+    resizeMode: "contain",
   },
   img: {
     width: 300,

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -19,8 +11,9 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-
-export default function EditMyJournal({ route, navigation }) {
+import AsyncStorage from "@react-native-community/async-storage";
+import * as DocumentPicker from "expo-document-picker";
+export default function EducatorEditMyJournal({ route, navigation }) {
   const { jID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { jAccess, docAccessParam } = route.params;
@@ -36,33 +29,30 @@ export default function EditMyJournal({ route, navigation }) {
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
   const [access, setAccess] = useState(jAccess);
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
-  const updateDocument = () => {
-    console.log(updateTitle,access,upDescription,loginUID,jID,image)
+  const updateDocument = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log(updateTitle, access, upDescription, loginUID, jID, image);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("update_journals", "1");
     urlencoded.append("titel", updateTitle);
     urlencoded.append("access_level", access);
     urlencoded.append("description", upDescription);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("id", jID);
     urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
@@ -91,7 +81,6 @@ export default function EditMyJournal({ route, navigation }) {
 
   const onClick = () => {
     setShowResults(true);
-  
   };
   const onClickDoc = () => {
     setShowDocResults(true);
@@ -99,10 +88,7 @@ export default function EditMyJournal({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Journal"}
-        onPress={() => navigation.navigate("EducatorMyJournal")}
-      />
+      <HeaderBack title={"Update Journal"} onPress={() => navigation.navigate("EducatorMyJournal")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -157,24 +143,15 @@ export default function EditMyJournal({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                 </>
               ) : (
                 <>
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {jImage && (
-                        <Image
-                          source={{ uri: jImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
+                      {jImage && <Image source={{ uri: jImage }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -196,11 +173,7 @@ export default function EditMyJournal({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                />
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
                   title="Save"
@@ -243,7 +216,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
   selectedData: {
     flexDirection: "row",

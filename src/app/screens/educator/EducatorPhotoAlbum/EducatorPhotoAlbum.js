@@ -11,6 +11,7 @@ import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import axios from "axios";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorPhotoAlbum() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -20,7 +21,8 @@ export default function EducatorPhotoAlbum() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
-  const allLearnerList = () => {
+  const allLearnerList = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -28,36 +30,34 @@ export default function EducatorPhotoAlbum() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        setFileCabinetData(result.data)
-        console.log(result.data)
+        setFileCabinetData(result.data);
+        console.log(result.data);
       })
       .catch((error) => console.log("error", error));
   };
-  const deleteEvent = (id) => {
+  const deleteEvent = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     var data = qs.stringify({
-  'delete_photos': '1',
-  'user_id': loginUID,
-  'id': id 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
+      delete_photos: "1",
+      user_id: myData.id,
+      id: id,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
 
-axios(config)
-.then((result) => {
+    axios(config)
+      .then((result) => {
         console.log(result);
         if (result.success === 1) {
           setSnackVisibleTrue(true);
@@ -72,23 +72,23 @@ axios(config)
           setMessageFalse(result.message);
         }
       })
-// fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-//       .then((res) => res.json())
-//       .then((result) => {
-//         console.log(result);
-//         if (result.success === 1) {
-//           setSnackVisibleTrue(true);
-//           setMessageTrue(result.message);
-//           let temp = [];
-//           fileCabinetData.forEach((item) => {
-//             if (item.id !== id) temp.push(item);
-//           });
-//           setFileCabinetData(temp);
-//         } else {
-//           setSnackVisibleFalse(true);
-//           setMessageFalse(result.message);
-//         }
-//       })
+      // fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
+      //       .then((res) => res.json())
+      //       .then((result) => {
+      //         console.log(result);
+      //         if (result.success === 1) {
+      //           setSnackVisibleTrue(true);
+      //           setMessageTrue(result.message);
+      //           let temp = [];
+      //           fileCabinetData.forEach((item) => {
+      //             if (item.id !== id) temp.push(item);
+      //           });
+      //           setFileCabinetData(temp);
+      //         } else {
+      //           setSnackVisibleFalse(true);
+      //           setMessageFalse(result.message);
+      //         }
+      //       })
       .catch((error) => console.log("error", error));
   };
   const onRefresh = () => {
@@ -106,10 +106,7 @@ axios(config)
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Photo"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Photo"} onPress={() => navigation.goBack()} />
       <HeaderText title={"Photo Album"} />
       <Snackbar
         visible={snackVisibleTrue}
@@ -128,16 +125,10 @@ axios(config)
         {getMessageFalse}
       </Snackbar>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
       >
-        <TextWithButton
-          title={"Lists"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AddPhoto")}
-        />
+        <TextWithButton title={"Lists"} label={"+Add"} onPress={() => navigation.navigate("AddPhoto")} />
         <View style={{ paddingHorizontal: 10 }}>
           {fileCabinetData === undefined ? (
             <>
@@ -146,7 +137,8 @@ axios(config)
           ) : (
             <>
               {fileCabinetData.map((list, index) => (
-                <FileCabinetCard key={index}
+                <FileCabinetCard
+                  key={index}
                   title={list.title}
                   access={list.access_level}
                   description={list.description}

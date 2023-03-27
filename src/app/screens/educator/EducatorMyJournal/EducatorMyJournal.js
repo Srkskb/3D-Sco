@@ -9,16 +9,18 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorMyJournal() {
   const navigation = useNavigation();
-   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
+  const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [myJournalData, setMyJournalData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
-  const allLearnerList = () => {
+  const allLearnerList = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -26,23 +28,21 @@ export default function EducatorMyJournal() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => setMyJournalData(result.data))
       .catch((error) => console.log("error", error));
   };
 
-  const deleteJournal = (id) => {
+  const deleteJournal = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
     var formdata = new FormData();
     formdata.append("delete_journals", "1");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     formdata.append("id", id);
     var requestOptions = {
       method: "POST",
@@ -85,16 +85,13 @@ export default function EducatorMyJournal() {
   }, []);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"My Journal"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"My Journal"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -103,15 +100,13 @@ export default function EducatorMyJournal() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
       <View style={styles.main_box}>
         <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           style={{ paddingHorizontal: 10 }}
         >
           <View style={styles.book_container}>

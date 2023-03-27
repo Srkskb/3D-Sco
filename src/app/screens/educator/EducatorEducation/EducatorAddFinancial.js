@@ -7,7 +7,8 @@ import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
 import UserType from "../../UserType";
-export default function EducatorAddFinancial({ route,navigation }) {
+import AsyncStorage from "@react-native-community/async-storage";
+export default function EducatorAddFinancial({ route, navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState();
@@ -17,17 +18,18 @@ export default function EducatorAddFinancial({ route,navigation }) {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const addFinancialAssets = () => {
+  const addFinancialAssets = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
-    console.log(loginUID);
+    // console.log(loginUID);
     var formdata = new FormData();
     formdata.append("Add_financial_assistance", "1");
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
     formdata.append("type", "2");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -69,24 +71,11 @@ export default function EducatorAddFinancial({ route,navigation }) {
         {getMessageFalse}
       </Snackbar>
       <View style={styles.container}>
-        <HeaderBack
-          title={"Add Financial"}
-          onPress={() => navigation.navigate("EducatorFinancialAssistance")}
-        />
+        <HeaderBack title={"Add Financial"} onPress={() => navigation.navigate("EducatorFinancialAssistance")} />
 
         <ScrollView style={styles.scroll_container}>
-          <Input
-            label={"Title"}
-            placeholder={"Username"}
-            name="title"
-            onChangeText={(text) => setAssetsTitle(text)}
-          />
-          <Input
-            label={"Url"}
-            placeholder={"http://"}
-            name="url"
-            onChangeText={(text) => setAssetsUrl(text)}
-          />
+          <Input label={"Title"} placeholder={"Username"} name="title" onChangeText={(text) => setAssetsTitle(text)} />
+          <Input label={"Url"} placeholder={"http://"} name="url" onChangeText={(text) => setAssetsUrl(text)} />
           <View style={{ paddingVertical: 10 }}>
             <SmallButton
               title={"Submit"}

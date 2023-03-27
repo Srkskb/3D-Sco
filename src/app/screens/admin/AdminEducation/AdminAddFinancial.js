@@ -7,7 +7,8 @@ import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
 import UserType from "../../UserType";
-export default function AdminAddFinancial({ route,navigation }) {
+import AsyncStorage from "@react-native-community/async-storage";
+export default function AdminAddFinancial({ route, navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState();
@@ -17,7 +18,7 @@ export default function AdminAddFinancial({ route,navigation }) {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const addFinancialAssets = async() => {
+  const addFinancialAssets = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -70,24 +71,11 @@ export default function AdminAddFinancial({ route,navigation }) {
         {getMessageFalse}
       </Snackbar>
       <View style={styles.container}>
-        <HeaderBack
-          title={"Add Financial"}
-          onPress={() => navigation.navigate("AdminFinancialAssistance")}
-        />
+        <HeaderBack title={"Add Financial"} onPress={() => navigation.navigate("AdminFinancialAssistance")} />
 
         <ScrollView style={styles.scroll_container}>
-          <Input
-            label={"Title"}
-            placeholder={"Username"}
-            name="title"
-            onChangeText={(text) => setAssetsTitle(text)}
-          />
-          <Input
-            label={"Url"}
-            placeholder={"http://"}
-            name="url"
-            onChangeText={(text) => setAssetsUrl(text)}
-          />
+          <Input label={"Title"} placeholder={"Username"} name="title" onChangeText={(text) => setAssetsTitle(text)} />
+          <Input label={"Url"} placeholder={"http://"} name="url" onChangeText={(text) => setAssetsUrl(text)} />
           <View style={{ paddingVertical: 10 }}>
             <SmallButton
               title={"Submit"}
