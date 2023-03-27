@@ -12,11 +12,8 @@ import axios from "axios";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
-import DeletePopup from "../../../components/popup/DeletePopup";
 export default function EducatorPhotoAlbum() {
   const navigation = useNavigation();
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -63,7 +60,6 @@ const [deletePop, setDeletePop] = useState(false);
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
-          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -155,10 +151,7 @@ const [deletePop, setDeletePop] = useState(false);
                       docImage: list.file_name,
                     })
                   }
-                  removePress={() => {
-                    setId(list.id);
-                    setDeletePop(true);
-                  }}
+                  removePress={() => deleteEvent(list.id)}
                   onPress={() =>
                     navigation.navigate("ViewPhoto", {
                       title: list.title,
@@ -173,12 +166,6 @@ const [deletePop, setDeletePop] = useState(false);
           )}
         </View>
       </ScrollView>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteEvent(id)}
-        />
-      ) : null}
     </View>
   );
 }

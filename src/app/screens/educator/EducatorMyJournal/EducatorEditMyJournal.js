@@ -19,7 +19,7 @@ export default function EducatorEditMyJournal({ route, navigation }) {
   const { jAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { jImage, docImageParam } = route.params;
-  const [loading, setloading] = useState(false);
+
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -39,7 +39,6 @@ export default function EducatorEditMyJournal({ route, navigation }) {
   };
 
   const updateDocument = async () => {
-    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(updateTitle, access, upDescription, loginUID, jID, image);
     const myHeaders = myHeadersData();
@@ -67,12 +66,10 @@ export default function EducatorEditMyJournal({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorMyJournal");
         } else {
-          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -176,14 +173,13 @@ export default function EducatorEditMyJournal({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()}/>
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
                   title="Save"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}
-                  loading={loading}
                 />
               </View>
             </View>

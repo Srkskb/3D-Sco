@@ -233,7 +233,6 @@ import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
 import AsyncStorage from "@react-native-community/async-storage";
-import DeletePopup from "../../../components/popup/DeletePopup";
 
 export default function EducatorBlogs() {
   const navigation = useNavigation();
@@ -246,8 +245,6 @@ export default function EducatorBlogs() {
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
   const [userId, setUserId] = useState("");
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -295,7 +292,6 @@ const [deletePop, setDeletePop] = useState(false);
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
-          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -345,7 +341,6 @@ const [deletePop, setDeletePop] = useState(false);
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -354,7 +349,6 @@ const [deletePop, setDeletePop] = useState(false);
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -409,10 +403,7 @@ const [deletePop, setDeletePop] = useState(false);
                                 }
                               />
                               <View style={{ width: 20 }}></View>
-                              <Remove onPress={() => {
-                      setId(list.id);
-                      setDeletePop(true);
-                    }} />
+                              <Remove onPress={() => deleteBlog(list.id)} />
                             </>
                           ) : null}
                         </View>
@@ -425,12 +416,6 @@ const [deletePop, setDeletePop] = useState(false);
           </ScrollView>
         </View>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteBlog(id)}
-        />
-      ) : null}
     </View>
   );
 }

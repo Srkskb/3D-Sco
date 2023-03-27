@@ -17,7 +17,6 @@ import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AddPhoto() {
   const navigation = useNavigation();
-  const [loading, setloading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -38,7 +37,6 @@ export default function AddPhoto() {
   };
 
   const addFileCabinet = async (values) => {
-    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = new FormData();
@@ -69,12 +67,10 @@ export default function AddPhoto() {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
-          setloading(false);
           navigation.navigate("EducatorPhotoAlbum");
         }
       })
       .catch((error) => {
-        setloading(false);
         console.log(error);
       });
   };
@@ -171,6 +167,7 @@ export default function AddPhoto() {
                   )}
 
                   <View style={styles.button}>
+<<<<<<< HEAD
 <<<<<<< Updated upstream
                     <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()}/>
 =======
@@ -184,6 +181,9 @@ export default function AddPhoto() {
                       fontFamily={"Montserrat-Medium"}
                     />
 >>>>>>> Stashed changes
+=======
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+>>>>>>> parent of 04542e1 (educator panel work: loader and popups)
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
@@ -191,7 +191,6 @@ export default function AddPhoto() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
-                      loading={loading}
                     />
                   </View>
                 </View>

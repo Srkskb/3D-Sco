@@ -7,11 +7,8 @@ import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
-import DeletePopup from "../../../components/popup/DeletePopup";
 export default function EducatorFinancialAssistance() {
   const navigation = useNavigation();
-  const [delId, setDelId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -58,7 +55,6 @@ const [deletePop, setDeletePop] = useState(false);
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
-          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -86,7 +82,6 @@ const [deletePop, setDeletePop] = useState(false);
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
         style={styles.snackText}
-        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -96,7 +91,6 @@ const [deletePop, setDeletePop] = useState(false);
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
         style={styles.snackText}
-        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -128,10 +122,7 @@ const [deletePop, setDeletePop] = useState(false);
               <View style={styles.button_container}>
                 {list.user_id === loginUID ? (
                   <>
-                    <Remove onPress={() =>  {
-                      setDelId(list.id);
-                      setDeletePop(true);
-                    }} />
+                    <Remove onPress={() => deleteBlog(list.id)} />
                     <View style={{ width: 20 }}></View>
                     <Edit
                       onPress={() =>
@@ -149,12 +140,6 @@ const [deletePop, setDeletePop] = useState(false);
           ))}
         </ScrollView>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteBlog(delId)}
-        />
-      ) : null}
     </View>
   );
 }

@@ -21,11 +21,14 @@ export default function EducatorAddResources({ navigation }) {
 <<<<<<< Updated upstream
   const [question,setQuestion]=useState("");
   const [answer ,setAnswer] =useState("");
+<<<<<<< HEAD
   const [loading, setloading] = useState(false);
 =======
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 04542e1 (educator panel work: loader and popups)
   const loginUID = localStorage.getItem("loginUID");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -34,7 +37,6 @@ export default function EducatorAddResources({ navigation }) {
 
 <<<<<<< Updated upstream
   const addFileCabinet = (values) => {
-    setloading(true);
     console.log(values.docTitle,loginUID,values.description,);
     const getHeaders = myHeadersData();
     var data = qs.stringify({
@@ -57,12 +59,10 @@ export default function EducatorAddResources({ navigation }) {
   .then((response)=>{
     console.log(response)
     if(response.data.success==1){
-      setloading(false);
     navigation.navigate("EducatorManageResources")
   }
   })
   .catch(function (error) {
-    setloading(false);
     console.log(error);
   });
 };
@@ -193,7 +193,6 @@ export default function EducatorAddResources({ navigation }) {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
-                      loading={loading}
                     />
                   </View>
                 </View>

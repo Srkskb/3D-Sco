@@ -30,7 +30,7 @@ export default function EducatorEditEvent({ route, navigation }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [updateDescription, setUpDescription] = useState(description);
-  const [loading, setloading] = useState(false);
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -46,7 +46,6 @@ export default function EducatorEditEvent({ route, navigation }) {
   };
 
   const updateEvent = async () => {
-    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var data = qs.stringify({
@@ -71,12 +70,10 @@ export default function EducatorEditEvent({ route, navigation }) {
     axios(config).then((res) => {
       console.log(res.data);
       if (res.status == 200) {
-        setloading(false);
         setSnackVisibleTrue(true);
         setMessageTrue(res.data.message);
         navigation.goBack();
       } else {
-        setloading(false);
         setSnackVisibleFalse(true);
         setMessageFalse(res.data.message);
       }
@@ -210,19 +207,12 @@ export default function EducatorEditEvent({ route, navigation }) {
               />
 
               <View style={styles.button}>
-              <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                      onPress={() =>navigation.goBack()}
-                    />
                 <SmallButton
                   onPress={updateEvent}
-                  title="Update"
+                  title="Save"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
-                  loading={loading}
                 />
               </View>
             </View>

@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -19,7 +12,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function EducatorEditBlogs({ route, navigation }) {
   // ** For Event Update
-  const [loading, setloading] = useState(false);
   const { blogID, eventIDParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { date, dateIDParam } = route.params;
@@ -49,7 +41,6 @@ export default function EducatorEditBlogs({ route, navigation }) {
   };
 
   const updateEvent = async () => {
-    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -72,12 +63,10 @@ export default function EducatorEditBlogs({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorBlogs");
         } else {
-          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -102,10 +91,7 @@ export default function EducatorEditBlogs({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Blog"}
-        onPress={() => navigation.navigate("EducatorBlogs")}
-      />
+      <HeaderBack title={"Update Blog"} onPress={() => navigation.navigate("EducatorBlogs")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -179,18 +165,11 @@ export default function EducatorEditBlogs({ route, navigation }) {
 
               <View style={styles.button}>
                 <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
-                <SmallButton
                   onPress={updateEvent}
                   title="Save"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
-                  loading={loading}
                 />
               </View>
             </View>

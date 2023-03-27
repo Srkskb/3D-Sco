@@ -12,10 +12,8 @@ export default function EducatorEditResources({route,navigation}) {
  const [answer,setAnswer]=useState(route.params.list.Answer)
  const [question,setQuestion]=useState(route.params.list.Question)
  const loginUID = localStorage.getItem("loginUID");
- const [loading, setloading] = useState(false);
  // const { eventID, eventIDParam } = route.params; // ! Current Event ID
  const updateEvent = () => {
-  setloading(true);
   const myHeaders = myHeadersData();
   var data = qs.stringify({
     'update_faq': '1',
@@ -39,14 +37,12 @@ export default function EducatorEditResources({route,navigation}) {
   .then(function (response) {
     console.log(JSON.stringify(response.data));
     if(response.data.success==1){
-      setloading(false);
       setAnswer('')
       setQuestion('')
       navigation.navigate("EducatorManageResources")
     }
   })
   .catch(function (error) {
-    setloading(false);
     console.log(error);
   });
 };
@@ -123,7 +119,6 @@ export default function EducatorEditResources({ route, navigation }) {
             backgroundColor={color.purple}
             fontFamily={"Montserrat-Bold"}
             onPress={updateEvent}
-            loading={loading}
           />
         </View>
       </ScrollView>

@@ -19,6 +19,7 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 import DeletePopup from "../../../components/popup/DeletePopup";
 =======
@@ -26,9 +27,9 @@ import qs from "qs";
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 04542e1 (educator panel work: loader and popups)
 export default function EducatorStoreFavoriteLinks() {
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
   const navigation = useNavigation();
 
   const [storeLinks, setStoreLinks] = useState([]);
@@ -107,7 +108,6 @@ const [deletePop, setDeletePop] = useState(false);
       .then((res) => res.json())
       .then((result) => {
         if (result.success === 1) {
-          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -116,7 +116,6 @@ const [deletePop, setDeletePop] = useState(false);
           });
           setStoreLinks(temp);
         } else {
-          
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
@@ -172,11 +171,15 @@ const [deletePop, setDeletePop] = useState(false);
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         wrapperStyle={{ zIndex: 1 }}
 =======
         style={{ zIndex: 1 }}
 >>>>>>> Stashed changes
+=======
+        style={{zIndex:1}}
+>>>>>>> parent of 04542e1 (educator panel work: loader and popups)
       >
         {getMessageTrue}
       </Snackbar>
@@ -184,6 +187,7 @@ const [deletePop, setDeletePop] = useState(false);
         visible={snackVisibleFalse}
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         theme={{ colors: { accent: "red" }}}
         wrapperStyle={{ zIndex: 1 }}
@@ -191,6 +195,10 @@ const [deletePop, setDeletePop] = useState(false);
         theme={{ colors: { accent: "red" } }}
         style={{ zIndex: 1 }}
 >>>>>>> Stashed changes
+=======
+        theme={{ colors: { accent: "red" } }}
+        style={{zIndex:1}}
+>>>>>>> parent of 04542e1 (educator panel work: loader and popups)
       >
         {getMessageFalse}
       </Snackbar>
@@ -256,10 +264,7 @@ const [deletePop, setDeletePop] = useState(false);
                           category: list.Category,
                         })
                       }
-                      removePress={() =>{
-                        setId(list.id);
-                        setDeletePop(true);
-                      }}
+                      removePress={() => deleteProject(list.id)}
                       pressEdit={() =>
                         navigation.navigate("EducatorEditStoreFavoriteLinks", {
                           linkID: list.id,
@@ -277,12 +282,6 @@ const [deletePop, setDeletePop] = useState(false);
           </View>
         </ScrollView>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteProject(id)}
-        />
-      ) : null}
     </View>
   );
 }

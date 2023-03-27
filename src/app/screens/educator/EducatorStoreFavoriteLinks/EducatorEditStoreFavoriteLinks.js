@@ -15,8 +15,6 @@ import { CategoryDropdown } from "../../../components/dropdown";
 export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
   const { linkID, linkIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
-  const [loading, setloading] = useState(false);
-
   const { link, lonkParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { linkCategory, categoryParam } = route.params;
@@ -33,7 +31,6 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
 
 <<<<<<< Updated upstream
   const updateDocument = (values) => { 
-    setloading(true);
     console.log(updateTitle,upLink,category,upDescription);
 =======
   const updateDocument = async (values) => {
@@ -63,12 +60,10 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorStoreFavoriteLinks");
         } else {
-          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -166,11 +161,10 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
                 <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
-                  title="Update"
+                  title="Save"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}
-                  loading={loading}
                 />
               </View>
             </View>

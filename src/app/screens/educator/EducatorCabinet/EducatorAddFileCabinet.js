@@ -19,7 +19,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function EducatorAddFileCabinet() {
   const navigation = useNavigation();
-  
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);

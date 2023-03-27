@@ -7,8 +7,11 @@ import Event_Card from "../../../components/card/Event_Card";
 import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 import DeletePopup from "../../../components/popup/DeletePopup";
+=======
+>>>>>>> parent of 04542e1 (educator panel work: loader and popups)
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 =======
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
@@ -17,8 +20,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 >>>>>>> Stashed changes
 export default function EducatorManageResources({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
-  const [id, setId] = useState("");
-  const [deletePop, setDeletePop] = useState(false);
   const [myResourcesData, setMyResourcesData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
@@ -66,7 +67,6 @@ export default function EducatorManageResources({ navigation }) {
       allLearnerList();
   }, [isFocused]);
   const deleteFaq=(id)=>{
-
     var data = qs.stringify({
   'delete_faq': '1',
   'id': id,
@@ -86,12 +86,10 @@ axios(config)
 .then((response)=>{
   console.log(JSON.stringify(response.data));
   if(response.data.success==1){
-    setDeletePop(false);
       allLearnerList();
     }
 })
 .catch((error)=>{
-  setDeletePop(false);
   console.log(error);
 });
   }
@@ -158,10 +156,7 @@ axios(config)
           description={list.Answer}
           // date={"24/05/2023"}
           editPress={() => navigation.navigate("EducatorEditResources",{ list:list })}
-          removePress={()=>{
-            setId(list.id);
-            setDeletePop(true);
-          }}
+          removePress={()=>deleteFaq(list.id)}
         />
         </>
                 ))}
@@ -191,12 +186,6 @@ axios(config)
         )}
 >>>>>>> Stashed changes
       </ScrollView>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteFaq(id)}
-        />
-      ) : null}
     </View>
   );
 }

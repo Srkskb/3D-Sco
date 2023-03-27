@@ -17,7 +17,6 @@ import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorAddMyJournal() {
   const navigation = useNavigation();
-  
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);

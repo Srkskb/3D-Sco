@@ -10,8 +10,6 @@ import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import AsyncStorage from "@react-native-community/async-storage";
-import DeletePopup from "../../../components/popup/DeletePopup";
-
 export default function EducatorMyJournal() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -21,8 +19,6 @@ export default function EducatorMyJournal() {
   const [myJournalData, setMyJournalData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
@@ -59,7 +55,6 @@ const [deletePop, setDeletePop] = useState(false);
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
-          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -96,7 +91,7 @@ const [deletePop, setDeletePop] = useState(false);
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        wrapperStyle={{ zIndex: 1 }}
+        style={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -105,7 +100,7 @@ const [deletePop, setDeletePop] = useState(false);
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        wrapperStyle={{ zIndex: 1 }}
+        style={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -151,10 +146,7 @@ const [deletePop, setDeletePop] = useState(false);
                           jImage: list.image,
                         })
                       }
-                      removePress={() => {
-                        setId(list.id);
-                        setDeletePop(true);
-                      }}
+                      removePress={() => deleteJournal(list.id)}
                     />
                   ))}
                 </>
@@ -163,12 +155,6 @@ const [deletePop, setDeletePop] = useState(false);
           </View>
         </ScrollView>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteJournal(id)}
-        />
-      ) : null}
     </View>
   );
 }
