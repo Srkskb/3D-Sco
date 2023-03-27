@@ -4,7 +4,11 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
-  TextInput,Image,TouchableOpacity,Text
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Text,
+  Linking,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -14,16 +18,24 @@ import Book_Card from "../../../components/card/Book_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import Library_Search from "../../../components/LibrarySearch";
+import TextWithButton from "../../../components/TextWithButton";
+import SelectCourse from "../../../components/admin_required/SelectCourse";
+import AsyncStorage from "@react-native-community/async-storage";
+import Loader from "../../../utils/Loader";
 
-export default function LibraryAccess() {
+export default function AffiliateLibrary() {
   const navigation = useNavigation();
   const [studentLibrary, setStudentLibrary] = useState([]);
   const [initialStudentLibrary, setInitialStudentLibrary] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [courseId, setCourseId] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const allLearnerList = () => {
-    const loginUID = localStorage.getItem("loginUID");
+  const allLearnerList = async (id) => {
+    setLoading(true);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -31,43 +43,49 @@ export default function LibraryAccess() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${loginUID}&course_id=6`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData.id}&course_id=${id}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => {
-        setStudentLibrary(result.data);
-        setInitialStudentLibrary(result.data);
+        console.log(result);
+        if (result.success) {
+          setStudentLibrary(result.data);
+          setInitialStudentLibrary(result.data);
+        } else {
+          setStudentLibrary([]);
+          setInitialStudentLibrary([]);
+        }
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    allLearnerList(courseId);
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    allLearnerList();
-  }, []);
+    courseId && allLearnerList(courseId);
+  }, [courseId]);
 
   useEffect(() => {
     if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
     let temp = [];
     initialStudentLibrary.forEach((item) => {
-      if (item.titel.toLowerCase().includes(searchTerm.toLowerCase()))
-        temp.push(item);
+      if (item.titel.toLowerCase().includes(searchTerm.toLowerCase())) temp.push(item);
     });
 
     setStudentLibrary(temp);
   }, [searchTerm]);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Library"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Library"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <HeaderText title={"Library Access"} />
         {/* <TextInput
@@ -76,42 +94,53 @@ export default function LibraryAccess() {
           style={styles.search_text}
           
         /> */}
+        {/* <TextWithButton
+          title={"Library Access"}
+          label={"Manage Library"}
+          onPress={() => navigation.navigate("AdminManageLibrary")}
+        /> */}
         <View style={styles.search_box}>
-      <View style={styles.icon_box}>
-        <Image
-          style={styles.icon}
-          source={require("../../../assets/images/Search.png")}
-        />
-      </View>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.text_input}
-          onChangeText={setSearchTerm}
-          value={searchTerm}
-          placeholder={"Search title, author..."}
-        />
-      </View>
-      <TouchableOpacity style={styles.search_button}>
-        <View>
-          <Text style={styles.search_text}>SEARCH</Text>
+          <View style={styles.icon_box}>
+            <Image style={styles.icon} source={require("../../../assets/images/Search.png")} />
+          </View>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.text_input}
+              onChangeText={setSearchTerm}
+              value={searchTerm}
+              placeholder={"Search title, author..."}
+            />
+          </View>
+          <TouchableOpacity style={styles.search_button}>
+            <View>
+              <Text style={styles.search_text}>SEARCH</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-    </View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <SelectCourse
+          // label={"Select Course"}
+          onSelect={(selectedItem, index) => {
+            setCourseId(selectedItem.id);
+          }}
+        />
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
-            {studentLibrary === undefined ? (
-              <>
-                <NoDataFound />
-              </>
+            {loading ? (
+              <Loader />
             ) : (
               <>
-                {studentLibrary.map((list) => (
-                  <Book_Card title={list.titel} author={list.author} />
-                ))}
+                {studentLibrary?.length ? (
+                  studentLibrary.map((list) => (
+                    <Book_Card
+                      title={list.titel}
+                      author={list.author}
+                      // onPress={() => navigation.navigate("ViewBook", { list })}
+                      onPress={() => Linking.openURL(list.pdf)}
+                    />
+                  ))
+                ) : (
+                  <NoDataFound />
+                )}
               </>
             )}
           </View>
@@ -141,7 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexWrap: "wrap",
   },
-    search_box: {
+  search_box: {
     borderWidth: 1,
     borderColor: color.purple,
     flexDirection: "row",

@@ -6,6 +6,7 @@ import {
   RefreshControl,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -18,41 +19,77 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
+import qs from "qs";
+import axios from "axios";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AffiliateStoreFavoriteLinks() {
   const navigation = useNavigation();
+
   const [storeLinks, setStoreLinks] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [filter, setFilter] = useState("");
+  const [categoryList, setCategoryList] = useState([]);
   const [initialStoreLinks, setInitialStoreLinks] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const user_type = localStorage.getItem("userID"); // ! user Type student or other
-  const allLearnerList = () => {
+
+  const allLearnerList = async (text = "") => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
-    console.log(loginUID, filter,user_type);
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
+
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${loginUID}&category=${filter}&type=${user_type}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${user_type}&category=${filter}`,
       requestOptions
     )
-      .then((res) => res.json())
+      .then((response) => response.json())
       .then((result) => {
         setStoreLinks(result.data);
+        setSearchData(result.data);
         setInitialStoreLinks(result.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        setLoading(false);
+      });
+  };
+
+  const category = () => {
+    const myHeaders = myHeadersData();
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
+      method: "GET",
+      headers: {
+        myHeaders,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success == 1) {
+          setCategoryList(res.data);
+        } else {
+          alert("Try after sometime");
+        }
       })
       .catch((error) => console.log("error", error));
   };
 
-  const deleteProject = (id) => {
+  const deleteProject = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -60,13 +97,9 @@ export default function AffiliateStoreFavoriteLinks() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         if (result.success === 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
@@ -85,36 +118,53 @@ export default function AffiliateStoreFavoriteLinks() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    // allLearnerList();
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    allLearnerList();
-    navigation.addListener("focus", () => allLearnerList());
+    category();
+    navigation.addListener("focus", () => category());
+  }, [navigation]);
+  useEffect(() => {
+    filter && allLearnerList();
   }, [filter]);
 
-  // ! For Input Box Search Data List
-  // useEffect(() => {
-  //   if (!searchTerm) return setStoreLinks(initialStoreLinks);
-  //   let temp = [];
-  //   initialStoreLinks.forEach((item) => {
-  //     if (item.Titel.toLowerCase().includes(searchTerm.toLowerCase()))
-  //       temp.push(item);
-  //   });
-
-  //   setStoreLinks(temp);
-  // }, [searchTerm]);
+  const searchText = (searchTerm) => {
+    const filteredData = storeLinks?.filter((el) => {
+      if (searchTerm === "") {
+        return storeLinks;
+      } else {
+        return el.Titel.toLowerCase().includes(searchTerm);
+      }
+    });
+    setSearchData(filteredData);
+  };
   return (
     <View style={styles.container}>
+      {loading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#ffffffcc",
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 100,
+          }}
+        >
+          <ActivityIndicator size={"large"} />
+        </View>
+      ) : null}
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -123,15 +173,12 @@ export default function AffiliateStoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
 
-      <HeaderBack
-        title={"Store Favorite Links"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Store Favorite Links"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <TextWithButton
           title={"Store Favorite Links"}
@@ -148,30 +195,27 @@ export default function AffiliateStoreFavoriteLinks() {
         >
           <View style={styles.category_search}>
             <RoundCategory
-              onSelect={(selectedItem, index) => {
-                setFilter(index + 1);
-                console.log(index + 1);
+              onSelect={(selectedItem, index, item) => {
+                let catid = categoryList?.filter((i) => i.Name === selectedItem).map((i) => i.id);
+                setFilter(catid && catid[0]);
+                setSearchTerm("");
               }}
             />
-
             <TextInput
               style={styles.input}
-              onChangeText={setSearchTerm}
+              onChangeText={(text) => setSearchTerm(text)}
               value={searchTerm}
               placeholder={"Search title, author..."}
             />
           </View>
           <View style={styles.search_button}>
-            <TouchableOpacity style={styles.search_button}>
+            {/* <TouchableOpacity onPress={() => allLearnerList()}> */}
+            <TouchableOpacity onPress={() => searchText(searchTerm)}>
               <FontAwesome name="search" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
         </View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.main}>
             <View style={{ flex: 1 }}>
               {storeLinks === undefined ? (
@@ -180,8 +224,9 @@ export default function AffiliateStoreFavoriteLinks() {
                 </>
               ) : (
                 <>
-                  {storeLinks.map((list, index) => (
+                  {searchData?.map((list, index) => (
                     <WebLinkCard
+                      key={index}
                       title={list.Titel}
                       link={list.url}
                       description={list.Detail}
@@ -247,8 +292,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 
-
-
   head: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -257,7 +300,6 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal: 10,
   },
-
 
   input: {
     width: "56%",
@@ -275,14 +317,9 @@ const styles = StyleSheet.create({
   },
   search_button: {
     backgroundColor: color.purple,
-
-    width: "28%",
+    // width: "20%",
+    paddingHorizontal: 10,
     borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
-
-    width: 45,
-    borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
   },

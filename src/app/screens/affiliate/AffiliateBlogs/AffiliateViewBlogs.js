@@ -1,34 +1,88 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
 import CommentCard from "../../../components/card/CommentCard";
+import axios from "axios";
 import { myHeadersData } from "../../../api/helper";
-const{height,width}=Dimensions.get('window')
+const { height, width } = Dimensions.get("window");
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AffiliateViewBlogs({ route, navigation }) {
-    const { Titel, titleParam } = route.params;
-  const { Date, accessParam } = route.params;
-  const { description, descriptionParam } = route.params;
+  const { Titel, titleParam } = route.params.list;
+  const { Date, accessParam } = route.params.list;
+  const { Description, descriptionParam } = route.params.list;
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const loginUID = localStorage.getItem("loginUID");
+
+  const addComment = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setLoading(true);
+    var formdata = new FormData();
+    var myHeaders = myHeadersData();
+    formdata.append("comment", "1");
+    formdata.append("titel", Titel);
+    formdata.append("blog_id", route.params.list.id);
+    formdata.append("description", comment);
+    formdata.append("user_id", myData.id);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+    console.log(formdata, "formdata");
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setLoading(false);
+        console.log("add comment", result);
+        if (result.success == 1) {
+          getComments();
+          setComment("");
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
+  };
+
+  const getComments = () => {
+    console.log(route.params.list.id);
+    var myHeaders = myHeadersData();
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`https://3dsco.com/3discoapi/state.php?comments_list=1&blog_id=${route.params.list.id}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success != 0) {
+          setComments(result.data);
+        } else {
+          setComments([]);
+        }
+        console.log(result);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  useEffect(() => {
+    getComments();
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"view blogs"}
-        onPress={() => navigation.navigate("AffiliateBlogs")}
-      />
-      <ScrollView
-       
-        showsVerticalScrollIndicator={false}
-      >
+      <HeaderBack title={"view blogs"} onPress={() => navigation.navigate("AffiliateBlogs")} />
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.main}>
           <View style={styles.detail_box}>
             <Text style={styles.head_text}>{Titel}</Text>
@@ -39,44 +93,51 @@ export default function AffiliateViewBlogs({ route, navigation }) {
                 <Text style={styles.data}>{Date}</Text>
               </Text>
               {/* Time */}
-            
+
               {/* Posted by */}
               <Text>
                 <Text style={styles.bold_text}>Posted By: </Text>
                 <Text style={styles.data}>ArmanD suarez</Text>
               </Text>
               <View style={styles.description}>
-                <Text style={styles.description_text}>
-                  {description} 
-                </Text>
+                <Text style={styles.description_text}>{Description}</Text>
               </View>
             </View>
           </View>
           <View style={styles.comment_section}>
             <Text style={styles.comment_text}>
               <Text>comments</Text>
-              <Text>( 1 )</Text>
+              <Text> ({comments && comments.length})</Text>
             </Text>
-            <CommentCard />
+            {comments.map((list, index) => (
+              <CommentCard key={index} comments={list.Comment_detail} name={list.User_name} />
+            ))}
           </View>
           <Input2
             label={"Leave a Comment"}
             multiline={true}
             numberOfLines={5}
             textAlignVertical={"top"}
+            onChange={(e) => console.log(e)}
             placeholder={"Type Your Comment Here..."}
+            onChangeText={(text) => setComment(text)}
+            // onChangeText={(text) => console.log(text)}
+            value={comment}
           />
           <View style={styles.button_container}>
             <SmallButton
               title={"Cancel"}
               color={color.purple}
               fontFamily={"Montserrat-Medium"}
+              onPress={() => navigation.navigate("AdminBlogs")}
             />
             <SmallButton
               title={"Submit"}
               color={color.white}
+              loading={loading}
               fontFamily={"Montserrat-Bold"}
               backgroundColor={color.purple}
+              onPress={addComment}
             />
           </View>
         </View>
@@ -98,7 +159,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginTop: 20,
     borderRadius: 3,
-   
   },
   head_text: {
     color: color.purple,

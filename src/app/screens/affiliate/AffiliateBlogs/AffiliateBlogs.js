@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { Snackbar } from "react-native-paper";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -14,7 +8,9 @@ import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
-import { Edit, Remove, ViewButton } from "./../../../components/buttons";
+import { Edit, Remove, ViewButton } from "../../../components/buttons";
+import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AffiliateBlogs() {
   const navigation = useNavigation();
   const [blogListData, setBlogListData] = useState([]);
@@ -23,8 +19,23 @@ export default function AffiliateBlogs() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
+  const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
-  const allLearnerList = () => {
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const data = JSON.parse(await AsyncStorage.getItem("userData"));
+    setUserId(data?.id);
+    allLearnerList();
+  };
+
+  const allLearnerList = async () => {
+    console.log("Enter");
+    setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -32,27 +43,28 @@ export default function AffiliateBlogs() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`, requestOptions)
       .then((res) => res.json())
-      .then((result) => setBlogListData(result.data))
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        setLoading(false);
+        console.log(result.data);
+        setBlogListData(result.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   // Delete Blog
   const deleteBlog = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+    // const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${userId}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
@@ -79,16 +91,28 @@ export default function AffiliateBlogs() {
     }, 2000);
   };
 
-  useEffect(() => {
-    allLearnerList();
-    navigation.addListener("focus", () => allLearnerList());
-  }, []);
+  // useEffect(() => {
+  //   navigation.addListener("focus", () => allLearnerList());
+  // }, []);
+
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Blogs"}
-        onPress={() => navigation.goBack()}
-      />
+      {loading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#ffffffcc",
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 100,
+          }}
+        >
+          <ActivityIndicator size={"large"} />
+        </View>
+      ) : null}
+      <HeaderBack title={"Blogs"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -106,17 +130,9 @@ export default function AffiliateBlogs() {
         {getMessageFalse}
       </Snackbar>
       <View style={styles.main_box}>
-        <TextWithButton
-          title={"My Blog"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AffiliateAddBlogs")}
-        />
+        <TextWithButton title={"My Blog"} label={"+Add"} onPress={() => navigation.navigate("AffiliateAddBlogs")} />
         <View style={styles.main_box2}>
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}>
             <View style={styles.main}>
               <View style={{ flex: 1 }}>
                 {blogListData === undefined ? (
@@ -126,19 +142,13 @@ export default function AffiliateBlogs() {
                 ) : (
                   <>
                     {blogListData.map((list, index) => (
-                      <View style={styles.containerBlog}>
+                      <View style={styles.containerBlog} key={index}>
                         <View style={{ flexDirection: "row" }}>
                           <View style={styles.right_side}>
                             <View style={{ width: "100%" }}>
                               <Text style={styles.head_text}>{list.Titel}</Text>
-                              <Text style={styles.date}>
-                                Last Updated -{" "}
-                                {moment(list && list?.Date).format("LL")}
-                              </Text>
-                              <Text
-                                style={styles.description_text}
-                                numberOfLines={1}
-                              >
+                              <Text style={styles.date}>Last Updated - {moment(list && list?.Date).format("LL")}</Text>
+                              <Text style={styles.description_text} numberOfLines={1}>
                                 {list.Description}
                               </Text>
                             </View>
@@ -151,21 +161,20 @@ export default function AffiliateBlogs() {
                                 Titel: list.Titel,
                                 Date: moment(list && list?.Date).format("LL"),
                                 description: list.Description,
+                                list: list,
                               })
                             }
                           />
                           <View style={{ width: 20 }}></View>
 
-                          {list.added_by === loginUID ? (
+                          {list.added_by == userId ? (
                             <>
                               <Edit
                                 onPress={() =>
                                   navigation.navigate("AffiliateEditBlogs", {
                                     blogID: list.id,
                                     title: list.Titel,
-                                    date: moment(list && list?.Date).format(
-                                      "LL"
-                                    ),
+                                    date: moment(list && list?.Date).format("LL"),
                                     description: list.Description,
                                   })
                                 }

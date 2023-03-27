@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -17,7 +10,9 @@ import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
-
+import axios from "axios";
+import qs from "qs";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AffiliateEditEvent({ route, navigation }) {
   // ** For Event Update
   const { eventID, eventIDParam } = route.params; // ! Current Event ID
@@ -26,7 +21,7 @@ export default function AffiliateEditEvent({ route, navigation }) {
   const { dateData, dateIDParam } = route.params;
   const { description, descriptionIDParam } = route.params;
   const loginUID = localStorage.getItem("loginUID");
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState(status);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -50,37 +45,39 @@ export default function AffiliateEditEvent({ route, navigation }) {
     hideDatePicker();
   };
 
-  const updateEvent = () => {
+  const updateEvent = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("update_event", "1");
-    urlencoded.append("event_titel", updateTitle);
-    urlencoded.append("access_level", access);
-    urlencoded.append("event_date", dateData);
-    urlencoded.append("decription", updateDescription);
-    urlencoded.append("event_id", eventID);
-    urlencoded.append("user_id", loginUID);
-
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
-      method: "POST",
-      body: urlencoded,
+    var data = qs.stringify({
+      update_event: "1",
+      event_titel: updateTitle,
+      access_level: access,
+      decription: updateDescription,
+      event_id: eventID,
+      user_id: myData.id,
+    });
+    console.log(data);
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php",
       headers: {
-        myHeaders,
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=41mqd76dj1dbfh1dbhbrkk6jv5",
       },
-      redirect: "follow",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success == 1) {
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
-          navigation.replace("AffiliateCalender");
-        } else {
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
-        }
-      });
+      data: data,
+    };
+    axios(config).then((res) => {
+      console.log(res.data);
+      if (res.status == 200) {
+        setSnackVisibleTrue(true);
+        setMessageTrue(res.data.message);
+        navigation.goBack();
+      } else {
+        setSnackVisibleFalse(true);
+        setMessageFalse(res.data.message);
+      }
+    });
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
@@ -89,7 +86,6 @@ export default function AffiliateEditEvent({ route, navigation }) {
   };
   return (
     <View style={styles.container}>
-      
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -107,10 +103,7 @@ export default function AffiliateEditEvent({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Event"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Update Event"} onPress={() => navigation.goBack()} />
       {/* <NavigationDrawer backPress={() => navigation.navigate("HomeScreen")} /> */}
       {/* <NavigationDrawer backPress={() => navigation.navigate("AddEvent")}/> */}
       <Snackbar
@@ -140,7 +133,7 @@ export default function AffiliateEditEvent({ route, navigation }) {
                 name="title"
                 onChangeText={(text) => setUpTitle(text)}
                 value={updateTitle}
-                keyboardType="text"
+                // keyboardType="text"
               />
               {showResults ? (
                 <>
@@ -148,6 +141,7 @@ export default function AffiliateEditEvent({ route, navigation }) {
                     required
                     label={"Access Level"}
                     onSelect={(selectedItem) => {
+                      console.log(selectedItem);
                       setAccess(selectedItem);
                     }}
                     placeholder={status}
@@ -155,12 +149,14 @@ export default function AffiliateEditEvent({ route, navigation }) {
                 </>
               ) : (
                 <>
-                  <View style={styles.selectedDataCon}>
-                    <Text>Access Level</Text>
+                  <View style={{ marginBottom: 5 }}>
+                    <Text>
+                      Access Level<Text style={{ color: color.red }}>*</Text>
+                    </Text>
                     <View style={styles.selectedData}>
                       <Text>{status}</Text>
                       <TouchableOpacity onPress={onClick}>
-                        <Text>close</Text>
+                        <Entypo name="circle-with-cross" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -169,7 +165,7 @@ export default function AffiliateEditEvent({ route, navigation }) {
 
               <Text style={{ marginBottom: 5 }}>
                 <Text style={styles.label_text}>Event Date</Text>
-                <Text style={{ color: color.red }}>*</Text>
+                {/* <Text style={{ color: color.red }}>*</Text> */}
               </Text>
               <View style={styles.calendar_input}>
                 <Text
@@ -178,13 +174,13 @@ export default function AffiliateEditEvent({ route, navigation }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedDate
-                    ? selectedDate.toLocaleDateString()
-                    : `${dateData}`}
+                  {selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : `${dateData}`}
                 </Text>
                 <Text></Text>
                 <View style={styles.selectDate}>
-                  <TouchableOpacity onPress={showDatePicker}>
+                  <TouchableOpacity
+                  // onPress={showDatePicker}
+                  >
                     <Entypo name="calendar" size={24} color={color.purple} />
                   </TouchableOpacity>
                 </View>
