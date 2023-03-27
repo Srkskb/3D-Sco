@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useReducer } from "react";
-import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
@@ -14,8 +21,10 @@ import Event_Card from "../../../components/card/Event_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 
 export default function AdminCalender() {
+  const [id, setId] = useState("");
   const navigation = useNavigation();
   const [eventList, setEventList] = useState([]);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -27,7 +36,7 @@ export default function AdminCalender() {
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setmarkedDates] = useState();
   const [loading, setLoading] = useState(false);
-
+  const [deletePop, setDeletePop] = useState(false);
   useEffect(() => {
     getDates();
     navigation.addListener("focus", () => getDates());
@@ -67,7 +76,9 @@ export default function AdminCalender() {
     )
       .then((res) => res.json())
       .then((result) => {
-        let data = result.data.filter((i) => moment(i.event_date).isSame(date, "day"));
+        let data = result.data.filter((i) =>
+          moment(i.event_date).isSame(date, "day")
+        );
         console.log(data);
         setEventList(data);
         setLoading(false);
@@ -77,7 +88,8 @@ export default function AdminCalender() {
         console.log("error", error);
       });
   };
-  const deleteEvent = (event_id) => {
+  const deleteEvent = async (event_id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -86,13 +98,14 @@ export default function AdminCalender() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_event=1&event_id=${event_id}&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_event=1&event_id=${event_id}&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => {
         // console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -101,6 +114,7 @@ export default function AdminCalender() {
           });
           setEventList(temp);
         } else {
+          setDeletePop(false);
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
@@ -137,7 +151,7 @@ export default function AdminCalender() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{zIndex:1}}
       >
         {getMessageTrue}
       </Snackbar>
@@ -146,7 +160,7 @@ export default function AdminCalender() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{zIndex:1}}
       >
         {getMessageFalse}
       </Snackbar>
@@ -160,7 +174,7 @@ export default function AdminCalender() {
             position: "absolute",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 100,
+            zIndex: 0,
           }}
         >
           <ActivityIndicator size={"large"} />
@@ -205,10 +219,17 @@ export default function AdminCalender() {
       <View style={styles.today_event_row}>
         <Text style={styles.event_text}>Today's Events</Text>
         <View style={styles.add_button}>
-          <AppButton onPress={() => navigation.navigate("AdminAddEvent")} title="+ Add" />
+          <AppButton
+            onPress={() => navigation.navigate("AdminAddEvent")}
+            title="+ Add"
+          />
         </View>
       </View>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {eventList && eventList.length == 0 ? (
           <>
             <NoDataFound />
@@ -217,7 +238,7 @@ export default function AdminCalender() {
           <>
             {eventList &&
               eventList.map((list, index) => (
-                <View key={index} style={{ paddingHorizontal: 10 }}>
+                <View key={index} style={{ paddingHorizontal: 10,zIndex:0 }}>
                   <Event_Card
                     key={index}
                     title={list.event_title}
@@ -233,7 +254,10 @@ export default function AdminCalender() {
                         description: list.decription,
                       })
                     }
-                    removePress={() => deleteEvent(list.event_id)}
+                    removePress={() => {
+                      setDeletePop(true);
+                      setId(list.event_id);
+                    }}
                     viewPress={() =>
                       navigation.navigate("AdminViewEventDetails", {
                         title: list.event_title,
@@ -249,6 +273,12 @@ export default function AdminCalender() {
         )}
         <View style={styles.card_padding}></View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

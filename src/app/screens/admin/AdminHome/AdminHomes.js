@@ -26,7 +26,7 @@ export default function AdminHomes({ navigation }) {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation} />
+      <HomeHeader navigation={navigation} mailPress={()=>navigation.navigate("AdminMail")}/>
       <StatusBar backgroundColor={color.purple} />
       <Image style={styles.banner} source={banner} />
       <ScrollView

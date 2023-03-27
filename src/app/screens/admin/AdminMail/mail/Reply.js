@@ -14,6 +14,7 @@ import NewCheckbox from "../../../../components/NewCheckbox";
 import HeaderBack from "../../../../components/header/Header";
 import { AppButton } from "../../../../components/buttons";
 const { height } = Dimensions.get("window");
+
 export default function Reply({ navigation, route }) {
   const {list } = route.params;
 const [subject, setSubject] = useState('')

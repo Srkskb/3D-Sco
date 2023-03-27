@@ -17,17 +17,18 @@ export default function AdminAddFinancial({ route,navigation }) {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const addFinancialAssets = () => {
+  const addFinancialAssets = async() => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
-    console.log(loginUID);
+    // console.log(loginUID);
     var formdata = new FormData();
     formdata.append("Add_financial_assistance", "1");
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
     formdata.append("type", "4");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,

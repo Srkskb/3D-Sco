@@ -8,7 +8,7 @@ import { EducatorMail } from "../account";
 export default function Calender() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="EducatorCalender" component={EducatorCalender} />
+      <Stack.Screen name="EducatorCalender" component={EducatorCalender}  />
       <Stack.Screen name="EducatorAddEvent" component={EducatorAddEvent} />
       <Stack.Screen name="EducatorEditEvent" component={EducatorEditEvent} />
       <Stack.Screen name="EducatorViewEventDetails" component={EducatorViewEventDetails} />

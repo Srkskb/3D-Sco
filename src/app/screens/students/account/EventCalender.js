@@ -9,10 +9,14 @@ import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
+import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function EventCalender() {
   const navigation = useNavigation();
   const [eventCalenderList, setEventCalenderList] = useState([]);
-  const allLearnerList = () => {
+  const [deletePop, setDeletePop] = useState(false);
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -21,7 +25,7 @@ export default function EventCalender() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -65,6 +69,12 @@ export default function EventCalender() {
           </View>
         </View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => handleDelete(id)}
+        />
+      ) : null}
     </View>
   );
 }

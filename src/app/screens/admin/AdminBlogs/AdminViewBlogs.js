@@ -8,7 +8,7 @@ import CommentCard from "../../../components/card/CommentCard";
 import axios from "axios";
 import { myHeadersData } from "../../../api/helper";
 const { height, width } = Dimensions.get("window");
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminViewBlogs({ route, navigation }) {
   const { Titel, titleParam } = route.params.list;
   const { Date, accessParam } = route.params.list;
@@ -18,7 +18,8 @@ export default function AdminViewBlogs({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
 
-  const addComment = () => {
+  const addComment =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
     var formdata = new FormData();
     var myHeaders = myHeadersData();
@@ -26,7 +27,7 @@ export default function AdminViewBlogs({ route, navigation }) {
     formdata.append("titel", Titel);
     formdata.append("blog_id", route.params.list.id);
     formdata.append("description", comment);
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
 
     var requestOptions = {
       method: "POST",

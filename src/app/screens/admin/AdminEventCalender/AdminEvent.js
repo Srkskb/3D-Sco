@@ -13,7 +13,7 @@ import { NoDataFound } from "../../../components";
 import Loader from "../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
 import qs from "qs";
-
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function AdminEventCalender() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,8 @@ export default function AdminEventCalender() {
   const [deletePop, setDeletePop] = useState(false);
   const [id, setId] = useState("");
 
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -30,7 +31,10 @@ export default function AdminEventCalender() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
         if (result?.data?.length) {
@@ -68,7 +72,9 @@ export default function AdminEventCalender() {
       .then((res) => res.json())
       .then((result) => {
         if (result.success == 1) {
-          setEventCalenderList((prev) => prev.filter((item) => item.event_id != id));
+          setEventCalenderList((prev) =>
+            prev.filter((item) => item.event_id != id)
+          );
           setId("");
           setDeletePop(false);
         } else {
@@ -122,33 +128,39 @@ export default function AdminEventCalender() {
               )}
             </View>
           </View>
+          
         </ScrollView>
       )}
+
+      {/* // <View
+        //   style={{
+        //     position: "absolute",
+        //     backgroundColor: "#ccccccaa",
+        //     zindex: 100,
+        //     width: "100%",
+        //     height: "100%",
+        //     justifyContent: "center",
+        //     alignItems: "center",
+        //   }}
+        // >
+        //   <View style={{ width: "80%", backgroundColor: "#fff", padding: "6%" }}>
+        //     <View style={styles.arrow_container}>
+        //       <Text style={styles.head_text}>Delete Event</Text>
+        //     </View>
+        //     <View style={styles.text_container}>
+        //       <Text style={styles.description_text}>Are you sure want to delete the Event?</Text>
+        //     </View>
+        //     <View style={styles.button_container}>
+        //       <AppButton title={"cancel"} btnColor={color.purple} onPress={() => setDeletePop(false)} />
+        //       <AppButton title={"Delete"} btnColor={color.purple} onPress={() => handleDelete(id)} />
+        //     </View>
+        //   </View>
+        // </View> */}
       {deletePop ? (
-        <View
-          style={{
-            position: "absolute",
-            backgroundColor: "#ccccccaa",
-            zindex: 100,
-            width: "100%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View style={{ width: "80%", backgroundColor: "#fff", padding: "6%" }}>
-            <View style={styles.arrow_container}>
-              <Text style={styles.head_text}>Delete Event</Text>
-            </View>
-            <View style={styles.text_container}>
-              <Text style={styles.description_text}>Are you sure want to delete the Event?</Text>
-            </View>
-            <View style={styles.button_container}>
-              <AppButton title={"cancel"} btnColor={color.purple} onPress={() => setDeletePop(false)} />
-              <AppButton title={"Delete"} btnColor={color.purple} onPress={() => handleDelete(id)} />
-            </View>
-          </View>
-        </View>
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => handleDelete(id)}
+        />
       ) : null}
     </View>
   );

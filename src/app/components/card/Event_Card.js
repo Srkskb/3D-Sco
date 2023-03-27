@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     marginBottom: 20,
+    zIndex:0
   },
   right_side: {
     width: "100%",

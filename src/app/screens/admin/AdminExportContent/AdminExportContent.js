@@ -7,11 +7,12 @@ import HeaderText from "../../../components/HeaderText";
 import Event_Card from "../../../components/card/Event_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminExportContent() {
   const navigation = useNavigation();
   const [exportContentData, setExportContentData] = useState([]);
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -20,7 +21,7 @@ export default function AdminExportContent() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${loginUID}&course_id=6`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData.id}&course_id=6`,
       requestOptions
     )
       .then((res) => res.json())

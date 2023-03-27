@@ -21,10 +21,12 @@ import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import NavigationDrawer from "../home_screen/NavigationDrawer";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AddEvent() {
+  const [loading, setloading] = useState(false);
   const navigation = useNavigation();
-  const loginUID = localStorage.getItem("loginUID");
+  // const loginUID = localStorage.getItem("loginUID");
+
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -46,7 +48,9 @@ export default function AddEvent() {
     console.log(date);
     hideDatePicker();
   };
-  const addEventCalender = (values) => {
+  const addEventCalender =async (values) => {
+    setloading(true);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("add_event", "1");
@@ -54,7 +58,7 @@ export default function AddEvent() {
     urlencoded.append("access_level", access);
     urlencoded.append("event_date", "2022-09-19");
     urlencoded.append("decription", values.eventDecription);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
       method: "POST",
       body: urlencoded,
@@ -69,9 +73,11 @@ export default function AddEvent() {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.replace("Calendar");
+          setloading(false);
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
+          setloading(false);
         }
       });
   };
@@ -234,8 +240,8 @@ export default function AddEvent() {
                   )}
 
                   <View style={styles.button}>
-                    {/* <SmallButton title={"Cancel"} color={color.purple} 
-                    fontFamily={'Montserrat-Medium'}/> */}
+                    <SmallButton title={"Cancel"} color={color.purple} 
+                    fontFamily={'Montserrat-Medium'} onPress={()=>navigation.goBack()}/>
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
@@ -243,6 +249,7 @@ export default function AddEvent() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

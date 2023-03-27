@@ -18,6 +18,8 @@ import { useNavigation } from "@react-navigation/native";
 import Event_Card from "../../../components/card/Event_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function Calendar() {
   const navigation = useNavigation();
   const [eventList, setEventList] = useState([]);
@@ -27,8 +29,11 @@ export default function Calendar() {
   const [getMessageFalse, setMessageFalse] = useState();
   const [refreshEvent, setRefreshEvent] = useReducer((x) => x + 1, 0);
   const [refreshing, setRefreshing] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
+  const [id, setId] = useState("");
 
-  const eventListData = () => {
+  const eventListData = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -37,14 +42,15 @@ export default function Calendar() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => setEventList(result.data))
       .catch((error) => console.log("error", error));
   };
-  const deleteEvent = (event_id) => {
+  const deleteEvent = async (event_id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -53,7 +59,7 @@ export default function Calendar() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_event=1&event_id=${event_id}&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_event=1&event_id=${event_id}&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -67,6 +73,7 @@ export default function Calendar() {
             if (item.event_id !== event_id) temp.push(item);
           });
           setEventList(temp);
+          setDeletePop(false);
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
@@ -92,13 +99,13 @@ export default function Calendar() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation}/>
+      <HomeHeader navigation={navigation} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -107,7 +114,7 @@ export default function Calendar() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -149,7 +156,11 @@ export default function Calendar() {
                         description: list.decription,
                       })
                     }
-                    removePress={() => deleteEvent(list.event_id)}
+                    removePress={() => {
+                      setId(list.event_id);
+                      setDeletePop(true);
+                      // deleteEvent(list.event_id);
+                    }}
                     viewPress={() =>
                       navigation.navigate("ViewEventDetails", {
                         title: list.event_title,
@@ -165,6 +176,12 @@ export default function Calendar() {
         )}
         <View style={styles.card_padding}></View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

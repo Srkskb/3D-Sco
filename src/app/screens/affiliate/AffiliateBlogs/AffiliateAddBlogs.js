@@ -22,6 +22,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AffiliateAddBlog() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
@@ -45,7 +46,8 @@ export default function AffiliateAddBlog() {
     console.log(date);
     hideDatePicker();
   };
-  const addFileCabinet = (values) => {
+  const addFileCabinet =async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(
       values.blogTitle,
       access,
@@ -59,7 +61,7 @@ export default function AffiliateAddBlog() {
     urlencoded.append("blogs", "1");
     urlencoded.append("titel", values.blogTitle);
     urlencoded.append("access", access);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     // urlencoded.append("added_by", loginUID);
 
     urlencoded.append("date", "2022-02-01");

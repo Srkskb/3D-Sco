@@ -10,12 +10,14 @@ import color from "../../../../assets/themes/Color";
 import Mail_Card from "../../../../components/card/Mail_Card";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function Sent({ navigation }) {
   const [mailListData, setMailListData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
 
-  const SentMessage = () => {
+  const SentMessage =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = myHeadersData();
 
     var requestOptions = {
@@ -25,7 +27,7 @@ export default function Sent({ navigation }) {
     };
 
     fetch(
-      `https://3dsco.com/3discoapi/state.php?view_sent=1&Sender_ID=${loginUID}`,
+      `https://3dsco.com/3discoapi/state.php?view_sent=1&Sender_ID=${myData.id}`,
       requestOptions
     )
       .then((response) => response.json())

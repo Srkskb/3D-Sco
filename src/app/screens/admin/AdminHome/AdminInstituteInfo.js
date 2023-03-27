@@ -7,6 +7,8 @@ import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
+
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminInstituteInfo({ route, navigation }) {
   const { adminID, adminIDParam } = route.params;
   const { toJoinCID, toJoinCIDParam } = route.params;
@@ -61,13 +63,14 @@ export default function AdminInstituteInfo({ route, navigation }) {
     showCourseDetail();
   }, []);
 
-  const toJoinCourse = () => {
-    console.log(toJoinCID,loginUID)
+  const toJoinCourse =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log(toJoinCID)
     const myHeaders = myHeadersData();
     var formdata = new FormData();
     formdata.append("student_select_courses", "1");
     formdata.append("course_id", toJoinCID);
-    formdata.append("student_id", loginUID);
+    formdata.append("student_id", myData.id);
 
     var requestOptions = {
       method: "POST",

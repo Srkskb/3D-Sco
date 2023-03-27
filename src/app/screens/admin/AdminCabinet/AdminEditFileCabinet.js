@@ -42,7 +42,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   const updateDocument = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
-    console.log(updateTitle, access, docId, upDescription, loginUID, image);
+    console.log(updateTitle, access, docId, upDescription, myData.id, image);
     var urlencoded = new FormData();
     urlencoded.append("update_documents", "1");
     urlencoded.append("titel", updateTitle);

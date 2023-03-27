@@ -73,14 +73,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  console.error = (error) => error.apply;
   LogBox.ignoreLogs(["ViewPropTypes will be removed", "ColorPropType will be removed"]);
-  useEffect(() => {
-    useFonts();
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", function () {
-      return true;
-    });
-    return () => backHandler.remove();
-  }, []);
+  // useEffect(() => {
+  //   useFonts();
+  //   const backHandler = BackHandler.addEventListener("hardwareBackPress", function () {
+  //     return true;
+  //   });
+  //   return () => backHandler.remove();
+  // }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <RootNavigator />

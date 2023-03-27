@@ -4,18 +4,19 @@ import color from "../../../../assets/themes/Color";
 import Mail_Card from "../../../../components/card/Mail_Card";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function Inbox({navigation}) {
   const [mailListData, setMailListData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const Inbox=()=>{
+  const Inbox=async()=>{
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
 
     var myHeaders = myHeadersData();
 
 var formdata = new FormData();
 formdata.append("message_list_one", "1");
-formdata.append("RecieverID", loginUID);
+formdata.append("RecieverID", myData.id);
 
 var requestOptions = {
   method: 'POST',

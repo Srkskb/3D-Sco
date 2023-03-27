@@ -3,7 +3,7 @@ import React from "react";
 import { Icon, withBadge } from "react-native-elements";
 import color from "../../assets/themes/Color";
 const BadgeIcon = withBadge(0)(Icon);
-export default function HomeHeader({ navigation, title }) {
+export default function HomeHeader({ navigation, title,mailPress }) {
   return (
     <SafeAreaView>
       <View style={styles.headerStyle}>
@@ -22,9 +22,7 @@ export default function HomeHeader({ navigation, title }) {
           name="email"
           color={color.purple}
           size={35}
-          onPress={() => {
-            navigation.navigate("Mail");
-          }}
+          onPress={mailPress}
         />
       </View>
     </SafeAreaView>

@@ -19,6 +19,7 @@ import { myHeadersData } from "../../../../api/helper";
 const { height } = Dimensions.get("window");
 import qs from "qs"
 import axios from "axios";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function ComposeMail({ navigation }) {
   var userType = ["Student", "Tutor", "Parent", "Admin", "Affiliate"];
   const [userList, setUserList] = useState([]);
@@ -28,10 +29,11 @@ export default function ComposeMail({ navigation }) {
   const [message, setMessage] = useState("");
   const loginUID = localStorage.getItem("loginUID");
 
-  const ComposeMail = () => {
+  const ComposeMail =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var data = qs.stringify({
       'add_message_for_user': "1",
-      'SenderID': loginUID,
+      'SenderID': myData.id,
       'Subject': subject,
       'Message': message,
       'RecieverID': recieverID,

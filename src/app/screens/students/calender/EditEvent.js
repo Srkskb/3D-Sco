@@ -17,16 +17,19 @@ import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
 import NavigationDrawer from "../home_screen/NavigationDrawer";
 
 export default function EditEvent({ route, navigation }) {
   // ** For Event Update
+  
+  const [loading, setloading] = useState(false);
   const { eventID, eventIDParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { status, statusIDParam } = route.params;
   const { dateData, dateIDParam } = route.params;
   const { description, descriptionIDParam } = route.params;
-  const loginUID = localStorage.getItem("loginUID");
+  // const loginUID = localStorage.getItem("loginUID");
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -51,7 +54,9 @@ export default function EditEvent({ route, navigation }) {
     hideDatePicker();
   };
 
-  const updateEvent = () => {
+  const updateEvent =async () => {
+    setloading(true);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("update_event", "1");
@@ -60,7 +65,7 @@ export default function EditEvent({ route, navigation }) {
     urlencoded.append("event_date", dateData);
     urlencoded.append("decription", updateDescription);
     urlencoded.append("event_id", eventID);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
 
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
       method: "POST",
@@ -74,10 +79,12 @@ export default function EditEvent({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.replace("Calendar");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -212,12 +219,15 @@ export default function EditEvent({ route, navigation }) {
               />
 
               <View style={styles.button}>
+              <SmallButton title={"Cancel"} color={color.purple} 
+                    fontFamily={'Montserrat-Medium'} onPress={()=>navigation.goBack()}/>
                 <SmallButton
                   onPress={updateEvent}
-                  title="Save"
+                  title="Update"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>

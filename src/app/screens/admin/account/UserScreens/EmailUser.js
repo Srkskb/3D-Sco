@@ -10,7 +10,7 @@ import { myHeadersData } from "../../../../api/helper";
 import axios from "axios";
 import qs from "qs";
 import Loader from "../../../../utils/Loader";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EmailUser(navigation) {
   const [userType, setUserType] = useState("");
   const [subject, setSubject] = useState("");
@@ -18,11 +18,12 @@ export default function EmailUser(navigation) {
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
 
-  const AddEmail = () => {
+  const AddEmail =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
     var data = qs.stringify({
       add_message: "1",
-      SenderID: loginUID,
+      SenderID: myData.id,
       Subject: subject,
       Message: body,
       Type: userType,

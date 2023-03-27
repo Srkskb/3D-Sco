@@ -12,6 +12,7 @@ import InstructorRequestCard from "../../../components/admin_required/Cards/Inst
 import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function InstructorRequest() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -22,7 +23,8 @@ export default function InstructorRequest() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     // var requestOptions = {
@@ -42,7 +44,7 @@ export default function InstructorRequest() {
     //   .catch((error) => console.log("error", error));
     var formdata = new FormData();
 formdata.append("instructor_request_list", "1");
-formdata.append("admin_id", loginUID);
+formdata.append("admin_id", myData.id);
 
 var requestOptions = {
   method: 'POST',

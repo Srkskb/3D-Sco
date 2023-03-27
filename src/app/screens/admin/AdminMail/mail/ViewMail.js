@@ -5,6 +5,7 @@ import CardButton from "../../../../components/buttons/CardButton";
 import HeaderBack from "../../../../components/header/Header";
 import { Snackbar } from "react-native-paper";
 import { myHeadersData } from "../../../../api/helper";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function ViewMail({ route, navigation }) {
   const { msgType, msg } = route.params;
   const loginUID = localStorage.getItem("loginUID");
@@ -62,11 +63,12 @@ export default function ViewMail({ route, navigation }) {
       .catch((error) => console.log("error", error));
   };
 
-  const spamMsg = () => {
+  const spamMsg =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var formdata = new FormData();
     formdata.append("spam_message", "1");
     formdata.append("email_id", msg.id);
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
 
     var requestOptions = {
       method: "POST",
@@ -85,11 +87,12 @@ export default function ViewMail({ route, navigation }) {
       .catch((error) => console.log("error", error));
   };
 
-  const archiveMsg = () => {
+  const archiveMsg =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var formdata = new FormData();
     formdata.append("achieve_message", "1");
     formdata.append("email_id", msg.id);
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
 
     var requestOptions = {
       method: "POST",

@@ -10,17 +10,19 @@ import color from "../../../../assets/themes/Color";
 import Mail_Card from "../../../../components/card/Mail_Card";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function Archive({ navigation }) {
   const [mailListData, setMailListData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
 
-  const Archive = () => {
+  const Archive = async() => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = myHeadersData();
 
     var formdata = new FormData();
     formdata.append("achieve_message_view", "1");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
 
     var requestOptions = {
       method: "POST",

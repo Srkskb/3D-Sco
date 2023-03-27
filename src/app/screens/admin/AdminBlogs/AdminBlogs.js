@@ -33,7 +33,7 @@ export default function AdminBlogs() {
     allLearnerList();
   };
 
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
     console.log("Enter");
     setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
