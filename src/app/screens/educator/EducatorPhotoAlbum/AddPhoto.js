@@ -167,23 +167,8 @@ export default function AddPhoto() {
                   )}
 
                   <View style={styles.button}>
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()}/>
-=======
-                    <SmallButton
-                      onPress={() => {
-                        resetForm();
-                        navigation.navigate("AdminPhotoAlbum");
-                      }}
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
->>>>>>> Stashed changes
-=======
+
                     <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
->>>>>>> parent of 04542e1 (educator panel work: loader and popups)
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

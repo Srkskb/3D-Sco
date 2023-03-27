@@ -18,55 +18,14 @@ import mime from "mime";
 
 import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorAddResources({ navigation }) {
-<<<<<<< Updated upstream
   const [question,setQuestion]=useState("");
   const [answer ,setAnswer] =useState("");
-<<<<<<< HEAD
-  const [loading, setloading] = useState(false);
-=======
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 04542e1 (educator panel work: loader and popups)
   const loginUID = localStorage.getItem("loginUID");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
 
-<<<<<<< Updated upstream
-  const addFileCabinet = (values) => {
-    console.log(values.docTitle,loginUID,values.description,);
-    const getHeaders = myHeadersData();
-    var data = qs.stringify({
-  'add_faq': '1',
-  'Question': values.docTitle,
-  'Answer': values.description,
-  'user_id': loginUID 
-});
-  var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
-  
-  axios(config)
-  .then((response)=>{
-    console.log(response)
-    if(response.data.success==1){
-    navigation.navigate("EducatorManageResources")
-  }
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-};
-=======
   const addFileCabinet = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
@@ -96,7 +55,6 @@ export default function EducatorAddResources({ navigation }) {
         console.log(error);
       });
   };
->>>>>>> Stashed changes
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />

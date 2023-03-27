@@ -29,14 +29,9 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
   const [upLink, setUpLink] = useState(link);
   const [category, setCategory] = useState(linkCategory);
 
-<<<<<<< Updated upstream
-  const updateDocument = (values) => { 
-    console.log(updateTitle,upLink,category,upDescription);
-=======
   const updateDocument = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(updateTitle, upLink, category, upDescription);
->>>>>>> Stashed changes
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
 

@@ -19,23 +19,16 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
-<<<<<<< HEAD
-<<<<<<< Updated upstream
 import DeletePopup from "../../../components/popup/DeletePopup";
-=======
 import qs from "qs";
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 04542e1 (educator panel work: loader and popups)
 export default function EducatorStoreFavoriteLinks() {
   const navigation = useNavigation();
 
   const [storeLinks, setStoreLinks] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -104,7 +97,10 @@ export default function EducatorStoreFavoriteLinks() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${myData.id}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${myData.id}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
         if (result.success === 1) {
@@ -171,15 +167,7 @@ export default function EducatorStoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
         wrapperStyle={{ zIndex: 1 }}
-=======
-        style={{ zIndex: 1 }}
->>>>>>> Stashed changes
-=======
-        style={{zIndex:1}}
->>>>>>> parent of 04542e1 (educator panel work: loader and popups)
       >
         {getMessageTrue}
       </Snackbar>
@@ -187,23 +175,16 @@ export default function EducatorStoreFavoriteLinks() {
         visible={snackVisibleFalse}
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        theme={{ colors: { accent: "red" }}}
+        theme={{ colors: { accent: "red" } }}
         wrapperStyle={{ zIndex: 1 }}
-=======
-        theme={{ colors: { accent: "red" } }}
-        style={{ zIndex: 1 }}
->>>>>>> Stashed changes
-=======
-        theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
->>>>>>> parent of 04542e1 (educator panel work: loader and popups)
       >
         {getMessageFalse}
       </Snackbar>
 
-      <HeaderBack title={"Store Favorite Links"} onPress={() => navigation.goBack()} />
+      <HeaderBack
+        title={"Store Favorite Links"}
+        onPress={() => navigation.goBack()}
+      />
       <View style={styles.main_box}>
         <TextWithButton
           title={"Store Favorite Links"}
@@ -221,7 +202,9 @@ export default function EducatorStoreFavoriteLinks() {
           <View style={styles.category_search}>
             <RoundCategory
               onSelect={(selectedItem, index, item) => {
-                let catid = categoryList?.filter((i) => i.Name === selectedItem).map((i) => i.id);
+                let catid = categoryList
+                  ?.filter((i) => i.Name === selectedItem)
+                  .map((i) => i.id);
                 setFilter(catid && catid[0]);
                 setSearchTerm("");
               }}
@@ -240,7 +223,11 @@ export default function EducatorStoreFavoriteLinks() {
             </TouchableOpacity>
           </View>
         </View>
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <View style={styles.main}>
             <View style={{ flex: 1 }}>
               {storeLinks === undefined ? (

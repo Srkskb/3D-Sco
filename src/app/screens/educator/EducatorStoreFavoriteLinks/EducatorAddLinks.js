@@ -24,43 +24,6 @@ export default function EducatorAddLink() {
   const user_type = localStorage.getItem("userID"); // ! user Type student or other
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-<<<<<<< Updated upstream
-  const addLinkForm = (values) => {
-    console.log('category',category);
-    if(category!=0||category!=undefined){
-      const myHeaders = myHeadersData();
-        var urlencoded = new FormData();
-        urlencoded.append("Add_link", "1");
-        urlencoded.append("titel", values.linkTitle);
-        urlencoded.append("category", category);
-        urlencoded.append("detail", values.description);
-        urlencoded.append("url", values.linkUrl);
-        urlencoded.append("type", user_type); // ! User Type 
-        urlencoded.append("id", loginUID);
-        fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
-          method: "POST",
-          body: urlencoded,
-          headers: {
-            myHeaders,
-          },
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            console.log(res);
-            if (res.success == 1) {
-              setSnackVisibleTrue(true);
-              setMessageTrue(res.message);
-              navigation.navigate("EducatorStoreFavoriteLinks");
-            } else {
-              setSnackVisibleFalse(true);
-              setMessageFalse(res.message);
-            }
-          });
-        }else {
-              setSnackVisibleFalse(true);
-              setMessageFalse('Select Category');
-            }
-=======
   const addLinkForm = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log("category", category);
@@ -97,7 +60,6 @@ export default function EducatorAddLink() {
       setSnackVisibleFalse(true);
       setMessageFalse("Select Category");
     }
->>>>>>> Stashed changes
   };
   return (
     <View style={styles.container}>

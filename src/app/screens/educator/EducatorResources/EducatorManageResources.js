@@ -7,18 +7,11 @@ import Event_Card from "../../../components/card/Event_Card";
 import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
-<<<<<<< HEAD
-<<<<<<< Updated upstream
 import DeletePopup from "../../../components/popup/DeletePopup";
-=======
->>>>>>> parent of 04542e1 (educator panel work: loader and popups)
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-=======
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import AsyncStorage from "@react-native-community/async-storage";
 
->>>>>>> Stashed changes
-export default function EducatorManageResources({ navigation }) {
+export default function EducatorManageResouPrces({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [myResourcesData, setMyResourcesData] = useState([]);
   const [color, changeColor] = useState("red");
@@ -60,40 +53,6 @@ export default function EducatorManageResources({ navigation }) {
   };
 
   useEffect(() => {
-<<<<<<< Updated upstream
-    if(isFocused){
-        allLearnerList();
-      }
-      allLearnerList();
-  }, [isFocused]);
-  const deleteFaq=(id)=>{
-    var data = qs.stringify({
-  'delete_faq': '1',
-  'id': id,
-  'user_id':loginUID 
-});
-var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
-
-axios(config)
-.then((response)=>{
-  console.log(JSON.stringify(response.data));
-  if(response.data.success==1){
-      allLearnerList();
-    }
-})
-.catch((error)=>{
-  console.log(error);
-});
-  }
-=======
     if (isFocused) {
       allLearnerList();
     }
@@ -129,7 +88,6 @@ axios(config)
       });
   };
 
->>>>>>> Stashed changes
   return (
     <View style={styles.main}>
       <HeaderBack title={"Manage Resources"} onPress={() => navigation.goBack()} />
@@ -143,26 +101,6 @@ axios(config)
           onPress={() => navigation.navigate("EducatorAddResources")}
         />
         {myResourcesData === undefined ? (
-<<<<<<< Updated upstream
-              <>
-                <NoDataFound />
-              </>
-            ) : (
-              <>
-                {myResourcesData.map((list, index) => (
-                  <>
-        <Event_Card
-          title={list.Question}
-          description={list.Answer}
-          // date={"24/05/2023"}
-          editPress={() => navigation.navigate("EducatorEditResources",{ list:list })}
-          removePress={()=>deleteFaq(list.id)}
-        />
-        </>
-                ))}
-              </>
-            )}
-=======
           <>
             <NoDataFound />
           </>
@@ -184,7 +122,6 @@ axios(config)
               ))}
           </>
         )}
->>>>>>> Stashed changes
       </ScrollView>
     </View>
   );
