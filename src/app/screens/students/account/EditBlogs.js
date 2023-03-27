@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -15,7 +8,10 @@ import { myHeadersData } from "../../../api/helper";
 import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
-
+import axios from "axios";
+import qs from "qs";
+import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EditBlogs({ route, navigation }) {
   // ** For Event Update
   const { blogID, eventIDParam } = route.params; // ! Current Event ID
@@ -31,7 +27,7 @@ export default function EditBlogs({ route, navigation }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [updateDescription, setUpDescription] = useState(description);
-
+  const [loading, setLoading] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -46,36 +42,43 @@ export default function EditBlogs({ route, navigation }) {
     hideDatePicker();
   };
 
-  const updateEvent = () => {
+  const updateEvent = async () => {
+    const Mydata = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log(blogID);
+    setLoading(true);
     const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("update_blogs", "1");
-    urlencoded.append("titel", updateTitle);
-    urlencoded.append("date", selectedDate);
-    urlencoded.append("description", updateDescription);
-    urlencoded.append("id", blogID);
-    urlencoded.append("user_id", loginUID);
-
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
-      method: "POST",
-      body: urlencoded,
+    var data = qs.stringify({
+      update_blogs: "1",
+      id: blogID,
+      titel: updateTitle,
+      user_id: Mydata.id,
+      description: updateDescription,
+      date: moment(new Date()).format("YYYY-MM-DD"),
+    });
+    var config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php",
       headers: {
-        myHeaders,
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=k3uusd3c44n957mv6l05vpmf31",
       },
-      redirect: "follow",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success == 1) {
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
-          navigation.navigate("Blogs");
-        } else {
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
-        }
-      });
+      data: data,
+    };
+
+    axios(config).then((res) => {
+      console.log(res.data);
+      setLoading(false);
+      if (res.data.success == 1) {
+        setSnackVisibleTrue(true);
+        setMessageTrue(res.data.message);
+        navigation.navigate("Blogs");
+      } else {
+        setSnackVisibleFalse(true);
+        setMessageFalse(res.data.message);
+      }
+    });
   };
   return (
     <View style={styles.container}>
@@ -96,10 +99,7 @@ export default function EditBlogs({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Blog"}
-        onPress={() => navigation.navigate("Blogs")}
-      />
+      <HeaderBack title={"Update Blog"} onPress={() => navigation.navigate("Blogs")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -122,16 +122,16 @@ export default function EditBlogs({ route, navigation }) {
             <View>
               <InputField
                 required
-                label={"Event Title"}
-                placeholder={"Event Title"}
+                label={"Blog Title"}
+                placeholder={"Blog Title"}
                 name="title"
                 onChangeText={(text) => setUpTitle(text)}
                 value={updateTitle}
                 keyboardType="text"
               />
 
-              <Text style={{ marginBottom: 5 }}>
-                <Text style={styles.label_text}>Event Date</Text>
+              {/* <Text style={{ marginBottom: 5 }}>
+                <Text style={styles.label_text}>Blog Date</Text>
                 <Text style={{ color: color.red }}>*</Text>
               </Text>
               <View style={styles.calendar_input}>
@@ -157,7 +157,7 @@ export default function EditBlogs({ route, navigation }) {
                   onConfirm={handleConfirm}
                   onCancel={hideDatePicker}
                 />
-              </View>
+              </View> */}
 
               <InputField
                 label={"Description"}
@@ -178,6 +178,7 @@ export default function EditBlogs({ route, navigation }) {
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>
