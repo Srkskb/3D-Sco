@@ -9,6 +9,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorEditFinancial({ route, navigation }) {
+  const [loading, setloading] = useState(false);
   const { assisID, idParam } = route.params;
   const { assisTitle, titleParam } = route.params;
   const { assisURL, urlParam } = route.params;
@@ -21,6 +22,8 @@ export default function EducatorEditFinancial({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const updateFinancialAssets = async () => {
+    setloading(true);
+
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -46,10 +49,14 @@ export default function EducatorEditFinancial({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
+
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorFinancialAssistance");
         } else {
+          setloading(false);
+
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -58,7 +65,10 @@ export default function EducatorEditFinancial({ route, navigation }) {
   };
   return (
     <View style={styles.container}>
-      <HeaderBack title={"Update Financial"} onPress={() => navigation.navigate("EducatorFinancialAssistance")} />
+      <HeaderBack
+        title={"Update Financial"}
+        onPress={() => navigation.navigate("EducatorFinancialAssistance")}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -109,6 +119,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scroll_container: {
-    padding: 10,
+    padding: 20,
   },
 });

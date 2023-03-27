@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorAddFinancial({ route, navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
+  const [loading, setloading] = useState(false);
   const [assetsTitle, setAssetsTitle] = useState();
   const userRole = localStorage.getItem("userRole");
   const [assetsUrl, setAssetsUrl] = useState();
@@ -19,6 +20,8 @@ export default function EducatorAddFinancial({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const addFinancialAssets = async () => {
+    setloading(true);
+
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -42,10 +45,14 @@ export default function EducatorAddFinancial({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
+
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorFinancialAssistance");
         } else {
+          setloading(false);
+
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -83,6 +90,7 @@ export default function EducatorAddFinancial({ route, navigation }) {
               color={color.white}
               fontFamily={"Montserrat-Bold"}
               onPress={addFinancialAssets}
+              loading={loading}
             />
           </View>
         </ScrollView>

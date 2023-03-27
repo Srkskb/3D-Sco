@@ -9,8 +9,10 @@ import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function EducatorCabinet() {
   const navigation = useNavigation();
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -18,6 +20,7 @@ export default function EducatorCabinet() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [id, setId] = useState("");
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
@@ -49,6 +52,7 @@ export default function EducatorCabinet() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -57,6 +61,7 @@ export default function EducatorCabinet() {
           });
           setFileCabinetData(temp);
         } else {
+          setDeletePop(false);
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
@@ -84,6 +89,7 @@ export default function EducatorCabinet() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -92,6 +98,7 @@ export default function EducatorCabinet() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -125,7 +132,10 @@ export default function EducatorCabinet() {
                       docImage: list.image,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
                   onPress={() =>
                     navigation.navigate("EducatorViewContent", {
                       title: list.name,
@@ -140,6 +150,12 @@ export default function EducatorCabinet() {
           )}
         </View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </View>
   );
 }

@@ -24,6 +24,7 @@ export default function EducatorAddBlog() {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [selectedDate, setSelectedDate] = useState();
+  const [loading, setloading] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -39,6 +40,7 @@ export default function EducatorAddBlog() {
     hideDatePicker();
   };
   const addFileCabinet = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(values.blogTitle, access, loginUID, selectedDate, values.description);
     const myHeaders = myHeadersData();
@@ -63,10 +65,12 @@ export default function EducatorAddBlog() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorBlogs");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -182,7 +186,7 @@ export default function EducatorAddBlog() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()}/>
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
@@ -190,6 +194,7 @@ export default function EducatorAddBlog() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

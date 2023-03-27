@@ -19,6 +19,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 export default function EducatorAddLink() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -30,6 +31,7 @@ export default function EducatorAddLink() {
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
   const addLinkForm = (values) => {
+    setloading(true);
     console.log('category',category);
     if(category!=0||category!=undefined){
       const myHeaders = myHeadersData();
@@ -52,10 +54,12 @@ export default function EducatorAddLink() {
           .then((res) => {
             console.log(res);
             if (res.success == 1) {
+              setloading(false);
               setSnackVisibleTrue(true);
               setMessageTrue(res.message);
               navigation.navigate("EducatorStoreFavoriteLinks");
             } else {
+              setloading(false);
               setSnackVisibleFalse(true);
               setMessageFalse(res.message);
             }
@@ -198,6 +202,7 @@ export default function EducatorAddLink() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

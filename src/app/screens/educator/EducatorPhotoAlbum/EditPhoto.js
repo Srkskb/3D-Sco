@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 export default function EditPhoto({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
+  const [loading, setloading] = useState(false);
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
@@ -42,6 +43,7 @@ export default function EditPhoto({ route, navigation }) {
   };
 
   const updateDocument = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, loginUID, image);
@@ -69,10 +71,12 @@ export default function EditPhoto({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorPhotoAlbum");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -178,12 +182,13 @@ export default function EditPhoto({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()}/>
                 <SmallButton
                   onPress={updateDocument}
-                  title="Save"
+                  title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>

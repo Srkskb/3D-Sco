@@ -25,7 +25,7 @@ export default function EducatorEditFileCabinet({ route, navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(docImage);
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -40,6 +40,8 @@ export default function EducatorEditFileCabinet({ route, navigation }) {
   };
 
   const updateDocument = async (values) => {
+    setloading(true);
+
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, myData.id, image);
@@ -67,10 +69,14 @@ export default function EducatorEditFileCabinet({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
+
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorCabinet");
         } else {
+          setloading(false);
+
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -174,19 +180,21 @@ export default function EducatorEditFileCabinet({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()}/>
                 <SmallButton
                   onPress={updateDocument}
                   loading={loading}
-                  title="Save"
+                  title="Update"
                   backgroundColor={color.purple}
-                  fontFamily={"Montserrat-Bold"}
+                  color={color.white}
+            fontFamily={"Montserrat-Bold"}
                 />
               </View>
             </View>
           </View>
         </ScrollView>
       </View>
+      
     </View>
   );
 }

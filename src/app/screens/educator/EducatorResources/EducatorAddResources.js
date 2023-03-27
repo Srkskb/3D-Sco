@@ -25,6 +25,7 @@ import mime from 'mime'
 export default function EducatorAddResources({ navigation }) {
   const [question,setQuestion]=useState("");
   const [answer ,setAnswer] =useState("");
+  const [loading, setloading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -32,6 +33,7 @@ export default function EducatorAddResources({ navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
 
   const addFileCabinet = (values) => {
+    setloading(true);
     console.log(values.docTitle,loginUID,values.description,);
     const getHeaders = myHeadersData();
     var data = qs.stringify({
@@ -54,10 +56,12 @@ export default function EducatorAddResources({ navigation }) {
   .then((response)=>{
     console.log(response)
     if(response.data.success==1){
+      setloading(false);
     navigation.navigate("EducatorManageResources")
   }
   })
   .catch(function (error) {
+    setloading(false);
     console.log(error);
   });
 };
@@ -180,6 +184,7 @@ export default function EducatorAddResources({ navigation }) {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>
