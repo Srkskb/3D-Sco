@@ -25,23 +25,21 @@ export default function AddPhoto() {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
-  const pickImage = async () => {
+  const pickImg = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-    console.log(result);
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result.assets[0].uri);
     }
   };
 
   const addFileCabinet = async (values) => {
     setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log(values.docTitle, loginUID, values.description, image, mime.getType(image));
     const getHeaders = myHeadersData();
     var data = new FormData();
     data.append("add_photos", "1");
@@ -53,6 +51,7 @@ export default function AddPhoto() {
       type: mime.getType(image),
       name: `abc.jpg`,
     });
+    // data.append("image", image);
 
     var config = {
       method: "post",
@@ -60,8 +59,9 @@ export default function AddPhoto() {
       headers: {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
+        // "Content-Type": "application/x-www-form-urlencoded",
         Cookie: "PHPSESSID=r8i6tl7an7ibqgp4kog3aa6ro7",
-        ...data,
+        // ...data,
       },
       data: data,
     };
@@ -122,7 +122,7 @@ export default function AddPhoto() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -150,7 +150,7 @@ export default function AddPhoto() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
+                  <UploadDocument type={"Image"} pickImg={pickImg} />
                   <View style={styles.uploadCon}>
                     {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
@@ -171,7 +171,19 @@ export default function AddPhoto() {
                   )}
 
                   <View style={styles.button}>
+<<<<<<< Updated upstream
                     <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()}/>
+=======
+                    <SmallButton
+                      onPress={() => {
+                        resetForm();
+                        navigation.navigate("AdminPhotoAlbum");
+                      }}
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                    />
+>>>>>>> Stashed changes
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

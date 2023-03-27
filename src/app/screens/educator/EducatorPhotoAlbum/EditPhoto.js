@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
@@ -24,10 +24,14 @@ export default function EditPhoto({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(docImage);
+  const [image, setImage] = useState("");
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
+  console.log("docImage", docImage);
+  useEffect(() => {
+    docImage && setImage(docImage);
+  }, [docImage]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -55,10 +59,11 @@ export default function EditPhoto({ route, navigation }) {
     urlencoded.append("detail", upDescription);
     urlencoded.append("user_id", myData.id);
     urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
+      uri: image,
       type: mime.getType(image),
       name: `abc.jpg`,
     });
+
     fetch("https://3dsco.com/3discoapi/studentregistration.php", {
       method: "POST",
       body: urlencoded,
@@ -150,7 +155,7 @@ export default function EditPhoto({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument onPress={pickImage} />
+                  <UploadDocument pickImg={pickImage} />
                   <View style={styles.uploadCon}>
                     {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
@@ -160,7 +165,8 @@ export default function EditPhoto({ route, navigation }) {
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />}
+                      {/* {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />} */}
+                      {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>

@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -21,17 +14,25 @@ import * as Yup from "yup";
 import * as qs from "qs";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
-import mime from 'mime'
+import mime from "mime";
+
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorAddResources({ navigation }) {
+<<<<<<< Updated upstream
   const [question,setQuestion]=useState("");
   const [answer ,setAnswer] =useState("");
   const [loading, setloading] = useState(false);
+=======
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+>>>>>>> Stashed changes
   const loginUID = localStorage.getItem("loginUID");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
 
+<<<<<<< Updated upstream
   const addFileCabinet = (values) => {
     setloading(true);
     console.log(values.docTitle,loginUID,values.description,);
@@ -65,8 +66,39 @@ export default function EducatorAddResources({ navigation }) {
     console.log(error);
   });
 };
+=======
+  const addFileCabinet = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    const getHeaders = myHeadersData();
+    var data = qs.stringify({
+      add_faq: "1",
+      Question: values.docTitle,
+      Answer: values.description,
+      user_id: myData.id,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          navigation.navigate("EducatorManageResources");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+>>>>>>> Stashed changes
   return (
-<View style={styles.container}>
+    <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Add Resources"}
@@ -108,14 +140,7 @@ export default function EducatorAddResources({ navigation }) {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Question"}
@@ -127,11 +152,7 @@ export default function EducatorAddResources({ navigation }) {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -144,13 +165,9 @@ export default function EducatorAddResources({ navigation }) {
                   /> */}
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
-{/*  */}
+                  {/*  */}
                   <InputField
                     label={"Answer"}
                     placeholder={"Enter Your Answer"}
@@ -164,19 +181,11 @@ export default function EducatorAddResources({ navigation }) {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

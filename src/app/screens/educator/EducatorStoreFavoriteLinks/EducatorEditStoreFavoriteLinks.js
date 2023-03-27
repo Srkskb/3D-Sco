@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -17,6 +9,7 @@ import { myHeadersData } from "../../../api/helper";
 import { Snackbar } from "react-native-paper";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import AsyncStorage from "@react-native-community/async-storage";
 import { CategoryDropdown } from "../../../components/dropdown";
 
 export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
@@ -38,9 +31,15 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
   const [upLink, setUpLink] = useState(link);
   const [category, setCategory] = useState(linkCategory);
 
+<<<<<<< Updated upstream
   const updateDocument = (values) => { 
     setloading(true);
     console.log(updateTitle,upLink,category,upDescription);
+=======
+  const updateDocument = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log(updateTitle, upLink, category, upDescription);
+>>>>>>> Stashed changes
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
 
@@ -51,7 +50,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
     urlencoded.append("url", upLink);
     urlencoded.append("type", "2");
     urlencoded.append("id", linkID);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
@@ -89,16 +88,13 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Link "}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Update Link "} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -107,7 +103,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        style={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -167,11 +163,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                />
+                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
                   onPress={updateDocument}
                   title="Update"

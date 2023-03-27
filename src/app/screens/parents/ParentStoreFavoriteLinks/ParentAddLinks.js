@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -17,6 +11,7 @@ import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function ParentAddLink() {
   const navigation = useNavigation();
   const [access, setAccess] = useState("Private");
@@ -26,11 +21,12 @@ export default function ParentAddLink() {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [category, setCategory] = useState();
-   const user_type = localStorage.getItem("userID"); // ! user Type student or other
+  const user_type = localStorage.getItem("userID"); // ! user Type student or other
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-  const addLinkForm = (values) => {
-    console.log('category',category);
+  const addLinkForm = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log("category", category);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Add_link", "1");
@@ -38,8 +34,8 @@ export default function ParentAddLink() {
     urlencoded.append("category", category);
     urlencoded.append("detail", values.description);
     urlencoded.append("url", values.linkUrl);
-    urlencoded.append("type", user_type); // ! User Type 
-    urlencoded.append("id", loginUID);
+    urlencoded.append("type", user_type); // ! User Type
+    urlencoded.append("id", myData.id);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
@@ -63,10 +59,7 @@ export default function ParentAddLink() {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Suggest Link"}
-        onPress={() => navigation.navigate("ParentStoreFavoriteLinks")}
-      />
+      <HeaderBack title={"Suggest Link"} onPress={() => navigation.navigate("ParentStoreFavoriteLinks")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -85,7 +78,7 @@ export default function ParentAddLink() {
       </Snackbar>
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{paddingVertical:10}}>
+          <View style={{ paddingVertical: 10 }}>
             <Formik
               initialValues={{
                 linkTitle: "",
@@ -94,29 +87,17 @@ export default function ParentAddLink() {
                 linkUrl: "",
               }}
               validationSchema={Yup.object().shape({
-                linkTitle: Yup.string()
-                  .required("Title is required")
-                  .min(3, "Title must be at least 3 characters"),
-                 
+                linkTitle: Yup.string().required("Title is required").min(3, "Title must be at least 3 characters"),
 
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
-            
-                linkUrl: Yup.string()
-                  .matches(urlValidation, "Enter correct url!")
-                  .required("Url is required"),
+
+                linkUrl: Yup.string().matches(urlValidation, "Enter correct url!").required("Url is required"),
               })}
               onSubmit={(values) => addLinkForm(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Link Title"}
@@ -128,18 +109,14 @@ export default function ParentAddLink() {
                     keyboardType="text"
                   />
                   {errors.linkTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.linkTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkTitle}</Text>
                   )}
 
                   <CategoryDropdown
                     label={"Category"}
                     onSelect={(selectedItem, index) => {
                       setCategory(index + 1);
-                      console.log(index + 1)
+                      console.log(index + 1);
                     }}
                   />
 
@@ -153,11 +130,7 @@ export default function ParentAddLink() {
                     keyboardType="text"
                   />
                   {errors.linkUrl && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.linkUrl}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkUrl}</Text>
                   )}
                   <InputField
                     label={"Description"}
@@ -169,21 +142,13 @@ export default function ParentAddLink() {
                     onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
-                    textAlignVertical='top'
+                    textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
