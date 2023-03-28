@@ -9,7 +9,7 @@ export default function EducatorAccount() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation}/>
+      <HomeHeader navigation={navigation} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           <View style={styles.main_container}>
@@ -19,11 +19,11 @@ export default function EducatorAccount() {
                 { borderColor: color.gray, borderRightWidth: 1 },
               ]}
             >
-              <Account_Tabs
+              {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
                 onPress={() => navigation.navigate("EducatorMailPage")}
-              />
+              /> */}
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
@@ -48,10 +48,15 @@ export default function EducatorAccount() {
                 title={"Export Content"}
                 onPress={() => navigation.navigate("EducatorExportContent")}
               /> */}
-               <Account_Tabs
+              <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Photo Album"}
                 onPress={() => navigation.navigate("EducatorPhotoAlbum")}
+              />
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/journal.png")}
+                title={"My Journal"}
+                onPress={() => navigation.navigate("EducatorMyJournal")}
               />
             </View>
             <View style={styles.vertical_list}>
@@ -82,7 +87,9 @@ export default function EducatorAccount() {
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/links.png")}
                 title={"Store Favorite Links (Weblinks)"}
-                onPress={() => navigation.navigate("EducatorStoreFavoriteLinks")}
+                onPress={() =>
+                  navigation.navigate("EducatorStoreFavoriteLinks")
+                }
               />
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/blogs.png")}
@@ -95,11 +102,7 @@ export default function EducatorAccount() {
                 onPress={() => navigation.navigate("ExportContent")}
               /> */}
 
-<Account_Tabs
-                imgsrc={require("./../../../assets/images/account/journal.png")}
-                title={"My Journal"}
-                onPress={() => navigation.navigate("EducatorMyJournal")}
-              />
+              
             </View>
           </View>
         </View>

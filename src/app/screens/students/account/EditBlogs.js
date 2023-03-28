@@ -14,6 +14,7 @@ import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function EditBlogs({ route, navigation }) {
   // ** For Event Update
+  
   const { blogID, eventIDParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { date, dateIDParam } = route.params;
@@ -172,6 +173,12 @@ export default function EditBlogs({ route, navigation }) {
               />
 
               <View style={styles.button}>
+              <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                 <SmallButton
                   onPress={updateEvent}
                   title="Save"

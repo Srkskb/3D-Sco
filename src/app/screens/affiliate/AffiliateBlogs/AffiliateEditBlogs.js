@@ -69,12 +69,13 @@ export default function AffiliateEditBlogs({ route, navigation }) {
 
     axios(config).then((res) => {
       console.log(res.data);
-      setLoading(false);
       if (res.data.success == 1) {
+        setLoading(false);
         setSnackVisibleTrue(true);
         setMessageTrue(res.data.message);
         navigation.navigate("AffiliateBlogs");
       } else {
+        setLoading(false);
         setSnackVisibleFalse(true);
         setMessageFalse(res.data.message);
       }
@@ -172,9 +173,18 @@ export default function AffiliateEditBlogs({ route, navigation }) {
               />
 
               <View style={styles.button}>
+              <SmallButton
+                      onPress={() => {
+                        // resetForm();
+                        navigation.goBack();
+                      }}
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                    />
                 <SmallButton
                   onPress={updateEvent}
-                  title="Save"
+                  title="Update"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}

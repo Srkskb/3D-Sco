@@ -14,11 +14,11 @@ export default function AdminAccount() {
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           <View style={styles.main_container}>
             <View style={[styles.vertical_list, { borderColor: color.gray, borderRightWidth: 1 }]}>
-              <Account_Tabs
+              {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
                 onPress={() => navigation.navigate("AdminMailPage")}
-              />
+              /> */}
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}

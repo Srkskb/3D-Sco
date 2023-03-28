@@ -12,6 +12,7 @@ export default function AffiliateEditFinancial({ route, navigation }) {
   const { assisID, idParam } = route.params;
   const { assisTitle, titleParam } = route.params;
   const { assisURL, urlParam } = route.params;
+  const [loading, setloading] = useState(false);
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState(assisTitle);
@@ -21,6 +22,7 @@ export default function AffiliateEditFinancial({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const updateFinancialAssets = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -46,10 +48,12 @@ export default function AffiliateEditFinancial({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AffiliateFinancialAssistance");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -90,13 +94,20 @@ export default function AffiliateEditFinancial({ route, navigation }) {
           onChangeText={(text) => setAssetsUrl(text)}
           value={assetsUrl}
         />
-        <View style={{ paddingVertical: 10 }}>
+        <View style={{ paddingVertical: 10,flexDirection:'row' }}>
+            <SmallButton
+              title={"Cancel"}
+              color={color.purple}
+              fontFamily={"Montserrat-Medium"}
+              onPress={() => navigation.goBack()}
+            />
           <SmallButton
             title={"Submit"}
             backgroundColor={color.purple}
             color={color.white}
             fontFamily={"Montserrat-Bold"}
             onPress={updateFinancialAssets}
+            loading={loading}
           />
         </View>
       </ScrollView>

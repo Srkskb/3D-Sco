@@ -10,8 +10,11 @@ import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function AffiliateMyJournal() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -55,6 +58,7 @@ export default function AffiliateMyJournal() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -146,7 +150,10 @@ export default function AffiliateMyJournal() {
                           jImage: list.image,
                         })
                       }
-                      removePress={() => deleteJournal(list.id)}
+                      removePress={() => {
+                      setId(list.id);
+                      setDeletePop(true);
+                    }}
                     />
                   ))}
                 </>
@@ -155,6 +162,12 @@ export default function AffiliateMyJournal() {
           </View>
         </ScrollView>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteJournal(id)}
+        />
+      ) : null}
     </View>
   );
 }

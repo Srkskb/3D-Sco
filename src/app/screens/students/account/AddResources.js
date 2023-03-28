@@ -26,12 +26,14 @@ export default function AddResources({ navigation }) {
   const [question,setQuestion]=useState("");
   const [answer ,setAnswer] =useState("");
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
 
   const addFileCabinet = (values) => {
+    setloading(true);
     console.log(values.docTitle,loginUID,values.description,);
     const getHeaders = myHeadersData();
     var data = qs.stringify({
@@ -54,10 +56,12 @@ export default function AddResources({ navigation }) {
   .then((response)=>{
     console.log(response)
     if(response.data.success==1){
+      setloading(false);
     navigation.navigate("ManageResources")
   }
   })
   .catch(function (error) {
+    setloading(false);
     console.log(error);
   });
 };
@@ -172,6 +176,7 @@ export default function AddResources({ navigation }) {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={()=>navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}
@@ -180,6 +185,7 @@ export default function AddResources({ navigation }) {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

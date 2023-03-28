@@ -68,14 +68,16 @@ export default function AffiliateAddFileCabinet() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setLoading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AffiliateCabinet");
         } else {
+          setLoading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-        setLoading(false);
+        // setLoading(false);
       })
       .catch(() => setLoading(false));
   };

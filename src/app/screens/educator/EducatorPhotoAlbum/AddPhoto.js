@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -23,6 +30,7 @@ export default function AddPhoto() {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
+  const [loading, setloading] = useState(false);
 
   const pickImg = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -37,6 +45,7 @@ export default function AddPhoto() {
   };
 
   const addFileCabinet = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = new FormData();
@@ -67,10 +76,12 @@ export default function AddPhoto() {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
+          setloading(false);
           navigation.navigate("EducatorPhotoAlbum");
         }
       })
       .catch((error) => {
+        setloading(false);
         console.log(error);
       });
   };
@@ -118,7 +129,15 @@ export default function AddPhoto() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                resetForm,
+              }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -130,7 +149,11 @@ export default function AddPhoto() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.docTitle}
+                    </Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -143,12 +166,18 @@ export default function AddPhoto() {
                   /> */}
 
                   {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.selectedItem}
+                    </Text>
                   )}
 
                   <UploadDocument type={"Image"} pickImg={pickImg} />
                   <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                    {image && (
+                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                    )}
                   </View>
                   <InputField
                     label={"Description"}
@@ -163,12 +192,20 @@ export default function AddPhoto() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.description}
+                    </Text>
                   )}
 
                   <View style={styles.button}>
-
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
@@ -176,6 +213,7 @@ export default function AddPhoto() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

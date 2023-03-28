@@ -16,11 +16,13 @@ export default function ParentEditFinancial({ route, navigation }) {
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState(assisTitle);
   const [assetsUrl, setAssetsUrl] = useState(assisURL);
+  const [loading, setloading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const updateFinancialAssets = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -46,10 +48,12 @@ export default function ParentEditFinancial({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("ParentFinancialAssistance");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -58,7 +62,10 @@ export default function ParentEditFinancial({ route, navigation }) {
   };
   return (
     <View style={styles.container}>
-      <HeaderBack title={"Update Financial"} onPress={() => navigation.navigate("ParentFinancialAssistance")} />
+      <HeaderBack
+        title={"Update Financial"}
+        onPress={() => navigation.navigate("ParentFinancialAssistance")}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -90,13 +97,20 @@ export default function ParentEditFinancial({ route, navigation }) {
           onChangeText={(text) => setAssetsUrl(text)}
           value={assetsUrl}
         />
-        <View style={{ paddingVertical: 10 }}>
+        <View style={{ paddingVertical: 10, flexDirection: "row" }}>
+          <SmallButton
+            title={"Cancel"}
+            color={color.purple}
+            fontFamily={"Montserrat-Medium"}
+            onPress={() => navigation.goBack()}
+          />
           <SmallButton
             title={"Submit"}
             backgroundColor={color.purple}
             color={color.white}
             fontFamily={"Montserrat-Bold"}
             onPress={updateFinancialAssets}
+            loading={loading}
           />
         </View>
       </ScrollView>

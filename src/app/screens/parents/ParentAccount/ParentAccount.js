@@ -19,11 +19,11 @@ export default function ParentAccount() {
                 { borderColor: color.gray, borderRightWidth: 1 },
               ]}
             >
-              <Account_Tabs
+              {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
                 onPress={() => navigation.navigate("ParentMailPage")}
-              />
+              /> */}
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
@@ -52,6 +52,11 @@ export default function ParentAccount() {
                 imgsrc={require("./../../../assets/images/account/blogs.png")}
                 title={"Blogs"}
                 onPress={() => navigation.navigate("ParentBlogs")}
+              />
+                 <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Photo Album"}
+                onPress={() => navigation.navigate("ParentPhotoAlbum")}
               />
           
             </View>
@@ -86,11 +91,7 @@ export default function ParentAccount() {
                 onPress={() => navigation.navigate("ParentStoreFavoriteLinks")}
               />
             
-                   <Account_Tabs
-                imgsrc={require("./../../../assets/images/account/786.png")}
-                title={"Photo Album"}
-                onPress={() => navigation.navigate("ParentPhotoAlbum")}
-              />
+                
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"Export Content"}

@@ -24,6 +24,7 @@ import mime from 'mime'
 
 export default function AddFileCabinet() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -46,6 +47,7 @@ export default function AddFileCabinet() {
   };
 
   const addFileCabinet = (values) => {
+    setloading(true);
     console.log(values.docTitle,access,loginUID,values.description,image);
     const myHeaders = myHeadersData();
 
@@ -73,10 +75,12 @@ export default function AddFileCabinet() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("FileCabinet");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -199,6 +203,7 @@ export default function AddFileCabinet() {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={()=>navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}
@@ -207,6 +212,7 @@ export default function AddFileCabinet() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

@@ -19,7 +19,9 @@ export default function EditFinancial({ route, navigation }) {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
+  const [loading, setloading] = useState(false);
   const updateFinancialAssets = () => {
+    setloading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
@@ -44,10 +46,12 @@ export default function EditFinancial({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("FinancialAssistance");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -91,13 +95,20 @@ export default function EditFinancial({ route, navigation }) {
           onChangeText={(text) => setAssetsUrl(text)}
           value={assetsUrl}
         />
-        <View style={{ paddingVertical: 10 }}>
+        <View style={{ paddingVertical: 10 ,flexDirection:'row'}}>
+          <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={()=>navigation.goBack()}
+                />
           <SmallButton
             title={"Submit"}
             backgroundColor={color.purple}
             color={color.white}
             fontFamily={"Montserrat-Bold"}
             onPress={updateFinancialAssets}
+            loading={loading}
           />
         </View>
       </ScrollView>

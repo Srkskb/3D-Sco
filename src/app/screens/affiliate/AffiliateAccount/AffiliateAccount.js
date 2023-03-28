@@ -19,11 +19,11 @@ export default function AffiliateAccount() {
                 { borderColor: color.gray, borderRightWidth: 1 },
               ]}
             >
-              <Account_Tabs
+              {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
                 onPress={() => navigation.navigate("AffiliateMailPage")}
-              />
+              /> */}
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
@@ -58,6 +58,11 @@ export default function AffiliateAccount() {
                 title={"My Journal"}
                 onPress={() => navigation.navigate("AffiliateMyJournal")}
               />
+                <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Photo Album"}
+                onPress={() => navigation.navigate("AffiliatePhotoAlbum")}
+              />
             </View>
             <View style={styles.vertical_list}>
               <Account_Tabs
@@ -90,11 +95,7 @@ export default function AffiliateAccount() {
                 onPress={() => navigation.navigate("AffiliateStoreFavoriteLinks")}
               />
             
-                   <Account_Tabs
-                imgsrc={require("./../../../assets/images/account/786.png")}
-                title={"Photo Album"}
-                onPress={() => navigation.navigate("AffiliatePhotoAlbum")}
-              />
+                 
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"Export Content"}

@@ -227,7 +227,7 @@ export default function ParentAddEvent() {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(loginUID)}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}

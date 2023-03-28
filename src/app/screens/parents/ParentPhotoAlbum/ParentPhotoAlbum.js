@@ -12,6 +12,7 @@ import axios from "axios";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function ParentPhotoAlbum() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -20,6 +21,8 @@ export default function ParentPhotoAlbum() {
   const [getMessageFalse, setMessageFalse] = useState();
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -39,6 +42,7 @@ export default function ParentPhotoAlbum() {
       .catch((error) => console.log("error", error));
   };
   const deleteEvent = async (id) => {
+    
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     var data = qs.stringify({
@@ -60,6 +64,7 @@ export default function ParentPhotoAlbum() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -113,6 +118,7 @@ export default function ParentPhotoAlbum() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -121,6 +127,7 @@ export default function ParentPhotoAlbum() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -151,7 +158,10 @@ export default function ParentPhotoAlbum() {
                       docImage: list.file_name,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
                   onPress={() =>
                     navigation.navigate("ParentViewPhoto", {
                       title: list.title,
@@ -166,6 +176,12 @@ export default function ParentPhotoAlbum() {
           )}
         </View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </View>
   );
 }

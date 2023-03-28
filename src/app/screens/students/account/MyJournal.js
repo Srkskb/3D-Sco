@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { Snackbar } from "react-native-paper";
+
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
@@ -9,10 +10,13 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function MyJournal() {
   const navigation = useNavigation();
-   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
+  const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [myJournalData, setMyJournalData] = useState([]);
@@ -55,6 +59,7 @@ export default function MyJournal() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -85,16 +90,13 @@ export default function MyJournal() {
   }, []);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"My Journal"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"My Journal"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -103,7 +105,7 @@ export default function MyJournal() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -151,7 +153,10 @@ export default function MyJournal() {
                           jImage: list.image,
                         })
                       }
-                      removePress={() => deleteJournal(list.id)}
+                      removePress={() => {
+                        setId(list.id);
+                        setDeletePop(true);
+                      }}
                     />
                   ))}
                 </>
@@ -160,6 +165,12 @@ export default function MyJournal() {
           </View>
         </ScrollView>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteJournal(id)}
+        />
+      ) : null}
     </View>
   );
 }

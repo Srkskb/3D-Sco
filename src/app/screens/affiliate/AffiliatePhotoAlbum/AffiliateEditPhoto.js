@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -24,6 +32,7 @@ export default function AffiliateEditPhoto({ route, navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState("");
+  const [loading, setloading] = useState(false);
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -46,6 +55,7 @@ export default function AffiliateEditPhoto({ route, navigation }) {
   };
 
   const updateDocument = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, loginUID, image);
@@ -74,10 +84,12 @@ export default function AffiliateEditPhoto({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AffiliatePhotoAlbum");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -96,7 +108,10 @@ export default function AffiliateEditPhoto({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack title={"Update Photo"} onPress={() => navigation.navigate("AffiliatePhotoAlbum")} />
+      <HeaderBack
+        title={"Update Photo"}
+        onPress={() => navigation.navigate("AffiliatePhotoAlbum")}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -153,7 +168,9 @@ export default function AffiliateEditPhoto({ route, navigation }) {
                 <>
                   <UploadDocument pickImg={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                    {image && (
+                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                    )}
                   </View>
                 </>
               ) : (
@@ -162,7 +179,12 @@ export default function AffiliateEditPhoto({ route, navigation }) {
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
                       {/* {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />} */}
-                      {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                      {image && (
+                        <Image
+                          source={{ uri: image }}
+                          style={styles.uploadImg}
+                        />
+                      )}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -184,12 +206,20 @@ export default function AffiliateEditPhoto({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={()=>navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateDocument}
-                  title="Save"
+                  title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
+                  color={color.white}
+
                 />
               </View>
             </View>

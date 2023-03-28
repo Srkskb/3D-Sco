@@ -19,6 +19,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 export default function AddLink() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -30,6 +31,7 @@ export default function AddLink() {
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
   const addLinkForm = (values) => {
+    setloading(true);
     console.log('category',category);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -51,10 +53,12 @@ export default function AddLink() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("StoreFavoriteLinks");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -183,6 +187,7 @@ export default function AddLink() {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={()=>navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}
@@ -191,6 +196,7 @@ export default function AddLink() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

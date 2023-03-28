@@ -18,8 +18,11 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function StoreFavoriteLinks() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [storeLinks, setStoreLinks] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
@@ -68,6 +71,7 @@ export default function StoreFavoriteLinks() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -114,7 +118,7 @@ export default function StoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -123,7 +127,7 @@ export default function StoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -194,7 +198,10 @@ export default function StoreFavoriteLinks() {
                           category: list.Category,
                         })
                       }
-                      removePress={() => deleteProject(list.id)}
+                      removePress={() => {
+                        setId(list.id);
+                        setDeletePop(true);
+                      }}
                       pressEdit={() =>
                         navigation.navigate("EditStoreFavoriteLinks", {
                           linkID: list.id,
@@ -212,6 +219,12 @@ export default function StoreFavoriteLinks() {
           </View>
         </ScrollView>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteProject(id)}
+        />
+      ) : null}
     </View>
   );
 }

@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -16,6 +24,7 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
   const { linkID, linkIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { link, lonkParam } = route.params;
+  const [loading, setloading] = useState(false);
   const { description, descriptionParam } = route.params;
   const { linkCategory, categoryParam } = route.params;
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -30,6 +39,7 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
   const [category, setCategory] = useState(linkCategory);
 
   const updateDocument = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(updateTitle, upLink, category, upDescription);
     const myHeaders = myHeadersData();
@@ -55,10 +65,12 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AffiliateStoreFavoriteLinks");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -153,13 +165,19 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={()=>navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateDocument}
                   title="Save"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}
+                  loading={loading}
                 />
               </View>
             </View>

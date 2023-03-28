@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -25,6 +33,7 @@ export default function EducatorEditMyJournal({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [image, setImage] = useState(jImage);
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -39,6 +48,7 @@ export default function EducatorEditMyJournal({ route, navigation }) {
   };
 
   const updateDocument = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(updateTitle, access, upDescription, loginUID, jID, image);
     const myHeaders = myHeadersData();
@@ -66,10 +76,12 @@ export default function EducatorEditMyJournal({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorMyJournal");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -88,7 +100,10 @@ export default function EducatorEditMyJournal({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack title={"Update Journal"} onPress={() => navigation.navigate("EducatorMyJournal")} />
+      <HeaderBack
+        title={"Update Journal"}
+        onPress={() => navigation.navigate("EducatorMyJournal")}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -143,15 +158,27 @@ export default function EducatorEditMyJournal({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
-                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+                  <UploadDocument
+                    type={"(pdf, doc, ppt,xls)"}
+                    pickImg={pickImg}
+                  />
+                  <View>
+                    {image?.name && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
+                    )}
+                  </View>
                 </>
               ) : (
                 <>
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {jImage && <Image source={{ uri: jImage }} style={styles.uploadImg} />}
+                      {jImage && (
+                        <Image
+                          source={{ uri: jImage }}
+                          style={styles.uploadImg}
+                        />
+                      )}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -173,13 +200,19 @@ export default function EducatorEditMyJournal({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateDocument}
                   title="Save"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}
+                  loading={loading}
                 />
               </View>
             </View>

@@ -5,7 +5,7 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import React from "react";
 import color from "../../../assets/themes/Color";
@@ -24,19 +24,17 @@ let assignment = require("../../../assets/images/account_courses/assignment.png"
 let presentation = require("../../../assets/images/account_courses/presentation.png");
 let forums = require("../../../assets/images/account_courses/forums.png");
 
-export default function CourseTab({navigation}) {
-//   const navigation = useNavigation();
+export default function CourseTab({ navigation }) {
+  //   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       {/* <HomeHeader navigation={navigation} /> */}
-      <HeaderBack title={"Courses"} onPress={()=>navigation.goBack()}/>
+      <HeaderBack title={"Courses"} onPress={() => navigation.goBack()} />
       <ScrollView style={{ paddingHorizontal: 10 }}>
         <HeaderText title={"Courses"} />
         <View style={styles.container_boxes}>
           <View style={styles.container_items}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Course")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("Course")}>
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={course} />
                 <Text style={styles.box_text}>Course</Text>
@@ -54,9 +52,7 @@ export default function CourseTab({navigation}) {
               },
             ]}
           >
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Assignment")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("Assignment")}>
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={assignment} />
                 <Text style={[styles.box_text, { color: color.white }]}>
@@ -72,7 +68,9 @@ export default function CourseTab({navigation}) {
               { borderTopWidth: 0, borderRightWidth: 0 },
             ]}
           >
-            <TouchableOpacity onPress={() => navigation.navigate("Announcement")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Announcement")}
+            >
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={announcement} />
                 <Text style={styles.box_text}>Announcements</Text>
@@ -81,9 +79,7 @@ export default function CourseTab({navigation}) {
           </View>
 
           <View style={styles.container_items}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Forum")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("Forum")}>
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={forums} />
                 <Text style={styles.box_text}>Forum</Text>
@@ -103,28 +99,22 @@ export default function CourseTab({navigation}) {
           </View>
 
           <View style={styles.container_items}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Backup")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("Backup")}>
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={backup} />
                 <Text style={styles.box_text}>Backup</Text>
               </View>
             </TouchableOpacity>
           </View>
-
-          
         </View>
         <View style={styles.container_items}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Category")}
-            >
-              <View style={styles.inside_items}>
-                <Image style={styles.img_res} source={category} />
-                <Text style={styles.box_text}>Category</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity onPress={() => navigation.navigate("Category")}>
+            <View style={styles.inside_items}>
+              <Image style={styles.img_res} source={category} />
+              <Text style={styles.box_text}>Category</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

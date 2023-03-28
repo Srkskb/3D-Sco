@@ -22,6 +22,7 @@ export default function EducatorEditBlogs({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [selectedDate, setSelectedDate] = useState();
+  const [loading, setloading] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [updateDescription, setUpDescription] = useState(description);
@@ -41,6 +42,7 @@ export default function EducatorEditBlogs({ route, navigation }) {
   };
 
   const updateEvent = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -63,10 +65,12 @@ export default function EducatorEditBlogs({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorBlogs");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -164,12 +168,19 @@ export default function EducatorEditBlogs({ route, navigation }) {
               />
 
               <View style={styles.button}>
+              <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                 <SmallButton
                   onPress={updateEvent}
                   title="Save"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>

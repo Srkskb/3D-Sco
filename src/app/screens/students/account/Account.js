@@ -19,11 +19,11 @@ export default function Account() {
                 { borderColor: color.gray, borderRightWidth: 1 },
               ]}
             >
-              <Account_Tabs
+              {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/mail.png")}
                 title={"Mail"}
                 onPress={() => navigation.navigate("StudentMailPage")}
-              />
+              /> */}
 
               <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
@@ -53,6 +53,11 @@ export default function Account() {
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"My Projects"}
                 onPress={() => navigation.navigate("MyProjects")}
+              />
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/blogs.png")}
+                title={"Blogs"}
+                onPress={() => navigation.navigate("Blogs")}
               />
             </View>
             <View style={styles.vertical_list}>
@@ -85,11 +90,7 @@ export default function Account() {
                 title={"Store Favorite Links (Weblinks)"}
                 onPress={() => navigation.navigate("StoreFavoriteLinks")}
               />
-              <Account_Tabs
-                imgsrc={require("./../../../assets/images/account/blogs.png")}
-                title={"Blogs"}
-                onPress={() => navigation.navigate("Blogs")}
-              />
+              
               {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/file.png")}
                 title={"Export Content"}

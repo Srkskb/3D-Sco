@@ -24,9 +24,11 @@ export default function EducatorAddResources({ navigation }) {
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
+  const [loading, setloading] = useState(false);
   const [getMessageFalse, setMessageFalse] = useState();
 
   const addFileCabinet = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = qs.stringify({
@@ -48,10 +50,12 @@ export default function EducatorAddResources({ navigation }) {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
+          setloading(false);
           navigation.navigate("EducatorManageResources");
         }
       })
       .catch(function (error) {
+        setloading(false);
         console.log(error);
       });
   };
@@ -143,7 +147,7 @@ export default function EducatorAddResources({ navigation }) {
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} onPress={()=>navigation.goBack()} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
@@ -151,6 +155,7 @@ export default function EducatorAddResources({ navigation }) {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

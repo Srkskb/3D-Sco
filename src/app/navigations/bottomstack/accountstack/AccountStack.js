@@ -37,6 +37,7 @@ import StudentMailPage from "../../../screens/students/StudentMail/mail/StudentM
 import ComposeMail from "../../../screens/students/StudentMail/mail/ComposeMail";
 import ViewMail from "../../../screens/students/StudentMail/mail/ViewMail";
 import Reply from "../../../screens/students/StudentMail/mail/Reply";
+import { InstituteInfo, JoinNewCourse } from "../homestack";
 const Stack = createStackNavigator();
 export default function AccountStack() {
   return (
@@ -83,6 +84,8 @@ export default function AccountStack() {
       <Stack.Screen name="AddBlog" component={AddBlog} />
       <Stack.Screen name="ViewBlogs" component={ViewBlogs} />
       <Stack.Screen name="StudentMailPage" component={StudentMailPage} />
+      <Stack.Screen name="JoinNewCourse" component={JoinNewCourse} />
+      <Stack.Screen name="InstituteInfo" component={InstituteInfo} />
     </Stack.Navigator>
   );
 }

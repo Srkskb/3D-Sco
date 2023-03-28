@@ -22,13 +22,15 @@ import { FontAwesome } from "@expo/vector-icons";
 import qs from "qs";
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function AffiliateStoreFavoriteLinks() {
   const navigation = useNavigation();
 
   const [storeLinks, setStoreLinks] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -101,6 +103,7 @@ export default function AffiliateStoreFavoriteLinks() {
       .then((res) => res.json())
       .then((result) => {
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -164,7 +167,7 @@ export default function AffiliateStoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -173,7 +176,7 @@ export default function AffiliateStoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -239,7 +242,10 @@ export default function AffiliateStoreFavoriteLinks() {
                           category: list.Category,
                         })
                       }
-                      removePress={() => deleteProject(list.id)}
+                      removePress={() => {
+                        setId(list.id);
+                        setDeletePop(true);
+                      }}
                       pressEdit={() =>
                         navigation.navigate("AffiliateEditStoreFavoriteLinks", {
                           linkID: list.id,
@@ -257,6 +263,12 @@ export default function AffiliateStoreFavoriteLinks() {
           </View>
         </ScrollView>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteProject(id)}
+        />
+      ) : null}
     </View>
   );
 }

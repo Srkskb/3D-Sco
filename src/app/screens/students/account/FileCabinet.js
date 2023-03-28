@@ -8,6 +8,7 @@ import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function FileCabinet() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -17,6 +18,8 @@ export default function FileCabinet() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const allLearnerList = () => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -49,6 +52,7 @@ export default function FileCabinet() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -87,6 +91,7 @@ export default function FileCabinet() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -95,6 +100,7 @@ export default function FileCabinet() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -130,7 +136,10 @@ export default function FileCabinet() {
                       docImage: list.image,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
                   onPress={() =>
                     navigation.navigate("ViewContent", {
                       title: list.name,
@@ -145,6 +154,12 @@ export default function FileCabinet() {
           )}
         </View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </View>
   );
 }

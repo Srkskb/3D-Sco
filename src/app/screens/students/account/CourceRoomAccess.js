@@ -28,7 +28,7 @@ export default function CourceRoomAccess() {
     <View style={styles.container}>
       <HeaderBack
         title={"Course Room"}
-        onPress={() => navigation.goBack}
+        onPress={() => navigation.goBack()}
       />
       <View style={styles.main_box}>
         <View style={{ paddingHorizontal: 10 }}>

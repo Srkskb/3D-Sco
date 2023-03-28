@@ -11,9 +11,11 @@ import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorEditResources({ route, navigation }) {
   const [answer, setAnswer] = useState(route.params.list.Answer);
   const [question, setQuestion] = useState(route.params.list.Question);
+  const [loading, setloading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
   // const { eventID, eventIDParam } = route.params; // ! Current Event ID
   const updateEvent = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var data = qs.stringify({
@@ -38,12 +40,14 @@ export default function EducatorEditResources({ route, navigation }) {
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         if (response.data.success == 1) {
+          setloading(false);
           setAnswer("");
           setQuestion("");
           navigation.navigate("EducatorManageResources");
         }
       })
       .catch(function (error) {
+        setloading(false);
         console.log(error);
       });
   };
@@ -70,7 +74,7 @@ export default function EducatorEditResources({ route, navigation }) {
             title={"Cancel"}
             color={color.purple}
             fontFamily={"Montserrat-Medium"}
-            // onPress={()=>console.log(route.params.list)}
+            onPress={()=>navigation.goBack()}
           />
           <SmallButton
             title="Update"
@@ -78,6 +82,7 @@ export default function EducatorEditResources({ route, navigation }) {
             backgroundColor={color.purple}
             fontFamily={"Montserrat-Bold"}
             onPress={updateEvent}
+            loading={loading}
           />
         </View>
       </ScrollView>

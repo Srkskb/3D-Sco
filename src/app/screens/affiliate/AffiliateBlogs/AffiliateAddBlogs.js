@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Button, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -26,8 +34,9 @@ export default function AffiliateAddBlog() {
   const loginUID = localStorage.getItem("loginUID");
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
+  const [loading, setloading] = useState(false);
   const addFileCabinet = async (values) => {
+    setloading(true);
     const data = JSON.parse(await AsyncStorage.getItem("userData"));
 
     const myHeaders = myHeadersData();
@@ -50,10 +59,12 @@ export default function AffiliateAddBlog() {
       .then((res) => {
         console.log("add bog", res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AffiliateBlogs");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -62,13 +73,17 @@ export default function AffiliateAddBlog() {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack title={"Add Blog"} onPress={() => navigation.navigate("AffiliateBlogs")} />
+      <HeaderBack
+        title={"Add Blog"}
+        onPress={() => navigation.navigate("AffiliateBlogs")}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
         duration={2000}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -77,6 +92,7 @@ export default function AffiliateAddBlog() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -96,7 +112,10 @@ export default function AffiliateAddBlog() {
                 blogTitle: Yup.string()
                   .required("Document Title is required")
                   .min(3, "Document Title must be at least 3 characters")
-                  .max(150, "Document Title cannot be more than 150 characters"),
+                  .max(
+                    150,
+                    "Document Title cannot be more than 150 characters"
+                  ),
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
@@ -105,7 +124,16 @@ export default function AffiliateAddBlog() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue, resetForm }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                setFieldValue,
+                resetForm,
+              }) => (
                 <View>
                   <InputField
                     label={"Blog Title"}
@@ -117,7 +145,11 @@ export default function AffiliateAddBlog() {
                     keyboardType="text"
                   />
                   {errors.blogTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogTitle}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.blogTitle}
+                    </Text>
                   )}
                   <Text style={{ marginBottom: 5 }}>
                     <Text style={styles.label_text}>Blog Date</Text>
@@ -130,12 +162,20 @@ export default function AffiliateAddBlog() {
                         fontFamily: "Montserrat-SemiBold",
                       }}
                     >
-                      {values?.blogDate ? moment(values?.blogDate).format("YYYY-MM-DD") : "No date selected"}
+                      {values?.blogDate
+                        ? moment(values?.blogDate).format("YYYY-MM-DD")
+                        : "No date selected"}
                     </Text>
                     <View style={styles.selectDate}>
                       {/* <TouchableOpacity onPress={showDatePicker}> */}
-                      <TouchableOpacity onPress={(e) => setDatePickerVisibility(true)}>
-                        <Entypo name="calendar" size={24} color={color.purple} />
+                      <TouchableOpacity
+                        onPress={(e) => setDatePickerVisibility(true)}
+                      >
+                        <Entypo
+                          name="calendar"
+                          size={24}
+                          color={color.purple}
+                        />
                       </TouchableOpacity>
                     </View>
 
@@ -152,7 +192,11 @@ export default function AffiliateAddBlog() {
                     />
                   </View>
                   {errors.blogDate && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogDate}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.blogDate}
+                    </Text>
                   )}
 
                   <AccessLevel
@@ -167,7 +211,11 @@ export default function AffiliateAddBlog() {
                     value={access}
                   />
                   {errors.access && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.access}
+                    </Text>
                   )}
                   <InputField
                     label={"Description"}
@@ -181,13 +229,17 @@ export default function AffiliateAddBlog() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.description}
+                    </Text>
                   )}
                   <View style={styles.button}>
                     <SmallButton
                       onPress={() => {
                         resetForm();
-                        navigation.navigate("AdminBlogs");
+                        navigation.goBack();
                       }}
                       title={"Cancel"}
                       color={color.purple}
@@ -200,6 +252,7 @@ export default function AffiliateAddBlog() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

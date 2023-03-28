@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function ParentAddBlog() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -28,6 +29,7 @@ export default function ParentAddBlog() {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const addFileCabinet = async (values) => {
+    setloading(true);
     const data = JSON.parse(await AsyncStorage.getItem("userData"));
 
     const myHeaders = myHeadersData();
@@ -50,10 +52,12 @@ export default function ParentAddBlog() {
       .then((res) => {
         console.log("add bog", res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("ParentBlogs");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -187,7 +191,7 @@ export default function ParentAddBlog() {
                     <SmallButton
                       onPress={() => {
                         resetForm();
-                        navigation.navigate("AdminBlogs");
+                        navigation.goBack();
                       }}
                       title={"Cancel"}
                       color={color.purple}
@@ -200,6 +204,7 @@ export default function ParentAddBlog() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

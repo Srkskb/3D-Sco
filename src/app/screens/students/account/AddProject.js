@@ -23,6 +23,7 @@ import { UploadDocument } from "../../../components";
 import mime from 'mime'
 export default function AddProject() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -44,6 +45,7 @@ export default function AddProject() {
   };
 
   const addFileCabinet = (values) => {
+    setloading(true);
     console.log(values.pTitle,access,loginUID,values.pDescription,image);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -70,10 +72,12 @@ export default function AddProject() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("MyProjects");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -91,6 +95,7 @@ export default function AddProject() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -99,6 +104,7 @@ export default function AddProject() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -196,6 +202,7 @@ export default function AddProject() {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={()=>navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}
@@ -204,6 +211,7 @@ export default function AddProject() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

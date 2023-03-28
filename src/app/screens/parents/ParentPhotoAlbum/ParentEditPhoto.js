@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -14,6 +22,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 export default function ParentEditPhoto({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
+  const [loading, setloading] = useState(false);
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
@@ -46,6 +55,7 @@ export default function ParentEditPhoto({ route, navigation }) {
   };
 
   const updateDocument = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, loginUID, image);
@@ -74,10 +84,12 @@ export default function ParentEditPhoto({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("ParentPhotoAlbum");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -96,12 +108,16 @@ export default function ParentEditPhoto({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack title={"Update Photo"} onPress={() => navigation.navigate("ParentPhotoAlbum")} />
+      <HeaderBack
+        title={"Update Photo"}
+        onPress={() => navigation.navigate("ParentPhotoAlbum")}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -110,6 +126,7 @@ export default function ParentEditPhoto({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -153,7 +170,9 @@ export default function ParentEditPhoto({ route, navigation }) {
                 <>
                   <UploadDocument pickImg={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                    {image && (
+                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                    )}
                   </View>
                 </>
               ) : (
@@ -162,7 +181,12 @@ export default function ParentEditPhoto({ route, navigation }) {
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
                       {/* {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />} */}
-                      {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                      {image && (
+                        <Image
+                          source={{ uri: image }}
+                          style={styles.uploadImg}
+                        />
+                      )}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -184,12 +208,19 @@ export default function ParentEditPhoto({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateDocument}
-                  title="Save"
+                  title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
+                  color={color.white}
                 />
               </View>
             </View>

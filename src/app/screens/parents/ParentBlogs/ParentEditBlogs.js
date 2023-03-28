@@ -71,10 +71,12 @@ export default function ParentEditBlogs({ route, navigation }) {
       console.log(res.data);
       setLoading(false);
       if (res.data.success == 1) {
+        setLoading(false);
         setSnackVisibleTrue(true);
         setMessageTrue(res.data.message);
         navigation.navigate("ParentBlogs");
       } else {
+        setLoading(false);
         setSnackVisibleFalse(true);
         setMessageFalse(res.data.message);
       }

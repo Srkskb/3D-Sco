@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
 import { Snackbar } from "react-native-paper";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -10,9 +17,12 @@ import moment from "moment";
 import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 
 export default function ParentBlogs() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [blogListData, setBlogListData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -43,7 +53,10 @@ export default function ParentBlogs() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
         setLoading(false);
@@ -64,11 +77,15 @@ export default function ParentBlogs() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${userId}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${userId}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -118,6 +135,7 @@ export default function ParentBlogs() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -126,13 +144,25 @@ export default function ParentBlogs() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
       <View style={styles.main_box}>
-        <TextWithButton title={"My Blog"} label={"+Add"} onPress={() => navigation.navigate("ParentAddBlogs")} />
+        <TextWithButton
+          title={"My Blog"}
+          label={"+Add"}
+          onPress={() => navigation.navigate("ParentAddBlogs")}
+        />
         <View style={styles.main_box2}>
-          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => onRefresh()}
+              />
+            }
+          >
             <View style={styles.main}>
               <View style={{ flex: 1 }}>
                 {blogListData === undefined ? (
@@ -147,8 +177,14 @@ export default function ParentBlogs() {
                           <View style={styles.right_side}>
                             <View style={{ width: "100%" }}>
                               <Text style={styles.head_text}>{list.Titel}</Text>
-                              <Text style={styles.date}>Last Updated - {moment(list && list?.Date).format("LL")}</Text>
-                              <Text style={styles.description_text} numberOfLines={1}>
+                              <Text style={styles.date}>
+                                Last Updated -{" "}
+                                {moment(list && list?.Date).format("LL")}
+                              </Text>
+                              <Text
+                                style={styles.description_text}
+                                numberOfLines={1}
+                              >
                                 {list.Description}
                               </Text>
                             </View>
@@ -174,13 +210,20 @@ export default function ParentBlogs() {
                                   navigation.navigate("ParentEditBlogs", {
                                     blogID: list.id,
                                     title: list.Titel,
-                                    date: moment(list && list?.Date).format("LL"),
+                                    date: moment(list && list?.Date).format(
+                                      "LL"
+                                    ),
                                     description: list.Description,
                                   })
                                 }
                               />
                               <View style={{ width: 20 }}></View>
-                              <Remove onPress={() => deleteBlog(list.id)} />
+                              <Remove
+                                onPress={() => {
+                                  setId(list.id);
+                                  setDeletePop(true);
+                                }}
+                              />
                             </>
                           ) : null}
                         </View>
@@ -193,6 +236,12 @@ export default function ParentBlogs() {
           </ScrollView>
         </View>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteBlog(id)}
+        />
+      ) : null}
     </View>
   );
 }

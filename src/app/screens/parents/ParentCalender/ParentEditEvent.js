@@ -20,6 +20,7 @@ export default function ParentEditEvent({ route, navigation }) {
   const { status, statusIDParam } = route.params;
   const { dateData, dateIDParam } = route.params;
   const { description, descriptionIDParam } = route.params;
+  const [loading, setloading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
   const [access, setAccess] = useState(status);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -46,6 +47,7 @@ export default function ParentEditEvent({ route, navigation }) {
   };
 
   const updateEvent = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var data = qs.stringify({
@@ -70,10 +72,12 @@ export default function ParentEditEvent({ route, navigation }) {
     axios(config).then((res) => {
       console.log(res.data);
       if (res.status == 200) {
+        setloading(false);
         setSnackVisibleTrue(true);
         setMessageTrue(res.data.message);
         navigation.goBack();
       } else {
+        setloading(false);
         setSnackVisibleFalse(true);
         setMessageFalse(res.data.message);
       }
@@ -207,12 +211,19 @@ export default function ParentEditEvent({ route, navigation }) {
               />
 
               <View style={styles.button}>
+              <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                 <SmallButton
                   onPress={updateEvent}
-                  title="Save"
+                  title="Update"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>

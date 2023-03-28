@@ -22,6 +22,7 @@ export default function AffiliateAddPhoto() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
 
   const pickImg = async () => {
@@ -37,6 +38,7 @@ export default function AffiliateAddPhoto() {
   };
 
   const addFileCabinet = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = new FormData();
@@ -67,10 +69,12 @@ export default function AffiliateAddPhoto() {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
+          setloading(false);
           navigation.navigate("AffiliatePhotoAlbum");
         }
       })
       .catch((error) => {
+        setloading(false);
         console.log(error);
       });
   };
@@ -170,7 +174,7 @@ export default function AffiliateAddPhoto() {
                     <SmallButton
                       onPress={() => {
                         resetForm();
-                        navigation.navigate("AdminPhotoAlbum");
+                        navigation.goBack();
                       }}
                       title={"Cancel"}
                       color={color.purple}
@@ -183,6 +187,7 @@ export default function AffiliateAddPhoto() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

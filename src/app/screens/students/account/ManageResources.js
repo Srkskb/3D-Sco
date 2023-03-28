@@ -8,8 +8,11 @@ import { myHeadersData } from "../../../api/helper";
 import * as qs from "qs";
 import axios from "axios";
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function ManageResources({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [myResourcesData, setMyResourcesData] = useState([]);
    const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
@@ -69,6 +72,7 @@ axios(config)
 .then((response)=>{
   console.log(JSON.stringify(response.data));
   if(response.data.success==1){
+    setDeletePop(false);
       allLearnerList();
     }
 })
@@ -100,13 +104,22 @@ axios(config)
           description={list.Answer}
           // date={"24/05/2023"}
           editPress={() => navigation.navigate("EditResources",{ list:list })}
-          removePress={()=>deleteFaq(list.id)}
+          removePress={()=>{
+            setId(list.id);
+            setDeletePop(true);
+          }}
         />
         </>
                 ))}
               </>
             )}
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteFaq(id)}
+        />
+      ) : null}
     </View>
   );
 }

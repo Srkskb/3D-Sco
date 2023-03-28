@@ -22,6 +22,7 @@ import mime from "mime";
 export default function EditMyProjects({ route, navigation }) {
   const { projectID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
+  const [loading, setloading] = useState(false);
   const { duration, durationParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { pjImage, pjImageParam } = route.params;
@@ -51,6 +52,7 @@ export default function EditMyProjects({ route, navigation }) {
   };
 
   const updateDocument = (values) => {
+    setloading(true);
     console.log(projectID,updateTitle,loginUID,upDuration,description,image)
     const myHeaders = myHeadersData();
 
@@ -78,10 +80,12 @@ export default function EditMyProjects({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("MyProjects");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -104,6 +108,7 @@ export default function EditMyProjects({ route, navigation }) {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -112,6 +117,7 @@ export default function EditMyProjects({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -182,9 +188,10 @@ export default function EditMyProjects({ route, navigation }) {
                 />
                 <SmallButton
                   onPress={updateDocument}
-                  title="Save"
+                  title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>

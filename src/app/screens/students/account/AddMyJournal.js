@@ -20,8 +20,10 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function AddMyJournal() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -43,6 +45,7 @@ export default function AddMyJournal() {
   };
 
   const addFileCabinet = (values) => {
+    setloading(true);
     console.log(values.docTitle, access, image, loginUID, values.description);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -68,10 +71,12 @@ export default function AddMyJournal() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("MyJournal");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -193,6 +198,7 @@ export default function AddMyJournal() {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={()=>navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}
@@ -201,6 +207,7 @@ export default function AddMyJournal() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

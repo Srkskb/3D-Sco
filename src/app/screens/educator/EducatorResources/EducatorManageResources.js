@@ -16,6 +16,8 @@ export default function EducatorManageResouPrces({ navigation }) {
   const [myResourcesData, setMyResourcesData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   // const loginUID = localStorage.getItem("loginUID");
   const [userId, setUserId] = useState("");
   const isFocused = useIsFocused();
@@ -80,6 +82,7 @@ export default function EducatorManageResouPrces({ navigation }) {
       .then((response) => {
         console.log(JSON.stringify(response.data));
         if (response.data.success == 1) {
+          setDeletePop(false);
           allLearnerList();
         }
       })
@@ -116,13 +119,22 @@ export default function EducatorManageResouPrces({ navigation }) {
                     description={list.Answer}
                     // date={"24/05/2023"}
                     editPress={() => navigation.navigate("EducatorEditResources", { list: list })}
-                    removePress={() => deleteFaq(list.id)}
+                    removePress={() => {
+                      setId(list.id);
+                      setDeletePop(true);
+                    }}
                   />
                 </>
               ))}
           </>
         )}
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteFaq(id)}
+        />
+      ) : null}
     </View>
   );
 }

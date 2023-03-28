@@ -23,6 +23,7 @@ import axios from "axios";
 export default function EditFileCabinet({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
+  const [loading, setloading] = useState(false);
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
@@ -51,6 +52,7 @@ export default function EditFileCabinet({ route, navigation }) {
   };
 
   const updateDocument = (values) => {
+    setloading(true);
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, loginUID, image);
     var urlencoded = new FormData();
@@ -77,10 +79,12 @@ export default function EditFileCabinet({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("FileCabinet");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -234,12 +238,15 @@ export default function EditFileCabinet({ route, navigation }) {
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
+                  onPress={()=>navigation.goBack()}
                 />
                 <SmallButton
                   onPress={updateDocument}
-                  title="Save"
+                  title="Update"
+                  color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>
