@@ -26,8 +26,9 @@ const adminServices = {
         headers: {
           //   Authorization: `Bearer ${access_token}`,
           // Accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-          Cookie: "PHPSESSID=pae8vgg24o777t60ue1clbj6d5",
+          // "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "multipart/form-data",
+          Cookie: "PHPSESSID=8us3uou5gm35l17b3eo0lfb334",
         },
       };
       const response = await http.post(url, data, token);

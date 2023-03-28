@@ -14,6 +14,8 @@ import adminServices from "../../../services/admin/adminServices";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
 import SelectCourse from "../../../components/admin_required/SelectCourse";
+import AsyncStorage from "@react-native-community/async-storage";
+import mime from "mime";
 
 export default function AdminAddBook({ navigation }) {
   const [access, setAccess] = useState("Private");
@@ -38,52 +40,78 @@ export default function AdminAddBook({ navigation }) {
   };
   const [bookData, setBookData] = useState(initialObj);
 
-  const pickImage = async () => {
-    let result = await DocumentPicker.getDocumentAsync({});
-    console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
-
   useEffect(() => {
     (async () => {
       const res = await adminServices.getCourseList({ userId: 163, id: 16 });
       setCourseList(res?.data);
     })();
   }, []);
-  const user_id = localStorage.getItem("userID");
-  console.log("user_id", user_id);
 
   const handleCreateBook = async () => {
-    // var data = new FormData();
-    // data.append("add_book", "1");
-    // data.append("title", bookData?.title);
-    // data.append("course_id", bookData?.course_id);
-    // data.append("detail", bookData?.detail);
-    // data.append("author", bookData?.author);
-    // data.append("image", bookData?.image?.uri);
-    // data.append("pdf", bookData?.pdf?.uri);
-    // data.append("publisher", bookData?.publisher);
-    // data.append("user_id", "52");
-    var data = qs.stringify({
-      add_book: "1",
-      title: bookData?.title,
-      course_id: bookData?.course_id,
-      detail: bookData?.detail,
-      author: bookData?.author,
-      image: bookData?.image?.uri,
-      pdf: bookData?.pdf?.uri,
-      publisher: bookData?.publisher,
-      user_id: user_id,
+    setLoading(true);
+    const userData = JSON.parse(await AsyncStorage.getItem("userData"));
+    var data = new FormData();
+    data.append("add_book", "1");
+    data.append("title", bookData?.title);
+    data.append("course_id", bookData?.course_id);
+    data.append("detail", bookData?.detail);
+    data.append("author", bookData?.author);
+    data.append("pdf", {
+      uri: bookData?.pdf.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(bookData?.pdf.uri),
+      name: bookData?.pdf.name,
     });
+    data.append("image", {
+      uri: bookData?.image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(bookData?.image.uri),
+      name: bookData?.image.name,
+    });
+    data.append("publisher", bookData?.publisher);
+    data.append("user_id", userData.id);
 
-    const res = await adminServices.addBook(data);
-    console.log("res", res);
-    if (res.success) {
-      setBookData(initialObj);
-      setSnackVisibleTrue(true);
-      navigation.navigate("AdminManageLibrary");
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Cookie: "PHPSESSID=8us3uou5gm35l17b3eo0lfb334",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("res", res);
+        if (res.success == 1) {
+          setBookData(initialObj);
+          setSnackVisibleTrue(true);
+          setLoading(false);
+          navigation.navigate("AdminLibrary");
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+  const pickPdf = async () => {
+    console.log("pdf");
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+    });
+    console.log(result);
+    if (result.uri) {
+      // setImage(result);
+      setBookData((prev) => ({ ...prev, pdf: { name: result?.name, uri: result?.uri } }));
+    }
+    return;
+  };
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
+    });
+    console.log(result);
+    if (result.uri) {
+      // setImage(result);
+      setBookData((prev) => ({ ...prev, image: { name: result?.name, uri: result?.uri } }));
     }
   };
   return (
@@ -123,12 +151,14 @@ export default function AdminAddBook({ navigation }) {
             placeholder={"Enter Publisher Name"}
           />
           <UploadDocument
-            onChange={(e) => setBookData((prev) => ({ ...prev, pdf: { name: e?.name, uri: e?.uri } }))}
+            pickImg={() => pickPdf()}
+            // onChange={(e) => setBookData((prev) => ({ ...prev, pdf: { name: e?.name, uri: e?.uri } }))}
             type={"Book (pdf)"}
           />
           {bookData?.pdf?.name && <Text style={{ textAlign: "right" }}>{bookData?.pdf?.name}</Text>}
           <UploadDocument
-            onChange={(e) => setBookData((prev) => ({ ...prev, image: { name: e?.name, uri: e?.uri } }))}
+            pickImg={() => pickImg()}
+            // onChange={(e) => setBookData((prev) => ({ ...prev, image: { name: e?.name, uri: e?.uri } }))}
             type={"Book (Image)"}
           />
           {bookData?.image?.name && <Text style={{ textAlign: "right" }}>{bookData?.image?.name}</Text>}
@@ -146,6 +176,7 @@ export default function AdminAddBook({ navigation }) {
             <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
             <SmallButton
               title="Save"
+              loading={loading}
               onPress={handleCreateBook}
               color={color.white}
               backgroundColor={color.purple}
