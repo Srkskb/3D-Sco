@@ -14,6 +14,7 @@ import Loader from "../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
 import qs from "qs";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Event_card2 from "../../../components/card/Event_card2";
 export default function AdminEventCalender() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export default function AdminEventCalender() {
   const [deletePop, setDeletePop] = useState(false);
   const [id, setId] = useState("");
 
-  const allLearnerList =async () => {
+  const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
@@ -31,10 +32,7 @@ export default function AdminEventCalender() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         if (result?.data?.length) {
@@ -72,9 +70,7 @@ export default function AdminEventCalender() {
       .then((res) => res.json())
       .then((result) => {
         if (result.success == 1) {
-          setEventCalenderList((prev) =>
-            prev.filter((item) => item.event_id != id)
-          );
+          setEventCalenderList((prev) => prev.filter((item) => item.event_id != id));
           setId("");
           setDeletePop(false);
         } else {
@@ -111,11 +107,11 @@ export default function AdminEventCalender() {
             <View style={{ flex: 1 }}>
               {eventCalenderList ? (
                 eventCalenderList?.map((list, index) => (
-                  <Event_Card
+                  <Event_card2
                     key={index}
                     title={`${list.event_title}`}
                     // day={"Mon"}
-                    // editPress={navigation.navigate("")}
+                    // viewPress={() => navigation.navigate("AdminEditEvent")}
                     date={list?.event_date}
                     removePress={() => {
                       setId(list.event_id);
@@ -128,7 +124,6 @@ export default function AdminEventCalender() {
               )}
             </View>
           </View>
-          
         </ScrollView>
       )}
 
@@ -156,12 +151,7 @@ export default function AdminEventCalender() {
         //     </View>
         //   </View>
         // </View> */}
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => handleDelete(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => handleDelete(id)} /> : null}
     </View>
   );
 }

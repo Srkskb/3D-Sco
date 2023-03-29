@@ -11,7 +11,7 @@ import {
   Linking,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import HeaderText from "../../../components/HeaderText";
 import Book_Card from "../../../components/card/Book_Card";
@@ -23,7 +23,7 @@ import SelectCourse from "../../../components/admin_required/SelectCourse";
 import AsyncStorage from "@react-native-community/async-storage";
 import Loader from "../../../utils/Loader";
 
-export default function LibraryAccess() {
+export default function EducatorLibrary() {
   const navigation = useNavigation();
   const [studentLibrary, setStudentLibrary] = useState([]);
   const [initialStudentLibrary, setInitialStudentLibrary] = useState([]);
@@ -31,7 +31,7 @@ export default function LibraryAccess() {
   const [searchTerm, setSearchTerm] = useState("");
   const [courseId, setCourseId] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const isFocused = useIsFocused();
   const allLearnerList = async (id) => {
     setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -72,7 +72,7 @@ export default function LibraryAccess() {
   };
   useEffect(() => {
     courseId && allLearnerList(courseId);
-  }, [courseId]);
+  }, [courseId, isFocused]);
 
   useEffect(() => {
     if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
@@ -135,7 +135,7 @@ export default function LibraryAccess() {
                       title={list.titel}
                       author={list.author}
                       // onPress={() => navigation.navigate("ViewBook", { list })}
-                      onPress={() => Linking.openURL(list.pdf)}
+                      onPress={() => Linking.openURL(list.resume)}
                     />
                   ))
                 ) : (
