@@ -30,7 +30,9 @@ export default function EducatorAddFileCabinet() {
 
   const pickImg = async () => {
     console.log("first");
-    let result = await DocumentPicker.getDocumentAsync({});
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+    });
     console.log(result);
     if (result.uri) {
       setImage(result);
