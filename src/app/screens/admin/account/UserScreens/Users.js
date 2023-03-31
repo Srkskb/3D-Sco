@@ -13,6 +13,7 @@ import AccountStatus from "../../../../components/dropdown/admin_user/AccountSta
 import CategoryDropdown from "../../../../components/dropdown/CategoryDropdown";
 
 export default function Users() {
+  const [loading, setloading] = useState(false);
   var userType = [{ name: "Student" }, { name: "Tutor" }, { name: "Parent" }, { name: "Admin" }, { name: "Affiliate" }];
   const [userList, setUserList] = useState([]);
   const [type, setType] = useState("");
@@ -23,6 +24,7 @@ export default function Users() {
   const [statusData, setStatusData] = useState(initialObj);
 
   const filter = () => {
+    setloading(true);
     var formdata = new FormData();
     // var myHeaders = myHeadersData();
     formdata.append("Account_filter", "1");
@@ -50,11 +52,13 @@ export default function Users() {
       .then((response) => response.json())
       .then((result) => {
         if (result.data != null) {
+          setloading(false);
           setUserList(result.data);
           setStatusData(initialObj);
         }
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => 
+      console.log("error", error));
   };
   return (
     <View style={styles.container}>
@@ -159,7 +163,7 @@ export default function Users() {
           </View>
         </View>
         <View style={styles.btnContainer}>
-          <AppButton title={"Filter"} btnColor={color.purple} onPress={filter} />
+          <AppButton title={"Filter"} btnColor={color.purple} onPress={filter} loading={loading}/>
         </View>
         <View style={{ paddingHorizontal: 2 }}>
           {userList === undefined ? (

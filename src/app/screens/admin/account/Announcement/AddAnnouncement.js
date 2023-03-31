@@ -13,10 +13,11 @@ import { Formik } from "formik";
 import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AddAnnouncement({ navigation }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
 
   const handleAddAnnouncement = async (values) => {
+    setloading(true);
     const myHeaders = myHeadersData();
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var data = new FormData();
@@ -39,6 +40,7 @@ export default function AddAnnouncement({ navigation }) {
       .then((res) => res.json())
       .then((res) => {
         if (res.success == 1) {
+          setloading(false);
           navigation.navigate("Announcement");
         }
       });

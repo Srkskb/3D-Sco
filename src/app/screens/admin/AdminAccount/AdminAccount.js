@@ -58,10 +58,15 @@ export default function AdminAccount() {
                 title={"Enrollment"}
                 onPress={() => navigation.navigate("Enrollment")}
               />
-              <Account_Tabs
+              {/* <Account_Tabs
                 imgsrc={require("./../../../assets/images/account/786.png")}
                 title={"Instructor Request"}
                 onPress={() => navigation.navigate("InstructorRequest")}
+              /> */}
+              <Account_Tabs
+                imgsrc={require("./../../../assets/images/account/786.png")}
+                title={"Courses"}
+                onPress={() => navigation.navigate("CourseTab")}
               />
             </View>
             <View style={styles.vertical_list}>
@@ -109,11 +114,7 @@ export default function AdminAccount() {
                 title={"Users"}
                 onPress={() => navigation.navigate("TopBarNavigation")}
               />
-              <Account_Tabs
-                imgsrc={require("./../../../assets/images/account/786.png")}
-                title={"Courses"}
-                onPress={() => navigation.navigate("CourseTab")}
-              />
+              
             </View>
           </View>
         </View>

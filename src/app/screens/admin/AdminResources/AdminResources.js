@@ -76,6 +76,7 @@ export default function AdminMyResources() {
           </View>
         </ScrollView>
       </View>
+      
     </View>
   );
 }

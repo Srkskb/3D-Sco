@@ -183,12 +183,12 @@ export default function AdminAddLink() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(category)}
-                    />
+                  <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

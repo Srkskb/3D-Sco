@@ -19,7 +19,7 @@ export default function EditBackup({ navigation, route }) {
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
   const [course, setCourse] = useState(route.params.title.course_id);
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(route.params.title.file_name);
@@ -38,6 +38,7 @@ export default function EditBackup({ navigation, route }) {
   };
 
   const EditBackupFun = (values) => {
+    setloading(true);
     const myHeaders = myHeadersData();
     var formdata = new FormData();
     formdata.append("Update_backup", "1");
@@ -63,10 +64,12 @@ export default function EditBackup({ navigation, route }) {
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
+        setloading(false);
         //Add navigation here
         navigation.navigate("Backup");
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {console.log("error", error)
+      setloading(false);});
   };
 
   return (
@@ -140,15 +143,15 @@ export default function EditBackup({ navigation, route }) {
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(route.params)}
-                    />
+                  <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                     <SmallButton
                       onPress={handleSubmit}
-                      title="Save"
+                      title="Update"
                       loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}

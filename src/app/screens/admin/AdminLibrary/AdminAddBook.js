@@ -3,7 +3,10 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import { Image } from "react-native";
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
 import CommonDropdown from "../../../components/dropdown/CommonDropdown";
 import Input from "../../../components/inputs/Input";
@@ -19,7 +22,7 @@ export default function AdminAddBook({ navigation }) {
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
@@ -56,6 +59,7 @@ export default function AdminAddBook({ navigation }) {
   console.log("user_id", user_id);
 
   const handleCreateBook = async () => {
+    setloading(true);
     // var data = new FormData();
     // data.append("add_book", "1");
     // data.append("title", bookData?.title);
@@ -81,6 +85,7 @@ export default function AdminAddBook({ navigation }) {
     const res = await adminServices.addBook(data);
     console.log("res", res);
     if (res.success) {
+      setloading(false);
       setBookData(initialObj);
       setSnackVisibleTrue(true);
       navigation.navigate("AdminManageLibrary");
@@ -106,32 +111,52 @@ export default function AdminAddBook({ navigation }) {
           />
           <Input
             value={bookData?.title}
-            onChangeText={(title) => setBookData((prev) => ({ ...prev, title }))}
+            onChangeText={(title) =>
+              setBookData((prev) => ({ ...prev, title }))
+            }
             label={"Book Title"}
             placeholder={"Enter Book Name"}
           />
           <Input
             value={bookData?.author}
-            onChangeText={(author) => setBookData((prev) => ({ ...prev, author }))}
+            onChangeText={(author) =>
+              setBookData((prev) => ({ ...prev, author }))
+            }
             label={"Author"}
             placeholder={"Enter Author Name"}
           />
           <Input
             value={bookData?.publisher}
-            onChangeText={(publisher) => setBookData((prev) => ({ ...prev, publisher }))}
+            onChangeText={(publisher) =>
+              setBookData((prev) => ({ ...prev, publisher }))
+            }
             label={"Publisher"}
             placeholder={"Enter Publisher Name"}
           />
           <UploadDocument
-            onChange={(e) => setBookData((prev) => ({ ...prev, pdf: { name: e?.name, uri: e?.uri } }))}
+            onChange={(e) =>
+              setBookData((prev) => ({
+                ...prev,
+                pdf: { name: e?.name, uri: e?.uri },
+              }))
+            }
             type={"Book (pdf)"}
           />
-          {bookData?.pdf?.name && <Text style={{ textAlign: "right" }}>{bookData?.pdf?.name}</Text>}
+          {bookData?.pdf?.name && (
+            <Text style={{ textAlign: "right" }}>{bookData?.pdf?.name}</Text>
+          )}
           <UploadDocument
-            onChange={(e) => setBookData((prev) => ({ ...prev, image: { name: e?.name, uri: e?.uri } }))}
+            onChange={(e) =>
+              setBookData((prev) => ({
+                ...prev,
+                image: { name: e?.name, uri: e?.uri },
+              }))
+            }
             type={"Book (Image)"}
           />
-          {bookData?.image?.name && <Text style={{ textAlign: "right" }}>{bookData?.image?.name}</Text>}
+          {bookData?.image?.name && (
+            <Text style={{ textAlign: "right" }}>{bookData?.image?.name}</Text>
+          )}
 
           <Input
             label={"Description"}
@@ -140,10 +165,17 @@ export default function AdminAddBook({ navigation }) {
             multiline={true}
             numberOfLines={6}
             textAlignVertical={"top"}
-            onChangeText={(detail) => setBookData((prev) => ({ ...prev, detail }))}
+            onChangeText={(detail) =>
+              setBookData((prev) => ({ ...prev, detail }))
+            }
           />
           <View style={styles.button}>
-            <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+          <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
             <SmallButton
               title="Save"
               onPress={handleCreateBook}

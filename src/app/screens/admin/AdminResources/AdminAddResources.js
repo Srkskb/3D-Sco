@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -19,6 +26,7 @@ import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminAddResources({ navigation }) {
   const [question, setQuestion] = useState("");
+  const [loading, setloading] = useState(false);
   const [answer, setAnswer] = useState("");
   const loginUID = localStorage.getItem("loginUID");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -27,6 +35,7 @@ export default function AdminAddResources({ navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
 
   const addFileCabinet = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = qs.stringify({
@@ -48,10 +57,12 @@ export default function AdminAddResources({ navigation }) {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
+          setloading(false);
           navigation.navigate("AdminManageResources");
         }
       })
       .catch(function (error) {
+        setloading(false);
         console.log(error);
       });
   };
@@ -68,6 +79,7 @@ export default function AdminAddResources({ navigation }) {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -76,6 +88,7 @@ export default function AdminAddResources({ navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -98,7 +111,14 @@ export default function AdminAddResources({ navigation }) {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+              }) => (
                 <View>
                   <InputField
                     label={"Question"}
@@ -110,7 +130,11 @@ export default function AdminAddResources({ navigation }) {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.docTitle}
+                    </Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -123,7 +147,11 @@ export default function AdminAddResources({ navigation }) {
                   /> */}
 
                   {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.selectedItem}
+                    </Text>
                   )}
                   {/*  */}
                   <InputField
@@ -139,11 +167,20 @@ export default function AdminAddResources({ navigation }) {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.description}
+                    </Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
@@ -151,6 +188,7 @@ export default function AdminAddResources({ navigation }) {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

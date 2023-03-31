@@ -12,9 +12,12 @@ import axios from "axios";
 import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 
 export default function AdminPhotoAlbum() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -46,6 +49,7 @@ export default function AdminPhotoAlbum() {
   };
 
   const deleteEvent = async (id) => {
+    
     // const loginUID = localStorage.getItem("loginUID");
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
 
@@ -69,8 +73,9 @@ export default function AdminPhotoAlbum() {
         console.log("delete", result.data);
 
         if (result.data.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
-          setMessageTrue(result.message);
+          setMessageTrue("Deleted Successfully");
           // let temp = [];
           // fileCabinetData.forEach((item) => {
           //   if (item.id !== id) temp.push(item);
@@ -78,7 +83,7 @@ export default function AdminPhotoAlbum() {
           setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         } else {
           setSnackVisibleFalse(true);
-          setMessageFalse(result.data.message);
+          setMessageFalse("Something went wrong");
         }
       })
       // fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
@@ -125,6 +130,7 @@ export default function AdminPhotoAlbum() {
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
         duration={2000}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -133,6 +139,7 @@ export default function AdminPhotoAlbum() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -163,7 +170,10 @@ export default function AdminPhotoAlbum() {
                       docImage: list?.file_name,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
                   onPress={() =>
                     navigation.navigate("AdminViewPhoto", {
                       title: list.title,
@@ -179,6 +189,12 @@ export default function AdminPhotoAlbum() {
           )}
         </View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </View>
   );
 }

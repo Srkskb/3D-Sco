@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -23,6 +31,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -30,6 +39,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
   const [category, setCategory] = useState(linkCategory);
 
   const updateDocument = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(updateTitle, upLink, category, upDescription);
     const myHeaders = myHeadersData();
@@ -55,10 +65,12 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminStoreFavoriteLinks");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -84,7 +96,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -93,7 +105,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -153,13 +165,19 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+              <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateDocument}
-                  title="Save"
+                  title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}
+                  loading={loading}
                 />
               </View>
             </View>

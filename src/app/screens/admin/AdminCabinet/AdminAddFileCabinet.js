@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -38,6 +45,7 @@ export default function AdminAddFileCabinet() {
   };
 
   const addFileCabinet = async (values) => {
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(values);
     setLoading(true);
@@ -68,14 +76,15 @@ export default function AdminAddFileCabinet() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setLoading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminCabinet");
         } else {
+          setLoading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-        setLoading(false);
       })
       .catch(() => setLoading(false));
   };
@@ -123,7 +132,15 @@ export default function AdminAddFileCabinet() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                setFieldValue,
+              }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -135,7 +152,11 @@ export default function AdminAddFileCabinet() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.docTitle}
+                    </Text>
                   )}
                   <AccessLevel
                     // required
@@ -147,11 +168,22 @@ export default function AdminAddFileCabinet() {
                     // value={access}
                   />
                   {errors.access && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.access}
+                    </Text>
                   )}
 
-                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
-                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+                  <UploadDocument
+                    type={"(pdf, doc, ppt,xls)"}
+                    pickImg={pickImg}
+                  />
+                  <View>
+                    {image?.name && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
+                    )}
+                  </View>
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -165,11 +197,20 @@ export default function AdminAddFileCabinet() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.description}
+                    </Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

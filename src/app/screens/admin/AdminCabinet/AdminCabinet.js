@@ -9,8 +9,11 @@ import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function AdminCabinet() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -27,7 +30,10 @@ export default function AdminCabinet() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?student_filecabinate=1&id=${myData.id}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_filecabinate=1&id=${myData.id}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
@@ -52,6 +58,7 @@ export default function AdminCabinet() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -87,6 +94,7 @@ export default function AdminCabinet() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -95,11 +103,14 @@ export default function AdminCabinet() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
       <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         style={{ paddingHorizontal: 10 }}
       >
         <TextWithButton
@@ -129,7 +140,10 @@ export default function AdminCabinet() {
                       docImage: list.image,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
                   onPress={() =>
                     navigation.navigate("AdminViewContent", {
                       title: list.name,
@@ -144,6 +158,12 @@ export default function AdminCabinet() {
           )}
         </View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </View>
   );
 }

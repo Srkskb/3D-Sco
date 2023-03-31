@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
@@ -29,7 +37,7 @@ export default function EditCourse({ navigation, route }) {
   const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
   const [selectedRelease, setSelectedRelease] = useState();
   const [selectedEnd, setSelectedEnd] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
   const [editCourseData, setEditCourseData] = useState({
     category: "",
     language: "",
@@ -105,6 +113,7 @@ export default function EditCourse({ navigation, route }) {
   };
 
   const Edit = () => {
+    setloading(true);
     var data = qs.stringify({
       Update_courses: "1",
       user_id: editCourseData.userId,
@@ -146,10 +155,12 @@ export default function EditCourse({ navigation, route }) {
     console.log("ENter");
     fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
       .then(function (response) {
+        setloading(false);
         console.log("response", response);
         navigation.goBack();
       })
       .catch(function (error) {
+        setloading(false);
         console.log(error);
       });
     // var data = new FormData();
@@ -352,11 +363,16 @@ export default function EditCourse({ navigation, route }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedRelease ? selectedRelease.toLocaleDateString() : "No date selected"}
+                  {selectedRelease
+                    ? selectedRelease.toLocaleDateString()
+                    : "No date selected"}
                 </Text>
               </Text>
               <View style={styles.selectDate}>
-                <TouchableOpacity style={{ position: "absolute", bottom: 22, right: 20 }} onPress={showDatePicker}>
+                <TouchableOpacity
+                  style={{ position: "absolute", bottom: 22, right: 20 }}
+                  onPress={showDatePicker}
+                >
                   {/* <Text>Select Date</Text> */}
                   <Entypo name="calendar" size={24} color={color.purple} />
                 </TouchableOpacity>
@@ -399,11 +415,16 @@ export default function EditCourse({ navigation, route }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedEnd ? selectedEnd.toLocaleDateString() : "No date selected"}
+                  {selectedEnd
+                    ? selectedEnd.toLocaleDateString()
+                    : "No date selected"}
                 </Text>
               </Text>
               <View style={styles.selectDate}>
-                <TouchableOpacity style={{ position: "absolute", bottom: 22, right: 20 }} onPress={showDatePicker2}>
+                <TouchableOpacity
+                  style={{ position: "absolute", bottom: 22, right: 20 }}
+                  onPress={showDatePicker2}
+                >
                   {/* <Text>Select Date</Text> */}
                   <Entypo name="calendar" size={24} color={color.purple} />
                 </TouchableOpacity>
@@ -470,11 +491,19 @@ export default function EditCourse({ navigation, route }) {
           <UploadDocument type={"Icon"} pickImg={pickImg} />
           <View style={styles.uploadCon}>
             {!!editCourseData?.icon?.length && (
-              <Image source={{ uri: editCourseData?.icon }} style={styles.uploadImg} />
+              <Image
+                source={{ uri: editCourseData?.icon }}
+                style={styles.uploadImg}
+              />
             )}
           </View>
           <View style={styles.button}>
-            <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+          <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
             <SmallButton
               onPress={() => Edit()}
               title="Update"
@@ -482,6 +511,7 @@ export default function EditCourse({ navigation, route }) {
               color={color.white}
               backgroundColor={color.purple}
               fontFamily={"Montserrat-Bold"}
+              
             />
           </View>
         </View>

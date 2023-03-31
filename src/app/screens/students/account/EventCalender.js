@@ -28,11 +28,19 @@ export default function EventCalender() {
       `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`,
       requestOptions
     )
-      .then((res) => res.json())
-
-      .then((result) => setEventCalenderList(result.data))
-
-      .catch((error) => console.log("error", error));
+    .then((res) => res.json())
+    .then((result) => {
+      if (result?.data?.length) {
+        setEventCalenderList(result.data);
+      } else {
+        setEventCalenderList([]);
+      }
+      setLoading(false);
+    })
+    .catch((error) => {
+      setLoading(false);
+      console.log("error", error);
+    });
   };
   useEffect(() => {
     allLearnerList();

@@ -76,7 +76,10 @@ export default function EditPresentation({ navigation, route }) {
   };
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
-      <HeaderBack title={"Edit Presentation"} onPress={() => navigation.goBack()} />
+      <HeaderBack
+        title={"Edit Presentation"}
+        onPress={() => navigation.goBack()}
+      />
       <ScrollView style={styles.container}>
         <Formik
           enableReinitialize
@@ -90,7 +93,15 @@ export default function EditPresentation({ navigation, route }) {
           })}
           onSubmit={(values) => editPresentation(values)}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            isValid,
+            setFieldValue,
+          }) => (
             <View>
               <Input
                 name="preTitle"
@@ -100,7 +111,9 @@ export default function EditPresentation({ navigation, route }) {
                 value={values.preTitle}
               />
               {errors.preTitle && (
-                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.preTitle}</Text>
+                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>
+                  {errors.preTitle}
+                </Text>
               )}
               <SelectCourse
                 label={"Select Course"}
@@ -108,7 +121,11 @@ export default function EditPresentation({ navigation, route }) {
                   setFieldValue("course", selectedItem.id);
                 }}
               />
-              {errors.course && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>}
+              {errors.course && (
+                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>
+                  {errors.course}
+                </Text>
+              )}
               <Input
                 label={"Description"}
                 placeholder={"Description"}
@@ -120,13 +137,22 @@ export default function EditPresentation({ navigation, route }) {
                 onChangeText={handleChange("description")}
               />
               {errors.description && (
-                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>
+                  {errors.description}
+                </Text>
               )}
               <UploadDocument type={"File"} pickImg={pickImg} />
-              <View>{image && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+              <View>
+                {image && <Text style={styles.uploadCon}>{image.name}</Text>}
+              </View>
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+              <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                 <SmallButton
                   onPress={handleSubmit}
                   title="Save"

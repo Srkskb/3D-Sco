@@ -20,6 +20,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
+import moment from "moment";
 import NavigationDrawer from "../home_screen/NavigationDrawer";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AddEvent() {
@@ -49,6 +50,7 @@ export default function AddEvent() {
     hideDatePicker();
   };
   const addEventCalender =async (values) => {
+    console.log("value321",values)
     setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
@@ -56,7 +58,7 @@ export default function AddEvent() {
     urlencoded.append("add_event", "1");
     urlencoded.append("event_titel", values.evenTitle);
     urlencoded.append("access_level", access);
-    urlencoded.append("event_date", "2022-09-19");
+    urlencoded.append("event_date",values.eventDate);
     urlencoded.append("decription", values.eventDecription);
     urlencoded.append("user_id", myData.id);
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
@@ -146,6 +148,7 @@ export default function AddEvent() {
                 handleChange,
                 handleBlur,
                 handleSubmit,
+                setFieldValue,
                 values,
                 errors,
                 isValid,
@@ -195,9 +198,7 @@ export default function AddEvent() {
                         fontFamily: "Montserrat-SemiBold",
                       }}
                     >
-                      {selectedDate
-                        ? selectedDate.toLocaleDateString()
-                        : "No date selected"}
+                     {values.eventDate ? values.eventDate : "No date selected"}
                     </Text>
                     <View style={styles.selectDate}>
                       <TouchableOpacity onPress={showDatePicker}>
@@ -214,7 +215,10 @@ export default function AddEvent() {
                       isVisible={isDatePickerVisible}
                       mode="date"
                       date={selectedDate}
-                      onConfirm={handleConfirm}
+                      onConfirm={(e) => {
+                        setFieldValue("eventDate", moment(e).format("YYYY-MM-DD"));
+                        hideDatePicker();
+                      }}
                       onCancel={hideDatePicker}
                     />
                   </View>

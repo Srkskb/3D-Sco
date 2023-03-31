@@ -24,10 +24,12 @@ export default function AdminAddBlog() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const addFileCabinet = async (values) => {
+    setloading(true);
     const data = JSON.parse(await AsyncStorage.getItem("userData"));
 
     const myHeaders = myHeadersData();
@@ -50,10 +52,12 @@ export default function AdminAddBlog() {
       .then((res) => {
         console.log("add bog", res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminBlogs");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -69,6 +73,7 @@ export default function AdminAddBlog() {
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
         duration={2000}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -77,6 +82,7 @@ export default function AdminAddBlog() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -184,15 +190,12 @@ export default function AdminAddBlog() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                    <SmallButton
-                      onPress={() => {
-                        resetForm();
-                        navigation.navigate("AdminBlogs");
-                      }}
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                  <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                     <SmallButton
                       onPress={() => handleSubmit()}
                       title="Save"
@@ -200,6 +203,7 @@ export default function AdminAddBlog() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

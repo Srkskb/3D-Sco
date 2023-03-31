@@ -78,14 +78,22 @@ export default function CourseTab({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.container_items}>
+          {/* <View style={styles.container_items}>
             <TouchableOpacity onPress={() => navigation.navigate("Forum")}>
               <View style={styles.inside_items}>
                 <Image style={styles.img_res} source={forums} />
                 <Text style={styles.box_text}>Forum</Text>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
+           <View style={styles.container_items}>
+          <TouchableOpacity onPress={() => navigation.navigate("Category")}>
+            <View style={styles.inside_items}>
+              <Image style={styles.img_res} source={category} />
+              <Text style={styles.box_text}>Category</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
 
           <View style={styles.container_items}>
             <TouchableOpacity
@@ -107,14 +115,7 @@ export default function CourseTab({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.container_items}>
-          <TouchableOpacity onPress={() => navigation.navigate("Category")}>
-            <View style={styles.inside_items}>
-              <Image style={styles.img_res} source={category} />
-              <Text style={styles.box_text}>Category</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+       
       </ScrollView>
     </SafeAreaView>
   );

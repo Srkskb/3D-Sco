@@ -33,11 +33,12 @@ export default function AdminEditBook({ navigation }) {
             textAlignVertical={"top"}
           />
         <View style={styles.button}>
-          <SmallButton
-            title={"Cancel"}
-            color={color.purple}
-            fontFamily={"Montserrat-Medium"}
-          />
+        <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
 
           <SmallButton
             title="Update"

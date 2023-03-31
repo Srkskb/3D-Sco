@@ -14,11 +14,13 @@ export default function AdminAddFinancial({ route, navigation }) {
   const [assetsTitle, setAssetsTitle] = useState();
   const userRole = localStorage.getItem("userRole");
   const [assetsUrl, setAssetsUrl] = useState();
+  const [loading, setloading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const addFinancialAssets = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -42,10 +44,12 @@ export default function AdminAddFinancial({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminFinancialAssistance");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -71,18 +75,38 @@ export default function AdminAddFinancial({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <View style={styles.container}>
-        <HeaderBack title={"Add Financial"} onPress={() => navigation.navigate("AdminFinancialAssistance")} />
+        <HeaderBack
+          title={"Add Financial"}
+          onPress={() => navigation.navigate("AdminFinancialAssistance")}
+        />
 
         <ScrollView style={styles.scroll_container}>
-          <Input label={"Title"} placeholder={"Username"} name="title" onChangeText={(text) => setAssetsTitle(text)} />
-          <Input label={"Url"} placeholder={"http://"} name="url" onChangeText={(text) => setAssetsUrl(text)} />
-          <View style={{ paddingVertical: 10 }}>
+          <Input
+            label={"Title"}
+            placeholder={"Username"}
+            name="title"
+            onChangeText={(text) => setAssetsTitle(text)}
+          />
+          <Input
+            label={"Url"}
+            placeholder={"http://"}
+            name="url"
+            onChangeText={(text) => setAssetsUrl(text)}
+          />
+          <View style={{ paddingVertical: 10, flexDirection: "row" }}>
+            <SmallButton
+              title={"Cancel"}
+              color={color.purple}
+              fontFamily={"Montserrat-Medium"}
+              onPress={() => navigation.goBack()}
+            />
             <SmallButton
               title={"Submit"}
               backgroundColor={color.purple}
               color={color.white}
               fontFamily={"Montserrat-Bold"}
               onPress={addFinancialAssets}
+              loading={loading}
             />
           </View>
         </ScrollView>

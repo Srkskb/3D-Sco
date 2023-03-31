@@ -21,7 +21,7 @@ export default function DeletePopup({cancelPress,deletePress}) {
         <Text style={styles.head_text}>Delete Event</Text>
       </View>
       <View style={styles.text_container}>
-        <Text style={styles.description_text}>Are you sure want to delete the Event?</Text>
+        <Text style={styles.description_text}>Are you sure want to delete?</Text>
       </View>
       <View style={styles.button_container}>
         <View style={{width:'45%'}}>

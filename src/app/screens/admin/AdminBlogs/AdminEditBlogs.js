@@ -69,12 +69,14 @@ export default function AdminEditBlogs({ route, navigation }) {
 
     axios(config).then((res) => {
       console.log(res.data);
-      setLoading(false);
+      
       if (res.data.success == 1) {
+        setLoading(false);
         setSnackVisibleTrue(true);
         setMessageTrue(res.data.message);
         navigation.navigate("AdminBlogs");
       } else {
+        setLoading(false);
         setSnackVisibleFalse(true);
         setMessageFalse(res.data.message);
       }
@@ -87,6 +89,7 @@ export default function AdminEditBlogs({ route, navigation }) {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -95,6 +98,7 @@ export default function AdminEditBlogs({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -172,6 +176,12 @@ export default function AdminEditBlogs({ route, navigation }) {
               />
 
               <View style={styles.button}>
+              <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateEvent}
                   title="Save"

@@ -10,6 +10,7 @@ import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function AdminMyJournal() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -19,6 +20,8 @@ export default function AdminMyJournal() {
   const [myJournalData, setMyJournalData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
@@ -55,6 +58,7 @@ export default function AdminMyJournal() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -146,7 +150,10 @@ export default function AdminMyJournal() {
                           jImage: list.image,
                         })
                       }
-                      removePress={() => deleteJournal(list.id)}
+                      removePress={() => {
+                        setId(list.id);
+                        setDeletePop(true);
+                      }}
                     />
                   ))}
                 </>
@@ -155,6 +162,12 @@ export default function AdminMyJournal() {
           </View>
         </ScrollView>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteJournal(id)}
+        />
+      ) : null}
     </View>
   );
 }

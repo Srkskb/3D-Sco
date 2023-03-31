@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+} from "react-native";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
 import InputField from "../../../../components/inputs/Input";
@@ -137,7 +144,15 @@ export default function AddBackup() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                setFieldValue,
+              }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -149,7 +164,11 @@ export default function AddBackup() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.docTitle}
+                    </Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -172,7 +191,11 @@ export default function AddBackup() {
                   />
 
                   {errors.course && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.course}
+                    </Text>
                   )}
 
                   <UploadDocument pickImg={pickImg} />
@@ -184,7 +207,9 @@ export default function AddBackup() {
                           style={styles.uploadImg}
                           resizeMode={"contain"}
                         />
-                        <Text style={{ fontSize: 14, marginBottom: 10 }}>{image?.name}</Text>
+                        <Text style={{ fontSize: 14, marginBottom: 10 }}>
+                          {image?.name}
+                        </Text>
                       </>
                     )}
                   </View>
@@ -201,11 +226,21 @@ export default function AddBackup() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.description}
+                    </Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                  <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
+
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

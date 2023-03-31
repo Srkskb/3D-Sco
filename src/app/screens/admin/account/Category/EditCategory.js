@@ -8,9 +8,10 @@ import axios from "axios";
 import * as qs from "qs";
 export default function EditCategory({ navigation, route }) {
   const [title, setTitle] = useState(route.params.title.Name);
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const EditCategory = () => {
+    setloading(true);
     var data = qs.stringify({
       update_category: "1",
       name: title,
@@ -26,13 +27,16 @@ export default function EditCategory({ navigation, route }) {
     };
     axios(config)
       .then(function (response) {
+        
         console.log(JSON.stringify(response.data));
         if (response.data.success == 1) {
+          setloading(false);
           setTitle("");
           navigation.navigate("Category");
         }
       })
       .catch(function (error) {
+        setloading(false);
         console.log(error);
       });
   };

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -17,6 +24,7 @@ import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminAddPhoto() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -37,6 +45,7 @@ export default function AdminAddPhoto() {
   };
 
   const addFileCabinet = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = new FormData();
@@ -67,10 +76,12 @@ export default function AdminAddPhoto() {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
+          setloading(false);
           navigation.navigate("AdminPhotoAlbum");
         }
       })
       .catch((error) => {
+        setloading(false);
         console.log(error);
       });
   };
@@ -87,6 +98,7 @@ export default function AdminAddPhoto() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -95,6 +107,7 @@ export default function AdminAddPhoto() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -118,7 +131,15 @@ export default function AdminAddPhoto() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                resetForm,
+              }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -130,7 +151,11 @@ export default function AdminAddPhoto() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.docTitle}
+                    </Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -143,12 +168,18 @@ export default function AdminAddPhoto() {
                   /> */}
 
                   {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.selectedItem}
+                    </Text>
                   )}
 
                   <UploadDocument type={"Image"} pickImg={pickImg} />
                   <View style={styles.uploadCon}>
-                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                    {image && (
+                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                    )}
                   </View>
                   <InputField
                     label={"Description"}
@@ -163,19 +194,20 @@ export default function AdminAddPhoto() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.description}
+                    </Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton
-                      onPress={() => {
-                        resetForm();
-                        navigation.navigate("AdminPhotoAlbum");
-                      }}
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                    />
+                  <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
@@ -183,6 +215,7 @@ export default function AdminAddPhoto() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
+                      loading={loading}
                     />
                   </View>
                 </View>

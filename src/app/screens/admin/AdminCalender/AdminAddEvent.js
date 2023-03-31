@@ -198,6 +198,7 @@ export default function AdminAddEvent() {
                       date={selectedDate}
                       onConfirm={(e) => {
                         setFieldValue("eventDate", moment(e).format("YYYY-MM-DD"));
+                        hideDatePicker();
                       }}
                       onCancel={hideDatePicker}
                     />

@@ -9,9 +9,10 @@ import * as qs from "qs";
 
 export default function AddCategory({ navigation, route }) {
   const [title, setTitle] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const AddCategory = () => {
+    setloading(true);
     var data = qs.stringify({
       add_category: "1",
       name: title,
@@ -28,10 +29,12 @@ export default function AddCategory({ navigation, route }) {
 
     axios(config)
       .then(function (response) {
+        setloading(false);
         console.log(JSON.stringify(response.data));
         navigation.navigate("Category");
       })
       .catch(function (error) {
+        setloading(false);
         console.log(error);
       });
   };
@@ -48,12 +51,12 @@ export default function AddCategory({ navigation, route }) {
           value={title}
         />
         <View style={styles.button}>
-          <SmallButton
-            title={"Cancel"}
-            color={color.purple}
-            fontFamily={"Montserrat-Medium"}
-            // onPress={()=>console.log(route.name)}
-          />
+        <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
           <SmallButton
             title="Save"
             color={color.white}

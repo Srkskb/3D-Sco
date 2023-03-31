@@ -13,11 +13,15 @@ import { myHeadersData } from "../../../../api/helper";
 import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel";
 import Loader from "../../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../../components/popup/DeletePopup";
 
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [id, setId] = useState("");
+  const [id2, setId2] = useState("");
+const [deletePop, setDeletePop] = useState(false);
 
   const DeleteCourse = (id, userId) => {
     console.log("first", id, userId);
@@ -39,6 +43,7 @@ export default function Course({ navigation }) {
 
     axios(config)
       .then(function (response) {
+        setDeletePop(false);
         console.log("response", response.data);
         setCourses((prev) => prev.filter((item) => item.id != id));
       })
@@ -127,7 +132,11 @@ export default function Course({ navigation }) {
                   educator={list.assigned_tutor}
                   releaseDate={list.ReleaseDate}
                   endDate={list.EndDate}
-                  removePress={() => DeleteCourse(list.id, list.user_id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setId2(list.user_id);
+                    setDeletePop(true);
+                  }}
                   editPress={() => navigation.navigate("EditCourse", { editData: list })}
                 />
               ))}
@@ -135,6 +144,12 @@ export default function Course({ navigation }) {
           )}
         </ScrollView>
       )}
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => DeleteCourse(id,id2)}
+        />
+      ) : null}
     </View>
   );
 }

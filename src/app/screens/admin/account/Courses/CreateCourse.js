@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import color from "../../../../assets/themes/Color";
@@ -69,7 +77,9 @@ export default function CreateCourse({ navigation }) {
     exportContent: "",
     access: "",
     releaseDate: moment(new Date()).format("YYYY-MM-DD"),
-    endDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)).format("YYYY-MM-DD"),
+    endDate: moment(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+    ).format("YYYY-MM-DD"),
     banner: "",
     initialContent: "",
     quota: "",
@@ -378,7 +388,9 @@ export default function CreateCourse({ navigation }) {
                       fontFamily: "Montserrat-SemiBold",
                     }}
                   >
-                    {courseData.releaseDate ? moment(courseData.releaseDate).format("YYYY-MM-DD") : "No date selected"}
+                    {courseData.releaseDate
+                      ? moment(courseData.releaseDate).format("YYYY-MM-DD")
+                      : "No date selected"}
                   </Text>
                 </Text>
                 <View style={styles.selectDate}>
@@ -417,9 +429,13 @@ export default function CreateCourse({ navigation }) {
                   setCourseData((prev) => ({
                     ...prev,
                     endOn: false,
-                    endDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)).format(
-                      "YYYY-MM-DD"
-                    ),
+                    endDate: moment(
+                      new Date(
+                        new Date().getFullYear(),
+                        new Date().getMonth() + 1,
+                        0
+                      )
+                    ).format("YYYY-MM-DD"),
                   }));
                   setChecked2("first1");
                 }}
@@ -450,11 +466,16 @@ export default function CreateCourse({ navigation }) {
                       fontFamily: "Montserrat-SemiBold",
                     }}
                   >
-                    {courseData.endDate ? moment(courseData.endDate).format("YYYY-MM-DD") : "No date selected"}
+                    {courseData.endDate
+                      ? moment(courseData.endDate).format("YYYY-MM-DD")
+                      : "No date selected"}
                   </Text>
                 </Text>
                 <View style={styles.selectDate}>
-                  <TouchableOpacity style={{ position: "absolute", bottom: 22, right: 20 }} onPress={showDatePicker2}>
+                  <TouchableOpacity
+                    style={{ position: "absolute", bottom: 22, right: 20 }}
+                    onPress={showDatePicker2}
+                  >
                     {/* <Text>Select Date</Text> */}
                     <Entypo name="calendar" size={24} color={color.purple} />
                   </TouchableOpacity>
@@ -525,9 +546,16 @@ export default function CreateCourse({ navigation }) {
             }
           />
           <UploadDocument type={"Icon"} pickImg={pickImg} />
-          <View>{image?.name && <Text style={styles.uploadCon}>{image?.name}</Text>}</View>
+          <View>
+            {image?.name && <Text style={styles.uploadCon}>{image?.name}</Text>}
+          </View>
           <View style={styles.button}>
-            <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+          <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
             <SmallButton
               title="Save"
               color={color.white}
@@ -535,6 +563,7 @@ export default function CreateCourse({ navigation }) {
               backgroundColor={color.purple}
               fontFamily={"Montserrat-Bold"}
               onPress={() => addCourse()}
+              loading={loading}
             />
           </View>
         </View>

@@ -29,6 +29,7 @@ export default function CreateUser({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const createNewStudent = (values) => {
+
     console.log(values);
     setLoading(true);
     var formdata = new FormData();
@@ -161,7 +162,7 @@ export default function CreateUser({ navigation }) {
             onSubmit={(values) => createNewStudent(values)}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue, resetForm }) => (
-              <View>
+              <View style={{marginBottom:20}}>
                 <Headline title={"Required information"} />
                 <Input
                   label={"Username"}
@@ -400,6 +401,7 @@ export default function CreateUser({ navigation }) {
                   title={"Continue"}
                   btnColor={color.purple}
                   onPress={() => handleSubmit()}
+                  loading={loading}
                 />
               </View>
             )}

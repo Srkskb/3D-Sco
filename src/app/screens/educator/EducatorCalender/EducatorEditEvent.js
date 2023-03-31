@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -156,7 +163,11 @@ export default function EducatorEditEvent({ route, navigation }) {
                     <View style={styles.selectedData}>
                       <Text>{status}</Text>
                       <TouchableOpacity onPress={onClick}>
-                        <Entypo name="circle-with-cross" size={24} color={color.purple} />
+                        <Entypo
+                          name="circle-with-cross"
+                          size={24}
+                          color={color.purple}
+                        />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -174,7 +185,9 @@ export default function EducatorEditEvent({ route, navigation }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : `${dateData}`}
+                  {selectedDate
+                    ? moment(selectedDate).format("YYYY-MM-DD")
+                    : `${dateData}`}
                 </Text>
                 <Text></Text>
                 <View style={styles.selectDate}>
@@ -208,8 +221,14 @@ export default function EducatorEditEvent({ route, navigation }) {
 
               <View style={styles.button}>
                 <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
+                <SmallButton
                   onPress={updateEvent}
-                  title="Save"
+                  title="Update"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}

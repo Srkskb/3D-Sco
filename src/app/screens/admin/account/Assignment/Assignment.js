@@ -12,9 +12,12 @@ import * as qs from "qs";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../../components/popup/DeletePopup";
 
 export default function Assignment() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -70,6 +73,7 @@ export default function Assignment() {
     axios(config)
       .then((response) => {
         if (response.data.success == 1) {
+          setDeletePop(false);
           setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         }
       })
@@ -101,6 +105,7 @@ export default function Assignment() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -109,6 +114,7 @@ export default function Assignment() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -149,13 +155,22 @@ export default function Assignment() {
                       userId: list.user_id,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
                 />
               ))}
             </>
           )}
         </View>
       </ScrollView>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </View>
   );
 }

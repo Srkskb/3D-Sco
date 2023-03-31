@@ -70,7 +70,10 @@ export default function AddPresentation({ navigation }) {
   };
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
-      <HeaderBack title={"Add Presentation"} onPress={() => navigation.goBack()} />
+      <HeaderBack
+        title={"Add Presentation"}
+        onPress={() => navigation.goBack()}
+      />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -91,7 +94,15 @@ export default function AddPresentation({ navigation }) {
               })}
               onSubmit={(values) => addPresentation(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                setFieldValue,
+              }) => (
                 <View>
                   <InputField
                     label={"Presentation Title"}
@@ -103,7 +114,11 @@ export default function AddPresentation({ navigation }) {
                     keyboardType="text"
                   />
                   {errors.preTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.preTitle}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.preTitle}
+                    </Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -124,7 +139,11 @@ export default function AddPresentation({ navigation }) {
                   />
 
                   {errors.course && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.course}
+                    </Text>
                   )}
 
                   <InputField
@@ -140,12 +159,25 @@ export default function AddPresentation({ navigation }) {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.description}
+                    </Text>
                   )}
                   <UploadDocument pickImg={pickImg} />
-                  <View>{image && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+                  <View>
+                    {image && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
+                    )}
+                  </View>
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                  <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                     <SmallButton
                       onPress={() => handleSubmit()}
                       title="Save"

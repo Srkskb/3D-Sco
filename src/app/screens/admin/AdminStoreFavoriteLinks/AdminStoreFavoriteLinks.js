@@ -22,6 +22,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import qs from "qs";
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function AdminStoreFavoriteLinks() {
   const navigation = useNavigation();
 
@@ -32,6 +33,8 @@ export default function AdminStoreFavoriteLinks() {
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -101,6 +104,7 @@ export default function AdminStoreFavoriteLinks() {
       .then((res) => res.json())
       .then((result) => {
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -164,7 +168,7 @@ export default function AdminStoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -173,7 +177,7 @@ export default function AdminStoreFavoriteLinks() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -239,7 +243,10 @@ export default function AdminStoreFavoriteLinks() {
                           category: list.Category,
                         })
                       }
-                      removePress={() => deleteProject(list.id)}
+                      removePress={() => {
+                        setId(list.id);
+                        setDeletePop(true);
+                      }}
                       pressEdit={() =>
                         navigation.navigate("AdminEditStoreFavoriteLinks", {
                           linkID: list.id,
@@ -257,6 +264,12 @@ export default function AdminStoreFavoriteLinks() {
           </View>
         </ScrollView>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteProject(id)}
+        />
+      ) : null}
     </View>
   );
 }

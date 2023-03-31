@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -18,6 +25,7 @@ export default function AdminEditEvent({ route, navigation }) {
   const { eventID, eventIDParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
   const { status, statusIDParam } = route.params;
+  const [loading, setloading] = useState(false);
   const { dateData, dateIDParam } = route.params;
   const { description, descriptionIDParam } = route.params;
   const loginUID = localStorage.getItem("loginUID");
@@ -46,6 +54,7 @@ export default function AdminEditEvent({ route, navigation }) {
   };
 
   const updateEvent = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var data = qs.stringify({
@@ -70,10 +79,12 @@ export default function AdminEditEvent({ route, navigation }) {
     axios(config).then((res) => {
       console.log(res.data);
       if (res.status == 200) {
+        setloading(false);
         setSnackVisibleTrue(true);
         setMessageTrue(res.data.message);
         navigation.goBack();
       } else {
+        setloading(false);
         setSnackVisibleFalse(true);
         setMessageFalse(res.data.message);
       }
@@ -156,7 +167,11 @@ export default function AdminEditEvent({ route, navigation }) {
                     <View style={styles.selectedData}>
                       <Text>{status}</Text>
                       <TouchableOpacity onPress={onClick}>
-                        <Entypo name="circle-with-cross" size={24} color={color.purple} />
+                        <Entypo
+                          name="circle-with-cross"
+                          size={24}
+                          color={color.purple}
+                        />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -174,12 +189,14 @@ export default function AdminEditEvent({ route, navigation }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : `${dateData}`}
+                  {selectedDate
+                    ? moment(selectedDate).format("YYYY-MM-DD")
+                    : `${dateData}`}
                 </Text>
                 <Text></Text>
                 <View style={styles.selectDate}>
                   <TouchableOpacity
-                  // onPress={showDatePicker}
+                  onPress={showDatePicker}
                   >
                     <Entypo name="calendar" size={24} color={color.purple} />
                   </TouchableOpacity>
@@ -208,11 +225,18 @@ export default function AdminEditEvent({ route, navigation }) {
 
               <View style={styles.button}>
                 <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
+                <SmallButton
                   onPress={updateEvent}
-                  title="Save"
+                  title="Update"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  loading={loading}
                 />
               </View>
             </View>

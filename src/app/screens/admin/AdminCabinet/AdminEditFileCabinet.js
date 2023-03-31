@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -25,7 +33,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(docImage);
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -40,6 +48,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   };
 
   const updateDocument = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, myData.id, image);
@@ -67,10 +76,12 @@ export default function AdminEditFileCabinet({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminCabinet");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -89,12 +100,16 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack title={"Update Document"} onPress={() => navigation.navigate("AdminCabinet")} />
+      <HeaderBack
+        title={"Update Document"}
+        onPress={() => navigation.navigate("AdminCabinet")}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -103,6 +118,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -144,15 +160,27 @@ export default function AdminEditFileCabinet({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
-                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+                  <UploadDocument
+                    type={"(pdf, doc, ppt,xls)"}
+                    pickImg={pickImg}
+                  />
+                  <View>
+                    {image?.name && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
+                    )}
+                  </View>
                 </>
               ) : (
                 <>
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />}
+                      {docImage && (
+                        <Image
+                          source={{ uri: docImage }}
+                          style={styles.uploadImg}
+                        />
+                      )}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -174,13 +202,19 @@ export default function AdminEditFileCabinet({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+              <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateDocument}
                   loading={loading}
-                  title="Save"
+                  title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
+                  color={color.white}
                 />
               </View>
             </View>

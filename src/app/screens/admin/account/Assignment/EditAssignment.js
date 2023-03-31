@@ -10,7 +10,7 @@ import mime from "mime";
 import * as DocumentPicker from "expo-document-picker";
 
 export default function EditAssignment({ navigation, route }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
   const [data, setData] = useState({});
   const [image, setImage] = useState(null);
 
@@ -26,6 +26,7 @@ export default function EditAssignment({ navigation, route }) {
   };
 
   const editAssignment = () => {
+    setloading(true);
     var data = new FormData();
     data.append("Update_courses_assignment", "1");
     data.append("user_id", data.userId);
@@ -53,8 +54,10 @@ export default function EditAssignment({ navigation, route }) {
       .then((res) => res.json())
       .then(function (response) {
         if (res.success) {
+          setloading(false);
           navigation.goBack();
         } else {
+          setloading(false);
           console.log(res.message);
         }
       })
@@ -91,7 +94,12 @@ export default function EditAssignment({ navigation, route }) {
         <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
 
         <View style={styles.button}>
-          <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+        <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
           <SmallButton
             title="Update"
             onPress={() => editAssignment()}

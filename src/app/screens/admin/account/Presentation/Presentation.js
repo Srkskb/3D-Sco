@@ -13,9 +13,12 @@ import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import Loader from "../../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../../components/popup/DeletePopup";
 
 export default function Presentation() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -72,6 +75,7 @@ export default function Presentation() {
       .then((response) => {
         console.log(response);
         if (response.data.success == 1) {
+          setDeletePop(false);
           // allLearnerList();
           setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         }
@@ -101,6 +105,7 @@ export default function Presentation() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -109,6 +114,7 @@ export default function Presentation() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -154,7 +160,10 @@ export default function Presentation() {
                         description: list.Description,
                       })
                     }
-                    removePress={() => deleteEvent(list.id)}
+                    removePress={() => {
+                      setId(list.id);
+                      setDeletePop(true);
+                    }}
                   />
                 ))}
               </>
@@ -162,6 +171,12 @@ export default function Presentation() {
           </View>
         </ScrollView>
       )}
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteEvent(id)}
+        />
+      ) : null}
     </View>
   );
 }
