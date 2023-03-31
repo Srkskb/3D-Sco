@@ -8,10 +8,12 @@ import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
-import DeletePopup from "../../../components/popup/DeletePopup";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function FileCabinet() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -19,9 +21,8 @@ export default function FileCabinet() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
-  const allLearnerList =async () => {
+  const allLearnerList = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -34,10 +35,13 @@ const [deletePop, setDeletePop] = useState(false);
       requestOptions
     )
       .then((res) => res.json())
-      .then((result) => setFileCabinetData(result.data))
+      .then((result) => {
+        console.log(result);
+        setFileCabinetData(result.data);
+      })
       .catch((error) => console.log("error", error));
   };
-  const deleteEvent =async (id) => {
+  const deleteEvent = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -84,10 +88,7 @@ const [deletePop, setDeletePop] = useState(false);
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"File cabinet"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"File cabinet"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -126,6 +127,7 @@ const [deletePop, setDeletePop] = useState(false);
             <>
               {fileCabinetData.map((list, index) => (
                 <FileCabinetCard
+                  key={index}
                   title={list.name}
                   access={list.access_level}
                   description={list.description}

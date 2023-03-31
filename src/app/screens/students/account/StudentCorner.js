@@ -60,7 +60,8 @@ export default function StudentCorner() {
       })
       .catch((error) => console.log("error", error));
   };
-  const selectedCourseList = () => {
+  const selectedCourseList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     myHeaders.append("Cookie", "PHPSESSID=p24ghdtaoc0j53ahbsg91pvks6");

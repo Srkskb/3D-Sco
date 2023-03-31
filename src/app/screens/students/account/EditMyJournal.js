@@ -20,6 +20,8 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as DocumentPicker from "expo-document-picker";
+
 export default function EditMyJournal({ route, navigation }) {
   const { jID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -32,26 +34,24 @@ export default function EditMyJournal({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(jImage);
+  const [image, setImage] = useState({ name: jImage.split("https://3dsco.com/images/")[1].split(".")[0], uri: jImage });
   const [updateTitle, setUpTitle] = useState(title);
+  const [loading, setloading] = useState(false);
   const [upDescription, setUpDescription] = useState(description);
   const [access, setAccess] = useState(jAccess);
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
-  const updateDocument =async () => {
+  const updateDocument = async () => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log(updateTitle,access,upDescription,loginUID,jID,image)
+    console.log(updateTitle, access, upDescription, loginUID, jID, image);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("update_journals", "1");
@@ -61,9 +61,9 @@ export default function EditMyJournal({ route, navigation }) {
     urlencoded.append("user_id", myData.id);
     urlencoded.append("id", jID);
     urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
@@ -77,10 +77,12 @@ export default function EditMyJournal({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("MyJournal");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -92,7 +94,6 @@ export default function EditMyJournal({ route, navigation }) {
 
   const onClick = () => {
     setShowResults(true);
-  
   };
   const onClickDoc = () => {
     setShowDocResults(true);
@@ -102,7 +103,7 @@ export default function EditMyJournal({ route, navigation }) {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Update Journal"}
-        onPress={() => navigation.navigate("MyJournal")}
+        onPress={() => navigation.goBack()}
       />
       <Snackbar
         visible={snackVisibleTrue}
@@ -158,10 +159,13 @@ export default function EditMyJournal({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                  <UploadDocument
+                    type={"(pdf, doc, ppt,xls)"}
+                    pickImg={pickImg}
+                  />
+                  <View>
+                    {image?.name && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
                     )}
                   </View>
                 </>
@@ -197,10 +201,11 @@ export default function EditMyJournal({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton
+              <SmallButton
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
                 />
                 <SmallButton
                   onPress={updateDocument}
@@ -208,6 +213,7 @@ export default function EditMyJournal({ route, navigation }) {
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}
+                  loading={loading}
                 />
               </View>
             </View>
@@ -244,7 +250,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
   selectedData: {
     flexDirection: "row",

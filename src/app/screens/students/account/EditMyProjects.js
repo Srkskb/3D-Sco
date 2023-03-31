@@ -19,6 +19,7 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function EditMyProjects({ route, navigation }) {
   const { projectID, docIdParam } = route.params; // ! Current Event ID
@@ -40,15 +41,11 @@ export default function EditMyProjects({ route, navigation }) {
   const [upDuration, setUpDuration] = useState(duration);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
@@ -66,9 +63,9 @@ export default function EditMyProjects({ route, navigation }) {
     urlencoded.append("project_duration", upDuration);
     urlencoded.append("description", description);
     urlencoded.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
@@ -137,13 +134,16 @@ export default function EditMyProjects({ route, navigation }) {
               />
               {showDocResults ? (
                 <>
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
-                  </View>
-                </>
+                <UploadDocument
+                  type={"(pdf, doc, ppt,xls)"}
+                  pickImg={pickImage}
+                />
+                <View>
+                  {image?.name && (
+                    <Text style={styles.uploadCon}>{image.name}</Text>
+                  )}
+                </View>
+              </>
               ) : (
                 <>
                   <View style={styles.selectedDataCon}>
@@ -187,6 +187,7 @@ export default function EditMyProjects({ route, navigation }) {
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
+                  onPress={()=>navigation.goBack()}
                 />
                 <SmallButton
                   onPress={updateDocument}
@@ -194,6 +195,7 @@ export default function EditMyProjects({ route, navigation }) {
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   loading={loading}
+                  color={color.white}
                 />
               </View>
             </View>
@@ -230,7 +232,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
   selectedData: {
     flexDirection: "row",

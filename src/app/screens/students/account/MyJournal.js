@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { Snackbar } from "react-native-paper";
-
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
@@ -10,20 +9,21 @@ import { NoDataFound } from "../../../components";
 import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
-import DeletePopup from "../../../components/popup/DeletePopup";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
+
 export default function MyJournal() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
-  const [id, setId] = useState("");
-  const [deletePop, setDeletePop] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [myJournalData, setMyJournalData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
-  const allLearnerList =async () => {
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
+  const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -32,16 +32,13 @@ export default function MyJournal() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => setMyJournalData(result.data))
       .catch((error) => console.log("error", error));
   };
 
-  const deleteJournal =async (id) => {
+  const deleteJournal = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     var myHeaders = new Headers();
@@ -99,7 +96,7 @@ export default function MyJournal() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        wrapperStyle={{ zIndex: 1 }}
+        style={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -108,15 +105,13 @@ export default function MyJournal() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        wrapperStyle={{ zIndex: 1 }}
+        style={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
       <View style={styles.main_box}>
         <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           style={{ paddingHorizontal: 10 }}
         >
           <View style={styles.book_container}>

@@ -69,9 +69,9 @@ export default function CourseDetail() {
                   <Text style={styles.btn_text}>Enter Classroom</Text>
                 </View>
               </TouchableNativeFeedback>
-              <Text style={styles.enroll_status}>
+              {/* <Text style={styles.enroll_status}>
                 Enrollment Status is pending
-              </Text>
+              </Text> */}
               <View style={{ marginBottom: 10 }}>
                 <Detail title={"Subject"} data={list.subject} />
                 <Detail title={"Language"} data={list.Language} />

@@ -20,79 +20,83 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
-import mime from 'mime'
+import mime from "mime";
+import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AddFileCabinet() {
   const navigation = useNavigation();
-  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
     });
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
-  const addFileCabinet =async (values) => {
+  const addFileCabinet = async (values) => {
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    setloading(true);
-    console.log(values.docTitle,access,loginUID,values.description,image);
-    const myHeaders = myHeadersData();
+    console.log(values);
+    setLoading(true);
 
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
 
     var urlencoded = new FormData();
     urlencoded.append("add_documents", "1");
     urlencoded.append("titel", values.docTitle);
-    urlencoded.append("access", access);
+    urlencoded.append("access", values.access);
     urlencoded.append("image", {
-      uri: image,//"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
+
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
-      headers: {
-        myHeaders,
-        "Content-Type": "multipart/form-data",
-      },
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          setloading(false);
+          setLoading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("FileCabinet");
         } else {
-          setloading(false);
+          setLoading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-      });
+      })
+      .catch(() => setLoading(false));
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Add Document"}
-        onPress={() => navigation.navigate("FileCabinet")}
+        // onPress={() => navigation.navigate("FileCabinet")}
+        onPress={() => navigation.goBack()}
       />
       <Snackbar
         visible={snackVisibleTrue}
@@ -117,16 +121,16 @@ export default function AddFileCabinet() {
               initialValues={{
                 docTitle: "",
                 description: "",
+                access: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters")
-                  .max(50, "Document Title cannot be more than 50 characters"),
+                  .min(3, "Document Title must be at least 3 characters"),
+                access: Yup.string().required("Access is required"),
                 description: Yup.string()
                   .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                  .min(20, "Description must be at least 20 characters"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
@@ -137,12 +141,13 @@ export default function AddFileCabinet() {
                 values,
                 errors,
                 isValid,
+                setFieldValue,
               }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
                     placeholder={"Document Title"}
-                    name="title"
+                    name="docTitle"
                     onChangeText={handleChange("docTitle")}
                     onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
@@ -156,27 +161,29 @@ export default function AddFileCabinet() {
                     </Text>
                   )}
                   <AccessLevel
-                    required
+                    // required
                     label={"Access Level"}
+                    name="access"
                     onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem);
-                      console.log(selectedItem, index);
+                      setFieldValue("access", selectedItem);
                     }}
-                    value={access}
+                    // value={access}
                   />
-
-                  {errors.selectedItem && (
+                  {errors.access && (
                     <Text
                       style={{ fontSize: 14, color: "red", marginBottom: 10 }}
                     >
-                      {errors.selectedItem}
+                      {errors.access}
                     </Text>
                   )}
 
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                  <UploadDocument
+                    type={"(pdf, doc, ppt,xls)"}
+                    pickImg={pickImg}
+                  />
+                  <View>
+                    {image?.name && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
                     )}
                   </View>
                   <InputField
@@ -204,16 +211,15 @@ export default function AddFileCabinet() {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={()=>navigation.goBack()}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
-                      disabled={!isValid}
+                      loading={loading}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
-                      loading={loading}
                     />
                   </View>
                 </View>
@@ -267,6 +273,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
 });

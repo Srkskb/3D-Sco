@@ -15,8 +15,11 @@ import { Snackbar } from "react-native-paper";
 import TextWithButton from "../../../components/TextWithButton";
 import MyProjectCard from "../../../components/card/MyProjectCard";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 export default function MyProjects() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+const [deletePop, setDeletePop] = useState(false);
   const [courseRoomAccess, setCourseRoomAccess] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
@@ -61,6 +64,7 @@ export default function MyProjects() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -95,7 +99,7 @@ export default function MyProjects() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -104,7 +108,7 @@ export default function MyProjects() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -156,7 +160,10 @@ export default function MyProjects() {
                           pjImage: list.image,
                         })
                       }
-                      removePress={() => deleteProject(list.id)}
+                      removePress={() => {
+                        setId(list.id);
+                        setDeletePop(true);
+                      }}
                     />
                   ))}
                 </>
@@ -165,6 +172,12 @@ export default function MyProjects() {
           </ScrollView>
         </View>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteProject(id)}
+        />
+      ) : null}
     </View>
   );
 }

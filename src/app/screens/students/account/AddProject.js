@@ -20,6 +20,7 @@ import { Snackbar } from "react-native-paper";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
+import * as DocumentPicker from "expo-document-picker";
 import mime from 'mime'
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AddProject() {
@@ -31,36 +32,35 @@ export default function AddProject() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState();
+  const [image, setImage] = useState(null);
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
     });
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
   const addFileCabinet =async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
-    console.log(values.pTitle,access,loginUID,values.pDescription,image);
+    console.log("values123",values)
+    console.log(values.pTitle,access,loginUID,values.pDescription,image,values.pDuration);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Add_project", "1");
     urlencoded.append("titel", values.pTitle);
     urlencoded.append("user_id", myData.id);
-    urlencoded.append("project_duration", '7: 30 AM');
+    urlencoded.append("project_duration", values.pDuration);
     urlencoded.append("date", '20-01-2022');
     urlencoded.append("description", values.pDescription);
      urlencoded.append("image", {
-      uri: image,//"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`
+      uri: image.uri,//"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
 
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
@@ -68,6 +68,7 @@ export default function AddProject() {
       body: urlencoded,
       headers: {
         myHeaders,
+        "Content-type": "multipart/form-data",
       },
     })
       .then((res) => res.json())
@@ -90,7 +91,7 @@ export default function AddProject() {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Add Project"}
-        onPress={() => navigation.navigate("MyProjects")}
+        onPress={() => navigation.goBack()}
       />
       <Snackbar
         visible={snackVisibleTrue}
@@ -173,10 +174,11 @@ export default function AddProject() {
                   )}
                  
 
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"}
+                    pickImg={pickImage} />
+                  <View>
+                    {image?.name && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
                     )}
                   </View>
                   <InputField
@@ -267,6 +269,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
 });

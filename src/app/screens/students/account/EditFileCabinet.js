@@ -18,13 +18,11 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-import axios from "axios";
+import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
-
 export default function EditFileCabinet({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
-  const [loading, setloading] = useState(false);
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
@@ -35,28 +33,25 @@ export default function EditFileCabinet({ route, navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(docImage);
+  const [loading, setloading] = useState(false);
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImg = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({});
     console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
-  const updateDocument =async (values) => {
-    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+  const updateDocument = async (values) => {
     setloading(true);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
-    console.log(updateTitle, access, docId, upDescription, loginUID, image);
+    console.log(updateTitle, access, docId, upDescription, myData.id, image);
     var urlencoded = new FormData();
     urlencoded.append("update_documents", "1");
     urlencoded.append("titel", updateTitle);
@@ -90,40 +85,7 @@ export default function EditFileCabinet({ route, navigation }) {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-      });    
-//     var data = new FormData();
-// data.append('update_documents', '1');
-// data.append('titel', updateTitle);
-// data.append('access', access);
-// data.append('id', docId);
-// data.append('description', upDescription);
-// data.append('student_id', loginUID);
-// data.append('image', {
-//   uri: image,//"file:///" + image.split("file:/").join(""),
-//   type: mime.getType(image),
-//  name: `abc.jpg`
-// });
-
-// var config = {
-//   method: 'post',
-//   url: 'https://3dsco.com/3discoapi/3dicowebservce.php',
-//   headers: { 
-//     'Accept': 'application/json', 
-//     'Content-Type': "multipart/form-data",
-//   },
-//   data : data
-// };
-
-// axios(config)
-// .then(function (response) {
-//   console.log(JSON.stringify(response.data));
-//   if(response.data.success==1){
-//     navigation.navigate("Filecabinet")
-//   }
-// })
-// .catch(function (error) {
-//   console.log(error);
-// });
+      });
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
@@ -131,7 +93,6 @@ export default function EditFileCabinet({ route, navigation }) {
 
   const onClick = () => {
     setShowResults(true);
-  
   };
   const onClickDoc = () => {
     setShowDocResults(true);
@@ -141,13 +102,14 @@ export default function EditFileCabinet({ route, navigation }) {
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Update Document"}
-        onPress={() => navigation.navigate("FileCabinet")}
+        onPress={() => navigation.goBack()}
       />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -156,6 +118,7 @@ export default function EditFileCabinet({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -197,10 +160,13 @@ export default function EditFileCabinet({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument onPress={pickImage} />
-                  <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
+                  <UploadDocument
+                    type={"(pdf, doc, ppt,xls)"}
+                    pickImg={pickImg}
+                  />
+                  <View>
+                    {image?.name && (
+                      <Text style={styles.uploadCon}>{image.name}</Text>
                     )}
                   </View>
                 </>
@@ -236,19 +202,19 @@ export default function EditFileCabinet({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton
+              <SmallButton
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
-                  onPress={()=>navigation.goBack()}
+                  onPress={() => navigation.goBack()}
                 />
                 <SmallButton
                   onPress={updateDocument}
+                  loading={loading}
                   title="Update"
-                  color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
-                  loading={loading}
+                  color={color.white}
                 />
               </View>
             </View>
@@ -285,7 +251,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
   selectedData: {
     flexDirection: "row",

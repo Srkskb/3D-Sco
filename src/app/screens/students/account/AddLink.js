@@ -1,11 +1,5 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -20,59 +14,87 @@ import * as Yup from "yup";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AddLink() {
   const navigation = useNavigation();
-  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [category, setCategory] = useState();
-   const user_type = localStorage.getItem("userID"); // ! user Type student or other
+  const [category, setCategory] = useState(0);
+  const [categoryList, setCategoryList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const user_type = localStorage.getItem("userID"); // ! user Type student or other
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-  const addLinkForm =async (values) => {
+  const addLinkForm = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    setloading(true);
-    console.log('category',category);
+    setLoading(true);
+    console.log("category", category);
+    if (category != 0 || category != undefined) {
+      const myHeaders = myHeadersData();
+      var urlencoded = new FormData();
+      urlencoded.append("Add_link", "1");
+      urlencoded.append("titel", values.linkTitle);
+      urlencoded.append("category", category);
+      urlencoded.append("detail", values.description);
+      urlencoded.append("url", values.linkUrl);
+      urlencoded.append("type", user_type); // ! User Type
+      urlencoded.append("id", myData.id);
+      fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
+        method: "POST",
+        body: urlencoded,
+        headers: {
+          myHeaders,
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          if (res.success == 1) {
+            setSnackVisibleTrue(true);
+            setMessageTrue(res.message);
+            setLoading(false);
+            navigation.navigate("AdminStoreFavoriteLinks");
+          } else {
+            setSnackVisibleFalse(true);
+            setMessageFalse(res.message);
+            setLoading(false);
+          }
+        });
+    } else {
+      setSnackVisibleFalse(true);
+      setMessageFalse("Select Category");
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getcategory();
+  }, [navigation]);
+
+  const getcategory = () => {
     const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("Add_link", "1");
-    urlencoded.append("titel", values.linkTitle);
-    urlencoded.append("category", category);
-    urlencoded.append("detail", values.description);
-    urlencoded.append("url", values.linkUrl);
-    urlencoded.append("type", user_type); // ! User Type 
-    urlencoded.append("id", myData.id);
-    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
-      method: "POST",
-      body: urlencoded,
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
+      method: "GET",
       headers: {
         myHeaders,
       },
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (res.success == 1) {
-          setloading(false);
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
-          navigation.navigate("StoreFavoriteLinks");
+          setCategoryList(res.data);
+          console.log(res.data);
         } else {
-          setloading(false);
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
+          alert("Try after sometime");
         }
-      });
+      })
+      .catch((error) => console.log("error", error));
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Suggest Link"}
-        onPress={() => navigation.navigate("StoreFavoriteLinks")}
-      />
+      <HeaderBack title={"Suggest Link"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -91,38 +113,25 @@ export default function AddLink() {
       </Snackbar>
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{paddingVertical:10}}>
+          <View style={{ paddingVertical: 10 }}>
             <Formik
               initialValues={{
                 linkTitle: "",
-
                 description: "",
                 linkUrl: "",
               }}
               validationSchema={Yup.object().shape({
-                linkTitle: Yup.string()
-                  .required("Title is required")
-                  .min(3, "Title must be at least 3 characters"),
-                 
+                linkTitle: Yup.string().required("Title is required").min(3, "Title must be at least 3 characters"),
 
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
-            
-                linkUrl: Yup.string()
-                  .matches(urlValidation, "Enter correct url!")
-                  .required("Url is required"),
+
+                linkUrl: Yup.string().matches(urlValidation, "Enter correct url!").required("Url is required"),
               })}
               onSubmit={(values) => addLinkForm(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <InputField
                     label={"Link Title"}
@@ -134,18 +143,15 @@ export default function AddLink() {
                     keyboardType="text"
                   />
                   {errors.linkTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.linkTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkTitle}</Text>
                   )}
 
                   <CategoryDropdown
                     label={"Category"}
                     onSelect={(selectedItem, index) => {
-                      setCategory(index + 1);
-                      console.log(index + 1)
+                      let catid = categoryList.filter((i) => i.Name === selectedItem).map((i) => i.id);
+                      setCategory(catid && catid[0]);
+                      console.log(selectedItem, catid);
                     }}
                   />
 
@@ -159,11 +165,7 @@ export default function AddLink() {
                     keyboardType="text"
                   />
                   {errors.linkUrl && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.linkUrl}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkUrl}</Text>
                   )}
                   <InputField
                     label={"Description"}
@@ -175,30 +177,26 @@ export default function AddLink() {
                     onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
-                    textAlignVertical='top'
+                    textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                      onPress={()=>navigation.goBack()}
-                    />
+                  <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
+                      loading={loading}
                       disabled={!isValid}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
-                      loading={loading}
                     />
                   </View>
                 </View>
