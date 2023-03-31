@@ -17,6 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import { myHeadersData } from "../../../api/helper";
 import { Snackbar } from "react-native-paper";
 import mime from "mime";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AddEditStudentCorner({ route, navigation }) {
   const { accomplishments, accomplishmentsParam } = route.params;
   const { objective, objectiveParam } = route.params;
@@ -60,7 +61,8 @@ export default function AddEditStudentCorner({ route, navigation }) {
       setResume(result.uri);
     }
   };
-  const uploadDoc = (values) => {
+  const uploadDoc =async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     console.log(
       "000000.....",
@@ -75,7 +77,7 @@ export default function AddEditStudentCorner({ route, navigation }) {
     var formdata = new FormData();
     formdata.append("cover_letter", "1");
     formdata.append("type", "1");
-    formdata.append("id", loginUID);
+    formdata.append("id", myData.id);
     formdata.append("accomplish", getAccomplish);
     formdata.append("objectives", getObjectives);
     formdata.append("philosophy", getPhilosophy);

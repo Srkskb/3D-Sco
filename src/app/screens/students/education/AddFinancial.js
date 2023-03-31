@@ -6,6 +6,7 @@ import Input from "../../../components/inputs/Input";
 import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AddFinancial({ navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
@@ -16,7 +17,8 @@ export default function AddFinancial({ navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setloading] = useState(false);
-  const addFinancialAssets = () => {
+  const addFinancialAssets =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -27,7 +29,7 @@ export default function AddFinancial({ navigation }) {
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
     formdata.append("type", "1");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,

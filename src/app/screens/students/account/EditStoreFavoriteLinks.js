@@ -18,7 +18,7 @@ import { Snackbar } from "react-native-paper";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 import { CategoryDropdown } from "../../../components/dropdown";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EditStoreFavoriteLinks({ route, navigation }) {
   const { linkID, linkIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -37,7 +37,8 @@ export default function EditStoreFavoriteLinks({ route, navigation }) {
   const [upLink, setUpLink] = useState(link);
   const [category, setCategory] = useState(linkCategory);
 
-  const updateDocument = (values) => { 
+  const updateDocument =async (values) => { 
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     console.log(updateTitle,upLink,category,upDescription);
     const myHeaders = myHeadersData();
@@ -50,7 +51,7 @@ export default function EditStoreFavoriteLinks({ route, navigation }) {
     urlencoded.append("url", upLink);
     urlencoded.append("type", "1");
     urlencoded.append("id", linkID);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,

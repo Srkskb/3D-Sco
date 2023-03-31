@@ -7,6 +7,7 @@ import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function FinancialAssistance() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
@@ -17,7 +18,8 @@ const [deletePop, setDeletePop] = useState(false);
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [assistanceData, setAssistanceData] = useState([]);
-  const financialAssistanceList = () => {
+  const financialAssistanceList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
@@ -43,7 +45,7 @@ const [deletePop, setDeletePop] = useState(false);
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
     var formdata = new FormData();
     formdata.append("delete_financial_assistance", "1");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     formdata.append("id", id);
     var requestOptions = {
       method: "POST",

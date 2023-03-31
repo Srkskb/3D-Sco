@@ -12,12 +12,14 @@ import { useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function Mail() {
   const navigation = useNavigation();
   const [mailListData, setMailListData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -26,7 +28,7 @@ export default function Mail() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?mail=1&id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?mail=1&id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

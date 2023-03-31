@@ -7,11 +7,12 @@ import HeaderText from "../../../components/HeaderText";
 import Book_Card from "../../../components/card/Book_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function PreviousCourses() {
   const navigation = useNavigation();
   const [previousCoursesList, setPreviousCoursesList] = useState([]);
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -20,7 +21,7 @@ export default function PreviousCourses() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=5&course_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=5&course_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

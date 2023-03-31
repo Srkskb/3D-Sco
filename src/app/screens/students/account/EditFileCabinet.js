@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 import axios from "axios";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function EditFileCabinet({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
@@ -51,7 +52,8 @@ export default function EditFileCabinet({ route, navigation }) {
     }
   };
 
-  const updateDocument = (values) => {
+  const updateDocument =async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, loginUID, image);
@@ -61,7 +63,7 @@ export default function EditFileCabinet({ route, navigation }) {
     urlencoded.append("access", access);
     urlencoded.append("id", docId);
     urlencoded.append("description", upDescription);
-    urlencoded.append("student_id", loginUID);
+    urlencoded.append("student_id", myData.id);
     // urlencoded.append("image", {
     //   uri: image, //"file:///" + image.split("file:/").join(""),
     //   type: mime.getType(image),

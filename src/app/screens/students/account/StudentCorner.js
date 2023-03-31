@@ -18,6 +18,7 @@ import CourseHeader from "../../../components/courselist/CourseHeader";
 import CourseData from "../../../components/courselist/CourseData";
 import moment from "moment";
 import UploadResume from "../../../components/card/UploadResume";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function StudentCorner() {
   const navigation = useNavigation();
   const userFName = localStorage.getItem("userFName");
@@ -31,7 +32,8 @@ export default function StudentCorner() {
   const [getSkills, setSkills] = useState();
   const [getResume, setResume] = useState();
   const [getImage, setImages] = useState();
-  const showUserDetails = () => {
+  const showUserDetails =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log("loginUID", loginUID);
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -40,7 +42,7 @@ export default function StudentCorner() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -64,7 +66,7 @@ export default function StudentCorner() {
     myHeaders.append("Cookie", "PHPSESSID=p24ghdtaoc0j53ahbsg91pvks6");
     var urlencoded = new URLSearchParams();
     urlencoded.append("user_courses_list", "1");
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
 
     var requestOptions = {
       method: "POST",
@@ -74,7 +76,7 @@ export default function StudentCorner() {
     };
 
     fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?user_courses_list=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/studentregistration.php?user_courses_list=1&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

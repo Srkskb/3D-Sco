@@ -14,6 +14,7 @@ import Loader from "../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
 import qs from "qs";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Event_card2 from "../../../components/card/Event_card2";
 export default function AffiliateEvent() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -106,7 +107,7 @@ export default function AffiliateEvent() {
             <View style={{ flex: 1 }}>
               {eventCalenderList ? (
                 eventCalenderList?.map((list, index) => (
-                  <Event_Card
+                  <Event_card2
                     key={index}
                     title={`${list.event_title}`}
                     // day={"Mon"}

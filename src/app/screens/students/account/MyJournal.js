@@ -11,6 +11,7 @@ import moment from "moment";
 import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function MyJournal() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -22,7 +23,8 @@ export default function MyJournal() {
   const [myJournalData, setMyJournalData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -31,7 +33,7 @@ export default function MyJournal() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -39,14 +41,15 @@ export default function MyJournal() {
       .catch((error) => console.log("error", error));
   };
 
-  const deleteJournal = (id) => {
+  const deleteJournal =async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
     var formdata = new FormData();
     formdata.append("delete_journals", "1");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     formdata.append("id", id);
     var requestOptions = {
       method: "POST",

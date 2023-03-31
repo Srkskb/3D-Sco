@@ -169,6 +169,8 @@ export default function Login({ navigation }) {
           //add alert here
           console.log(response);
           setloading(false);
+          setSnackVisibleFalse(true);
+          setMessageFalse(response?.message);
         } else {
           setloading(false);
           localStorage.setItem("loginUID", response.data.id);

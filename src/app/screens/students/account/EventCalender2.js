@@ -7,10 +7,13 @@ import HeaderBack from "../../../components/header/Header";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import Calendar from "../calender/Calendar";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EventCalender2() {
+  
   const navigation = useNavigation();
   const [eventCalenderList, setEventCalenderList] = useState([]);
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -19,7 +22,7 @@ export default function EventCalender2() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?view_event=1&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

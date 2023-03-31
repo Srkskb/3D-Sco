@@ -200,8 +200,9 @@ const [deletePop, setDeletePop] = useState(false);
           <View style={styles.category_search}>
             <RoundCategory
               onSelect={(selectedItem, index, item) => {
-                let catid = categoryList?.filter((i) => i.Name === selectedItem).map((i) => i.id);
-                setFilter(catid && catid[0]);
+                // let catid = categoryList?.filter((i) => i.Name === selectedItem).map((i) => i.id);
+                console.log(selectedItem);
+                // setFilter(catid && catid[0]);
                 setSearchTerm("");
               }}
             />

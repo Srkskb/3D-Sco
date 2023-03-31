@@ -14,6 +14,7 @@ import moment from "moment";
 import { Snackbar } from "react-native-paper";
 import TextWithButton from "../../../components/TextWithButton";
 import MyProjectCard from "../../../components/card/MyProjectCard";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function MyProjects() {
   const navigation = useNavigation();
   const [courseRoomAccess, setCourseRoomAccess] = useState([]);
@@ -23,7 +24,8 @@ export default function MyProjects() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -32,7 +34,7 @@ export default function MyProjects() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?Project_list=1&student_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?Project_list=1&student_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -42,7 +44,8 @@ export default function MyProjects() {
       .catch((error) => console.log("error", error));
   };
   // Delete Project
-  const deleteProject = (id) => {
+  const deleteProject =async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -51,7 +54,7 @@ export default function MyProjects() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?Removestudent_project=1&id=${id}&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?Removestudent_project=1&id=${id}&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

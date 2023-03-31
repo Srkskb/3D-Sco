@@ -17,6 +17,7 @@ import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AddLink() {
   const navigation = useNavigation();
   const [loading, setloading] = useState(false);
@@ -30,7 +31,8 @@ export default function AddLink() {
    const user_type = localStorage.getItem("userID"); // ! user Type student or other
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-  const addLinkForm = (values) => {
+  const addLinkForm =async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     console.log('category',category);
     const myHeaders = myHeadersData();
@@ -41,7 +43,7 @@ export default function AddLink() {
     urlencoded.append("detail", values.description);
     urlencoded.append("url", values.linkUrl);
     urlencoded.append("type", user_type); // ! User Type 
-    urlencoded.append("id", loginUID);
+    urlencoded.append("id", myData.id);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,

@@ -21,7 +21,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from 'mime'
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AddFileCabinet() {
   const navigation = useNavigation();
   const [loading, setloading] = useState(false);
@@ -46,7 +46,8 @@ export default function AddFileCabinet() {
     }
   };
 
-  const addFileCabinet = (values) => {
+  const addFileCabinet =async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     console.log(values.docTitle,access,loginUID,values.description,image);
     const myHeaders = myHeadersData();
@@ -61,7 +62,7 @@ export default function AddFileCabinet() {
       type: mime.getType(image),
       name: `abc.jpg`
     });
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",

@@ -4,17 +4,19 @@ import color from "../../../../assets/themes/Color";
 import Detail from "../../../../components/view/Detail";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../../api/helper";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function CourseDetail() {
   const navigation = useNavigation();
   const [course, setCourse] = useState([]);
   const loginUID = localStorage.getItem("loginUID");
-  const selectedCourseList = () => {
+  const selectedCourseList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     myHeaders.append("Cookie", "PHPSESSID=p24ghdtaoc0j53ahbsg91pvks6");
     var urlencoded = new URLSearchParams();
     urlencoded.append("user_courses_list", "1");
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,

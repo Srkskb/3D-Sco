@@ -32,12 +32,12 @@ export default function RoundCategory({ label, ...props }) {
     <View>
       <View style={{ width: "80%" }}>
         <SelectDropdown
-          data={categoryList.map((list, index) => list.Name)}
+          data={categoryList.map((list, index) => ({ id: list.id, name: list.Name }))}
           buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
+            return selectedItem.name;
           }}
           rowTextForSelection={(item, index) => {
-            return item;
+            return item.name;
           }}
           buttonStyle={styles.dropdown}
           buttonTextStyle={styles.text_button}

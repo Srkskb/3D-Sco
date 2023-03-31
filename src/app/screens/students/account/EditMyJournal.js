@@ -19,7 +19,7 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EditMyJournal({ route, navigation }) {
   const { jID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -49,7 +49,8 @@ export default function EditMyJournal({ route, navigation }) {
     }
   };
 
-  const updateDocument = () => {
+  const updateDocument =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(updateTitle,access,upDescription,loginUID,jID,image)
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -57,7 +58,7 @@ export default function EditMyJournal({ route, navigation }) {
     urlencoded.append("titel", updateTitle);
     urlencoded.append("access_level", access);
     urlencoded.append("description", upDescription);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("id", jID);
     urlencoded.append("image", {
       uri: image, //"file:///" + image.split("file:/").join(""),

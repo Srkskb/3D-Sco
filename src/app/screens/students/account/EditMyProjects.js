@@ -19,6 +19,7 @@ import { Snackbar } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EditMyProjects({ route, navigation }) {
   const { projectID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -51,7 +52,8 @@ export default function EditMyProjects({ route, navigation }) {
     }
   };
 
-  const updateDocument = (values) => {
+  const updateDocument =async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     console.log(projectID,updateTitle,loginUID,upDuration,description,image)
     const myHeaders = myHeadersData();
@@ -60,7 +62,7 @@ export default function EditMyProjects({ route, navigation }) {
     urlencoded.append("update_project", "1");
     urlencoded.append("id", projectID);
     urlencoded.append("titel", updateTitle);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("project_duration", upDuration);
     urlencoded.append("description", description);
     urlencoded.append("image", {

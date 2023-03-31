@@ -7,6 +7,7 @@ import Input from "../../../components/inputs/Input";
 import HeaderBack from "../../../components/header/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EditFinancial({ route, navigation }) {
   const { assisID, idParam } = route.params;
   const { assisTitle, titleParam } = route.params;
@@ -20,7 +21,8 @@ export default function EditFinancial({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setloading] = useState(false);
-  const updateFinancialAssets = () => {
+  const updateFinancialAssets =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -31,7 +33,7 @@ export default function EditFinancial({ route, navigation }) {
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
     formdata.append("type", "1");
-    formdata.append("user_id", loginUID);
+    formdata.append("user_id", myData.id);
     formdata.append("id", assisID);
 
     var requestOptions = {

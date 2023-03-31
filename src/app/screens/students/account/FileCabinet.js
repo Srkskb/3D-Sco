@@ -9,6 +9,7 @@ import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function FileCabinet() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -20,7 +21,7 @@ export default function FileCabinet() {
   const [refreshing, setRefreshing] = useState(false);
   const [id, setId] = useState("");
 const [deletePop, setDeletePop] = useState(false);
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -29,14 +30,15 @@ const [deletePop, setDeletePop] = useState(false);
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_filecabinate=1&id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_filecabinate=1&id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((result) => setFileCabinetData(result.data))
       .catch((error) => console.log("error", error));
   };
-  const deleteEvent = (id) => {
+  const deleteEvent =async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -45,7 +47,7 @@ const [deletePop, setDeletePop] = useState(false);
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_documents=1&id=${id}&student_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_documents=1&id=${id}&student_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

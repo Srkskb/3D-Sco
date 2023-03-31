@@ -9,6 +9,7 @@ import * as qs from "qs";
 import axios from "axios";
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import DeletePopup from "../../../components/popup/DeletePopup";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function ManageResources({ navigation }) {
   const [selectCourse, setSelectCourse] = useState("");
   const [id, setId] = useState("");
@@ -52,11 +53,12 @@ const [deletePop, setDeletePop] = useState(false);
       }
       allLearnerList();
   }, [isFocused]);
-  const deleteFaq=(id)=>{
+  const deleteFaq=async(id)=>{
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var data = qs.stringify({
   'delete_faq': '1',
   'id': id,
-  'user_id':loginUID 
+  'user_id':myData.id 
 });
 var config = {
   method: 'post',

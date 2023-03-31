@@ -21,6 +21,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from 'mime'
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AddProject() {
   const navigation = useNavigation();
   const [loading, setloading] = useState(false);
@@ -44,14 +45,15 @@ export default function AddProject() {
     }
   };
 
-  const addFileCabinet = (values) => {
+  const addFileCabinet =async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     console.log(values.pTitle,access,loginUID,values.pDescription,image);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Add_project", "1");
     urlencoded.append("titel", values.pTitle);
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("project_duration", '7: 30 AM');
     urlencoded.append("date", '20-01-2022');
     urlencoded.append("description", values.pDescription);

@@ -21,6 +21,7 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as DocumentPicker from "expo-document-picker";
+
 export default function EducatorEditMyJournal({ route, navigation }) {
   const { jID, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
@@ -34,7 +35,8 @@ export default function EducatorEditMyJournal({ route, navigation }) {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [loading, setloading] = useState(false);
-  const [image, setImage] = useState(jImage);
+  // const [image, setImage] = useState(jImage);
+  const [image, setImage] = useState({ name: jImage.split("https://3dsco.com/images/")[1].split(".")[0], uri: jImage });
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
   const [access, setAccess] = useState(jAccess);

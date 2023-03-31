@@ -7,18 +7,20 @@ import CourseData from "../../../components/courselist/CourseData";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function EducatorJoin() {
   const navigation = useNavigation();
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [getCourseList, setCourseList] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const showCourseDetail = () => {
+  const showCourseDetail =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     myHeaders.append("Cookie", "PHPSESSID=p24ghdtaoc0j53ahbsg91pvks6");
     var urlencoded = new URLSearchParams();
     urlencoded.append("user_courses_list", "1");
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
 
     var requestOptions = {
       method: "POST",
@@ -28,7 +30,7 @@ export default function EducatorJoin() {
     };
 
     fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?user_courses_list=1&user_id=${loginUID}`,
+      `https://3dsco.com/3discoapi/studentregistration.php?user_courses_list=1&user_id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

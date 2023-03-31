@@ -19,6 +19,7 @@ import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import AsyncStorage from "@react-native-community/async-storage";
 export default function StoreFavoriteLinks() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
@@ -34,7 +35,7 @@ const [deletePop, setDeletePop] = useState(false);
   const [initialStoreLinks, setInitialStoreLinks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const user_type = localStorage.getItem("userID"); // ! user Type student or other
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
     const loginUID = localStorage.getItem("loginUID");
     console.log(loginUID, filter,user_type);
     const myHeaders = myHeadersData();
@@ -44,7 +45,7 @@ const [deletePop, setDeletePop] = useState(false);
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${loginUID}&category=${filter}&type=${user_type}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&category=${filter}&type=${user_type}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -55,7 +56,8 @@ const [deletePop, setDeletePop] = useState(false);
       .catch((error) => console.log("error", error));
   };
 
-  const deleteProject = (id) => {
+  const deleteProject =async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {

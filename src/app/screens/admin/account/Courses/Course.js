@@ -14,6 +14,7 @@ import AccessLevel from "../../../../components/dropdown/admin_user/AccessLevel"
 import Loader from "../../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../../components/popup/DeletePopup";
+import { NoDataFound } from "../../../../components";
 
 const { width, height } = Dimensions.get("window");
 export default function Course({ navigation }) {
@@ -22,6 +23,8 @@ export default function Course({ navigation }) {
   const [id, setId] = useState("");
   const [id2, setId2] = useState("");
 const [deletePop, setDeletePop] = useState(false);
+  const [courseKey, setCourseKey] = useState("");
+  const [input, setInput] = useState("");
 
   const DeleteCourse = (id, userId) => {
     console.log("first", id, userId);
@@ -58,7 +61,8 @@ const [deletePop, setDeletePop] = useState(false);
     setLoading(true);
     var config = {
       method: "get",
-      url: `https://3dsco.com/3discoapi/3dicowebservce.php?courses_list=1&user_id=${myData.id}&Access=${access}`,
+
+      url: `https://3dsco.com/3discoapi/studentregistration.php?courses_filter=1&Access=${courseKey}&SearchKey=${input}&user_id=${myData.id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
@@ -68,7 +72,11 @@ const [deletePop, setDeletePop] = useState(false);
 
     axios(config)
       .then((response) => {
-        setCourses(response.data.data);
+        if (response.data.data) {
+          setCourses(response.data.data);
+        } else {
+          setCourses([]);
+        }
         setLoading(false);
       })
       .catch((error) => {
@@ -77,10 +85,10 @@ const [deletePop, setDeletePop] = useState(false);
       });
   };
 
-  useEffect(() => {
-    allCourses();
-    navigation.addListener("focus", () => allCourses());
-  }, []);
+  // useEffect(() => {
+  //   courseKey&&allCourses();
+  //   navigation.addListener("focus", () => allCourses());
+  // }, [courseKey]);
 
   return (
     <View style={styles.container}>
@@ -93,7 +101,7 @@ const [deletePop, setDeletePop] = useState(false);
         />
         <View style={styles.search_course}>
           <View style={{ flex: 1 }}>
-            <SearchEnroll placeholder={"Search...."} />
+            <SearchEnroll value={input} onChangeText={(e) => setInput(e)} placeholder={"Search...."} />
           </View>
           <View style={{ width: "50%" }}>
             {/* <AccessLevel
@@ -104,43 +112,38 @@ const [deletePop, setDeletePop] = useState(false);
             <AccessLevel
               label
               onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
-                allCourses(selectedItem);
+                setCourseKey(selectedItem);
               }}
             />
           </View>
         </View>
         <View style={styles.filter_button}>
-          <Add_Button title={"Filter"} />
+          <Add_Button title={"Filter"} onPress={() => allCourses()} />
         </View>
       </View>
       {loading ? (
         <Loader />
       ) : (
         <ScrollView style={{ paddingHorizontal: 10 }}>
-          {courses === undefined ? (
-            <>
-              <NoDataFound />
-            </>
+          {!!courses?.length ? (
+            courses.map((list, index) => (
+              <Course_Card
+                key={index}
+                title={list.course_name}
+                status={list.Access}
+                educator={list.assigned_tutor}
+                releaseDate={list.ReleaseDate}
+                endDate={list.EndDate}
+                removePress={() => {
+                  setId(list.id);
+                  setId2(list.user_id);
+                  setDeletePop(true);
+                }}
+                editPress={() => navigation.navigate("EditCourse", { editData: list })}
+              />
+            ))
           ) : (
-            <>
-              {courses.map((list, index) => (
-                <Course_Card
-                  key={index}
-                  title={list.Course}
-                  status={list.Access}
-                  educator={list.assigned_tutor}
-                  releaseDate={list.ReleaseDate}
-                  endDate={list.EndDate}
-                  removePress={() => {
-                    setId(list.id);
-                    setId2(list.user_id);
-                    setDeletePop(true);
-                  }}
-                  editPress={() => navigation.navigate("EditCourse", { editData: list })}
-                />
-              ))}
-            </>
+            <NoDataFound />
           )}
         </ScrollView>
       )}
@@ -163,7 +166,7 @@ const styles = StyleSheet.create({
   },
   search_course: {
     flexDirection: "row",
-    paddingVertical: 20,
+    // paddingVertical: 10,
     justifyContent: "space-between",
     // width:'50%',
     alignItems: "center",

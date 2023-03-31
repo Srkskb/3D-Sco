@@ -11,31 +11,24 @@ import {
   Linking,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import HeaderText from "../../../components/HeaderText";
 import Book_Card from "../../../components/card/Book_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import Library_Search from "../../../components/LibrarySearch";
-import TextWithButton from "../../../components/TextWithButton";
-import SelectCourse from "../../../components/admin_required/SelectCourse";
 import AsyncStorage from "@react-native-community/async-storage";
-import Loader from "../../../utils/Loader";
-
 export default function LibraryAccess() {
   const navigation = useNavigation();
   const [studentLibrary, setStudentLibrary] = useState([]);
   const [initialStudentLibrary, setInitialStudentLibrary] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [courseId, setCourseId] = useState("");
-  const [loading, setLoading] = useState(false);
-
+  const isFocused = useIsFocused();
   const allLearnerList = async (id) => {
-    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-
+    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -48,31 +41,22 @@ export default function LibraryAccess() {
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
-        if (result.success) {
-          setStudentLibrary(result.data);
-          setInitialStudentLibrary(result.data);
-        } else {
-          setStudentLibrary([]);
-          setInitialStudentLibrary([]);
-        }
-        setLoading(false);
+        setStudentLibrary(result.data);
+        setInitialStudentLibrary(result.data);
+        console.log(myData.id);
       })
-      .catch((error) => {
-        setLoading(false);
-        console.log("error", error);
-      });
+      .catch((error) => console.log("error", error));
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList(courseId);
+    allLearnerList();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    courseId && allLearnerList(courseId);
-  }, [courseId]);
+    allLearnerList();
+  }, [isFocused]);
 
   useEffect(() => {
     if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
@@ -94,11 +78,6 @@ export default function LibraryAccess() {
           style={styles.search_text}
           
         /> */}
-        {/* <TextWithButton
-          title={"Library Access"}
-          label={"Manage Library"}
-          onPress={() => navigation.navigate("AdminManageLibrary")}
-        /> */}
         <View style={styles.search_box}>
           <View style={styles.icon_box}>
             <Image style={styles.icon} source={require("../../../assets/images/Search.png")} />
@@ -117,30 +96,17 @@ export default function LibraryAccess() {
             </View>
           </TouchableOpacity>
         </View>
-        <SelectCourse
-          // label={"Select Course"}
-          onSelect={(selectedItem, index) => {
-            setCourseId(selectedItem.id);
-          }}
-        />
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
-            {loading ? (
-              <Loader />
+            {studentLibrary === undefined ? (
+              <>
+                <NoDataFound />
+              </>
             ) : (
               <>
-                {studentLibrary?.length ? (
-                  studentLibrary.map((list) => (
-                    <Book_Card
-                      title={list.titel}
-                      author={list.author}
-                      // onPress={() => navigation.navigate("ViewBook", { list })}
-                      onPress={() => Linking.openURL(list.pdf)}
-                    />
-                  ))
-                ) : (
-                  <NoDataFound />
-                )}
+                {studentLibrary.map((list) => (
+                  <Book_Card title={list.titel} author={list.author} onPress={() => Linking.openURL(list.pdf)} />
+                ))}
               </>
             )}
           </View>

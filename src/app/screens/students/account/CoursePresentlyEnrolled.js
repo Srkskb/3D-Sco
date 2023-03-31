@@ -7,11 +7,12 @@ import HeaderText from "../../../components/HeaderText";
 import Event_Card from "../../../components/card/Event_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function CoursePresentlyEnrolled() {
   const navigation = useNavigation();
   const [courseEnrolledData, setCourseEnrolledData] = useState([]);
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -20,7 +21,7 @@ export default function CoursePresentlyEnrolled() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?Course=1&id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?Course=1&id=${myData.id}`,
       requestOptions
     )
       .then((res) => res.json())

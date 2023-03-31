@@ -14,6 +14,7 @@ import { Snackbar } from "react-native-paper";
 import Loader from "../../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../../components/popup/DeletePopup";
+import FileCabinet4 from "../../../../components/card/FileCabinet4";
 
 export default function Announcement() {
   const navigation = useNavigation();
@@ -93,7 +94,7 @@ const [deletePop, setDeletePop] = useState(false);
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    // allLearnerList();
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
@@ -149,7 +150,7 @@ const [deletePop, setDeletePop] = useState(false);
             <>
               {announcementList?.length ? (
                 announcementList.map((list, index) => (
-                  <FileCabinet2
+                  <FileCabinet4
                     key={index}
                     title={list.announcement_title}
                     description={list.Description}

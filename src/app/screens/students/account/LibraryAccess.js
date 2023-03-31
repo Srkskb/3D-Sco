@@ -14,6 +14,7 @@ import Book_Card from "../../../components/card/Book_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import Library_Search from "../../../components/LibrarySearch";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function LibraryAccess() {
   const navigation = useNavigation();
@@ -22,7 +23,8 @@ export default function LibraryAccess() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const allLearnerList = () => {
+  const allLearnerList =async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -31,7 +33,7 @@ export default function LibraryAccess() {
       redirect: "follow",
     };
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${loginUID}&course_id=6`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData.id}&course_id=6`,
       requestOptions
     )
       .then((res) => res.json())
