@@ -7,6 +7,7 @@ import HeaderBack from "../components/header/Header";
 import { Edit } from "../components/buttons";
 import HomeHeader from "../components/header/HomeHeader";
 import { myHeadersData } from "./../api/helper";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function ViewProfile({ navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
@@ -38,8 +39,9 @@ export default function ViewProfile({ navigation }) {
 
   // ! Too show user details
 
-  const showUserDetails = () => {
-    console.log("loginUID", loginUID);
+  const showUserDetails = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log("loginUID", myData.id);
     setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -48,10 +50,7 @@ export default function ViewProfile({ navigation }) {
       redirect: "follow",
     };
 
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((res) => {
         console.log(res.Profile_Detail);
@@ -110,7 +109,7 @@ export default function ViewProfile({ navigation }) {
           {/* Personal Information */}
           <View style={styles.head}>
             <Headline title={"Personal Information"} />
-            {/* <Edit onPress={()=>navigation.navigate("UpdateProfile")}/> */}
+            <Edit onPress={() => navigation.navigate("UpdateProfile")} />
           </View>
           <Detail title={"Name"} data={getName} />
           <Detail title={"Email id"} data={getEmail} />
