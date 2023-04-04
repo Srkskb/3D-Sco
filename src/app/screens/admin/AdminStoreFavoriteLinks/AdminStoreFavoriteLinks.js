@@ -34,7 +34,7 @@ export default function AdminStoreFavoriteLinks() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -44,9 +44,18 @@ const [deletePop, setDeletePop] = useState(false);
   const [initialStoreLinks, setInitialStoreLinks] = useState([]);
   const user_type = localStorage.getItem("userID"); // ! user Type student or other
 
-  const allLearnerList = async (text = "") => {
+  const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
     setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -56,11 +65,12 @@ const [deletePop, setDeletePop] = useState(false);
     };
 
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${user_type}&category=${filter}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${type}&category=${filter}`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
+        console.log("data", result.data);
         setStoreLinks(result.data);
         setSearchData(result.data);
         setInitialStoreLinks(result.data);
@@ -122,7 +132,7 @@ const [deletePop, setDeletePop] = useState(false);
 
   const onRefresh = () => {
     setRefreshing(true);
-    // allLearnerList();
+    allLearnerList();
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
@@ -132,20 +142,17 @@ const [deletePop, setDeletePop] = useState(false);
     category();
     navigation.addListener("focus", () => category());
   }, [navigation]);
-  useEffect(() => {
-    filter && allLearnerList();
-  }, [filter]);
 
-  const searchText = (searchTerm) => {
-    const filteredData = storeLinks?.filter((el) => {
-      if (searchTerm === "") {
-        return storeLinks;
-      } else {
-        return el.Titel.toLowerCase().includes(searchTerm);
-      }
-    });
-    setSearchData(filteredData);
-  };
+  // const searchText = (searchTerm) => {
+  //   const filteredData = storeLinks?.filter((el) => {
+  //     if (searchTerm === "") {
+  //       return storeLinks;
+  //     } else {
+  //       return el.Titel.toLowerCase().includes(searchTerm);
+  //     }
+  //   });
+  //   setSearchData(filteredData);
+  // };
   return (
     <View style={styles.container}>
       {loading ? (
@@ -200,10 +207,7 @@ const [deletePop, setDeletePop] = useState(false);
           <View style={styles.category_search}>
             <RoundCategory
               onSelect={(selectedItem, index, item) => {
-                // let catid = categoryList?.filter((i) => i.Name === selectedItem).map((i) => i.id);
-                console.log(selectedItem);
-                // setFilter(catid && catid[0]);
-                setSearchTerm("");
+                setFilter(selectedItem.id);
               }}
             />
             <TextInput
@@ -214,8 +218,7 @@ const [deletePop, setDeletePop] = useState(false);
             />
           </View>
           <View style={styles.search_button}>
-            {/* <TouchableOpacity onPress={() => allLearnerList()}> */}
-            <TouchableOpacity onPress={() => searchText(searchTerm)}>
+            <TouchableOpacity onPress={() => allLearnerList()}>
               <FontAwesome name="search" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
@@ -265,12 +268,7 @@ const [deletePop, setDeletePop] = useState(false);
           </View>
         </ScrollView>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteProject(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteProject(id)} /> : null}
     </View>
   );
 }

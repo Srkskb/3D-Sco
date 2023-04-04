@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  TextInput,Image,TouchableOpacity,Text
-} from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl, TextInput, Image, TouchableOpacity, Text } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -23,7 +17,7 @@ export default function LibraryAccess() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const allLearnerList =async () => {
+  const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -58,18 +52,14 @@ export default function LibraryAccess() {
     if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
     let temp = [];
     initialStudentLibrary.forEach((item) => {
-      if (item.titel.toLowerCase().includes(searchTerm.toLowerCase()))
-        temp.push(item);
+      if (item.titel.toLowerCase().includes(searchTerm.toLowerCase())) temp.push(item);
     });
 
     setStudentLibrary(temp);
   }, [searchTerm]);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Library"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Library"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <HeaderText title={"Library Access"} />
         {/* <TextInput
@@ -79,31 +69,24 @@ export default function LibraryAccess() {
           
         /> */}
         <View style={styles.search_box}>
-      <View style={styles.icon_box}>
-        <Image
-          style={styles.icon}
-          source={require("../../../assets/images/Search.png")}
-        />
-      </View>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.text_input}
-          onChangeText={setSearchTerm}
-          value={searchTerm}
-          placeholder={"Search title, author..."}
-        />
-      </View>
-      <TouchableOpacity style={styles.search_button}>
-        <View>
-          <Text style={styles.search_text}>SEARCH</Text>
+          <View style={styles.icon_box}>
+            <Image style={styles.icon} source={require("../../../assets/images/Search.png")} />
+          </View>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.text_input}
+              onChangeText={setSearchTerm}
+              value={searchTerm}
+              placeholder={"Search title, author..."}
+            />
+          </View>
+          <TouchableOpacity style={styles.search_button}>
+            <View>
+              <Text style={styles.search_text}>SEARCH</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-    </View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
             {studentLibrary === undefined ? (
               <>
@@ -143,7 +126,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexWrap: "wrap",
   },
-    search_box: {
+  search_box: {
     borderWidth: 1,
     borderColor: color.purple,
     flexDirection: "row",

@@ -12,11 +12,20 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function DrawerContent(props) {
   const navigation = useNavigation();
+  const [userData, setUserData] = useState("");
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const userId = localStorage.getItem("userID");
   const userFName = localStorage.getItem("userFName");
   const userRole = localStorage.getItem("userRole");
   const [getName, setUpName] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const data = JSON.parse(await AsyncStorage.getItem("userData"));
+      setUserData(data);
+    })();
+  }, [userData]);
+
   const showUserDetails = () => {
     // console.log('loginUID',loginUID);
     const myHeaders = myHeadersData();
@@ -57,16 +66,16 @@ export default function DrawerContent(props) {
           </View>
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.welcome}>Welcome</Text>
-            <Text style={styles.user_name}>{getName}</Text>
+            <Text style={styles.user_name}>{userData?.name}</Text>
             <Text style={styles.login}>
               Log In As{" "}
               <Text style={{ fontFamily: "Montserrat-SemiBold" }}>
                 {" "}
-                {userId == 1 ? "Student" : null}
-                {userId == 2 ? "Teacher" : null}
-                {userId == 3 ? "Parent" : null}
-                {userId == 4 ? "Admin" : null}
-                {userId == 5 ? "Staff" : null}
+                {userData?.type == "student" ? "Student" : null}
+                {userData?.type == "tutor" ? "Teacher" : null}
+                {userData?.type == "parent" ? "Parent" : null}
+                {userData?.type == "admin" ? "Admin" : null}
+                {userData?.type == "affiliate" ? "Staff" : null}
               </Text>
             </Text>
           </View>

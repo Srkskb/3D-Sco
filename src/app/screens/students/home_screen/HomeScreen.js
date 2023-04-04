@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DrawerLayoutAndroid, StyleSheet, View, Image, Text, TouchableOpacity, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -80,6 +80,7 @@ const Navigator = createAppContainer(TabNavigator);
 
 export default function DrawerJs() {
   const drawer = useRef(null);
+  const [userData, setUserData] = useState("");
   const Drawer = createDrawerNavigator();
   const userId = localStorage.getItem("userID");
   const userFName = localStorage.getItem("userFName");
@@ -87,13 +88,21 @@ export default function DrawerJs() {
   console.log("0000", userFName);
   const navigation = useNavigation();
   const [drawerPosition, setDrawerPosition] = useState("left");
-  const changeDrawerPosition = () => {
-    if (drawerPosition === "left") {
-      setDrawerPosition("right");
-    } else {
-      setDrawerPosition("left");
-    }
-  };
+  // const changeDrawerPosition = () => {
+  //   if (drawerPosition === "left") {
+  //     setDrawerPosition("right");
+  //   } else {
+  //     setDrawerPosition("left");
+  //   }
+  // };
+
+  useEffect(() => {
+    (async () => {
+      const data = JSON.parse(await AsyncStorage.getItem("userData"));
+      setUserData(data);
+    })();
+  }, [userData]);
+  console.log("userttttttttttttt", userData);
   const toggleDrawer = () => {
     drawer.current.openDrawer();
   };
@@ -111,7 +120,7 @@ export default function DrawerJs() {
           <Image style={styles.avatar} source={Profile} />
           <View style={styles.detailCon}>
             <Text style={styles.welcome}>Welcome</Text>
-            <Text style={styles.logedName}>{userFName}</Text>
+            <Text style={styles.logedName}>{userData.name}</Text>
             <View style={{ flexDirection: "row" }}>
               <Text
                 style={{

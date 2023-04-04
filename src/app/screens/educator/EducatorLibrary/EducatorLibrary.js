@@ -41,6 +41,7 @@ export default function LibraryAccess() {
     )
       .then((res) => res.json())
       .then((result) => {
+        console.log(result.data);
         setStudentLibrary(result.data);
         setInitialStudentLibrary(result.data);
         console.log(myData.id);

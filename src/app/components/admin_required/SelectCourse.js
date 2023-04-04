@@ -12,7 +12,6 @@ export default function SelectCourse({ label, ...props }) {
 
   const fetch = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-
     axios
       .get(`https://3dsco.com/3discoapi/3dicowebservce.php?courses_list=1&user_id=${myData.id}`)
       .then(function (res) {
@@ -21,6 +20,9 @@ export default function SelectCourse({ label, ...props }) {
         } else {
           console.log("Course List can't fetch right now");
         }
+      })
+      .catch((err) => {
+        console.log("err", err);
       });
   };
   useEffect(() => {

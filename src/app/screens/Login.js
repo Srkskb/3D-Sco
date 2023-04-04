@@ -45,7 +45,17 @@ export default function Login({ navigation }) {
   const [isVisibleEntry, setIsVisibleEntry] = useState(true);
   const [loading, setloading] = useState(false);
   const user_id = localStorage.getItem("userID");
+  const obj = {
+    email: "",
+    password: "",
+  };
 
+  const [initialObj, setInitialObj] = useState(obj);
+  useEffect(() => {
+    return () => {
+      setInitialObj(obj);
+    };
+  }, []);
   const handleSignup = () => {
     if (user_id == 1) {
       navigation.navigate("RegistrationForAll");
@@ -64,88 +74,7 @@ export default function Login({ navigation }) {
   const loginUser = async (values) => {
     setloading(true);
     var role_data = user_id;
-    // const myHeaders = myHeadersData();
 
-    // if (role_data == 2) {
-    //   var formdata = new FormData();
-    //   formdata.append("tutor_login", "1");
-    //   formdata.append("email", values.email);
-    //   formdata.append("username", values.email);
-    //   formdata.append("password", values.password);
-    //   formdata.append("type", "2");
-
-    //   var requestOptions = {
-    //     method: "POST",
-    //     headers: myHeaders,
-    //     body: formdata,
-    //     redirect: "follow",
-    //   };
-    //   fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
-    //     .then((response) => response.json())
-    //     .then((result) => {
-    //       setloading(false);
-    //       if (result.success == 1) {
-    //         localStorage.setItem("loginUID", result.data.id);
-    //         localStorage.setItem("loginData", JSON.stringify(result.data));
-    //         navigation.navigate("TutorDrawerNavigator");
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       setloading(false);
-    //       console.log("error", error);
-    //     });
-    // } else {
-    var data = qs.stringify({
-      login: "1",
-      email: values.email,
-      password: values.password,
-      type: role_data,
-      username: values.email,
-    });
-
-    // var config = {
-    //   method: "post",
-    //   url: "https://3dsco.com/3discoapi/3dicowebservce.php",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/x-www-form-urlencoded",
-    //   },
-    //   data: data,
-    // };
-    // axios(config)
-    //   .then((response) => {
-    //     console.log("login data", response.data);
-    //     if (response.data.success == 0) {
-    //       //add alert here
-    //       setloading(false);
-    //     } else {
-    //       setloading(false);
-    //       localStorage.setItem("loginUID", response.data.data.id);
-    //       localStorage.setItem("loginData", JSON.stringify(response.data.data));
-    //       storeData("userType", response.data.data.type);
-    //       storeData("userData", response.data.data);
-    //       if (response.data.data.type == "student") {
-    //         navigation.navigate("DrawerNavigator");
-    //       }
-    //       if (response.data.data.type == "tutor") {
-    //         navigation.navigate("TutorDrawerNavigator");
-    //       }
-    //       if (response.data.data.type == "parent") {
-    //         navigation.navigate("ParentDrawerNavigator");
-    //       }
-    //       if (response.data.data.type == "admin") {
-    //         navigation.navigate("AdminDrawerNavigator");
-    //       }
-    //       if (response.data.data.type == "affiliate") {
-    //         navigation.navigate("AffiliateDrawerNavigator");
-    //       }
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setloading(false);
-    //     setSnackVisibleFalse(true);
-    //     setMessageFalse(error.response?.data?.message);
-    //   });
     var adminFormData = new FormData();
     adminFormData.append("login", "1");
     adminFormData.append("email", values.email);
@@ -178,20 +107,21 @@ export default function Login({ navigation }) {
           storeData("userType", response.data.type);
           storeData("userData", response.data);
           if (response.data.type == "student") {
-            navigation.navigate("DrawerNavigator");
+            navigation.replace("DrawerNavigator");
           }
           if (response.data.type == "tutor") {
-            navigation.navigate("TutorDrawerNavigator");
+            navigation.replace("TutorDrawerNavigator");
           }
           if (response.data.type == "parent") {
-            navigation.navigate("ParentDrawerNavigator");
+            navigation.replace("ParentDrawerNavigator");
           }
           if (response.data.type == "admin") {
-            navigation.navigate("AdminDrawerNavigator");
+            navigation.replace("AdminDrawerNavigator");
           }
           if (response.data.type == "affiliate") {
-            navigation.navigate("AffiliateDrawerNavigator");
+            navigation.replace("AffiliateDrawerNavigator");
           }
+          setInitialObj(obj);
         }
       })
       .catch((error) => {
@@ -231,10 +161,7 @@ export default function Login({ navigation }) {
                 </Snackbar>
                 <View style={styles.inputfields}>
                   <Formik
-                    initialValues={{
-                      email: "",
-                      password: "",
-                    }}
+                    initialValues={initialObj}
                     validationSchema={Yup.object().shape({
                       password: Yup.string().required("Password is required").min(5, "Your password is too short."),
                       // .matches(

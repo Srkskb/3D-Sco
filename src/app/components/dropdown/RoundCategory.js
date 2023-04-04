@@ -21,7 +21,6 @@ export default function RoundCategory({ label, ...props }) {
       .then((res) => {
         if (res.success == 1) {
           setCategoryList(res.data);
-          console.log(res.data);
         } else {
           alert("Try after sometime");
         }
