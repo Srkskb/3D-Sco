@@ -115,7 +115,7 @@ export default function Enrollment({ navigation }) {
                 key={index}
                 title={list.name}
                 status={list.Access}
-                educator={list.Email}
+                email={list.Email}
                 // releaseDate={list.ReleaseDate}
                 // endDate={list.EndDate}
                 editPress={() => navigation.navigate("EditCourse")}

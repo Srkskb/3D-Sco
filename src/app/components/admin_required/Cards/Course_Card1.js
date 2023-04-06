@@ -12,6 +12,7 @@ export default function Course_Card1({
   removePress,
   viewPress,
   educator,
+  email,
   status,
   releaseDate,
   endDate,
@@ -23,9 +24,13 @@ export default function Course_Card1({
         <Text style={styles.head_text}>{title}</Text>
         <Text style={styles.status}>{status}</Text>
       </View>
-      <View style={styles.course}>
+      {/* <View style={styles.course}>
         <Text style={styles.course_name}>Educator: </Text>
         <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{educator}</Text>
+      </View> */}
+      <View style={styles.course}>
+        <Text style={styles.course_name}>Email: </Text>
+        <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{email}</Text>
       </View>
       <View style={styles.course}>
         <Text style={styles.course_name}>Release Date: </Text>
