@@ -29,9 +29,11 @@ export default function ForgetPassword({ navigation }) {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
+  const [loading, setloading]=useState(false)
   const newLocal_1 = "../assets/images/background/Background.png";
   const user_id = localStorage.getItem("userID");
   const loginUser = (values) => {
+    setloading(true);
     setEmail(values.email);
     var role_data = user_id;
     const myHeaders = myHeadersData();
@@ -50,10 +52,12 @@ export default function ForgetPassword({ navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false)
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           setMailAlert(true);
         } else {
+          setloading(false)
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -198,6 +202,7 @@ export default function ForgetPassword({ navigation }) {
                           title={"Forget Password"}
                           onPress={handleSubmit}
                           disabled={!isValid}
+                          loading={loading}
                         />
                       </View>
                       <View

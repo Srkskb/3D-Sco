@@ -17,6 +17,7 @@ import AppButton from "../components/buttons/AppButton";
 const { width } = Dimensions.get("window");
 import { Snackbar } from "react-native-paper";
 const OTPVerification = ({ navigation }) => {
+  const [loading, setloading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -37,6 +38,7 @@ const OTPVerification = ({ navigation }) => {
   const registeredEmail = localStorage.getItem("registeredEmail");
   const mobile_number = `${registeredEmail}`;
   const sendOTP = () => {
+    setloading(true)
     var myHeaders = new Headers();
     myHeaders.append("Cookie", "PHPSESSID=p24ghdtaoc0j53ahbsg91pvks6");
     console.log("...............", registeredEmail, otpValue);
@@ -56,10 +58,12 @@ const OTPVerification = ({ navigation }) => {
       .then((res) => res.json())
       .then((res) => {
         if (res.success == 0) {
+          setloading(false)
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
           console.log("False", res.message);
         } else {
+          setloading(false)
           setMessageTrue(res.message);
           setSnackVisibleTrue(true);
           setTimeout(() => {
@@ -71,13 +75,14 @@ const OTPVerification = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <View style={{flex:1}}>
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
+        
       >
         {getMessageTrue}
       </Snackbar>
@@ -86,7 +91,8 @@ const OTPVerification = ({ navigation }) => {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
+        
       >
         {getMessageFalse}
       </Snackbar>
@@ -184,11 +190,11 @@ const OTPVerification = ({ navigation }) => {
 
       <View style={{ height: 10 }}></View>
      <View style={{paddingHorizontal:20}}>
-      <AppButton title={"Sign Up"} onPress={sendOTP} btnColor={color.purple}/>
+      <AppButton title={"Verify & Proceed"} onPress={sendOTP} btnColor={color.purple} loading={loading}/>
       </View>
-      <View style={styles.btnsize}>
+      {/* <View style={styles.btnsize}>
         <AppButton title={"Verify & Proceed"} />
-      </View>
+      </View> */}
       <View style={{ height: 20 }}></View>
       <View style={styles.resend_box}>
         <Text style={styles.not_receive}>Didn't recieve the OTP?</Text>
@@ -197,8 +203,8 @@ const OTPVerification = ({ navigation }) => {
 
         </TouchableOpacity>
       </View>
-          <Text onPress={()=>navigation.goBack()} style={[styles.resend,{alignSelf:'center'}]}>Change Email</Text>
-      </ScrollView>
+          <Text onPress={()=>navigation.goBack()} style={[styles.resend,{alignSelf:'flex-end',margin:15}]}>Change Email</Text>
+      </View>
     </SafeAreaView>
   );
 };
@@ -207,7 +213,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    justifyContent: "center",
+    // justifyContent: "center",
+    alignItems:'center'
   },
 
   title: {
@@ -254,6 +261,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 2,
     alignSelf: "center",
+    borderColor:'red',
+    borderWidth:3
   },
   resend_box: {
     flexDirection: "row",

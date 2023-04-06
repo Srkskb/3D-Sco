@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   View,
   Text,
@@ -21,14 +21,15 @@ import {
   CountryDropdown,
   CityDropdown,
 } from "../../components/dropdown";
-
+import { Dropdown } from "react-native-element-dropdown";
+import axios from "axios";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Snackbar } from "react-native-paper";
 
 import { Formik } from "formik";
-
+import { myHeadersData } from "../../api/helper";
 import Headline from "../../components/Headline";
 const { height, width } = Dimensions.get("window");
 export default function Signup_Parent({ navigation }) {
@@ -36,10 +37,18 @@ export default function Signup_Parent({ navigation }) {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  //   personal information states
-  const [country, setCountry] = useState();
-  const [state, setState] = useState();
-  const [city, setCity] = useState();
+   //   personal information states
+   const [country, setCountry] = useState();
+   const [state, setState] = useState();
+   const [city, setCity] = useState();
+   // focus related
+   const [countryFocus, setCountryFocus] = useState(false);
+   const [stateFocus, setStateFocus] = useState(false);
+   const [cityFocus, setCityFocus] = useState(false);
+   // array for data
+   const [countryData, setCountryData] = useState([]);
+   const [stateData, setStateData] = useState([]);
+   const [cityData, setCityData] = useState([]);
 
   const [category, setCategory] = useState();
   const [isChecked, setChecked] = useState(false);
@@ -71,9 +80,9 @@ export default function Signup_Parent({ navigation }) {
     formdata.append("password", values.password);
     // address
     formdata.append("address", values.address);
-    formdata.append("country", country_id);
-    formdata.append("state", state_id);
-    formdata.append("city", city_id);
+    formdata.append("country", country);
+    formdata.append("state", state);
+    formdata.append("city", city);
     // login
     formdata.append("username", values.userName);
     formdata.append("Comment", values.Comment);
@@ -131,7 +140,79 @@ export default function Signup_Parent({ navigation }) {
   };
 
   const phoneRegExp = /^[6-9]{1}[0-9]{9}$/;
+  useEffect(() => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php?country=1",
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("country",response);
+        var count = Object.keys(response.data.data).length;
+        let countryArray = [];
+        for (var i = 0; i < count; i++) {
+          countryArray.push({
+            value: response.data.data[i].country_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setCountryData(countryArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+  const handleState = (countryCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?state=1&country_id=${countryCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let stateArray = [];
+        for (var i = 0; i < count; i++) {
+          stateArray.push({
+            value: response.data.data[i].state_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setStateData(stateArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
+  const handleCity = (countryCode, stateCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?city=1&country_id=${countryCode}&state_id=${stateCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let cityArray = [];
+        for (var i = 0; i < count; i++) {
+          cityArray.push({
+            value: response.data.data[i].city_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setCityData(cityArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
@@ -261,7 +342,7 @@ export default function Signup_Parent({ navigation }) {
                   <Text style={styles.errorText}>{errors.address}</Text>
                 )}
 
-                <CountryDropdown
+                {/* <CountryDropdown
                   label={"Country"}
                   onSelect={(selectedItem, index) => {
                     setCountry(selectedItem);
@@ -283,8 +364,96 @@ export default function Signup_Parent({ navigation }) {
                     setCity(selectedItem);
                     console.log(selectedItem, index);
                   }}
+                /> */}
+ <Text style={styles.label_text}>Select Country</Text>
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    countryFocus && {
+                      borderColor: color.purple,
+                      borderWidth: 2,
+                    },
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={countryData}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!countryFocus ? "Select Country" : "..."}
+                  searchPlaceholder="Search..."
+                  value={country}
+                  onFocus={() => setCountryFocus(true)}
+                  onBlur={() => setCountryFocus(false)}
+                  onChange={(item) => {
+                    setCountry(item.value);
+                    setCountryFocus(false);
+                    handleState(item.value);
+                  }}
+                  containerStyle={styles.dropdown_container}
+                  itemContainerStyle={styles.dropdown_data}
+                  itemTextStyle={styles.item_textStyle}
                 />
-
+                <Text style={styles.label_text}>Select State</Text>
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    stateFocus && { borderColor: color.purple, borderWidth: 2 },
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={stateData}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!stateFocus ? "Select State" : "..."}
+                  searchPlaceholder="Search..."
+                  value={state}
+                  onFocus={() => setStateFocus(true)}
+                  onBlur={() => setStateFocus(false)}
+                  onChange={(item) => {
+                    setState(item.value);
+                    setStateFocus(false);
+                    handleCity(country, item.value);
+                  }}
+                  containerStyle={styles.dropdown_container}
+                  itemContainerStyle={styles.dropdown_data}
+                  itemTextStyle={styles.item_textStyle}
+                />
+                <Text style={styles.label_text}>Select City</Text>
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    cityFocus && { borderColor: color.purple, borderWidth: 2 },
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={cityData}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!cityFocus ? "Select City" : "..."}
+                  searchPlaceholder="Search..."
+                  value={city}
+                  onFocus={() => setCityFocus(true)}
+                  onBlur={() => setCityFocus(false)}
+                  onChange={(item) => {
+                    setCity(item.value);
+                    setCityFocus(false);
+                  }}
+                  containerStyle={styles.dropdown_container}
+                  itemContainerStyle={styles.dropdown_data}
+                  itemTextStyle={styles.item_textStyle}
+                />
                 {/*Login and Password*/}
                 <Headline title={"login and password"} />
                 <Input
@@ -497,4 +666,61 @@ const styles = StyleSheet.create({
     top: "45%",
     zIndex: 1,
   },
+    //dropdown style
+
+    dropdown: {
+      height: 50,
+      borderColor: color.gray,
+      borderWidth: 2,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+      marginBottom: 5,
+    },
+  
+    label: {
+      position: "absolute",
+      backgroundColor: "white",
+      left: 22,
+      top: 8,
+      zIndex: 999,
+      paddingHorizontal: 8,
+      fontSize: 14,
+    },
+    placeholderStyle: {
+      color: color.dark_gray,
+      fontSize: 14,
+      fontFamily: "Montserrat-Regular",
+    },
+    selectedTextStyle: {
+      color: color.black,
+      fontSize: 14,
+      fontFamily: "Montserrat-Regular",
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+    inputSearchStyle: {
+      height: 40,
+      fontSize: 16,
+    },
+    label_text: {
+      color: color.black,
+      fontSize: 13,
+      fontFamily: "Montserrat-Regular",
+      marginBottom: 5,
+    },
+    dropdown_data: {
+      borderBottomColor: color.gray,
+      borderBottomWidth: 1,
+    },
+    dropdown_container: {
+      borderWidth: 1,
+      borderColor: color.gray,
+      borderRadius: 5,
+    },
+    item_textStyle: {
+      fontFamily: "Montserrat-Bold",
+      fontSize: 14,
+    },
 });

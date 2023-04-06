@@ -13,17 +13,19 @@ export default function Event_Card({ status, title, description, date, editPress
           <View style={styles.arrow_container}>
             <Text style={styles.head_text}>{title}</Text>
           </View>
-          <View>
+          {status && <View>
             <Text style={styles.status_text}>{status}</Text>
-          </View>
+          </View>}
+          
         </View>
       </View>
       <View style={styles.text_container}>
         <Text style={styles.description_text}>{description}</Text>
       </View>
-      <View style={styles.text_container}>
+      {date && <View style={styles.text_container}>
         <Text style={styles.description_text}>{date}</Text>
-      </View>
+      </View>}
+      
       <View style={styles.button_container}>
         {/* <View style={{ width: 10 }}></View> */}
         {viewPress && <ViewButton onPress={viewPress} />}
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
   },
   arrow_container: {
     flexDirection: "row",
-    width: "50%",
+    width: "80%",
     flexWrap: "wrap",
   },
   text_container: {

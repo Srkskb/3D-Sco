@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,7 +17,8 @@ import AppButton from "../../components/buttons/AppButton";
 import Condition from "../../components/Conditions";
 import Headline from "../../components/Headline";
 import Checkbox from "expo-checkbox";
-
+import { Dropdown } from "react-native-element-dropdown";
+import axios from "axios";
 import {
   CategoryDropdown,
   StateDropdown,
@@ -31,6 +32,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { Snackbar } from "react-native-paper";
 import * as Yup from "yup";
+import { myHeadersData } from "../../api/helper";
 
 const { height, width } = Dimensions.get("window");
 export default function Signup_Admin({ navigation }) {
@@ -43,6 +45,16 @@ export default function Signup_Admin({ navigation }) {
   const [state, setState] = useState();
   const [city, setCity] = useState();
   const [university, setUniversity] = useState();
+  // focus related
+  const [countryFocus, setCountryFocus] = useState(false);
+  const [stateFocus, setStateFocus] = useState(false);
+  const [cityFocus, setCityFocus] = useState(false);
+  const [universityFocus, setUniversityFocus] = useState(false);
+  // array for data
+  const [countryData, setCountryData] = useState([]);
+  const [stateData, setStateData] = useState([]);
+  const [cityData, setCityData] = useState([]);
+  const [universityData, setUniversityData] = useState([]);
 
   const [gender, setGender] = useState();
   const [category, setCategory] = useState();
@@ -74,10 +86,10 @@ export default function Signup_Admin({ navigation }) {
     formdata.append("address", values.address);
     // formdata.append("schoolname", values.schoolName);
     // formdata.append("collagename", values.collegeName);
-    formdata.append("country", country_id);
-    formdata.append("state", state_id);
-    formdata.append("city", city_id);
-    formdata.append("university", university_id);
+    formdata.append("country", country);
+    formdata.append("state", state);
+    formdata.append("city", city);
+    formdata.append("university", university);
     // login
     formdata.append("username", values.userName);
     formdata.append("gender", gender);
@@ -129,6 +141,104 @@ export default function Signup_Admin({ navigation }) {
 
   const phoneRegExp = /^[6-9]{1}[0-9]{9}$/;
 
+  useEffect(() => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php?country=1",
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("country",response);
+        var count = Object.keys(response.data.data).length;
+        let countryArray = [];
+        for (var i = 0; i < count; i++) {
+          countryArray.push({
+            value: response.data.data[i].country_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setCountryData(countryArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+  const handleState = (countryCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?state=1&country_id=${countryCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let stateArray = [];
+        for (var i = 0; i < count; i++) {
+          stateArray.push({
+            value: response.data.data[i].state_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setStateData(stateArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleCity = (countryCode, stateCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?city=1&country_id=${countryCode}&state_id=${stateCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let cityArray = [];
+        for (var i = 0; i < count; i++) {
+          cityArray.push({
+            value: response.data.data[i].city_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setCityData(cityArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleUniversity = (countryCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?university=1&country_id=${countryCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let universityArray = [];
+        for (var i = 0; i < count; i++) {
+          universityArray.push({
+            value: response.data.data[i].university_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setUniversityData(universityArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
@@ -268,7 +378,128 @@ export default function Signup_Admin({ navigation }) {
                   //   (instituteName) => setInstituteName(instituteName)
                   // }
                 />
-                <CountryDropdown
+                <Text style={styles.label_text}>Select Country</Text>
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    countryFocus && {
+                      borderColor: color.purple,
+                      borderWidth: 2,
+                    },
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={countryData}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!countryFocus ? "Select Country" : "..."}
+                  searchPlaceholder="Search..."
+                  value={country}
+                  onFocus={() => setCountryFocus(true)}
+                  onBlur={() => setCountryFocus(false)}
+                  onChange={(item) => {
+                    setCountry(item.value);
+                    setCountryFocus(false);
+                    handleState(item.value);
+                    handleUniversity(item.value);
+                  }}
+                  containerStyle={styles.dropdown_container}
+                  itemContainerStyle={styles.dropdown_data}
+                  itemTextStyle={styles.item_textStyle}
+                />
+                <Text style={styles.label_text}>Select State</Text>
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    stateFocus && { borderColor: color.purple, borderWidth: 2 },
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={stateData}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!stateFocus ? "Select State" : "..."}
+                  searchPlaceholder="Search..."
+                  value={state}
+                  onFocus={() => setStateFocus(true)}
+                  onBlur={() => setStateFocus(false)}
+                  onChange={(item) => {
+                    setState(item.value);
+                    setStateFocus(false);
+                    handleCity(country, item.value);
+                  }}
+                  containerStyle={styles.dropdown_container}
+                  itemContainerStyle={styles.dropdown_data}
+                  itemTextStyle={styles.item_textStyle}
+                />
+                <Text style={styles.label_text}>Select City</Text>
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    cityFocus && { borderColor: color.purple, borderWidth: 2 },
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={cityData}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!cityFocus ? "Select City" : "..."}
+                  searchPlaceholder="Search..."
+                  value={city}
+                  onFocus={() => setCityFocus(true)}
+                  onBlur={() => setCityFocus(false)}
+                  onChange={(item) => {
+                    setCity(item.value);
+                    setCityFocus(false);
+                  }}
+                  containerStyle={styles.dropdown_container}
+                  itemContainerStyle={styles.dropdown_data}
+                  itemTextStyle={styles.item_textStyle}
+                />
+                <Text style={styles.label_text}>Select University</Text>
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    universityFocus && {
+                      borderColor: color.purple,
+                      borderWidth: 2,
+                    },
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={universityData}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!universityFocus ? "Select University" : "..."}
+                  searchPlaceholder="Search..."
+                  value={university}
+                  onFocus={() => setUniversityFocus(true)}
+                  onBlur={() => setUniversityFocus(false)}
+                  onChange={(item) => {
+                    setUniversity(item.value);
+                    setUniversityFocus(false);
+                  }}
+                  containerStyle={styles.dropdown_container}
+                  itemContainerStyle={styles.dropdown_data}
+                  itemTextStyle={styles.item_textStyle}
+                />
+                {/* <CountryDropdown
                   label={"Country"}
                   onSelect={(selectedItem, index) => {
                     setCountry(selectedItem);
@@ -298,7 +529,7 @@ export default function Signup_Admin({ navigation }) {
                     setUniversity(selectedItem);
                     console.log(selectedItem, index);
                   }}
-                />
+                /> */}
 
                 {/* <Input2 label="University Name" 
           placeholder="University Name" 
@@ -527,5 +758,62 @@ const styles = StyleSheet.create({
     right: 15,
     top: "45%",
     zIndex: 1,
+  },
+  //dropdown style
+
+  dropdown: {
+    height: 50,
+    borderColor: color.gray,
+    borderWidth: 2,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginBottom: 5,
+  },
+
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    color: color.dark_gray,
+    fontSize: 14,
+    fontFamily: "Montserrat-Regular",
+  },
+  selectedTextStyle: {
+    color: color.black,
+    fontSize: 14,
+    fontFamily: "Montserrat-Regular",
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+  label_text: {
+    color: color.black,
+    fontSize: 13,
+    fontFamily: "Montserrat-Regular",
+    marginBottom: 5,
+  },
+  dropdown_data: {
+    borderBottomColor: color.gray,
+    borderBottomWidth: 1,
+  },
+  dropdown_container: {
+    borderWidth: 1,
+    borderColor: color.gray,
+    borderRadius: 5,
+  },
+  item_textStyle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 14,
   },
 });

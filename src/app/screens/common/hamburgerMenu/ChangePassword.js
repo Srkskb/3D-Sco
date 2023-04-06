@@ -18,9 +18,11 @@ export default function ChangePassword() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
+  const [loading, setLoading]=useState(false)
   // Keys
   const loginUID = localStorage.getItem("loginUID");
   const changePasswordUID = (values) => {
+    setLoading(true)
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Reset_password", "1");
@@ -39,10 +41,12 @@ export default function ChangePassword() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setLoading(false)
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.navigate("Calendar");
+          navigation.navigate("Home");
         } else {
+          setLoading(false)
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -171,6 +175,7 @@ export default function ChangePassword() {
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={'Montserrat-Bold'}
+                      loading={loading}
                     />
                   </View>
                 </View>

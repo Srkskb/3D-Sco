@@ -26,7 +26,9 @@ export default function InstituteInfo({ route, navigation }) {
   const [aDCity, setaDCity] = useState();
   const [aDGender, setaDGender] = useState();
   const [aDComment, setaDComment] = useState();
+  const [loading,setloading]=useState()
   const showCourseDetail = () => {
+
     
     var myHeaders = new Headers();
     myHeaders.append("Cookie", "PHPSESSID=eur7g88p5eku75ef68godt3ub2");
@@ -64,6 +66,7 @@ export default function InstituteInfo({ route, navigation }) {
   
 
   const toJoinCourse =async () => {
+    setloading(true)
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(toJoinCID,myData.id)
     const myHeaders = myHeadersData();
@@ -86,10 +89,12 @@ export default function InstituteInfo({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false)
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.replace("Home");
         } else {
+          setloading(false)
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -155,6 +160,7 @@ export default function InstituteInfo({ route, navigation }) {
               btnColor={color.purple}
               onPress={toJoinCourse}
               title={"Enroll Course"}
+              loading={loading}
             />
           </>
         ) : null}
