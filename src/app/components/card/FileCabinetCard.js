@@ -2,14 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
 import { Remove, Edit, ViewButton } from "../buttons";
-export default function FileCabinetCard({
-  access,
-  title,
-  description,
-  removePress,
-  onPress,
-  onPressEdit,
-}) {
+export default function FileCabinetCard({ access, title, description, removePress, onPress, onPressEdit }) {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row" }}>
@@ -20,9 +13,9 @@ export default function FileCabinetCard({
           </View>
         </View>
       </View>
-      <View style={{padding:10}}>
-            <Text style={styles.description}>{description}</Text>
-            </View>
+      <View style={{ padding: 10 }}>
+        <Text style={styles.description}>{description}</Text>
+      </View>
       <View style={styles.viewbutton}>
         <Edit onPress={onPressEdit} />
         <View style={{ width: 20 }}></View>

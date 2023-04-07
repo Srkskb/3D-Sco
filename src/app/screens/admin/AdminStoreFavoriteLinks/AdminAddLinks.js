@@ -3,94 +3,74 @@ import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
-import { AccessLevel, CategoryDropdown } from "../../../components/dropdown";
+import { AccessLevel } from "../../../components/dropdown";
 import SmallButton from "../../../components/buttons/SmallButton";
-import { useNavigation } from "@react-navigation/native";
-import { myHeadersData } from "../../../api/helper";
-import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import AsyncStorage from "@react-native-community/async-storage";
-export default function AdminAddLink() {
-  const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
+import qs from "qs";
+
+export default function AdminAddLink({ navigation }) {
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const loginUID = localStorage.getItem("loginUID");
-  const [category, setCategory] = useState(0);
-  const [categoryList, setCategoryList] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const user_type = localStorage.getItem("userID"); // ! user Type student or other
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+
   const addLinkForm = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
-    console.log("category", category);
-    if (category != 0 || category != undefined) {
-      const myHeaders = myHeadersData();
-      var urlencoded = new FormData();
-      urlencoded.append("Add_link", "1");
-      urlencoded.append("titel", values.linkTitle);
-      urlencoded.append("category", category);
-      urlencoded.append("detail", values.description);
-      urlencoded.append("url", values.linkUrl);
-      urlencoded.append("type", user_type); // ! User Type
-      urlencoded.append("id", myData.id);
-      fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
-        method: "POST",
-        body: urlencoded,
-        headers: {
-          myHeaders,
-        },
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res);
-          if (res.success == 1) {
-            setSnackVisibleTrue(true);
-            setMessageTrue(res.message);
-            setLoading(false);
-            navigation.navigate("AdminStoreFavoriteLinks");
-          } else {
-            setSnackVisibleFalse(true);
-            setMessageFalse(res.message);
-            setLoading(false);
-          }
-        });
-    } else {
-      setSnackVisibleFalse(true);
-      setMessageFalse("Select Category");
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    getcategory();
-  }, [navigation]);
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append("Cookie", "PHPSESSID=7fqo201rhcb95rof0rq6hg3jm3");
 
-  const getcategory = () => {
-    const myHeaders = myHeadersData();
-    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
-      method: "GET",
-      headers: {
-        myHeaders,
-      },
+    var urlencoded = qs.stringify({
+      Add_link: "1",
+      titel: values.linkTitle,
+      category: values.category,
+      detail: values.description,
+      url: values.linkUrl,
+      type: type,
+      user_id: myData.id,
+    });
+    console.log(urlencoded);
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
+      method: "POST",
+      body: urlencoded,
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log("res", res);
         if (res.success == 1) {
-          setCategoryList(res.data);
-          console.log(res.data);
+          setSnackVisibleTrue(true);
+          setMessageTrue(res.message);
+          setLoading(false);
+          navigation.navigate("AdminStoreFavoriteLinks");
         } else {
-          alert("Try after sometime");
+          setSnackVisibleFalse(true);
+          setMessageFalse(res.message);
+          setLoading(false);
         }
       })
-      .catch((error) => console.log("error", error));
+      .catch((err) => console.log(err));
   };
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
@@ -115,23 +95,24 @@ export default function AdminAddLink() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ paddingVertical: 10 }}>
             <Formik
+              validateOnChange={false}
+              validateOnBlur={false}
               initialValues={{
                 linkTitle: "",
+                category: "",
                 description: "",
                 linkUrl: "",
               }}
               validationSchema={Yup.object().shape({
                 linkTitle: Yup.string().required("Title is required").min(3, "Title must be at least 3 characters"),
-
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
-
                 linkUrl: Yup.string().matches(urlValidation, "Enter correct url!").required("Url is required"),
               })}
               onSubmit={(values) => addLinkForm(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Link Title"}
@@ -139,7 +120,7 @@ export default function AdminAddLink() {
                     name="linkTitle"
                     onChangeText={handleChange("linkTitle")}
                     onBlur={handleBlur("linkTitle")}
-                    value={values.blogTitle}
+                    value={values.linkTitle}
                     keyboardType="text"
                   />
                   {errors.linkTitle && (
@@ -149,11 +130,12 @@ export default function AdminAddLink() {
                   <CategoryDropdown
                     label={"Category"}
                     onSelect={(selectedItem, index) => {
-                      let catid = categoryList.filter((i) => i.Name === selectedItem).map((i) => i.id);
-                      setCategory(catid && catid[0]);
-                      console.log(selectedItem, catid);
+                      setFieldValue("category", selectedItem.id);
                     }}
                   />
+                  {errors.category && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.category}</Text>
+                  )}
 
                   <InputField
                     label={"Url"}
@@ -183,14 +165,14 @@ export default function AdminAddLink() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                  <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
                     <SmallButton
-                      onPress={handleSubmit}
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
+                    <SmallButton
+                      onPress={() => handleSubmit()}
                       title="Save"
                       loading={loading}
                       disabled={!isValid}

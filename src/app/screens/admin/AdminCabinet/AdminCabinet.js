@@ -10,6 +10,8 @@ import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
+
 export default function AdminCabinet() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
@@ -21,25 +23,28 @@ export default function AdminCabinet() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_filecabinate=1&id=${myData.id}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?student_filecabinate=1&id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
         setFileCabinetData(result.data);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteEvent = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -107,10 +112,9 @@ export default function AdminCabinet() {
       >
         {getMessageFalse}
       </Snackbar>
+      {loading && <Loader />}
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
       >
         <TextWithButton
@@ -158,12 +162,7 @@ export default function AdminCabinet() {
           )}
         </View>
       </ScrollView>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteEvent(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}
     </View>
   );
 }

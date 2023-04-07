@@ -11,31 +11,43 @@ import axios from "axios";
 import qs from "qs";
 import Loader from "../../../../utils/Loader";
 import AsyncStorage from "@react-native-community/async-storage";
-export default function EmailUser(navigation) {
+
+export default function EmailUser({ navigation }) {
   const [userType, setUserType] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
 
-  const AddEmail =async () => {
+  const AddEmail = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
     var data = qs.stringify({
       add_message: "1",
       SenderID: myData.id,
       Subject: subject,
       Message: body,
-      Type: userType,
+      Type: type,
       save: "1",
     });
+    console.log("data", data);
     var config = {
       method: "post",
       url: "https://3dsco.com/3discoapi/studentregistration.php",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=r6ql44dbgph86daul5dqicpgk4",
+        Cookie: "PHPSESSID=7fqo201rhcb95rof0rq6hg3jm3",
       },
       data: data,
     };
@@ -43,7 +55,7 @@ export default function EmailUser(navigation) {
     axios(config)
       .then((response) => {
         console.log("sjshjfdsjlf", response.data);
-        if (response.data == 1) {
+        if (response.data.success == 1) {
           setLoading(false);
 
           navigation.navigate("AdminAccount");
@@ -51,6 +63,7 @@ export default function EmailUser(navigation) {
       })
       .catch(function (error) {
         console.log(error);
+        setLoading(false);
       });
   };
   return (
