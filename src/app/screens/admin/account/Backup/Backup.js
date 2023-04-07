@@ -11,6 +11,7 @@ import FileCabinet2 from "../../../../components/card/FileCabinet2";
 import * as qs from "qs";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
+import Loader from "../../../../utils/Loader";
 // import * as MediaLibrary from "expo-media-library";
 // import { requestPermissionsAsync } from "expo-media-library";
 import { StorageAccessFramework } from "expo-file-system";
@@ -26,9 +27,11 @@ export default function Backup() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   console.log("fileCabinetData", fileCabinetData);
   const allLearnerList = (id) => {
-    const loginUID = localStorage.getItem("loginUID");
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "POST",
@@ -38,9 +41,13 @@ export default function Backup() {
     fetch(`https://3dsco.com/3discoapi/studentregistration.php?backup_course_id=1&course_id=${id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        setFileCabinetData(result?.data);
+        setFileCabinetData(result?.data || []);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteEvent = (id) => {
     var data = qs.stringify({
@@ -178,6 +185,7 @@ export default function Backup() {
       >
         {getMessageFalse}
       </Snackbar>
+      {loading && <Loader />}
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
@@ -186,34 +194,29 @@ export default function Backup() {
         <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
-            console.log(index);
-            allLearnerList(index);
+            allLearnerList(selectedItem.id);
           }}
-          value={selectCourse}
+          // value={selectCourse}
         />
         <View>
-          {fileCabinetData === undefined ? (
-            <>
-              <NoDataFound />
-            </>
+          {fileCabinetData?.length ? (
+            fileCabinetData?.map((list, index) => (
+              <FileCabinet2
+                key={index}
+                list={list}
+                title={list.title}
+                description={list.detail}
+                onPressEdit={() =>
+                  navigation.navigate("EditBackup", {
+                    title: list,
+                  })
+                }
+                onPressView={() => downloadFile(list.file_name)}
+                removePress={() => deleteEvent(list.id)}
+              />
+            ))
           ) : (
-            <>
-              {fileCabinetData?.map((list, index) => (
-                <FileCabinet2
-                  key={index}
-                  list={list}
-                  title={list.title}
-                  description={list.detail}
-                  onPressEdit={() =>
-                    navigation.navigate("EditBackup", {
-                      title: list,
-                    })
-                  }
-                  onPressView={() => downloadFile(list.file_name)}
-                  removePress={() => deleteEvent(list.id)}
-                />
-              ))}
-            </>
+            <NoDataFound />
           )}
         </View>
       </ScrollView>

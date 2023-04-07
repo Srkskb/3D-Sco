@@ -123,25 +123,20 @@ export default function LibraryAccess() {
             setCourseId(selectedItem.id);
           }}
         />
+        {loading && <Loader />}
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
-            {loading ? (
-              <Loader />
+            {studentLibrary?.length ? (
+              studentLibrary.map((list) => (
+                <Book_Card
+                  title={list.titel}
+                  author={list.author}
+                  // onPress={() => navigation.navigate("ViewBook", { list })}
+                  onPress={() => Linking.openURL(list.resume)}
+                />
+              ))
             ) : (
-              <>
-                {studentLibrary?.length ? (
-                  studentLibrary.map((list) => (
-                    <Book_Card
-                      title={list.titel}
-                      author={list.author}
-                      // onPress={() => navigation.navigate("ViewBook", { list })}
-                      onPress={() => Linking.openURL(list.resume)}
-                    />
-                  ))
-                ) : (
-                  <NoDataFound />
-                )}
-              </>
+              <NoDataFound />
             )}
           </View>
         </ScrollView>

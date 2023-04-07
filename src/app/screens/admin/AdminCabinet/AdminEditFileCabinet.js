@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -20,20 +12,17 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AdminEditFileCabinet({ route, navigation }) {
-  const { docId, docIdParam } = route.params; // ! Current Event ID
-  const { title, titleParam } = route.params;
-  const { docAccess, docAccessParam } = route.params;
-  const { description, descriptionParam } = route.params;
-  const { docImage, docImageParam } = route.params;
+  const { docId, title, docAccess, description, docImage } = route.params;
   const [access, setAccess] = useState(docAccess);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(docImage);
-  const [loading, setloading] = useState(false);
+  const [image, setImage] = useState({ name: docImage.split("/").pop().split(".")[0], uri: docImage });
+  const [loading, setLoading] = useState(false);
 
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -48,9 +37,9 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   };
 
   const updateDocument = async (values) => {
-    setloading(true);
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const myHeaders = myHeadersData();
+    // const myHeaders = myHeadersData();
     console.log(updateTitle, access, docId, upDescription, myData.id, image);
     var urlencoded = new FormData();
     urlencoded.append("update_documents", "1");
@@ -59,29 +48,30 @@ export default function AdminEditFileCabinet({ route, navigation }) {
     urlencoded.append("id", docId);
     urlencoded.append("description", upDescription);
     urlencoded.append("student_id", myData.id);
-    // urlencoded.append("image", {
-    //   uri: image, //"file:///" + image.split("file:/").join(""),
-    //   type: mime.getType(image),
-    //   name: `abc.jpg`,
-    // });
+    urlencoded.append("image", {
+      uri: image.uri,
+      type: mime.getType(image.uri),
+      name: image.name,
+    });
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
       headers: {
-        myHeaders,
+        Accept: "application/json",
         "Content-Type": "multipart/form-data",
+        Cookie: "PHPSESSID=7fqo201rhcb95rof0rq6hg3jm3",
       },
     })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          setloading(false);
+          setLoading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("AdminCabinet");
         } else {
-          setloading(false);
+          setLoading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -100,10 +90,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Document"}
-        onPress={() => navigation.navigate("AdminCabinet")}
-      />
+      <HeaderBack title={"Update Document"} onPress={() => navigation.navigate("AdminCabinet")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -158,36 +145,24 @@ export default function AdminEditFileCabinet({ route, navigation }) {
                   </View>
                 </>
               )}
-              {showDocResults ? (
-                <>
-                  <UploadDocument
-                    type={"(pdf, doc, ppt,xls)"}
-                    pickImg={pickImg}
-                  />
-                  <View>
-                    {image?.name && (
-                      <Text style={styles.uploadCon}>{image.name}</Text>
-                    )}
-                  </View>
-                </>
-              ) : (
-                <>
-                  <View style={styles.selectedDataCon}>
-                    <Text>Uploaded Document</Text>
-                    <View style={styles.selectedData}>
-                      {docImage && (
-                        <Image
-                          source={{ uri: docImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
-                      <TouchableOpacity onPress={onClickDoc}>
-                        <Text>close</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </>
-              )}
+              {/* {showDocResults ? (
+                <> */}
+              <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+              <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+              {/* </> */}
+              {/* // ) : (
+              //   <>
+              //     <View style={styles.selectedDataCon}>
+              //       <Text>Uploaded Document</Text>
+              //       <View style={styles.selectedData}>
+              //         {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />}
+              //         <TouchableOpacity onPress={onClickDoc}>
+              //           <Text>close</Text>
+              //         </TouchableOpacity>
+              //       </View>
+              //     </View>
+              //   </>
+              // )} */}
 
               <InputField
                 label={"Description"}
@@ -202,7 +177,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
               />
 
               <View style={styles.button}>
-              <SmallButton
+                <SmallButton
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}

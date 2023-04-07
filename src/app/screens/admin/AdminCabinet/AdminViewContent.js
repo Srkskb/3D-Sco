@@ -1,15 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, Linking } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 const { height, width } = Dimensions.get("window");
 import mime from "mime";
 
 export default function AdminViewContent({ route, navigation }) {
-  const { title, titleParam } = route.params;
-  const { access, accessParam } = route.params;
-  const { description, descriptionParam } = route.params;
-  const { image, imageParam } = route.params;
+  const { title, access, description, image } = route.params;
   console.log("image", image);
   return (
     <View style={styles.container}>
@@ -25,17 +22,11 @@ export default function AdminViewContent({ route, navigation }) {
           <Text style={styles.title}>Description : {description}</Text>
         </Text>
         <View style={styles.documentView}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL(image)}>
             <Image source={require("../../../assets/images/whatever.png")} />
           </TouchableOpacity>
           <Text>Pdf Name:</Text>
-          <Text>{image.split("https://3dsco.com/images/")[1]}</Text>
-          {/* <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: `${image}`,
-            }}
-          /> */}
+          <Text>{image.split("/").pop().split(".")[0]}</Text>
         </View>
       </View>
     </View>

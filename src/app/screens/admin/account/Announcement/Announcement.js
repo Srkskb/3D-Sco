@@ -19,7 +19,7 @@ import FileCabinet4 from "../../../../components/card/FileCabinet4";
 export default function Announcement() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -126,6 +126,7 @@ const [deletePop, setDeletePop] = useState(false);
       >
         {getMessageFalse}
       </Snackbar>
+
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
@@ -176,12 +177,7 @@ const [deletePop, setDeletePop] = useState(false);
           )}
         </View>
       </ScrollView>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteEvent(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}
     </View>
   );
 }
