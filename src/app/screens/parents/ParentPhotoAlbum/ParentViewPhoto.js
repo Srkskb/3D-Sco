@@ -5,8 +5,11 @@ import color from "../../../assets/themes/Color";
 const { height, width } = Dimensions.get("window");
 import { myHeadersData } from "../../../api/helper";
 import CommentCard from "../../../components/card/CommentCard";
-
+import Input2 from "../../../components/inputs/Input2";
+import SmallButton from "../../../components/buttons/SmallButton";
 export default function ParentViewPhoto({ route, navigation }) {
+  const {loading,setloading}=useState(false)
+  const [comment, setComment] = useState("");
   const { title, titleParam } = route.params;
   const { access, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
@@ -52,7 +55,7 @@ export default function ParentViewPhoto({ route, navigation }) {
         <Text>
           <Text style={styles.title}>Description : {description}</Text>
         </Text>
-        <ScrollView style={{ paddingHorizontal: 10 }}>
+        <ScrollView style={{ paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
           <View style={styles.documentView}>
             <Image
               style={styles.tinyLogo}
@@ -65,6 +68,33 @@ export default function ParentViewPhoto({ route, navigation }) {
             {comments.map((list, index) => (
               <CommentCard key={list.id} name={list.user_id} comments={list.comments} CommentDate={list.Date} />
             ))}
+          </View>
+          <Input2
+            label={"Leave a Comment"}
+            multiline={true}
+            numberOfLines={5}
+            textAlignVertical={"top"}
+            onChange={(e) => console.log(e)}
+            placeholder={"Type Your Comment Here..."}
+            onChangeText={(text) => setComment(text)}
+            // onChangeText={(text) => console.log(text)}
+            value={comment}
+          />
+          <View style={styles.button_container}>
+            <SmallButton
+              title={"Cancel"}
+              color={color.purple}
+              fontFamily={"Montserrat-Medium"}
+              onPress={() => navigation.goBack()}
+            />
+            <SmallButton
+              title={"Submit"}
+              color={color.white}
+              loading={loading}
+              fontFamily={"Montserrat-Bold"}
+              backgroundColor={color.purple}
+              // onPress={addComment}
+            />
           </View>
         </ScrollView>
       </View>
@@ -89,8 +119,9 @@ const styles = StyleSheet.create({
   inner_view: {
     margin: 10,
     padding: 10,
+    flex:1,
 
-    backgroundColor: color.gray_white,
+    backgroundColor: color.white,
   },
   title: {
     fontFamily: "Montserrat-SemiBold",
@@ -103,5 +134,10 @@ const styles = StyleSheet.create({
   },
   documentView: {
     marginTop: 30,
+  },
+  button_container: {
+    flexDirection: "row",
+    marginTop: 10,
+    marginBottom: 40,
   },
 });
