@@ -35,10 +35,7 @@ export default function LibraryAccess() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData.id}&course_id=${id}`,
-      requestOptions
-    )
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?library_list=1", requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result.data);

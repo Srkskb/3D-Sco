@@ -42,10 +42,7 @@ export default function AffiliateLibrary() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData.id}&course_id=${id}`,
-      requestOptions
-    )
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?library_list=1", requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
@@ -65,14 +62,14 @@ export default function AffiliateLibrary() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList(courseId);
+    allLearnerList();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    courseId && allLearnerList(courseId);
-  }, [courseId]);
+    allLearnerList();
+  }, []);
 
   useEffect(() => {
     if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
@@ -117,12 +114,12 @@ export default function AffiliateLibrary() {
             </View>
           </TouchableOpacity>
         </View>
-        <SelectCourse
+        {/* <SelectCourse
           // label={"Select Course"}
           onSelect={(selectedItem, index) => {
             setCourseId(selectedItem.id);
           }}
-        />
+        /> */}
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
             {loading ? (
