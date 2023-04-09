@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Dimensions,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, ScrollView } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 const { height, width } = Dimensions.get("window");
@@ -14,15 +7,47 @@ import { myHeadersData } from "../../../api/helper";
 import CommentCard from "../../../components/card/CommentCard";
 import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AdminViewPhoto({ route, navigation }) {
-  const {loading,setloading}=useState(false)
+  const { loading, setLoading } = useState(false);
   const [comment, setComment] = useState("");
   const { title, titleParam } = route.params;
   const { access, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { id, image, imageParam } = route.params;
   const [comments, setComments] = useState([]);
+  const addPhotoComment = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setLoading(true);
+    var formdata = new FormData();
+    var myHeaders = myHeadersData();
+    formdata.append("add_photos_comments", "1");
+    formdata.append("photo_id", route.params.list.id);
+    formdata.append("comments", comment);
+    formdata.append("user_id", myData.id);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+    console.log(formdata, "formdata");
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setLoading(false);
+        console.log("add comment", route.params.list.id);
+        if (result.success == 1) {
+          commentList();
+          setComments("");
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
+  };
 
   const loginUID = localStorage.getItem("loginUID");
   const myHeaders = myHeadersData();
@@ -47,15 +72,12 @@ export default function AdminViewPhoto({ route, navigation }) {
   };
   useEffect(() => {
     commentList();
-    navigation.addListener("focus", () => commentList());
-  }, []);
+    // navigation.addListener("focus", () => commentList());
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Photo Gallery"}
-        onPress={() => navigation.navigate("AdminPhotoAlbum")}
-      />
+      <HeaderBack title={"Photo Gallery"} onPress={() => navigation.navigate("AdminPhotoAlbum")} />
       <View style={styles.inner_view}>
         <Text>
           <Text style={styles.text}>Title : {title}</Text>
@@ -77,12 +99,7 @@ export default function AdminViewPhoto({ route, navigation }) {
           </View>
           <View>
             {comments.map((list, index) => (
-              <CommentCard
-                key={list.id}
-                name={list.user_id}
-                comments={list.comments}
-                CommentDate={list.Date}
-              />
+              <CommentCard key={list.id} name={list.user_id} comments={list.comments} CommentDate={list.Date} />
             ))}
           </View>
           <Input2
@@ -109,7 +126,7 @@ export default function AdminViewPhoto({ route, navigation }) {
               loading={loading}
               fontFamily={"Montserrat-Bold"}
               backgroundColor={color.purple}
-              // onPress={addComment}
+              onPress={addPhotoComment}
             />
           </View>
         </ScrollView>
@@ -137,7 +154,7 @@ const styles = StyleSheet.create({
     padding: 10,
 
     backgroundColor: color.white,
-    flex:1
+    flex: 1,
   },
   title: {
     fontFamily: "Montserrat-SemiBold",

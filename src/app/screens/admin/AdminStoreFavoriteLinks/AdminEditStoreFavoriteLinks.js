@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -18,7 +10,7 @@ import { Snackbar } from "react-native-paper";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
-import { CategoryDropdown } from "../../../components/dropdown";
+import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
 
 export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
   const { linkID, linkIdParam } = route.params; // ! Current Event ID
@@ -165,7 +157,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
               />
 
               <View style={styles.button}>
-              <SmallButton
+                <SmallButton
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
