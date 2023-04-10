@@ -11,6 +11,7 @@ import {
   TechnicalSupport,
   TermsCondition,
   ViewProfile,
+  UpdateProfile,
 } from "../screens/common/hamburgerMenu";
 import DrawerContent from "../components/DrawerContent";
 import TutorTabs from "./TutorTabs";
@@ -44,6 +45,23 @@ export default function TutorDrawerNavigator() {
         component={ViewProfile}
         options={{
           title: "View Profile",
+          drawerLabelStyle: { fontFamily: "Montserrat-SemiBold" },
+          drawerIcon: ({ focussed, size }) => (
+            <Icon
+              type="font-awesome"
+              name="user"
+              color={focussed ? color.gray : color.purple}
+              size={25}
+              style={styles.icons}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="UpdateProfile"
+        component={UpdateProfile}
+        options={{
+          title: "Update Profile",
           drawerLabelStyle: { fontFamily: "Montserrat-SemiBold" },
           drawerIcon: ({ focussed, size }) => (
             <Icon

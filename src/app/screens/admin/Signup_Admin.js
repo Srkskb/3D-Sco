@@ -255,6 +255,7 @@ export default function Signup_Admin({ navigation }) {
           onDismiss={() => setSnackVisibleTrue(false)}
           action={{ label: "Close" }}
           theme={{ colors: { accent: "#82027D" } }}
+          
         >
           {getMessageTrue}
         </Snackbar>

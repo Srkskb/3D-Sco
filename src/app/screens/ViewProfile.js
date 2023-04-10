@@ -109,7 +109,7 @@ export default function ViewProfile({ navigation }) {
           {/* Personal Information */}
           <View style={styles.head}>
             <Headline title={"Personal Information"} />
-            <Edit onPress={() => navigation.navigate("UpdateProfile")} />
+            {/* <Edit onPress={() => navigation.navigate("UpdateProfile")} /> */}
           </View>
           <Detail title={"Name"} data={getName} />
           <Detail title={"Email id"} data={getEmail} />

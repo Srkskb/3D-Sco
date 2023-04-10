@@ -11,6 +11,7 @@ import {
   TechnicalSupport,
   TermsCondition,
   ViewProfile,
+  UpdateProfile
 } from "../screens/common/hamburgerMenu";
 import DrawerContent from "../components/DrawerContent";
 const Drawer = createDrawerNavigator();
@@ -55,7 +56,23 @@ export default function DrawerNavigator() {
           ),
         }}
       />
-
+      <Drawer.Screen
+        name="UpdateProfile"
+        component={UpdateProfile}
+        options={{
+          title: "Update Profile",
+          drawerLabelStyle: { fontFamily: "Montserrat-SemiBold" },
+          drawerIcon: ({ focussed, size }) => (
+            <Icon
+              type="font-awesome"
+              name="user"
+              color={focussed ? color.gray : color.purple}
+              size={25}
+              style={styles.icons}
+            />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="ChangePassword"
         component={ChangePassword}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,13 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
+import { myHeadersData } from "../../../api/helper";
 import BackButton from "../../../components/buttons/BackButton";
 import color from "../../../assets/themes/Color";
 import Input from "../../../components/inputs/Input";
 import Input2 from "../../../components/inputs/Input2";
-
+import { Dropdown } from "react-native-element-dropdown";
+import axios from "axios";
 import AppButton from "../../../components/buttons/AppButton";
 
 import Headline from "../../../components/Headline";
@@ -41,13 +43,26 @@ export default function UpdateProfile({ navigation }) {
   const [phone, setPhone] = useState();
   const [address, setaddress] = useState();
 
-  //   educational information states
-  const [schoolname, setSchoolname] = useState();
-  const [collagename, setCollegename] = useState();
+  //   personal information states
   const [country, setCountry] = useState();
   const [state, setState] = useState();
   const [city, setCity] = useState();
-  const [university, setuniversity] = useState();
+  const [university, setUniversity] = useState();
+  // focus related
+  const [countryFocus, setCountryFocus] = useState(false);
+  const [stateFocus, setStateFocus] = useState(false);
+  const [cityFocus, setCityFocus] = useState(false);
+  const [universityFocus, setUniversityFocus] = useState(false);
+  // array for data
+  const [countryData, setCountryData] = useState([]);
+  const [stateData, setStateData] = useState([]);
+  const [cityData, setCityData] = useState([]);
+  const [universityData, setUniversityData] = useState([]);
+
+  //   educational information states
+  const [schoolname, setSchoolname] = useState();
+  const [collagename, setCollegename] = useState();
+
   const [universityname, setuniversityname] = useState();
 
   //   login information states
@@ -144,7 +159,104 @@ export default function UpdateProfile({ navigation }) {
         console.error(error);
       });
   };
+  useEffect(() => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php?country=1",
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("country",response);
+        var count = Object.keys(response.data.data).length;
+        let countryArray = [];
+        for (var i = 0; i < count; i++) {
+          countryArray.push({
+            value: response.data.data[i].country_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setCountryData(countryArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+  const handleState = (countryCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?state=1&country_id=${countryCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let stateArray = [];
+        for (var i = 0; i < count; i++) {
+          stateArray.push({
+            value: response.data.data[i].state_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setStateData(stateArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
+  const handleCity = (countryCode, stateCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?city=1&country_id=${countryCode}&state_id=${stateCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let cityArray = [];
+        for (var i = 0; i < count; i++) {
+          cityArray.push({
+            value: response.data.data[i].city_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setCityData(cityArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleUniversity = (countryCode) => {
+    const myHeaders = myHeadersData();
+    var config = {
+      method: "get",
+      url: `https://3dsco.com/3discoapi/state.php?university=1&country_id=${countryCode}`,
+      headers: { myHeaders },
+    };
+    axios(config)
+      .then((response) => {
+        // console.log("mine", response);
+        var count = Object.keys(response.data.data).length;
+        let universityArray = [];
+        for (var i = 0; i < count; i++) {
+          universityArray.push({
+            value: response.data.data[i].university_id,
+            label: response.data.data[i].name,
+          });
+        }
+        setUniversityData(universityArray);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
@@ -152,15 +264,14 @@ export default function UpdateProfile({ navigation }) {
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <BackButton />
-          
-        </TouchableOpacity>
+       
+          <HomeHeader navigation={navigation} title={"Update Profile"}/>
         <Snackbar
           visible={snackVisibleTrue}
           onDismiss={() => setSnackVisibleTrue(false)}
           action={{ label: "Close" }}
           theme={{ colors: { accent: "#82027D" } }}
+          wrapperStyle={{zIndex:1}}
         >
           {getMessageTrue}
         </Snackbar>
@@ -169,6 +280,7 @@ export default function UpdateProfile({ navigation }) {
           onDismiss={() => setSnackVisibleFalse(false)}
           action={{ label: "Close" }}
           theme={{ colors: { accent: "red" } }}
+          wrapperStyle={{zIndex:1}}
         >
           {getMessageFalse}
         </Snackbar>
@@ -176,17 +288,11 @@ export default function UpdateProfile({ navigation }) {
           {/*Personal Information*/}
           <Headline title={"personal information"} />
           {/* Profile Picture */}
-          <ProfilePicture />
+          {/* <ProfilePicture /> */}
           <Input
             label="Name"
             placeholder="Enter your full name"
             onChangeText={(e) => setName(e)}
-          />
-          <Input
-            label="Email ID"
-            placeholder="Enter your E-mail ID"
-            keyboardType="email-address"
-            onChangeText={(e) => setEmail(e)}
           />
           <Input
             label="Contact No"
@@ -217,7 +323,7 @@ export default function UpdateProfile({ navigation }) {
             onChangeText={(e) => setCollegename(e)}
           />
 
-          <CountryDropdown
+          {/* <CountryDropdown
             label={"Country"}
             onSelect={(selectedItem, index) => {
               setCountry(selectedItem);
@@ -244,8 +350,129 @@ export default function UpdateProfile({ navigation }) {
               setuniversity(selectedItem);
               console.log(selectedItem, index);
             }}
-          />
+          /> */}
 
+          <Text style={styles.label_text}>Select Country</Text>
+          <Dropdown
+            style={[
+              styles.dropdown,
+              countryFocus && {
+                borderColor: color.purple,
+                borderWidth: 2,
+              },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={countryData}
+            search
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!countryFocus ? "Select Country" : "..."}
+            searchPlaceholder="Search..."
+            value={country}
+            onFocus={() => setCountryFocus(true)}
+            onBlur={() => setCountryFocus(false)}
+            onChange={(item) => {
+              setCountry(item.value);
+              setCountryFocus(false);
+              handleState(item.value);
+              handleUniversity(item.value);
+            }}
+            containerStyle={styles.dropdown_container}
+            itemContainerStyle={styles.dropdown_data}
+            itemTextStyle={styles.item_textStyle}
+          />
+          <Text style={styles.label_text}>Select State</Text>
+          <Dropdown
+            style={[
+              styles.dropdown,
+              stateFocus && { borderColor: color.purple, borderWidth: 2 },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={stateData}
+            search
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!stateFocus ? "Select State" : "..."}
+            searchPlaceholder="Search..."
+            value={state}
+            onFocus={() => setStateFocus(true)}
+            onBlur={() => setStateFocus(false)}
+            onChange={(item) => {
+              setState(item.value);
+              setStateFocus(false);
+              handleCity(country, item.value);
+            }}
+            containerStyle={styles.dropdown_container}
+            itemContainerStyle={styles.dropdown_data}
+            itemTextStyle={styles.item_textStyle}
+          />
+          <Text style={styles.label_text}>Select City</Text>
+          <Dropdown
+            style={[
+              styles.dropdown,
+              cityFocus && { borderColor: color.purple, borderWidth: 2 },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={cityData}
+            search
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!cityFocus ? "Select City" : "..."}
+            searchPlaceholder="Search..."
+            value={city}
+            onFocus={() => setCityFocus(true)}
+            onBlur={() => setCityFocus(false)}
+            onChange={(item) => {
+              setCity(item.value);
+              setCityFocus(false);
+            }}
+            containerStyle={styles.dropdown_container}
+            itemContainerStyle={styles.dropdown_data}
+            itemTextStyle={styles.item_textStyle}
+          />
+          <Text style={styles.label_text}>Select University</Text>
+          <Dropdown
+            style={[
+              styles.dropdown,
+              universityFocus && {
+                borderColor: color.purple,
+                borderWidth: 2,
+              },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={universityData}
+            search
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!universityFocus ? "Select University" : "..."}
+            searchPlaceholder="Search..."
+            value={university}
+            onFocus={() => setUniversityFocus(true)}
+            onBlur={() => setUniversityFocus(false)}
+            onChange={(item) => {
+              setUniversity(item.value);
+              setUniversityFocus(false);
+            }}
+            containerStyle={styles.dropdown_container}
+            itemContainerStyle={styles.dropdown_data}
+            itemTextStyle={styles.item_textStyle}
+          />
           {/* <Input2
             label="University Name"
             placeholder="University Name"
@@ -253,14 +480,14 @@ export default function UpdateProfile({ navigation }) {
           /> */}
 
           {/*Login and Password*/}
-          <Headline title={"login and password"} />
+          <Headline title={"Username"} />
           <Input
             label="Username"
             placeholder="Username"
             autoCapitalize="none"
             onChangeText={(e) => setusername(e)}
           />
-          <Input
+          {/* <Input
             label="Password"
             placeholder="Password"
             secureTextEntry={true}
@@ -273,7 +500,7 @@ export default function UpdateProfile({ navigation }) {
             secureTextEntry={true}
             autoCapitalize="none"
             onChangeText={(e) => setConfirmpassword(e)}
-          />
+          /> */}
 
           {/*Other Preference*/}
           <Headline title={"other preference"} />
@@ -301,15 +528,18 @@ export default function UpdateProfile({ navigation }) {
           />
 
           {/*Extra Space*/}
-          <View style={{ height: 40 }}></View>
+          {/* <View style={{ height: 40 }}></View> */}
 
           {/* SignUp Button */}
-          <AppButton title={"Update"} onPress={handleApi} />
+          <AppButton
+            title={"Update"}
+            onPress={handleApi}
+            btnColor={color.purple}
+          />
         </View>
 
         {/*Extra Space*/}
         <View style={{ height: 30 }}></View>
-
       </ScrollView>
     </View>
   );
@@ -365,4 +595,61 @@ const styles = StyleSheet.create({
     textDecorationStyle: "solid",
     fontFamily: "Montserrat-Bold",
   },
+    //dropdown style
+
+    dropdown: {
+      height: 50,
+      borderColor: color.gray,
+      borderWidth: 2,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+      marginBottom: 5,
+    },
+  
+    label: {
+      position: "absolute",
+      backgroundColor: "white",
+      left: 22,
+      top: 8,
+      zIndex: 999,
+      paddingHorizontal: 8,
+      fontSize: 14,
+    },
+    placeholderStyle: {
+      color: color.dark_gray,
+      fontSize: 14,
+      fontFamily: "Montserrat-Regular",
+    },
+    selectedTextStyle: {
+      color: color.black,
+      fontSize: 14,
+      fontFamily: "Montserrat-Regular",
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+    inputSearchStyle: {
+      height: 40,
+      fontSize: 16,
+    },
+    label_text: {
+      color: color.black,
+      fontSize: 13,
+      fontFamily: "Montserrat-Regular",
+      marginBottom: 5,
+    },
+    dropdown_data: {
+      borderBottomColor: color.gray,
+      borderBottomWidth: 1,
+    },
+    dropdown_container: {
+      borderWidth: 1,
+      borderColor: color.gray,
+      borderRadius: 5,
+    },
+    item_textStyle: {
+      fontFamily: "Montserrat-Bold",
+      fontSize: 14,
+    }, 
 });

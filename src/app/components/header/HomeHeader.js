@@ -17,13 +17,14 @@ export default function HomeHeader({ navigation, title,mailPress }) {
           }}
         />
         <Text style={styles.title}>{title}</Text>
-        <BadgeIcon
+        {/* <BadgeIcon
           type="material-community"
           name="email"
           color={color.purple}
           size={35}
           onPress={mailPress}
-        />
+        /> */}
+        <View style={{width:35}}></View>
       </View>
     </SafeAreaView>
   );

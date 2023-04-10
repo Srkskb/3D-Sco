@@ -11,11 +11,12 @@ import {
   TechnicalSupport,
   TermsCondition,
   ViewProfile,
+  UpdateProfile,
 } from "../screens/common/hamburgerMenu";
 import DrawerContent from "../components/DrawerContent";
 import TutorTabs from "./TutorTabs";
-import ParentTabs from "./ParentTabs"
-import AffiliateTabs from "./AffiliateTabs"
+import ParentTabs from "./ParentTabs";
+import AffiliateTabs from "./AffiliateTabs";
 const Drawer = createDrawerNavigator();
 export default function AffiliateDrawerNavigator() {
   return (
@@ -58,7 +59,23 @@ export default function AffiliateDrawerNavigator() {
           ),
         }}
       />
-
+      <Drawer.Screen
+        name="UpdateProfile"
+        component={UpdateProfile}
+        options={{
+          title: "Update Profile",
+          drawerLabelStyle: { fontFamily: "Montserrat-SemiBold" },
+          drawerIcon: ({ focussed, size }) => (
+            <Icon
+              type="font-awesome"
+              name="user"
+              color={focussed ? color.gray : color.purple}
+              size={25}
+              style={styles.icons}
+            />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="ChangePassword"
         component={ChangePassword}
