@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -63,6 +56,7 @@ export default function AdminEditEvent({ route, navigation }) {
       access_level: access,
       decription: updateDescription,
       event_id: eventID,
+      event_date: selectedDate,
       user_id: myData.id,
     });
     console.log(data);
@@ -167,11 +161,7 @@ export default function AdminEditEvent({ route, navigation }) {
                     <View style={styles.selectedData}>
                       <Text>{status}</Text>
                       <TouchableOpacity onPress={onClick}>
-                        <Entypo
-                          name="circle-with-cross"
-                          size={24}
-                          color={color.purple}
-                        />
+                        <Entypo name="circle-with-cross" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -189,15 +179,11 @@ export default function AdminEditEvent({ route, navigation }) {
                     fontFamily: "Montserrat-SemiBold",
                   }}
                 >
-                  {selectedDate
-                    ? moment(selectedDate).format("YYYY-MM-DD")
-                    : `${dateData}`}
+                  {selectedDate ? moment(selectedDate).format("YYYY-MM-DD") : `${dateData}`}
                 </Text>
                 <Text></Text>
                 <View style={styles.selectDate}>
-                  <TouchableOpacity
-                  onPress={showDatePicker}
-                  >
+                  <TouchableOpacity onPress={showDatePicker}>
                     <Entypo name="calendar" size={24} color={color.purple} />
                   </TouchableOpacity>
                 </View>
