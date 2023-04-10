@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StatusBar,
@@ -8,6 +8,8 @@ import {
   RefreshControl,
   // SafeAreaView,
   Dimensions,
+  BackHandler,
+  Alert,
 } from "react-native";
 import color from "../../../assets/themes/Color";
 import HomeHeader from "../../../components/header/HomeHeader";
@@ -16,6 +18,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // import { AdminJoin } from "../../students/account";
 const { height, width } = Dimensions.get("window");
 export default function AdminHomes({ navigation }) {
+  const backActionHandler = () => {
+    Alert.alert("Alert!", "Are you sure you want to go back?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel",
+      },
+      { text: "YES", onPress: () => BackHandler.exitApp()() },
+    ]);
+    return true;
+  };
+
+  useEffect(() => {
+    // Add event listener for hardware back button press on Android
+    BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+
+    return () =>
+      // clear/remove event listener
+      BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+  }, []);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
@@ -26,14 +48,10 @@ export default function AdminHomes({ navigation }) {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation} mailPress={()=>navigation.navigate("AdminMail")}/>
+      <HomeHeader navigation={navigation} mailPress={() => navigation.navigate("AdminMail")} />
       <StatusBar backgroundColor={color.purple} />
       <Image style={styles.banner} source={banner} />
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={styles.slider_container}>{/* <ImageSlide /> */}</View>
         {/* <AdminJoin /> */}
       </ScrollView>

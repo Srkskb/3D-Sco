@@ -7,26 +7,27 @@ import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
 import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
- import { Formik } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import HomeHeader from "../../../components/header/HomeHeader";
 import Input2 from "../../../components/inputs/Input2";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function ChangePassword() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const [loading, setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   // Keys
   const loginUID = localStorage.getItem("loginUID");
-  const changePasswordUID = (values) => {
-    setLoading(true)
+  const changePasswordUID = async (values) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setLoading(true);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Reset_password", "1");
-    urlencoded.append("user_id", loginUID);
+    urlencoded.append("user_id", myData.id);
     urlencoded.append("email", values.email);
     urlencoded.append("password", values.password);
 
@@ -41,12 +42,12 @@ export default function ChangePassword() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
-          setLoading(false)
+          setLoading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("Home");
         } else {
-          setLoading(false)
+          setLoading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -64,7 +65,7 @@ export default function ChangePassword() {
         title={"Change Password"}
         onPress={() => navigation.navigate("HomeScreen")}
       /> */}
-      <HomeHeader navigation={navigation} title={"Change Password"}/>
+      <HomeHeader navigation={navigation} title={"Change Password"} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -90,31 +91,16 @@ export default function ChangePassword() {
                 password: "",
               }}
               validationSchema={Yup.object().shape({
-                email: Yup.string()
-                  .email("Enter a valid email")
-                  .required("Email is required"),
-                password: Yup
-                  .string()
+                email: Yup.string().email("Enter a valid email").required("Email is required"),
+                password: Yup.string()
                   .required("Password is required")
                   .min(5, "Your password is too short.")
-                  .matches(
-                    /[a-zA-Z]/,
-                    "Password can only contain Latin letters."
-                  ),
-                confirmpassword: Yup
-                  .string()
-                  .oneOf([Yup.ref("password"), null], "Passwords must match"),
+                  .matches(/[1-2-3]/, "Password can only contain Latin letters."),
+                confirmpassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
               })}
               onSubmit={(values) => changePasswordUID(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                 <View>
                   <Input2
                     label={"Your Email ID"}
@@ -125,13 +111,7 @@ export default function ChangePassword() {
                     value={values.email}
                     keyboardType="text"
                   />
-                  {errors.email && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.email}
-                    </Text>
-                  )}
+                  {errors.email && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.email}</Text>}
                   <Input2
                     label={"New Password"}
                     placeholder={"New Password"}
@@ -142,11 +122,7 @@ export default function ChangePassword() {
                     keyboardType="text"
                   />
                   {errors.password && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.password}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.password}</Text>
                   )}
                   <Input2
                     label={"Conform Password"}
@@ -158,23 +134,18 @@ export default function ChangePassword() {
                     keyboardType="text"
                   />
                   {errors.confirmpassword && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.confirmpassword}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.confirmpassword}</Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} 
-                    fontFamily={'Montserrat-Medium'}/>
+                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
                       disabled={!isValid}
                       color={color.white}
                       backgroundColor={color.purple}
-                      fontFamily={'Montserrat-Bold'}
+                      fontFamily={"Montserrat-Bold"}
                       loading={loading}
                     />
                   </View>
