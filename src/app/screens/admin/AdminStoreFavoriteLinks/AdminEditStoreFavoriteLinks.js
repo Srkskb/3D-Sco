@@ -33,6 +33,16 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
   const updateDocument = async (values) => {
     setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
     console.log(updateTitle, upLink, category, upDescription);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
@@ -42,7 +52,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
     urlencoded.append("category", category);
     urlencoded.append("detail", upDescription);
     urlencoded.append("url", upLink);
-    urlencoded.append("type", "4");
+    urlencoded.append("type", type);
     urlencoded.append("id", linkID);
     urlencoded.append("user_id", myData.id);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
