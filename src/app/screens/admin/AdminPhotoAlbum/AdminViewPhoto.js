@@ -22,7 +22,7 @@ export default function AdminViewPhoto({ route, navigation }) {
     var formdata = new FormData();
     var myHeaders = myHeadersData();
     formdata.append("add_photos_comments", "1");
-    formdata.append("photo_id", route.params.list.id);
+    formdata.append("photo_id", route.params.id);
     formdata.append("comments", comment);
     formdata.append("user_id", myData.id);
 
@@ -37,10 +37,10 @@ export default function AdminViewPhoto({ route, navigation }) {
       .then((response) => response.json())
       .then((result) => {
         setLoading(false);
-        console.log("add comment", route.params.list.id);
+        console.log("add comment", route.params.id);
         if (result.success == 1) {
           commentList();
-          setComments("");
+          setComment("");
         }
       })
       .catch((error) => {
@@ -59,14 +59,18 @@ export default function AdminViewPhoto({ route, navigation }) {
     };
 
     fetch(
-      // `https://3dsco.com/3discoapi/studentregistration.php?photos_comments_list=1&photo_id=${id}`,
-      `https://3dsco.com/3discoapi/studentregistration.php?photos_comments_list=1&photo_id=16`,
+      `https://3dsco.com/3discoapi/studentregistration.php?photos_comments_list=1&photo_id=${route.params.id}`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
+        console.log("What ", route.params.id);
+        if (result.success != 0) {
+          setComments(result.data);
+        } else {
+          setComments([]);
+        }
         console.log(result);
-        if (result.success == 1) setComments(result.data);
       })
       .catch((error) => console.log("error", error));
   };
@@ -97,7 +101,11 @@ export default function AdminViewPhoto({ route, navigation }) {
               }}
             />
           </View>
-          <View>
+          <View style={styles.comment_section}>
+            <Text style={styles.comment_text}>
+              <Text>comments</Text>
+              <Text> ({comments && comments.length})</Text>
+            </Text>
             {comments.map((list, index) => (
               <CommentCard key={list.id} name={list.user_id} comments={list.comments} CommentDate={list.Date} />
             ))}
@@ -107,7 +115,7 @@ export default function AdminViewPhoto({ route, navigation }) {
             multiline={true}
             numberOfLines={5}
             textAlignVertical={"top"}
-            onChange={(e) => console.log(e)}
+            // onChange={(e) => console.log(e)}
             placeholder={"Type Your Comment Here..."}
             onChangeText={(text) => setComment(text)}
             // onChangeText={(text) => console.log(text)}
@@ -172,5 +180,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 10,
     marginBottom: 40,
+  },
+  comment_section: {
+    marginTop: 10,
+  },
+  comment_text: {
+    fontSize: 16,
+    fontFamily: "Montserrat-Bold",
+    color: color.black,
+    textTransform: "capitalize",
+    marginVertical: 10,
   },
 });
