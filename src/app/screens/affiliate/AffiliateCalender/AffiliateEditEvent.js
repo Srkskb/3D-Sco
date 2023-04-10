@@ -55,6 +55,7 @@ export default function AffiliateEditEvent({ route, navigation }) {
       access_level: access,
       decription: updateDescription,
       event_id: eventID,
+      event_date: selectedDate,
       user_id: myData.id,
     });
     console.log(data);
@@ -210,12 +211,12 @@ export default function AffiliateEditEvent({ route, navigation }) {
               />
 
               <View style={styles.button}>
-              <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(loginUID)}
-                    />
+                <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => console.log(loginUID)}
+                />
                 <SmallButton
                   onPress={updateEvent}
                   title="Update"

@@ -55,6 +55,7 @@ export default function ParentEditEvent({ route, navigation }) {
       event_titel: updateTitle,
       access_level: access,
       decription: updateDescription,
+      event_date: selectedDate,
       event_id: eventID,
       user_id: myData.id,
     });
@@ -211,12 +212,12 @@ export default function ParentEditEvent({ route, navigation }) {
               />
 
               <View style={styles.button}>
-              <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                      onPress={() => navigation.goBack()}
-                    />
+                <SmallButton
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
                 <SmallButton
                   onPress={updateEvent}
                   title="Update"
