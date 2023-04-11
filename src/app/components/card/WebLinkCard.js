@@ -2,15 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
 import { ViewButton, Remove, Edit } from "../buttons";
-export default function WebLinkCard({
-  title,
-  link,
-  category,
-  description,
-  viewPress,
-  removePress,
-  pressEdit,
-}) {
+export default function WebLinkCard({ title, link, category, description, viewPress, removePress, pressEdit }) {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row" }}>
@@ -31,7 +23,7 @@ export default function WebLinkCard({
         <View style={{ width: 20 }}></View>
         <ViewButton onPress={viewPress} />
         <View style={{ width: 20 }}></View>
-        <Remove onPress={removePress} />
+        <Remove onPress={() => removePress()} />
       </View>
     </View>
   );
@@ -42,8 +34,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 20,
     marginBottom: 10,
-    borderWidth:1,
-    borderColor:color.light_skyblue
+    borderWidth: 1,
+    borderColor: color.light_skyblue,
   },
   title: {
     fontFamily: "Montserrat-Bold",
