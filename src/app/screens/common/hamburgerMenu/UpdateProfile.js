@@ -1,13 +1,5 @@
-import React, { useState,useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Dimensions, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import { myHeadersData } from "../../../api/helper";
 import BackButton from "../../../components/buttons/BackButton";
 import color from "../../../assets/themes/Color";
@@ -18,6 +10,7 @@ import axios from "axios";
 import AppButton from "../../../components/buttons/AppButton";
 
 import Headline from "../../../components/Headline";
+import AsyncStorage from "@react-native-community/async-storage";
 import ProfilePicture from "../../../components/view/ProfilePicture";
 import {
   CategoryDropdown,
@@ -97,17 +90,28 @@ export default function UpdateProfile({ navigation }) {
     role: "1",
   };
 
-  const handleApi = () => {
+  const handleApi = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    myHeaders.append("Cookie", "PHPSESSID=ckmj4nc6enk1u3e0rle62m3l64");
+    myHeaders.append("Cookie", "d147dcadd6b1bd8bb79971d0f2f71d78");
     var urlencoded = new FormData();
-    urlencoded.append("studentregistration", "1");
+    urlencoded.append("update_studentprofile", "1");
     urlencoded.append("first_name", name);
     urlencoded.append("mobile", phone);
-    urlencoded.append("email", email);
-    urlencoded.append("password", password);
+    urlencoded.append("email", "Srkskb");
+    urlencoded.append("password", "123456");
     // address
     urlencoded.append("address", address);
     urlencoded.append("schoolname", schoolname);
@@ -123,7 +127,8 @@ export default function UpdateProfile({ navigation }) {
     urlencoded.append("comments", comment);
     // static value
     urlencoded.append("tandc", "1");
-    urlencoded.append("role", user_id);
+    urlencoded.append("role", type);
+    urlencoded.append("id", myData.id);
 
     console.log(urlencoded);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
@@ -139,9 +144,11 @@ export default function UpdateProfile({ navigation }) {
 
         if (responseJson.success == 0) {
           setSnackVisibleFalse(true);
+          console.log("what", responseJson.message);
           setMessageFalse(responseJson.message);
         } else {
           setMessageTrue(responseJson.message);
+          console.log("what", responseJson.message);
           setSnackVisibleTrue(true);
           navigation.reset({
             index: 0,
@@ -154,7 +161,7 @@ export default function UpdateProfile({ navigation }) {
       })
       .catch((error) => {
         //Hide Loader
-        alert("Invalid credential ");
+        // alert("Invalid credential ");
 
         console.error(error);
       });
@@ -260,18 +267,14 @@ export default function UpdateProfile({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      >
-       
-          <HomeHeader navigation={navigation} title={"Update Profile"}/>
+      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
+        <HomeHeader navigation={navigation} title={"Update Profile"} />
         <Snackbar
           visible={snackVisibleTrue}
           onDismiss={() => setSnackVisibleTrue(false)}
           action={{ label: "Close" }}
           theme={{ colors: { accent: "#82027D" } }}
-          wrapperStyle={{zIndex:1}}
+          wrapperStyle={{ zIndex: 1 }}
         >
           {getMessageTrue}
         </Snackbar>
@@ -280,7 +283,7 @@ export default function UpdateProfile({ navigation }) {
           onDismiss={() => setSnackVisibleFalse(false)}
           action={{ label: "Close" }}
           theme={{ colors: { accent: "red" } }}
-          wrapperStyle={{zIndex:1}}
+          wrapperStyle={{ zIndex: 1 }}
         >
           {getMessageFalse}
         </Snackbar>
@@ -289,11 +292,7 @@ export default function UpdateProfile({ navigation }) {
           <Headline title={"personal information"} />
           {/* Profile Picture */}
           {/* <ProfilePicture /> */}
-          <Input
-            label="Name"
-            placeholder="Enter your full name"
-            onChangeText={(e) => setName(e)}
-          />
+          <Input label="Name" placeholder="Enter your full name" onChangeText={(e) => setName(e)} />
           <Input
             label="Contact No"
             placeholder="Enter mobile number"
@@ -311,17 +310,9 @@ export default function UpdateProfile({ navigation }) {
 
           {/*Educational Information*/}
           <Headline title={"EDUCATIONAL INFORMATION"} />
-          <Input
-            label="School Name"
-            placeholder="School Name"
-            onChangeText={(e) => setSchoolname(e)}
-          />
+          <Input label="School Name" placeholder="School Name" onChangeText={(e) => setSchoolname(e)} />
 
-          <Input
-            label="College Name"
-            placeholder="College Name"
-            onChangeText={(e) => setCollegename(e)}
-          />
+          <Input label="College Name" placeholder="College Name" onChangeText={(e) => setCollegename(e)} />
 
           {/* <CountryDropdown
             label={"Country"}
@@ -387,10 +378,7 @@ export default function UpdateProfile({ navigation }) {
           />
           <Text style={styles.label_text}>Select State</Text>
           <Dropdown
-            style={[
-              styles.dropdown,
-              stateFocus && { borderColor: color.purple, borderWidth: 2 },
-            ]}
+            style={[styles.dropdown, stateFocus && { borderColor: color.purple, borderWidth: 2 }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
@@ -416,10 +404,7 @@ export default function UpdateProfile({ navigation }) {
           />
           <Text style={styles.label_text}>Select City</Text>
           <Dropdown
-            style={[
-              styles.dropdown,
-              cityFocus && { borderColor: color.purple, borderWidth: 2 },
-            ]}
+            style={[styles.dropdown, cityFocus && { borderColor: color.purple, borderWidth: 2 }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
@@ -481,12 +466,7 @@ export default function UpdateProfile({ navigation }) {
 
           {/*Login and Password*/}
           <Headline title={"Username"} />
-          <Input
-            label="Username"
-            placeholder="Username"
-            autoCapitalize="none"
-            onChangeText={(e) => setusername(e)}
-          />
+          <Input label="Username" placeholder="Username" autoCapitalize="none" onChangeText={(e) => setusername(e)} />
           {/* <Input
             label="Password"
             placeholder="Password"
@@ -514,8 +494,8 @@ export default function UpdateProfile({ navigation }) {
           <CategoryDropdown
             label={"Category"}
             onSelect={(selectedItem, index) => {
-              setCategory(selectedItem);
-              console.log(selectedItem, index);
+              setCategory("Catergory", selectedItem.id);
+              console.log(selectedItem.id, index);
             }}
           />
           <Input2
@@ -531,11 +511,7 @@ export default function UpdateProfile({ navigation }) {
           {/* <View style={{ height: 40 }}></View> */}
 
           {/* SignUp Button */}
-          <AppButton
-            title={"Update"}
-            onPress={handleApi}
-            btnColor={color.purple}
-          />
+          <AppButton title={"Update"} onPress={handleApi} btnColor={color.purple} />
         </View>
 
         {/*Extra Space*/}
@@ -595,61 +571,61 @@ const styles = StyleSheet.create({
     textDecorationStyle: "solid",
     fontFamily: "Montserrat-Bold",
   },
-    //dropdown style
+  //dropdown style
 
-    dropdown: {
-      height: 50,
-      borderColor: color.gray,
-      borderWidth: 2,
-      borderRadius: 8,
-      paddingHorizontal: 8,
-      marginBottom: 5,
-    },
-  
-    label: {
-      position: "absolute",
-      backgroundColor: "white",
-      left: 22,
-      top: 8,
-      zIndex: 999,
-      paddingHorizontal: 8,
-      fontSize: 14,
-    },
-    placeholderStyle: {
-      color: color.dark_gray,
-      fontSize: 14,
-      fontFamily: "Montserrat-Regular",
-    },
-    selectedTextStyle: {
-      color: color.black,
-      fontSize: 14,
-      fontFamily: "Montserrat-Regular",
-    },
-    iconStyle: {
-      width: 20,
-      height: 20,
-    },
-    inputSearchStyle: {
-      height: 40,
-      fontSize: 16,
-    },
-    label_text: {
-      color: color.black,
-      fontSize: 13,
-      fontFamily: "Montserrat-Regular",
-      marginBottom: 5,
-    },
-    dropdown_data: {
-      borderBottomColor: color.gray,
-      borderBottomWidth: 1,
-    },
-    dropdown_container: {
-      borderWidth: 1,
-      borderColor: color.gray,
-      borderRadius: 5,
-    },
-    item_textStyle: {
-      fontFamily: "Montserrat-Bold",
-      fontSize: 14,
-    }, 
+  dropdown: {
+    height: 50,
+    borderColor: color.gray,
+    borderWidth: 2,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginBottom: 5,
+  },
+
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    color: color.dark_gray,
+    fontSize: 14,
+    fontFamily: "Montserrat-Regular",
+  },
+  selectedTextStyle: {
+    color: color.black,
+    fontSize: 14,
+    fontFamily: "Montserrat-Regular",
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+  label_text: {
+    color: color.black,
+    fontSize: 13,
+    fontFamily: "Montserrat-Regular",
+    marginBottom: 5,
+  },
+  dropdown_data: {
+    borderBottomColor: color.gray,
+    borderBottomWidth: 1,
+  },
+  dropdown_container: {
+    borderWidth: 1,
+    borderColor: color.gray,
+    borderRadius: 5,
+  },
+  item_textStyle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 14,
+  },
 });
