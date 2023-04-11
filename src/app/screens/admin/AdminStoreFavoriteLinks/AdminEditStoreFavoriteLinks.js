@@ -13,11 +13,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
 
 export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
-  const { linkID, linkIdParam } = route.params; // ! Current Event ID
-  const { title, titleParam } = route.params;
-  const { link, lonkParam } = route.params;
-  const { description, descriptionParam } = route.params;
-  const { linkCategory, categoryParam } = route.params;
+  const { linkID, title, link, description, linkCategory, catId } = route.params;
+
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -28,7 +25,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
   const [upLink, setUpLink] = useState(link);
-  const [category, setCategory] = useState(linkCategory);
+  const [category, setCategory] = useState(catId);
 
   const updateDocument = async (values) => {
     setloading(true);
@@ -43,7 +40,6 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
         : myData.type == "student"
         ? 1
         : 3;
-    console.log(updateTitle, upLink, category, upDescription);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
 
@@ -174,7 +170,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
                   onPress={() => navigation.goBack()}
                 />
                 <SmallButton
-                  onPress={updateDocument}
+                  onPress={() => updateDocument()}
                   title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}

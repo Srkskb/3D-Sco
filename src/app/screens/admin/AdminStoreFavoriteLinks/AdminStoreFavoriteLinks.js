@@ -19,10 +19,10 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
-import qs from "qs";
-import axios from "axios";
+
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+
 export default function AdminStoreFavoriteLinks() {
   const navigation = useNavigation();
 
@@ -30,20 +30,20 @@ export default function AdminStoreFavoriteLinks() {
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [color, changeColor] = useState("red");
+  // const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [id, setId] = useState("");
+  const [linkId, setLinkId] = useState("");
   const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [filter, setFilter] = useState("");
-  const [categoryList, setCategoryList] = useState([]);
-  const [initialStoreLinks, setInitialStoreLinks] = useState([]);
-  const user_type = localStorage.getItem("userID"); // ! user Type student or other
-
+  // const [categoryList, setCategoryList] = useState([]);
+  // const [initialStoreLinks, setInitialStoreLinks] = useState([]);
+  // const user_type = localStorage.getItem("userID"); // ! user Type student or other
+  console.log("filter", filter);
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const type =
@@ -70,10 +70,8 @@ export default function AdminStoreFavoriteLinks() {
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log("data", result.data);
         setStoreLinks(result.data);
-        setSearchData(result.data);
-        setInitialStoreLinks(result.data);
+        // setSearchData(result.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -82,46 +80,49 @@ export default function AdminStoreFavoriteLinks() {
       });
   };
 
-  const category = () => {
-    const myHeaders = myHeadersData();
-    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
-      method: "GET",
-      headers: {
-        myHeaders,
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success == 1) {
-          setCategoryList(res.data);
-        } else {
-          alert("Try after sometime");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  };
+  // const category = () => {
+  //   const myHeaders = myHeadersData();
+  //   fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
+  //     method: "GET",
+  //     headers: {
+  //       myHeaders,
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       if (res.success == 1) {
+  //         setCategoryList(res.data);
+  //       } else {
+  //         alert("Try after sometime");
+  //       }
+  //     })
+  //     .catch((error) => console.log("error", error));
+  // };
 
-  const deleteProject = async (id) => {
+  const deleteProject = async (linkId) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${myData.id}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${linkId}&user_id=${myData.id}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
-        if (result.success === 1) {
-          setDeletePop(false);
+        console.log(result);
+        if (result.success == 1) {
+          setLinkId("");
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
-          let temp = [];
-          storeLinks.forEach((item) => {
-            if (item.id !== id) temp.push(item);
-          });
-          setStoreLinks(temp);
+          // let temp = [];
+          // storeLinks.forEach((item) => {
+          //   if (item.id !== linkId) temp.push(item);
+          // });
+          setStoreLinks((prev) => prev.filter((item) => item.id != linkId));
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
@@ -134,13 +135,13 @@ export default function AdminStoreFavoriteLinks() {
     setRefreshing(true);
     allLearnerList();
     setTimeout(() => {
-      changeColor("green");
+      // changeColor("green");
+
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    category();
-    navigation.addListener("focus", () => category());
+    navigation.addListener("focus", () => setStoreLinks([]));
   }, [navigation]);
 
   // const searchText = (searchTerm) => {
@@ -223,7 +224,7 @@ export default function AdminStoreFavoriteLinks() {
             </TouchableOpacity>
           </View>
         </View>
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScrollView refreshControl={!refreshing && <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.main}>
             <View style={{ flex: 1 }}>
               {storeLinks === undefined ? (
@@ -232,7 +233,7 @@ export default function AdminStoreFavoriteLinks() {
                 </>
               ) : (
                 <>
-                  {searchData?.map((list, index) => (
+                  {storeLinks?.map((list, index) => (
                     <WebLinkCard
                       key={index}
                       title={list.Titel}
@@ -248,18 +249,20 @@ export default function AdminStoreFavoriteLinks() {
                         })
                       }
                       removePress={() => {
-                        setId(list.id);
-                        setDeletePop(true);
+                        setLinkId(list.id);
+                        // setDeletePop(true);
                       }}
-                      pressEdit={() =>
+                      pressEdit={() => {
+                        setStoreLinks([]);
                         navigation.navigate("AdminEditStoreFavoriteLinks", {
                           linkID: list.id,
                           title: list.Titel,
                           link: list.url,
                           description: list.Detail,
                           linkCategory: list.Category,
-                        })
-                      }
+                          catId: list.Category_id,
+                        });
+                      }}
                     />
                   ))}
                 </>
@@ -268,7 +271,9 @@ export default function AdminStoreFavoriteLinks() {
           </View>
         </ScrollView>
       </View>
-      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteProject(id)} /> : null}
+      {linkId?.length ? (
+        <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteProject(linkId)} />
+      ) : null}
     </View>
   );
 }
