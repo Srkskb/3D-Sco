@@ -13,17 +13,19 @@ import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+
 export default function ParentPhotoAlbum() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
@@ -33,18 +35,23 @@ const [deletePop, setDeletePop] = useState(false);
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${myData.id}`, requestOptions)
+    fetch(
+      // `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${loginUID}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?photo=1&id=${myData.id}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
         setFileCabinetData(result.data);
-        console.log(result.data);
+        console.log("fileCabinetData", result.data);
       })
       .catch((error) => console.log("error", error));
   };
+
   const deleteEvent = async (id) => {
-    
+    // const loginUID = localStorage.getItem("loginUID");
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+
     var data = qs.stringify({
       delete_photos: "1",
       user_id: myData.id,
@@ -62,19 +69,20 @@ const [deletePop, setDeletePop] = useState(false);
 
     axios(config)
       .then((result) => {
-        console.log(result);
-        if (result.success === 1) {
+        console.log("delete", result.data);
+
+        if (result.data.success === 1) {
           setDeletePop(false);
           setSnackVisibleTrue(true);
-          setMessageTrue(result.message);
-          let temp = [];
-          fileCabinetData.forEach((item) => {
-            if (item.id !== id) temp.push(item);
-          });
-          setFileCabinetData(temp);
+          setMessageTrue("Deleted Successfully");
+          // let temp = [];
+          // fileCabinetData.forEach((item) => {
+          //   if (item.id !== id) temp.push(item);
+          // });
+          setFileCabinetData((prev) => prev.filter((item) => item.id != id));
         } else {
           setSnackVisibleFalse(true);
-          setMessageFalse(result.message);
+          setMessageFalse("Something went wrong");
         }
       })
       // fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
@@ -96,6 +104,7 @@ const [deletePop, setDeletePop] = useState(false);
       //       })
       .catch((error) => console.log("error", error));
   };
+
   const onRefresh = () => {
     setRefreshing(true);
     allLearnerList();
@@ -104,6 +113,7 @@ const [deletePop, setDeletePop] = useState(false);
       setRefreshing(false);
     }, 2000);
   };
+
   useEffect(() => {
     allLearnerList();
     navigation.addListener("focus", () => allLearnerList());
@@ -118,6 +128,7 @@ const [deletePop, setDeletePop] = useState(false);
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        duration={2000}
         wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
@@ -145,17 +156,17 @@ const [deletePop, setDeletePop] = useState(false);
             <>
               {fileCabinetData.map((list, index) => (
                 <FileCabinetCard
-                  key={index}
+                  key={list.id}
                   title={list.title}
                   access={list.access_level}
                   description={list.description}
                   onPressEdit={() =>
                     navigation.navigate("ParentEditPhoto", {
-                      docId: list.id,
-                      title: list.title,
-                      docAccess: list.access_level,
-                      description: list.description,
-                      docImage: list.file_name,
+                      docId: list?.id,
+                      title: list?.title,
+                      docAccess: list?.access_level,
+                      description: list?.description,
+                      docImage: list?.file_name,
                     })
                   }
                   removePress={() => {
@@ -168,6 +179,7 @@ const [deletePop, setDeletePop] = useState(false);
                       access: list.access_level,
                       description: list.description,
                       image: list.file_name,
+                      id: list.id,
                     })
                   }
                 />
@@ -176,12 +188,7 @@ const [deletePop, setDeletePop] = useState(false);
           )}
         </View>
       </ScrollView>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteEvent(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}
     </View>
   );
 }
