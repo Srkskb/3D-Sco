@@ -10,28 +10,36 @@ import { Snackbar } from "react-native-paper";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
-import { CategoryDropdown } from "../../../components/dropdown";
+import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
 
 export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
-  const { linkID, linkIdParam } = route.params; // ! Current Event ID
-  const { title, titleParam } = route.params;
-  const { link, lonkParam } = route.params;
-  const { description, descriptionParam } = route.params;
-  const { linkCategory, categoryParam } = route.params;
+  const { linkID, title, link, description, linkCategory, catId } = route.params;
+
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
   const [upLink, setUpLink] = useState(link);
-  const [category, setCategory] = useState(linkCategory);
+  const [category, setCategory] = useState(catId);
 
   const updateDocument = async (values) => {
+    setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log(updateTitle, upLink, category, upDescription);
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
 
@@ -40,7 +48,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
     urlencoded.append("category", category);
     urlencoded.append("detail", upDescription);
     urlencoded.append("url", upLink);
-    urlencoded.append("type", "2");
+    urlencoded.append("type", type);
     urlencoded.append("id", linkID);
     urlencoded.append("user_id", myData.id);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
@@ -55,10 +63,12 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setloading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("EducatorStoreFavoriteLinks");
         } else {
+          setloading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
@@ -84,7 +94,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -93,7 +103,7 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        style={{ zIndex: 1 }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -153,13 +163,19 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
               />
 
               <View style={styles.button}>
-                <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
                 <SmallButton
-                  onPress={updateDocument}
-                  title="Save"
+                  title={"Cancel"}
+                  color={color.purple}
+                  fontFamily={"Montserrat-Medium"}
+                  onPress={() => navigation.goBack()}
+                />
+                <SmallButton
+                  onPress={() => updateDocument()}
+                  title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}
+                  loading={loading}
                 />
               </View>
             </View>
