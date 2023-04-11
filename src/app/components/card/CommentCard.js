@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
+import moment from "moment";
 
 export default function CommentCard({ CommentDate, comments, name }) {
   return (
@@ -10,7 +11,7 @@ export default function CommentCard({ CommentDate, comments, name }) {
           {name}
           {": "}{" "}
         </Text>
-        <Text style={styles.time}>{CommentDate}</Text>
+        <Text style={styles.time}>{moment(CommentDate).fromNow()}</Text>
       </Text>
       <Text style={styles.comment}>{comments}</Text>
     </View>

@@ -8,38 +8,53 @@ import CommentCard from "../../../components/card/CommentCard";
 import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as qs from "qs";
+
 export default function AdminViewPhoto({ route, navigation }) {
-  const { loading, setLoading } = useState(false);
+  const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
   const { title, titleParam } = route.params;
   const { access, accessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { id, image, imageParam } = route.params;
   const [comments, setComments] = useState([]);
+
   const addPhotoComment = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
-    var formdata = new FormData();
     var myHeaders = myHeadersData();
-    formdata.append("add_photos_comments", "1");
-    formdata.append("photo_id", route.params.id);
-    formdata.append("comments", comment);
-    formdata.append("user_id", myData.id);
+    // var formdata = new FormData();
+    // formdata.append("add_photos_comments", "1");
+    // formdata.append("photo_id", route.params.id);
+    // formdata.append("comments", comment);
+    // formdata.append("user_id", myData.id);
+    const formdata = qs.stringify({
+      add_photos_comments: "1",
+      photo_id: route.params.id,
+      comments: comment,
+      user_id: myData.id,
+    });
 
     var requestOptions = {
       method: "POST",
-      headers: myHeaders,
+      headers: {
+        Accept: "application/json",
+        // "Content-Type": "multipart/form-data",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=7fqo201rhcb95rof0rq6hg3jm3",
+      },
       body: formdata,
-      redirect: "follow",
     };
-    console.log(formdata, "formdata");
-    fetch("https://3dsco.com/3discoapi/3dicowebservce.php", requestOptions)
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         setLoading(false);
-        console.log("add comment", route.params.id);
         if (result.success == 1) {
-          commentList();
+          // commentList();
+          setComments((prev) => [
+            ...prev,
+            { id: myData.id, User_name: myData.name, comments: comment, CommentDate: Date.now() },
+          ]);
           setComment("");
         }
       })
@@ -49,7 +64,6 @@ export default function AdminViewPhoto({ route, navigation }) {
       });
   };
 
-  const loginUID = localStorage.getItem("loginUID");
   const myHeaders = myHeadersData();
   const commentList = () => {
     var requestOptions = {
@@ -64,13 +78,11 @@ export default function AdminViewPhoto({ route, navigation }) {
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log("What ", route.params.id);
         if (result.success != 0) {
           setComments(result.data);
         } else {
           setComments([]);
         }
-        console.log(result);
       })
       .catch((error) => console.log("error", error));
   };
@@ -107,7 +119,7 @@ export default function AdminViewPhoto({ route, navigation }) {
               <Text> ({comments && comments.length})</Text>
             </Text>
             {comments.map((list, index) => (
-              <CommentCard key={list.id} name={list.user_id} comments={list.comments} CommentDate={list.Date} />
+              <CommentCard key={list.id} name={list.User_name} comments={list.comments} CommentDate={list.Date} />
             ))}
           </View>
           <Input2
@@ -134,7 +146,7 @@ export default function AdminViewPhoto({ route, navigation }) {
               loading={loading}
               fontFamily={"Montserrat-Bold"}
               backgroundColor={color.purple}
-              onPress={addPhotoComment}
+              onPress={() => addPhotoComment()}
             />
           </View>
         </ScrollView>
