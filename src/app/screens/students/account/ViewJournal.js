@@ -1,11 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, Dimensions, Linking } from "react-native";
 import React from "react";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import Input2 from "../../../components/inputs/Input2";
 import SmallButton from "../../../components/buttons/SmallButton";
 import CommentCard from "../../../components/card/CommentCard";
-const {height,width}=Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 export default function ViewJournal({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { Date, dateParam } = route.params;
@@ -14,14 +14,8 @@ export default function ViewJournal({ route, navigation }) {
   const { image, imageParam } = route.params;
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"view journal"}
-        onPress={() => navigation.navigate("MyJournal")}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.scroll_view}
-      >
+      <HeaderBack title={"view journal"} onPress={() => navigation.navigate("MyJournal")} />
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll_view}>
         <View style={styles.detail_box}>
           <Text style={styles.head_text}>{title}</Text>
           <View style={styles.detail}>
@@ -39,12 +33,11 @@ export default function ViewJournal({ route, navigation }) {
               <Text style={styles.description_text}>{description}</Text>
             </View>
             <View style={styles.documentView}>
-              <Image
-                style={styles.tinyLogo}
-                source={{
-                  uri: `${image}`,
-                }}
-              />
+              <TouchableOpacity onPress={() => Linking.openURL(image)}>
+                <Image source={require("../../../assets/images/whatever.png")} />
+              </TouchableOpacity>
+              <Text>Pdf Name:</Text>
+              <Text>{image.split("/").pop().split(".")[0]}</Text>
             </View>
           </View>
         </View>
@@ -93,8 +86,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   tinyLogo: {
-    height: height/2,
-    resizeMode:'contain'
+    height: height / 2,
+    resizeMode: "contain",
   },
   img: {
     width: 300,

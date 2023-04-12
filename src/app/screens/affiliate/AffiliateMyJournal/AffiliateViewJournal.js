@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, Dimensions, TouchableOpacity, Linking } from "react-native";
 import React from "react";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
@@ -33,17 +33,11 @@ export default function AffiliateViewJournal({ route, navigation }) {
               <Text style={styles.description_text}>{description}</Text>
             </View>
             <View style={styles.documentView}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Linking.openURL(image)}>
                 <Image source={require("../../../assets/images/whatever.png")} />
               </TouchableOpacity>
               <Text>Pdf Name:</Text>
-              <Text>{image.split("https://3dsco.com/images/")[1]}</Text>
-              {/* <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: `${image}`,
-            }}
-          /> */}
+              <Text>{image.split("/").pop().split(".")[0]}</Text>
             </View>
           </View>
         </View>

@@ -110,16 +110,16 @@ export default function UpdateProfile({ navigation }) {
     urlencoded.append("update_studentprofile", "1");
     urlencoded.append("first_name", name);
     urlencoded.append("mobile", phone);
-    urlencoded.append("email", "Srkskb");
-    urlencoded.append("password", "123456");
+    // urlencoded.append("email", "Srkskb");
+    // urlencoded.append("password", "123456");
     // address
     urlencoded.append("address", address);
-    urlencoded.append("schoolname", schoolname);
-    urlencoded.append("collagename", collagename);
+    // urlencoded.append("schoolname", schoolname);
+    // urlencoded.append("collagename", collagename);
     urlencoded.append("country", country);
     urlencoded.append("state", state);
     urlencoded.append("city", city);
-    urlencoded.append("univercity", university);
+    // urlencoded.append("univercity", university);
     // login
     urlencoded.append("username", username);
     urlencoded.append("gender", gender);
