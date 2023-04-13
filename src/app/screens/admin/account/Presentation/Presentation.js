@@ -18,7 +18,7 @@ import DeletePopup from "../../../../components/popup/DeletePopup";
 export default function Presentation() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -43,7 +43,6 @@ const [deletePop, setDeletePop] = useState(false);
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         setFileCabinetData(result?.data);
         setLoading(false);
       })
@@ -118,65 +117,60 @@ const [deletePop, setDeletePop] = useState(false);
       >
         {getMessageFalse}
       </Snackbar>
-      {loading ? (
-        <Loader />
-      ) : (
-        <ScrollView
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          style={{ paddingHorizontal: 10 }}
-        >
-          <TextWithButton
-            title={"Course Category"}
-            label={"+Add"}
-            onPress={() => navigation.navigate("AddPresentation")}
-          />
-          <SelectCourse
-            label={"Select Course"}
-            onSelect={(selectedItem, index) => {
-              setCourseId(selectedItem.id);
-              console.log(selectedItem.id);
-            }}
-          />
-          <View style={{ paddingHorizontal: 10 }}>
-            {fileCabinetData === undefined ? (
-              <>
-                <NoDataFound />
-              </>
-            ) : (
-              <>
-                {fileCabinetData.map((list, index) => (
-                  <FileCabinet2
-                    key={index}
-                    title={list.assignment_title}
-                    description={list.Description}
-                    date={list.Date}
-                    onPressView={() => {
-                      Linking.openURL(list.file_name);
-                    }}
-                    onPressEdit={() =>
-                      navigation.navigate("EditPresentation", {
-                        preTitle: list.assignment_title,
-                        id: list?.id,
-                        description: list.Description,
-                      })
-                    }
-                    removePress={() => {
-                      setId(list.id);
-                      setDeletePop(true);
-                    }}
-                  />
-                ))}
-              </>
-            )}
-          </View>
-        </ScrollView>
-      )}
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteEvent(id)}
+
+      {loading && <Loader />}
+
+      <ScrollView
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        style={{ paddingHorizontal: 10 }}
+      >
+        <TextWithButton
+          title={"Course Category"}
+          label={"+Add"}
+          onPress={() => navigation.navigate("AddPresentation")}
         />
-      ) : null}
+        <SelectCourse
+          label={"Select Course"}
+          onSelect={(selectedItem, index) => {
+            setCourseId(selectedItem.id);
+            console.log(selectedItem.id);
+          }}
+        />
+        <View style={{ paddingHorizontal: 10 }}>
+          {fileCabinetData === undefined ? (
+            <>
+              <NoDataFound />
+            </>
+          ) : (
+            <>
+              {fileCabinetData.map((list, index) => (
+                <FileCabinet2
+                  key={index}
+                  title={list.assignment_title}
+                  description={list.Description}
+                  date={list.Date}
+                  onPressView={() => {
+                    Linking.openURL(list.file_name);
+                  }}
+                  onPressEdit={() =>
+                    navigation.navigate("EditPresentation", {
+                      preTitle: list.assignment_title,
+                      id: list?.id,
+                      description: list.Description,
+                    })
+                  }
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
+                />
+              ))}
+            </>
+          )}
+        </View>
+      </ScrollView>
+
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}
     </View>
   );
 }

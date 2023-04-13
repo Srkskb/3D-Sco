@@ -16,7 +16,9 @@ export default function SelectCourse({ label, ...props }) {
       .get(`https://3dsco.com/3discoapi/3dicowebservce.php?courses_list=1&user_id=${myData.id}`)
       .then(function (res) {
         if (res.data.success == 1) {
-          setSelectItem(res.data.data);
+          if (res.data.data) {
+            setSelectItem(res.data.data);
+          } else setSelectItem([{ Course: "Please add the course", id: 0 }]);
         } else {
           console.log("Course List can't fetch right now");
         }

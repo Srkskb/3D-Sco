@@ -17,27 +17,29 @@ const banner = require("../../../assets/images/banner_home.png");
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { AdminJoin } from "../../students/account";
 const { height, width } = Dimensions.get("window");
-export default function AdminHomes({ navigation }) {
-  const backActionHandler = () => {
-    Alert.alert("Alert!", "Are you sure you want to go back?", [
-      {
-        text: "Cancel",
-        onPress: () => null,
-        style: "cancel",
-      },
-      { text: "YES", onPress: () => BackHandler.exitApp()() },
-    ]);
-    return true;
-  };
 
-  useEffect(() => {
-    // Add event listener for hardware back button press on Android
-    BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+export default function AdminHomes({ navigation, backActionHandler }) {
+  // const backActionHandler = () => {
+  //   Alert.alert("Alert!", "Are you sure you want to go back?", [
+  //     {
+  //       text: "Cancel",
+  //       onPress: () => null,
+  //       style: "cancel",
+  //     },
+  //     { text: "YES", onPress: () => BackHandler.exitApp()() },
+  //   ]);
+  //   return true;
+  // };
 
-    return () =>
-      // clear/remove event listener
-      BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-  }, []);
+  // useEffect(() => {
+  //   // Add event listener for hardware back button press on Android
+  //   BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+
+  //   return () =>
+  //     // clear/remove event listener
+  //     BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+  // }, []);
+
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {

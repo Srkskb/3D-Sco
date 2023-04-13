@@ -29,6 +29,7 @@ import * as Yup from "yup";
 import * as qs from "qs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { clockRunning } from "react-native-reanimated";
+import { resetStack } from "../utils/ResetStack";
 // import { showMessage, hideMessage } from "react-native-flash-message";
 const storeData = async (key, value) => {
   try {
@@ -107,19 +108,19 @@ export default function Login({ navigation }) {
           storeData("userType", response.data.type);
           storeData("userData", response.data);
           if (response.data.type == "student") {
-            navigation.replace("DrawerNavigator");
+            resetStack(navigation, "DrawerNavigator");
           }
           if (response.data.type == "tutor") {
-            navigation.replace("TutorDrawerNavigator");
+            resetStack(navigation, "TutorDrawerNavigator");
           }
           if (response.data.type == "parent") {
-            navigation.replace("ParentDrawerNavigator");
+            resetStack(navigation, "ParentDrawerNavigator");
           }
           if (response.data.type == "admin") {
-            navigation.replace("AdminDrawerNavigator");
+            resetStack(navigation, "AdminDrawerNavigator");
           }
           if (response.data.type == "affiliate") {
-            navigation.replace("AffiliateDrawerNavigator");
+            resetStack(navigation, "AffiliateDrawerNavigator");
           }
           setInitialObj(obj);
         }

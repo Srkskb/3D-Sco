@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Dimensions, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import BackButton from "../../components/buttons/BackButton";
 import color from "../../assets/themes/Color";
 import Input from "../../components/inputs/Input";
@@ -17,13 +9,14 @@ import AppButton from "../../components/buttons/AppButton";
 import Condition from "../../components/Conditions";
 import Headline from "../../components/Headline";
 import {
-  CategoryDropdown,
   StateDropdown,
   CountryDropdown,
   GenderDropdown,
   UniversityDropdown,
   CityDropdown,
 } from "../../components/dropdown";
+import CategoryDropdown from "../../components/dropdown/CategoryDropdown";
+
 import ProfilePicture from "../../components/view/ProfilePicture";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
@@ -45,7 +38,6 @@ export default function UpdateProfile({ navigation }) {
   const [comment, setComment] = useState();
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
-  
 
   // ! setUser data for the
   const [getName, setUpName] = useState();
@@ -72,7 +64,7 @@ export default function UpdateProfile({ navigation }) {
 
   // ! Too show user details
   const showUserDetails = () => {
-    console.log('loginUID',loginUID);
+    console.log("loginUID", loginUID);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -80,10 +72,7 @@ export default function UpdateProfile({ navigation }) {
       redirect: "follow",
     };
 
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`, requestOptions)
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
@@ -176,10 +165,7 @@ export default function UpdateProfile({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
         <TouchableOpacity onPress={() => navigation.navigate("ViewProfile")}>
           <BackButton />
         </TouchableOpacity>
@@ -216,13 +202,8 @@ export default function UpdateProfile({ navigation }) {
                 .required("Name is required.")
                 .min(3, "Name must be at least 3 characters")
                 .max(20, "Name cannot be more than 20 characters"),
-              email: Yup.string()
-                .email("Enter a valid email")
-                .required("Email is required"),
-              phoneNumber: Yup.string().matches(
-                phoneRegExp,
-                "Phone number is not valid"
-              ),
+              email: Yup.string().email("Enter a valid email").required("Email is required"),
+              phoneNumber: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
               address: Yup.string().required("Address is required."),
               schoolName: Yup.string().required("School Name is required."),
               collegeName: Yup.string().required("College Name is required."),
@@ -230,25 +211,12 @@ export default function UpdateProfile({ navigation }) {
               password: Yup.string()
                 .required("Password is required")
                 .min(5, "Your password is too short.")
-                .matches(
-                  /[a-zA-Z]/,
-                  "Password can only contain Latin letters."
-                ),
-              confirmpassword: Yup.string().oneOf(
-                [Yup.ref("password"), null],
-                "Passwords must match"
-              ),
+                .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+              confirmpassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
             })}
             onSubmit={(values) => handleApi(values)}
           >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              isValid,
-            }) => (
+            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
               <View>
                 {/*Personal Information*/}
                 <Headline title={"personal information"} />
@@ -265,9 +233,7 @@ export default function UpdateProfile({ navigation }) {
                   value={getName}
                   keyboardType="text"
                 />
-                {errors.name && (
-                  <Text style={styles.errorText}>{errors.name}</Text>
-                )}
+                {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
                 <Input
                   label={"Email ID"}
                   placeholder={"Email ID"}
@@ -277,9 +243,7 @@ export default function UpdateProfile({ navigation }) {
                   value={values.email}
                   keyboardType="text"
                 />
-                {errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                )}
+                {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                 <Input
                   label={"Contact No"}
                   placeholder={"Enter mobile number"}
@@ -289,9 +253,7 @@ export default function UpdateProfile({ navigation }) {
                   value={values.phoneNumber}
                   keyboardType="number-pad"
                 />
-                {errors.phoneNumber && (
-                  <Text style={styles.errorText}>{errors.phoneNumber}</Text>
-                )}
+                {errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>}
                 <Input
                   label={"Address"}
                   placeholder={"Enter your Address"}
@@ -303,9 +265,7 @@ export default function UpdateProfile({ navigation }) {
                   value={values.address}
                   textAlignVertical={"top"}
                 />
-                {errors.address && (
-                  <Text style={styles.errorText}>{errors.address}</Text>
-                )}
+                {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
 
                 {/*Educational Information*/}
                 <Headline title={"EDUCATIONAL INFORMATION"} />
@@ -319,9 +279,7 @@ export default function UpdateProfile({ navigation }) {
                   value={values.schoolName}
                   keyboardType="text"
                 />
-                {errors.schoolName && (
-                  <Text style={styles.errorText}>{errors.schoolName}</Text>
-                )}
+                {errors.schoolName && <Text style={styles.errorText}>{errors.schoolName}</Text>}
 
                 <Input
                   label={"College Name"}
@@ -332,9 +290,7 @@ export default function UpdateProfile({ navigation }) {
                   value={values.collegeName}
                   keyboardType="text"
                 />
-                {errors.collegeName && (
-                  <Text style={styles.errorText}>{errors.collegeName}</Text>
-                )}
+                {errors.collegeName && <Text style={styles.errorText}>{errors.collegeName}</Text>}
 
                 <CountryDropdown
                   label={"Country"}
@@ -376,9 +332,7 @@ export default function UpdateProfile({ navigation }) {
                   value={values.userName}
                   keyboardType="text"
                 />
-                {errors.userName && (
-                  <Text style={styles.errorText}>{errors.userName}</Text>
-                )}
+                {errors.userName && <Text style={styles.errorText}>{errors.userName}</Text>}
 
                 <Input
                   label={"Password"}
@@ -390,9 +344,7 @@ export default function UpdateProfile({ navigation }) {
                   secureTextEntry={true}
                   autoCapitalize="none"
                 />
-                {errors.password && (
-                  <Text style={styles.errorText}>{errors.password}</Text>
-                )}
+                {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
                 <Input
                   label={"Confirm Password"}
@@ -404,9 +356,7 @@ export default function UpdateProfile({ navigation }) {
                   secureTextEntry={true}
                   autoCapitalize="none"
                 />
-                {errors.confirmpassword && (
-                  <Text style={styles.errorText}>{errors.confirmpassword}</Text>
-                )}
+                {errors.confirmpassword && <Text style={styles.errorText}>{errors.confirmpassword}</Text>}
 
                 {/*Other Preference*/}
                 <Headline title={"other preference"} />
@@ -421,7 +371,6 @@ export default function UpdateProfile({ navigation }) {
                   label={"Category"}
                   onSelect={(selectedItem, index) => {
                     setCategory(selectedItem);
-                    console.log(selectedItem, index);
                   }}
                 />
                 <Input2
@@ -443,20 +392,14 @@ export default function UpdateProfile({ navigation }) {
                 {/* CheckBox Container */}
                 <View style={styles.checkbox_container}>
                   <CheckBoxC />
-                  <Text style={styles.agree_text}>
-                    I agree to the above terms
-                  </Text>
+                  <Text style={styles.agree_text}>I agree to the above terms</Text>
                 </View>
 
                 {/*Extra Space*/}
                 <View style={{ height: 40 }}></View>
 
                 {/* SignUp Button */}
-                <AppButton
-                  title={"Sign Up"}
-                  onPress={handleSubmit}
-                  disabled={!isValid}
-                />
+                <AppButton title={"Sign Up"} onPress={handleSubmit} disabled={!isValid} />
               </View>
             )}
           </Formik>
