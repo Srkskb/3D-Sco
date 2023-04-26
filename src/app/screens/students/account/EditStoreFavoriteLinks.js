@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -9,37 +17,30 @@ import { myHeadersData } from "../../../api/helper";
 import { Snackbar } from "react-native-paper";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import { CategoryDropdown } from "../../../components/dropdown";
 import AsyncStorage from "@react-native-community/async-storage";
-import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
-
 export default function EditStoreFavoriteLinks({ route, navigation }) {
-  const { linkID, title, link, description, linkCategory, catId } = route.params;
-
+  const { linkID, linkIdParam } = route.params; // ! Current Event ID
+  const { title, titleParam } = route.params;
+  const { link, lonkParam } = route.params;
+  const [loading, setloading] = useState(false);
+  const { description, descriptionParam } = route.params;
+  const { linkCategory, categoryParam } = route.params;
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
   const [upLink, setUpLink] = useState(link);
-  const [category, setCategory] = useState(catId);
+  const [category, setCategory] = useState(linkCategory);
 
-  const updateDocument = async (values) => {
-    setloading(true);
+  const updateDocument =async (values) => { 
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const type =
-      myData.type == "admin"
-        ? 4
-        : myData.type == "tutor"
-        ? 2
-        : myData.type == "affiliate"
-        ? 5
-        : myData.type == "student"
-        ? 1
-        : 3;
+    setloading(true);
+    console.log(updateTitle,upLink,category,upDescription);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
 
@@ -48,7 +49,7 @@ export default function EditStoreFavoriteLinks({ route, navigation }) {
     urlencoded.append("category", category);
     urlencoded.append("detail", upDescription);
     urlencoded.append("url", upLink);
-    urlencoded.append("type", type);
+    urlencoded.append("type", "1");
     urlencoded.append("id", linkID);
     urlencoded.append("user_id", myData.id);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
@@ -88,13 +89,16 @@ export default function EditStoreFavoriteLinks({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack title={"Update Link "} onPress={() => navigation.goBack()} />
+      <HeaderBack
+        title={"Update Link "}
+        onPress={() => navigation.goBack()}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        wrapperStyle={{ zIndex: 1 }}
+        style={{zIndex:1}}
       >
         {getMessageTrue}
       </Snackbar>
@@ -103,7 +107,7 @@ export default function EditStoreFavoriteLinks({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        wrapperStyle={{ zIndex: 1 }}
+        style={{zIndex:1}}
       >
         {getMessageFalse}
       </Snackbar>
@@ -132,7 +136,7 @@ export default function EditStoreFavoriteLinks({ route, navigation }) {
                   <CategoryDropdown
                     label={"Select Category"}
                     onSelect={(selectedItem, index) => {
-                      setCategory(selectedItem.id);
+                      setCategory(index + 1);
                     }}
                   />
                 </>
@@ -167,10 +171,10 @@ export default function EditStoreFavoriteLinks({ route, navigation }) {
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
+                  onPress={()=>navigation.goBack()}
                 />
                 <SmallButton
-                  onPress={() => updateDocument()}
+                  onPress={updateDocument}
                   title="Update"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}

@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
-export default function Detail({ title, data,selectable }) {
+export default function Detail({ title, data }) {
   return (
     <View style={styles.container}>
       <View style={styles.details}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.bold}> : </Text>
-        <Text style={styles.description} selectable={selectable}>{data}</Text>
+        <Text style={styles.description}>{data}</Text>
       </View>
     </View>
   );
