@@ -4,7 +4,7 @@ import React from "react";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
 const Access = [
-    'Private','Public','Shared'
+    'Private','Shared'
   ];
 export default function AccessLevel({ label, ...props }) {
   return (

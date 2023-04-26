@@ -44,24 +44,24 @@ export default function UserType({ navigation }) {
         } else {
           // localStorage.setItem("loginUID", JSON.parse(data).id);
           if (data == "student") {
-            navigation.navigate("DrawerNavigator");
+            navigation.replace("DrawerNavigator");
             localStorage.setItem("userID", 1);
           }
           if (data == "tutor") {
-            navigation.navigate("TutorDrawerNavigator");
+            navigation.replace("TutorDrawerNavigator");
             localStorage.setItem("userID", 2);
           }
           if (data == "parent") {
-            navigation.navigate("ParentDrawerNavigator");
+            navigation.replace("ParentDrawerNavigator");
             localStorage.setItem("userID", 3);
           }
           console.log("enter");
           if (data == "admin") {
-            navigation.navigate("AdminDrawerNavigator");
+            navigation.replace("AdminDrawerNavigator");
             localStorage.setItem("userID", 4);
           }
           if (data == "affiliate") {
-            navigation.navigate("AffiliateDrawerNavigator");
+            navigation.replace("AffiliateDrawerNavigator");
             localStorage.setItem("userID", 5);
           }
         }

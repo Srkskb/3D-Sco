@@ -71,6 +71,7 @@ export default function ChangePassword() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{zIndex:1}}
       >
         {getMessageTrue}
       </Snackbar>
@@ -79,6 +80,7 @@ export default function ChangePassword() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{zIndex:1}}
       >
         {getMessageFalse}
       </Snackbar>

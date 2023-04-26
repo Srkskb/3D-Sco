@@ -112,7 +112,7 @@ export default function ViewProfile({ navigation }) {
             {/* <Edit onPress={() => navigation.navigate("UpdateProfile")} /> */}
           </View>
           <Detail title={"Name"} data={getName} />
-          <Detail title={"Email id"} data={getEmail} />
+          <Detail title={"Email id"} data={getEmail} selectable={true}/>
           <Detail title={"Contact No"} data={getContact} />
           <Detail title={"Address"} data={getAddress} />
           {/* Educational Information */}

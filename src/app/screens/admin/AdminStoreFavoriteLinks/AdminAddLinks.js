@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
-import { AccessLevel } from "../../../components/dropdown";
 import SmallButton from "../../../components/buttons/SmallButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
@@ -80,6 +79,7 @@ export default function AdminAddLink({ navigation }) {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{zIndex:1}}
       >
         {getMessageTrue}
       </Snackbar>
@@ -88,6 +88,7 @@ export default function AdminAddLink({ navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{zIndex:1}}
       >
         {getMessageFalse}
       </Snackbar>

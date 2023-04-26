@@ -18,27 +18,35 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // import { AdminJoin } from "../../students/account";
 const { height, width } = Dimensions.get("window");
 
-export default function AdminHomes({ navigation, backActionHandler }) {
-  // const backActionHandler = () => {
-  //   Alert.alert("Alert!", "Are you sure you want to go back?", [
-  //     {
-  //       text: "Cancel",
-  //       onPress: () => null,
-  //       style: "cancel",
-  //     },
-  //     { text: "YES", onPress: () => BackHandler.exitApp()() },
-  //   ]);
-  //   return true;
-  // };
+export default function AdminHomes({ navigation }) {
+  const homeBackPress = () => {
+    if (navigation.isFocused()) {
+      Alert.alert(
+        "3DSCO",
+        "Do you want to exit 3dsco?",
+        [
+          {
+            text: "No",
+            onPress: () => console.log("No"),
+            style: "cancel",
+          },
+          { text: "Yes", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    } else if (!navigation.isFocused()) {
+      // navigation.goBack();
+      return false;
+    }
+  };
 
-  // useEffect(() => {
-  //   // Add event listener for hardware back button press on Android
-  //   BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", homeBackPress);
 
-  //   return () =>
-  //     // clear/remove event listener
-  //     BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-  // }, []);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", homeBackPress);
+  }, []);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -50,10 +58,17 @@ export default function AdminHomes({ navigation, backActionHandler }) {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation} mailPress={() => navigation.navigate("AdminMail")} />
+      <HomeHeader
+        navigation={navigation}
+        mailPress={() => navigation.navigate("AdminMail")}
+      />
       <StatusBar backgroundColor={color.purple} />
       <Image style={styles.banner} source={banner} />
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.slider_container}>{/* <ImageSlide /> */}</View>
         {/* <AdminJoin /> */}
       </ScrollView>
