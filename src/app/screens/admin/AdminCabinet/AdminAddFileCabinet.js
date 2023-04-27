@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -26,7 +19,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AdminAddFileCabinet() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -134,58 +127,36 @@ export default function AdminAddFileCabinet() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-                setFieldValue,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
                     placeholder={"Document Title"}
                     name="docTitle"
                     onChangeText={handleChange("docTitle")}
-                    onBlur={handleBlur("docTitle")}
+                    // onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   <AccessLevel
                     // required
                     label={"Access Level"}
                     name="access"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem.name);
+                      setAccess(selectedItem);
                     }}
-                    // value={access}
+                    value={access}
                   />
                   {errors.access && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.access}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}
 
-                  <UploadDocument
-                    type={"(pdf, doc, ppt,xls)"}
-                    pickImg={pickImg}
-                  />
-                  <View>
-                    {image?.name && (
-                      <Text style={styles.uploadCon}>{image.name}</Text>
-                    )}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -199,11 +170,7 @@ export default function AdminAddFileCabinet() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
