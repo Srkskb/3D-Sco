@@ -57,10 +57,10 @@ export default function UpdateProfile({ navigation }) {
   const [getZip, setUpZip] = useState();
   const [getCity_id, setUpCity_id] = useState();
   const [getState_id, setUpState_id] = useState();
-  const [getUniversity_name, setUpUniversity_name] = useState();
+  // const [getUniversity_name, setUpUniversity_name] = useState();
   const [getInstitute, setUpInstitute] = useState();
-  const [getSchool, setUpSchool] = useState();
-  const [getCollege, setUpCollege] = useState();
+  // const [getSchool, setUpSchool] = useState();
+  // const [getCollege, setUpCollege] = useState();
 
   // ! Too show user details
   const showUserDetails = () => {
@@ -81,7 +81,7 @@ export default function UpdateProfile({ navigation }) {
         setUpGender(res.Profile_Detail.Gender);
         setUpContact(res.Profile_Detail.Contact);
         setUpCountry(res.Profile_Detail.Country);
-        setUpSchool(res.Profile_Detail.School);
+        // setUpSchool(res.Profile_Detail.School);
         setUpAddress(res.Profile_Detail.Address);
         setUpUsername(res.Profile_Detail.Username);
         setUpUniversity(res.Profile_Detail.University);
@@ -94,9 +94,9 @@ export default function UpdateProfile({ navigation }) {
         setUpZip(res.Profile_Detail.zip);
         setUpCity_id(res.Profile_Detail.city_id);
         setUpState_id(res.Profile_Detail.state_id);
-        setUpUniversity_name(res.Profile_Detail.university_name);
+        // setUpUniversity_name(res.Profile_Detail.university_name);
         setUpInstitute(res.Profile_Detail.institute);
-        setUpCollege(res.Profile_Detail.college);
+        // setUpCollege(res.Profile_Detail.college);
       })
       .catch((error) => console.log("error", error));
   };
@@ -192,8 +192,8 @@ export default function UpdateProfile({ navigation }) {
               email: "",
               phoneNumber: "",
               address: "",
-              schoolName: "",
-              collegeName: "",
+              // schoolName: "",
+              // collegeName: "",
               userName: "",
               password: "",
             }}
@@ -205,8 +205,8 @@ export default function UpdateProfile({ navigation }) {
               email: Yup.string().email("Enter a valid email").required("Email is required"),
               phoneNumber: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
               address: Yup.string().required("Address is required."),
-              schoolName: Yup.string().required("School Name is required."),
-              collegeName: Yup.string().required("College Name is required."),
+              // schoolName: Yup.string().required("School Name is required."),
+              // collegeName: Yup.string().required("College Name is required."),
               userName: Yup.string().required("User Name is required."),
               password: Yup.string()
                 .required("Password is required")
@@ -270,7 +270,7 @@ export default function UpdateProfile({ navigation }) {
                 {/*Educational Information*/}
                 <Headline title={"EDUCATIONAL INFORMATION"} />
 
-                <Input
+                {/* <Input
                   label={"School Name"}
                   placeholder={"School Name"}
                   name="schoolName"
@@ -279,9 +279,9 @@ export default function UpdateProfile({ navigation }) {
                   value={values.schoolName}
                   keyboardType="text"
                 />
-                {errors.schoolName && <Text style={styles.errorText}>{errors.schoolName}</Text>}
+                {errors.schoolName && <Text style={styles.errorText}>{errors.schoolName}</Text>} */}
 
-                <Input
+                {/* <Input
                   label={"College Name"}
                   placeholder={"College Name"}
                   name="collegeName"
@@ -290,7 +290,7 @@ export default function UpdateProfile({ navigation }) {
                   value={values.collegeName}
                   keyboardType="text"
                 />
-                {errors.collegeName && <Text style={styles.errorText}>{errors.collegeName}</Text>}
+                {errors.collegeName && <Text style={styles.errorText}>{errors.collegeName}</Text>} */}
 
                 <CountryDropdown
                   label={"Country"}
@@ -313,13 +313,13 @@ export default function UpdateProfile({ navigation }) {
                     console.log(selectedItem, index);
                   }}
                 />
-                <UniversityDropdown
+                {/* <UniversityDropdown
                   label={"University"}
                   onSelect={(selectedItem, index) => {
                     setuniversity(selectedItem);
                     console.log(selectedItem, index);
                   }}
-                />
+                /> */}
 
                 {/*Login and Password*/}
                 <Headline title={"login and password"} />

@@ -104,12 +104,12 @@ export default function UpdateProfile({ navigation }) {
       // email: 'Sonnu@gmail.com',
       // password: '123456',
       address: values?.address,
-      schoolname: values?.schoolName,
-      collagename: values?.collegeName,
+      // schoolname: values?.schoolName,
+      // collagename: values?.collegeName,
       country: values?.country,
       state: values?.state,
       city: values?.city,
-      univercity: values?.university,
+      // univercity: values?.university,
       username: values?.userName,
       gender: values?.gender,
       category: values?.category,
@@ -288,12 +288,12 @@ export default function UpdateProfile({ navigation }) {
               name: userData?.name,
               phone: userData?.Contact,
               address: userData?.Address,
-              schoolName: userData?.School,
-              collegeName: userData?.college,
+              // schoolName: userData?.School,
+              // collegeName: userData?.college,
               country: userData?.Country,
               state: userData?.state,
               city: userData?.city,
-              university: userData?.University,
+              // university: userData?.University,
               userName: userData?.Username,
               gender: userData?.Gender,
               category: userData?.category,
@@ -303,12 +303,12 @@ export default function UpdateProfile({ navigation }) {
               name: Yup.string().required("Event Title is required"),
               phone: Yup.string().required("Contact Number is required"),
               address: Yup.string().required("Address is required"),
-              schoolName: Yup.string().required("School Name is required"),
-              collegeName: Yup.string().required("College Name is required"),
+              // schoolName: Yup.string().required("School Name is required"),
+              // collegeName: Yup.string().required("College Name is required"),
               country: Yup.string().required("Country is required"),
               state: Yup.string().required("State is required"),
               city: Yup.string().required("City is required"),
-              university: Yup.string().required("University is required"),
+              // university: Yup.string().required("University is required"),
               userName: Yup.string().required("User Name is required"),
               gender: Yup.string().required("Gender is required"),
               category: Yup.string().required("Category is required"),
@@ -355,7 +355,7 @@ export default function UpdateProfile({ navigation }) {
 
                 {/*Educational Information*/}
                 <Headline title={"EDUCATIONAL INFORMATION"} />
-                <Input
+                {/* <Input
                   label="School Name"
                   placeholder="School Name"
                   name="schoolName"
@@ -364,9 +364,9 @@ export default function UpdateProfile({ navigation }) {
                 />
                 {errors.schoolName && (
                   <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.schoolName}</Text>
-                )}
+                )} */}
 
-                <Input
+                {/* <Input
                   label="College Name"
                   name="collegeName"
                   placeholder="College Name"
@@ -375,7 +375,7 @@ export default function UpdateProfile({ navigation }) {
                 />
                 {errors.collegeName && (
                   <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.collegeName}</Text>
-                )}
+                )} */}
                 {/* <CountryDropdown
             label={"Country"}
             onSelect={(selectedItem, index) => {
@@ -454,7 +454,7 @@ export default function UpdateProfile({ navigation }) {
                 )}
 
                 {errors.city && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.city}</Text>}
-                <Text style={styles.label_text}>Select University</Text>
+                {/* <Text style={styles.label_text}>Select University</Text>
                 {toggle.university ? (
                   <EmptyInput value={userData?.University} name="university" setToggle={setToggle} />
                 ) : (
@@ -469,7 +469,7 @@ export default function UpdateProfile({ navigation }) {
                 )}
                 {errors.university && (
                   <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.university}</Text>
-                )}
+                )} */}
                 {/*Login and Password*/}
                 <Headline title={"Username"} />
                 <Input

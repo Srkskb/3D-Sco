@@ -28,10 +28,10 @@ export default function ViewProfile({ navigation }) {
   const [getZip, setUpZip] = useState();
   const [getCity_id, setUpCity_id] = useState();
   const [getState_id, setUpState_id] = useState();
-  const [getUniversity_name, setUpUniversity_name] = useState();
+  // const [getUniversity_name, setUpUniversity_name] = useState();
   const [getInstitute, setUpInstitute] = useState();
-  const [getSchool, setUpSchool] = useState();
-  const [getCollege, setUpCollege] = useState();
+  // const [getSchool, setUpSchool] = useState();
+  // const [getCollege, setUpCollege] = useState();
   const [loading, setLoading] = useState(false);
 
   // ! Too show user details
@@ -57,7 +57,7 @@ export default function ViewProfile({ navigation }) {
         setUpGender(res.Profile_Detail.Gender);
         setUpContact(res.Profile_Detail.Contact);
         setUpCountry(res.Profile_Detail.Country);
-        setUpSchool(res.Profile_Detail.School);
+        // setUpSchool(res.Profile_Detail.School);
         setUpAddress(res.Profile_Detail.Address);
         setUpUsername(res.Profile_Detail.Username);
         setUpUniversity(res.Profile_Detail.University);
@@ -70,9 +70,9 @@ export default function ViewProfile({ navigation }) {
         setUpZip(res.Profile_Detail.zip);
         setUpCity_id(res.Profile_Detail.city);
         setUpState_id(res.Profile_Detail.state);
-        setUpUniversity_name(res.Profile_Detail.university_name);
+        // setUpUniversity_name(res.Profile_Detail.university_name);
         setUpInstitute(res.Profile_Detail.institute);
-        setUpCollege(res.Profile_Detail.college);
+        // setUpCollege(res.Profile_Detail.college);
       })
       .catch((error) => {
         setLoading(false);
@@ -114,12 +114,12 @@ export default function ViewProfile({ navigation }) {
           <Detail title={"Address"} data={getAddress} />
           {/* Educational Information */}
           <Headline title={"Educational Information"} />
-          <Detail title={"School Name"} data={getSchool} />
-          <Detail title={"College Name"} data={getCollege} />
+          {/* <Detail title={"School Name"} data={getSchool} /> */}
+          {/* <Detail title={"College Name"} data={getCollege} /> */}
           <Detail title={"Country"} data={getCountry} />
           <Detail title={"State"} data={getState_id} />
           <Detail title={"City"} data={getCity_id} />
-          <Detail title={"University"} data={getUniversity_name} />
+          {/* <Detail title={"University"} data={getUniversity_name} /> */}
           {/* Login and Password */}
           <Headline title={"UserName"} />
           <Detail title={"UserName"} data={getUsername} />
