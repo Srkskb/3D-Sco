@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../../assets/themes/Color";
 import HeaderBack from "../../../../components/header/Header";
 import InputField from "../../../../components/inputs/Input";
@@ -31,25 +24,27 @@ export default function AddBackup() {
   const [loading, setLoading] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const [course, setCourse] = useState("Select Course");
+  const [course, setCourse] = useState({});
   // const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
   const pickImg = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
-      type: "application/zip",
-    });
-    // console.log(result.size > 26214400);
-    console.log(result);
+    console.log("first");
 
-    if (!result.cancelled && result.size < 26214400) {
-      setImage(result);
-    } else {
-      if (result.size > 26214400) {
-        setSnackVisibleTrue(true);
-        setMessageTrue("Size is larger than 25MB please upload another file");
-      }
-    }
+    DocumentPicker.getDocumentAsync({
+      type: "application/zip",
+    })
+      .then((result) => {
+        if (!result.cancelled && result.size < 26214400) {
+          setImage(result);
+        } else {
+          if (result.size > 26214400) {
+            setSnackVisibleTrue(true);
+            setMessageTrue("Size is larger than 25MB please upload another file");
+          }
+        }
+      })
+      .catch((err) => console.log("err", err));
   };
 
   const addFileCabinet = async (values) => {
@@ -144,15 +139,7 @@ export default function AddBackup() {
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-                setFieldValue,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -164,11 +151,7 @@ export default function AddBackup() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -183,19 +166,15 @@ export default function AddBackup() {
                     label={"Select Course"}
                     name="course"
                     onSelect={(selectedItem, index) => {
-                      // setCourse(index);
+                      setCourse(selectedItem);
                       // console.log(selectedItem, index);
                       setFieldValue("course", selectedItem.id);
                     }}
-                    // value={course}
+                    value={course}
                   />
 
                   {errors.course && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.course}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
                   )}
 
                   <UploadDocument pickImg={pickImg} />
@@ -207,9 +186,7 @@ export default function AddBackup() {
                           style={styles.uploadImg}
                           resizeMode={"contain"}
                         />
-                        <Text style={{ fontSize: 14, marginBottom: 10 }}>
-                          {image?.name}
-                        </Text>
+                        <Text style={{ fontSize: 14, marginBottom: 10 }}>{image?.name}</Text>
                       </>
                     )}
                   </View>
@@ -226,20 +203,16 @@ export default function AddBackup() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                  <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
 
                     <SmallButton
                       onPress={handleSubmit}

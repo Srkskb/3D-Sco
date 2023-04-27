@@ -17,7 +17,7 @@ import { AppButton } from "../../../../components/buttons";
 import ActiveStatus from "../../../../components/dropdown/ActiveStatus";
 import AccountType from "../../../../components/dropdown/AccountType";
 import { myHeadersData } from "../../../../api/helper";
-import axios from "axios";
+// import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import { ErrorMessage, Formik } from "formik";
 import * as Yup from "yup";
@@ -27,9 +27,9 @@ export default function CreateUser({ navigation }) {
   const [isVisibleEntry, setIsVisibleEntry] = useState(true);
   const [isVisibleEntry2, setIsVisibleEntry2] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState({});
 
   const createNewStudent = (values) => {
-
     console.log(values);
     setLoading(true);
     var formdata = new FormData();
@@ -162,13 +162,14 @@ export default function CreateUser({ navigation }) {
             onSubmit={(values) => createNewStudent(values)}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue, resetForm }) => (
-              <View style={{marginBottom:20}}>
+              <View style={{ marginBottom: 20 }}>
                 <Headline title={"Required information"} />
                 <Input
                   label={"Username"}
                   placeholder={"Enter Username"}
                   value={values?.userName}
                   name="userName"
+                  onBlur={handleBlur("userName")}
                   onChangeText={handleChange("userName")}
                 />
                 {errors.userName && (
@@ -312,7 +313,7 @@ export default function CreateUser({ navigation }) {
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
                     // setCountry(selectedItem.id);
-                    console.log("sss", selectedItem);
+                    // console.log("sss", selectedItem);
                     setFieldValue("country", selectedItem.id);
                   }}
                   // value={country}
@@ -387,10 +388,10 @@ export default function CreateUser({ navigation }) {
                   name="category"
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
-                    // setCategory(selectedItem);
+                    setCategory(selectedItem);
                     setFieldValue("category", selectedItem.id);
                   }}
-                  // value={category}
+                  value={category}
                 />
                 {/* <ErrorMessage name="category" component="div" /> */}
                 {errors.category && (

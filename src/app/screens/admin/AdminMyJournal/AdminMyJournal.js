@@ -29,7 +29,6 @@ export default function AdminMyJournal() {
   const allLearnerList = async () => {
     setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",

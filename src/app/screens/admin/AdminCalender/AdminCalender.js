@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useReducer } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
@@ -22,6 +15,7 @@ import HomeHeader from "../../../components/header/HomeHeader";
 import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
 export default function AdminCalender() {
   const [id, setId] = useState("");
@@ -58,7 +52,7 @@ export default function AdminCalender() {
 
   const eventListData = async (date) => {
     let mdate = moment(date).format("YYYY-MM-DD");
-    console.log(mdate);
+    console.log("date", date, mdate);
     setLoading(true);
     // const loginUID = localStorage.getItem("loginUID");
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -76,11 +70,13 @@ export default function AdminCalender() {
     )
       .then((res) => res.json())
       .then((result) => {
-        let data = result.data.filter((i) =>
-          moment(i.event_date).isSame(date, "day")
-        );
-        console.log(data);
-        setEventList(data);
+        if (date) {
+          let data = result.data.filter((i) => moment(i.event_date).isSame(date, "day"));
+          setEventList(data);
+        } else {
+          setEventList(result.data);
+        }
+
         setLoading(false);
       })
       .catch((error) => {
@@ -151,7 +147,7 @@ export default function AdminCalender() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        wrapperStyle={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -160,26 +156,11 @@ export default function AdminCalender() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        wrapperStyle={{zIndex:1}}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
-      {/* <Calender_Strip/> */}
-      {loading ? (
-        <View
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#ffffffcc",
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 0,
-          }}
-        >
-          <ActivityIndicator size={"large"} />
-        </View>
-      ) : null}
+      {loading && <Loader />}
       {loading ? null : (
         <CalendarStrip
           scrollable
@@ -219,66 +200,46 @@ export default function AdminCalender() {
       <View style={styles.today_event_row}>
         <Text style={styles.event_text}>Today's Events</Text>
         <View style={styles.add_button}>
-          <AppButton
-            onPress={() => navigation.navigate("AdminAddEvent")}
-            title="+ Add"
-          />
+          <AppButton onPress={() => navigation.navigate("AdminAddEvent")} title="+ Add" />
         </View>
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        {eventList && eventList.length == 0 ? (
-          <>
-            <NoDataFound />
-          </>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        {eventList?.length ? (
+          eventList.map((list, index) => (
+            <View key={index} style={{ paddingHorizontal: 10, zIndex: 0 }}>
+              <Event_Card
+                key={index}
+                title={list.event_title}
+                status={list.access_level}
+                date={moment(list && list?.event_date).format("LL")}
+                description={list.decription}
+                editPress={() =>
+                  navigation.navigate("AdminEditEvent", {
+                    editData: list,
+                  })
+                }
+                removePress={() => {
+                  setDeletePop(true);
+                  setId(list.event_id);
+                }}
+                viewPress={() =>
+                  navigation.navigate("AdminViewEventDetails", {
+                    title: list.event_title,
+                    status: list.access_level,
+                    Date: moment(list && list?.event_date).format("LL"),
+                    description: list.decription,
+                  })
+                }
+              />
+            </View>
+          ))
         ) : (
-          <>
-            {eventList &&
-              eventList.map((list, index) => (
-                <View key={index} style={{ paddingHorizontal: 10,zIndex:0 }}>
-                  <Event_Card
-                    key={index}
-                    title={list.event_title}
-                    status={list.access_level}
-                    date={moment(list && list?.event_date).format("LL")}
-                    description={list.decription}
-                    editPress={() =>
-                      navigation.navigate("AdminEditEvent", {
-                        eventID: list.event_id,
-                        title: list.event_title,
-                        status: list.access_level,
-                        dateData: moment(list && list?.event_date).format("LL"),
-                        description: list.decription,
-                      })
-                    }
-                    removePress={() => {
-                      setDeletePop(true);
-                      setId(list.event_id);
-                    }}
-                    viewPress={() =>
-                      navigation.navigate("AdminViewEventDetails", {
-                        title: list.event_title,
-                        status: list.access_level,
-                        Date: moment(list && list?.event_date).format("LL"),
-                        description: list.decription,
-                      })
-                    }
-                  />
-                </View>
-              ))}
-          </>
+          <NoDataFound />
         )}
+
         <View style={styles.card_padding}></View>
       </ScrollView>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteEvent(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}
     </SafeAreaView>
   );
 }

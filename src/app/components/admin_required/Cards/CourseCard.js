@@ -15,6 +15,8 @@ export default function Course_Card({
   status,
   releaseDate,
   endDate,
+  userId,
+  myId,
 }) {
   return (
     <View style={styles.container}>
@@ -35,12 +37,14 @@ export default function Course_Card({
         <Text style={styles.course_name}>End Date: </Text>
         <Text style={[styles.course_name, { fontFamily: "Montserrat-Regular" }]}>{endDate}</Text>
       </View>
-      <View style={styles.btn_container}>
-        {/* <ViewButton onPress={viewPress} /> */}
-        <Edit onPress={editPress} />
-        <View style={{ width: 20 }} />
-        <Remove onPress={removePress} />
-      </View>
+      {userId == myId && (
+        <View style={styles.btn_container}>
+          {/* <ViewButton onPress={viewPress} /> */}
+          <Edit onPress={editPress} />
+          <View style={{ width: 20 }} />
+          <Remove onPress={removePress} />
+        </View>
+      )}
     </View>
   );
 }

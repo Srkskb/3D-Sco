@@ -22,7 +22,10 @@ export default function EditBackup({ navigation, route }) {
   const [loading, setloading] = useState(false);
   const [course, setCourse] = useState(route.params.title.course_id);
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(route.params.title.file_name);
+  const [image, setImage] = useState({
+    uri: route.params.title.file_name,
+    name: route.params.title.file_name.split("https://3dsco.com/images/")[1],
+  });
   // const [showDocResults, setShowDocResults] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
@@ -31,7 +34,6 @@ export default function EditBackup({ navigation, route }) {
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/zip",
     });
-    console.log(result);
     if (!result.cancelled) {
       setImage(result);
     }
@@ -46,13 +48,17 @@ export default function EditBackup({ navigation, route }) {
     formdata.append("course_id", route.params.title.course_id);
     formdata.append("title", values.docTitle);
     formdata.append("detail", values.description);
-    formdata.append("image", {
-      uri: image.uri, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image.uri),
-      name: image.name,
-    });
+    console.log("uri", mime.getType(image.uri));
+    {
+      !image.uri.includes("https") &&
+        formdata.append("image", {
+          uri: image.uri, //"file:///" + image.split("file:/").join(""),
+          type: mime.getType(image.uri),
+          name: image.name,
+        });
+    }
     formdata.append("id", route.params.title.id);
-
+    console.log("formdata", formdata);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -63,13 +69,14 @@ export default function EditBackup({ navigation, route }) {
     fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        console.log(result);
         setloading(false);
         //Add navigation here
         navigation.navigate("Backup");
       })
-      .catch((error) => {console.log("error", error)
-      setloading(false);});
+      .catch((error) => {
+        console.log("error", error);
+        setloading(false);
+      });
   };
 
   return (
@@ -143,12 +150,12 @@ export default function EditBackup({ navigation, route }) {
                   )}
 
                   <View style={styles.button}>
-                  <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Update"

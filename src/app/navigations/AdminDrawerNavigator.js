@@ -11,19 +11,16 @@ import {
   TechnicalSupport,
   TermsCondition,
   ViewProfile,
-  UpdateProfile
+  UpdateProfile,
 } from "../screens/common/hamburgerMenu";
 import DrawerContent from "../components/DrawerContent";
 import TutorTabs from "./TutorTabs";
-import ParentTabs from "./ParentTabs"
-import AdminTabs from './AdminTabs'
+import ParentTabs from "./ParentTabs";
+import AdminTabs from "./AdminTabs";
 const Drawer = createDrawerNavigator();
 export default function AdminDrawerNavigator() {
   return (
-    <Drawer.Navigator
-      screenOptions={{ headerShown: false }}
-      drawerContent={(props) => <DrawerContent {...props} />}
-    >
+    <Drawer.Navigator screenOptions={{ headerShown: false }} drawerContent={(props) => <DrawerContent {...props} />}>
       <Drawer.Screen
         name="AdminTabs"
         component={AdminTabs}
@@ -59,7 +56,7 @@ export default function AdminDrawerNavigator() {
           ),
         }}
       />
- <Drawer.Screen
+      <Drawer.Screen
         name="UpdateProfile"
         component={UpdateProfile}
         options={{

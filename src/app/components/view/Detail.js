@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Regular",
     fontSize: 14,
     color: color.black,
-    textTransform: "capitalize",
+    // textTransform: "capitalize",
     flexWrap: "wrap",
     width: "65%",
     textAlign: "justify",

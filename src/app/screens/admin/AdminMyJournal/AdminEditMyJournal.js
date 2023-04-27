@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -34,7 +26,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState({ name: jImage.split("https://3dsco.com/images/")[1].split(".")[0], uri: jImage });
+  const [image, setImage] = useState({ name: jImage.split("https://3dsco.com/images/")[1], uri: jImage });
   const [updateTitle, setUpTitle] = useState(title);
   const [loading, setloading] = useState(false);
   const [upDescription, setUpDescription] = useState(description);
@@ -90,21 +82,18 @@ export default function AdminEditMyJournal({ route, navigation }) {
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
-  const [showDocResults, setShowDocResults] = useState(false);
+  const [showDocResults, setShowDocResults] = useState(true);
 
   const onClick = () => {
     setShowResults(true);
   };
   const onClickDoc = () => {
-    setShowDocResults(true);
+    setShowDocResults(false);
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Journal"}
-        onPress={() => navigation.navigate("AdminMyJournal")}
-      />
+      <HeaderBack title={"Update Journal"} onPress={() => navigation.navigate("AdminMyJournal")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -159,27 +148,15 @@ export default function AdminEditMyJournal({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument
-                    type={"(pdf, doc, ppt,xls)"}
-                    pickImg={pickImg}
-                  />
-                  <View>
-                    {image?.name && (
-                      <Text style={styles.uploadCon}>{image.name}</Text>
-                    )}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                 </>
               ) : (
                 <>
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {jImage && (
-                        <Image
-                          source={{ uri: jImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
+                      {jImage && <Image source={{ uri: jImage }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -201,7 +178,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
               />
 
               <View style={styles.button}>
-              <SmallButton
+                <SmallButton
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}

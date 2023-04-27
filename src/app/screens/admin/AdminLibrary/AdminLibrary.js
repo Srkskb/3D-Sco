@@ -31,7 +31,9 @@ export default function LibraryAccess() {
   const [searchTerm, setSearchTerm] = useState("");
   const [courseId, setCourseId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [course, setCourse] = useState({});
   const isFocused = useIsFocused();
+
   const allLearnerList = async (id) => {
     setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -42,13 +44,9 @@ export default function LibraryAccess() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData.id}&course_id=${id}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&course_id=${id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         if (result.success) {
           setStudentLibrary(result.data);
           setInitialStudentLibrary(result.data);
@@ -65,7 +63,7 @@ export default function LibraryAccess() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList(courseId);
+    courseId && allLearnerList(courseId);
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -121,7 +119,9 @@ export default function LibraryAccess() {
           // label={"Select Course"}
           onSelect={(selectedItem, index) => {
             setCourseId(selectedItem.id);
+            setCourse(selectedItem);
           }}
+          value={course}
         />
         {loading && <Loader />}
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -131,8 +131,8 @@ export default function LibraryAccess() {
                 <Book_Card
                   title={list.titel}
                   author={list.author}
-                  // onPress={() => navigation.navigate("ViewBook", { list })}
-                  onPress={() => Linking.openURL(list.resume)}
+                  onPress={() => navigation.navigate("ViewBook", { list })}
+                  // onPress={() => Linking.openURL(list.resume)}
                 />
               ))
             ) : (

@@ -1,19 +1,10 @@
 import React from "react";
-import {
-  createStackNavigator,
-  TransitionPresets,
-} from "@react-navigation/stack";
-import {
-  Login,
-  UserType,
-  OTPVerification,
-  RegistrationForAll,
-  ForgetPassword,
-} from "../screens";
-import ClientTabs from "./ClientTabs";
+import { createStackNavigator, TransitionPresets } from "@react-navigation/stack";
+import { Login, UserType, OTPVerification, RegistrationForAll, ForgetPassword } from "../screens";
+// import ClientTabs from "./ClientTabs";
 import DrawerNavigator from "./DrawerNavigator";
 import TutorDrawerNavigator from "./TutorDrawerNavigator";
-import ParentDrawerNavigator from "./ParentDrawerNavigator"
+import ParentDrawerNavigator from "./ParentDrawerNavigator";
 import { Signup_Educator } from "../screens/educator";
 import { Signup_Admin } from "../screens/admin";
 import Signup_Affiliate from "../screens/affiliate/Signup_Affiliate";
@@ -113,7 +104,7 @@ export default function AuthNavigator() {
           ...TransitionPresets.RevealFromBottomAndroid,
         }}
       />
-         <AuthStack.Screen
+      <AuthStack.Screen
         name="ParentDrawerNavigator"
         component={ParentDrawerNavigator}
         options={{
@@ -121,7 +112,7 @@ export default function AuthNavigator() {
           ...TransitionPresets.RevealFromBottomAndroid,
         }}
       />
-       <AuthStack.Screen
+      <AuthStack.Screen
         name="AdminDrawerNavigator"
         component={AdminDrawerNavigator}
         options={{
@@ -129,7 +120,7 @@ export default function AuthNavigator() {
           ...TransitionPresets.RevealFromBottomAndroid,
         }}
       />
-       <AuthStack.Screen
+      <AuthStack.Screen
         name="AffiliateDrawerNavigator"
         component={AffiliateDrawerNavigator}
         options={{

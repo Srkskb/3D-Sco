@@ -1,12 +1,16 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import SelectDropdown from "react-native-select-dropdown";
+// import SelectDropdown from "react-native-select-dropdown";
+import { Dropdown } from "react-native-element-dropdown";
+
 import React, { useEffect, useRef, useState } from "react";
 import { myHeadersData } from "../../api/helper";
 import color from "../../assets/themes/Color";
 const down_img = require("../../assets/images/down.png");
 
-export default function RoundCategory({ label, ...props }) {
+export default function RoundCategory({ label, onSelect, ...props }) {
   const [categoryList, setCategoryList] = useState([]);
+  const [isFocus, setIsFocus] = useState(false);
+
   useEffect(() => {
     const myHeaders = myHeadersData();
 
@@ -31,7 +35,7 @@ export default function RoundCategory({ label, ...props }) {
   return (
     <View>
       <View style={{ width: "80%" }}>
-        <SelectDropdown
+        {/* <SelectDropdown
           data={categoryList.map((list, index) => ({ id: list.id, name: list.Name }))}
           buttonTextAfterSelection={(selectedItem, index) => {
             return selectedItem.name;
@@ -44,8 +48,32 @@ export default function RoundCategory({ label, ...props }) {
           rowTextStyle={styles.row_text}
           dropdownStyle={styles.dropdown_style}
           {...props}
+        /> */}
+        <Dropdown
+          style={[styles.dropdown, isFocus && { borderColor: "#82027D" }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          // inputSearchStyle={styles.placeholderStyle}
+          iconStyle={styles.iconStyle}
+          data={categoryList?.map((item, index) => ({ name: item.Name, id: item.id }))}
+          search
+          maxHeight={300}
+          labelField="name"
+          valueField="id"
+          placeholder={!isFocus ? "Select item" : "..."}
+          searchPlaceholder="Search..."
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={(item) => {
+            setIsFocus(false);
+            onSelect(item);
+          }}
+          renderRightIcon={false}
+          {...props}
+          // renderLeftIcon={() => (
+          //   <AntDesign style={styles.icon} color={isFocus ? "#82027D" : "black"} name="Safety" size={20} />
+          // )}
         />
-        {/* <Image style={styles.downimg} source={down_img}></Image> */}
       </View>
     </View>
   );
@@ -58,6 +86,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: color.purple,
     backgroundColor: color.white,
+    // alignItems: "center",
+    // marginLeft: 10,
+  },
+  placeholderStyle: {
+    fontSize: 15,
+
+    marginLeft: 10,
+    margin: "auto",
+    color: "#79787E",
+  },
+  selectedTextStyle: {
+    fontSize: 15,
+
+    marginLeft: 10,
   },
   text_button: {
     fontSize: 14,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import color from "../../../../assets/themes/Color";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
@@ -25,10 +25,15 @@ export default function Announcement() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setLoading] = useState(false);
-  const [selectCourse, setSelectCourse] = useState("");
+  const [selectCourse, setSelectCourse] = useState({});
   const [announcementList, setAnnouncementList] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setSelectCourse({});
+  }, [isFocused]);
 
   const allLearnerList = (id) => {
     console.log(id);
@@ -49,6 +54,7 @@ export default function Announcement() {
         console.log("result", result);
         if (result?.data?.length) {
           setAnnouncementList(result?.data);
+          console.log(result?.data);
         } else {
           setAnnouncementList([]);
         }
@@ -162,6 +168,7 @@ export default function Announcement() {
                         description: list.Description,
                         id: list.id,
                         userId: list.user_id,
+                        course_id: list.course_id,
                       })
                     }
                     removePress={() => {

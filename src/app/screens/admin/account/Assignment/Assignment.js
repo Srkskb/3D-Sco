@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, RefreshControl, Linking } from "react-native";
 import color from "../../../../assets/themes/Color";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
@@ -13,24 +13,31 @@ import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../../components/popup/DeletePopup";
+import Loader from "../../../../utils/Loader";
 
 export default function Assignment() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const [selectCourse, setSelectCourse] = useState("");
+  const [selectCourse, setSelectCourse] = useState({});
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [courseId, setCourseId] = useState("");
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setSelectCourse({});
+  }, [isFocused]);
 
   const allLearnerList = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-
+    setLoading(true);
     var data = new FormData();
     data.append("courses_assignments_list", "1");
     data.append("course_id", id);
@@ -52,8 +59,13 @@ const [deletePop, setDeletePop] = useState(false);
       .then((res) => res.json())
       .then((result) => {
         setFileCabinetData(result?.data);
+        console.log(result?.data);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteEvent = (id) => {
     var data = qs.stringify({
@@ -118,59 +130,64 @@ const [deletePop, setDeletePop] = useState(false);
       >
         {getMessageFalse}
       </Snackbar>
-      <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        style={{ paddingHorizontal: 10 }}
-      >
+      <View style={{ paddingHorizontal: 10 }}>
         <TextWithButton title={"Course Category"} label={"+Add"} onPress={() => navigation.navigate("AddAssignment")} />
         <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
             // setSelectCourse(selectedItem);
+            setSelectCourse(selectedItem);
             setCourseId(selectedItem.id);
           }}
+          value={selectCourse}
         />
-        <View style={{ paddingHorizontal: 10 }}>
-          {fileCabinetData === undefined ? (
-            <>
-              <NoDataFound />
-            </>
-          ) : (
-            <>
-              {fileCabinetData.map((list, index) => (
-                <FileCabinet2
-                  key={index}
-                  title={list.assignment_title}
-                  description={list.Description}
-                  date={list.Date}
-                  onPressView={() => {
-                    Linking.openURL(list.file_name);
-                  }}
-                  onPressEdit={() =>
-                    navigation.navigate("EditAssignment", {
-                      // title: list,
-                      title: list.assignment_title,
-                      description: list.Description,
-                      id: list.id,
-                      userId: list.user_id,
-                    })
-                  }
-                  removePress={() => {
-                    setId(list.id);
-                    setDeletePop(true);
-                  }}
-                />
-              ))}
-            </>
-          )}
-        </View>
-      </ScrollView>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteEvent(id)}
-        />
-      ) : null}
+      </View>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          style={{ paddingHorizontal: 10 }}
+        >
+          <View>
+            {fileCabinetData === undefined ? (
+              <>
+                <NoDataFound />
+              </>
+            ) : (
+              <>
+                {fileCabinetData.map((list, index) => (
+                  <FileCabinet2
+                    key={index}
+                    title={list.assignment_title}
+                    description={list.Description}
+                    date={list.Date}
+                    onPressView={() => {
+                      Linking.openURL(list.file_name);
+                    }}
+                    onPressEdit={() =>
+                      navigation.navigate("EditAssignment", {
+                        // title: list,
+                        title: list.assignment_title,
+                        description: list.Description,
+                        id: list.id,
+                        userId: list.user_id,
+                        file_name: list.file_name,
+                        course_id: list?.course_id,
+                      })
+                    }
+                    removePress={() => {
+                      setId(list.id);
+                      setDeletePop(true);
+                    }}
+                  />
+                ))}
+              </>
+            )}
+          </View>
+        </ScrollView>
+      )}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}
     </View>
   );
 }
@@ -179,6 +196,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     flex: 1,
     textAlign: "left",
+    // padding: 20,
   },
   head: {
     flexDirection: "row",

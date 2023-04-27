@@ -10,9 +10,6 @@ import { myHeadersData } from "./../api/helper";
 import AsyncStorage from "@react-native-community/async-storage";
 
 export default function ViewProfile({ navigation }) {
-  const user_id = localStorage.getItem("user_id"); // ! loged user id
-  const loginUID = localStorage.getItem("loginUID"); // ! loged user type
-
   // ! setUser data for the
   const [getName, setUpName] = useState();
   const [getEmail, setUpEmail] = useState();

@@ -13,6 +13,7 @@ import { Formik } from "formik";
 export default function EditAnnouncement({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
+  const [selectCourse, setSelectCourse] = useState({ name: route?.params?.course_id, id: route?.params?.course_id });
 
   useEffect(() => {
     setEditData(route?.params);
@@ -102,7 +103,9 @@ export default function EditAnnouncement({ navigation, route }) {
                     name="course"
                     onSelect={(selectedItem, index) => {
                       setFieldValue("course", selectedItem.id);
+                      setSelectCourse(selectedItem);
                     }}
+                    value={selectCourse}
                   />
 
                   {errors.course && (

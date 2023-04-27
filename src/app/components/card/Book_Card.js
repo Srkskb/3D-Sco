@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import color from "../../assets/themes/Color";
 let book_img = require("../../assets/images/book.png");
+
 export default function Book_Card({ title, author, onPress }) {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.6} onPress={onPress}>

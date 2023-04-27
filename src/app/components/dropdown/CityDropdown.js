@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image } from "react-native";
 import { styles } from "./Styles";
-import SelectDropdown from "react-native-select-dropdown";
+// import SelectDropdown from "react-native-select-dropdown";
+import { Dropdown } from "react-native-element-dropdown";
+
 import AsyncStorage from "@react-native-community/async-storage";
 import axios from "axios";
 const down_img = require("../../assets/images/down.png");
 
-export default function CityDropdown({ label, stateId, countryId, ...props }) {
+export default function CityDropdown({ label, stateId, onSelect, countryId, ...props }) {
   const [getCityList, setCityList] = useState([]);
+  const [isFocus, setIsFocus] = useState(false);
+
   // const country_id = localStorage.getItem("countryId");
   // const state_id = localStorage.getItem("stateID");
   // const { country_id, state_id } = JSON.parse(localStorage.getItem("loginData"));
@@ -30,6 +34,9 @@ export default function CityDropdown({ label, stateId, countryId, ...props }) {
         } else {
           console.log("City list can't fetch right now");
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
   useEffect(() => {
@@ -38,9 +45,9 @@ export default function CityDropdown({ label, stateId, countryId, ...props }) {
 
   return (
     <View>
-      <Text style={styles.label_text}>{label}</Text>
-      <View style={{ flexDirection: "row" }}>
-        <SelectDropdown
+      {label && <Text style={styles.label_text}>{label}</Text>}
+      <View style={{ flexDirection: "row", paddingVertical: 6 }}>
+        {/* <SelectDropdown
           data={getCityList?.map((list, index) => ({ name: list.name, id: list.city_id }))}
           buttonTextAfterSelection={(selectedItem, index) => {
             // localStorage.setItem("city_id", getCityList[index].city_id);
@@ -56,7 +63,32 @@ export default function CityDropdown({ label, stateId, countryId, ...props }) {
           dropdownStyle={styles.dropdown_style}
           {...props}
         />
-        <Image style={styles.downimg} source={down_img}></Image>
+        <Image style={styles.downimg} source={down_img}></Image> */}
+        <Dropdown
+          style={[styles.dropdown, isFocus && { borderColor: "#82027D" }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={getCityList.map((item, index) => ({ name: item.name, id: item.city_id }))}
+          search
+          maxHeight={300}
+          disable={!countryId?.length && !stateId?.length}
+          labelField="name"
+          valueField="id"
+          placeholder={!isFocus ? "Select item" : "..."}
+          searchPlaceholder="Search..."
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={(item) => {
+            setIsFocus(false);
+            onSelect(item);
+          }}
+          {...props}
+          // renderLeftIcon={() => (
+          //   <AntDesign style={styles.icon} color={isFocus ? "#82027D" : "black"} name="Safety" size={20} />
+          // )}
+        />
       </View>
     </View>
   );

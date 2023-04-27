@@ -31,7 +31,7 @@ export default function LanguageDropdown({ label, ...props }) {
   return (
     <View>
       <Text style={styles.label_text}>{label}</Text>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingVertical: 6 }}>
         <SelectDropdown
           data={categoryList.map((list) => ({ name: list.Language, id: list.id }))}
           buttonTextAfterSelection={(selectedItem, index) => {

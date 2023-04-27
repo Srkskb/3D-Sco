@@ -29,6 +29,7 @@ export default function AdminStoreFavoriteLinks() {
   const [storeLinks, setStoreLinks] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
@@ -40,6 +41,7 @@ export default function AdminStoreFavoriteLinks() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [filter, setFilter] = useState("");
+  const [selectCategory, setSelectCategory] = useState("");
   // const [categoryList, setCategoryList] = useState([]);
   // const [initialStoreLinks, setInitialStoreLinks] = useState([]);
   // const user_type = localStorage.getItem("userID"); // ! user Type student or other
@@ -70,7 +72,12 @@ export default function AdminStoreFavoriteLinks() {
     )
       .then((response) => response.json())
       .then((result) => {
-        setStoreLinks(result.data);
+        const filteredItems = result?.data?.filter((item) =>
+          item?.Titel?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        console.log("filteredItems", filteredItems);
+        setSearchTerm("");
+        setStoreLinks(filteredItems);
         // setSearchData(result.data);
         setLoading(false);
       })
@@ -101,6 +108,7 @@ export default function AdminStoreFavoriteLinks() {
 
   const deleteProject = async (linkId) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setDeleteLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "DELETE",
@@ -127,8 +135,12 @@ export default function AdminStoreFavoriteLinks() {
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
-      })
-      .catch((error) => console.log("error", error));
+        setDeleteLoading(false);
+      });
+    setDeleteLoading(true).catch((error) => {
+      setDeleteLoading(false);
+      console.log("error", error);
+    });
   };
 
   const onRefresh = () => {
@@ -141,7 +153,11 @@ export default function AdminStoreFavoriteLinks() {
     }, 2000);
   };
   useEffect(() => {
-    navigation.addListener("focus", () => setStoreLinks([]));
+    navigation.addListener("focus", () => {
+      // setSelectCategory({});
+      // setStoreLinks([]);
+      // allLearnerList();
+    });
   }, [navigation]);
 
   // const searchText = (searchTerm) => {
@@ -209,7 +225,9 @@ export default function AdminStoreFavoriteLinks() {
             <RoundCategory
               onSelect={(selectedItem, index, item) => {
                 setFilter(selectedItem.id);
+                setSelectCategory(selectedItem);
               }}
+              value={selectCategory}
             />
             <TextInput
               style={styles.input}
@@ -255,12 +273,7 @@ export default function AdminStoreFavoriteLinks() {
                       pressEdit={() => {
                         setStoreLinks([]);
                         navigation.navigate("AdminEditStoreFavoriteLinks", {
-                          linkID: list.id,
-                          title: list.Titel,
-                          link: list.url,
-                          description: list.Detail,
-                          linkCategory: list.Category,
-                          catId: list.Category_id,
+                          editData: list,
                         });
                       }}
                     />
@@ -272,7 +285,11 @@ export default function AdminStoreFavoriteLinks() {
         </ScrollView>
       </View>
       {linkId?.length ? (
-        <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteProject(linkId)} />
+        <DeletePopup
+          deleteLoading={deleteLoading}
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteProject(linkId)}
+        />
       ) : null}
     </View>
   );

@@ -13,7 +13,7 @@ export default function AccountType({ label, ...props }) {
       <Text style={styles.label_text} {...props}>
         {label}
       </Text>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingVertical: 6 }}>
         <SelectDropdown
           defaultValue={"this.state.selectValue"}
           data={UserAccount}

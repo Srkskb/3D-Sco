@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Dimensions, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import BackButton from "../../components/buttons/BackButton";
 import color from "../../assets/themes/Color";
 import Input from "../../components/inputs/Input";
@@ -242,10 +234,7 @@ export default function Signup_Admin({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <BackButton />
         </TouchableOpacity>
@@ -255,7 +244,6 @@ export default function Signup_Admin({ navigation }) {
           onDismiss={() => setSnackVisibleTrue(false)}
           action={{ label: "Close" }}
           theme={{ colors: { accent: "#82027D" } }}
-          
         >
           {getMessageTrue}
         </Snackbar>
@@ -282,13 +270,8 @@ export default function Signup_Admin({ navigation }) {
                 .required("Name is required.")
                 .min(3, "Name must be at least 3 characters")
                 .max(20, "Name cannot be more than 20 characters"),
-              email: Yup.string()
-                .email("Enter a valid email")
-                .required("Email is required"),
-              phoneNumber: Yup.string().matches(
-                phoneRegExp,
-                "Phone number is not valid"
-              ),
+              email: Yup.string().email("Enter a valid email").required("Email is required"),
+              phoneNumber: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
               address: Yup.string().required("Address is required."),
               // schoolName: Yup.string().required("School Name is required."),
               // collegeName: Yup.string().required("College Name is required."),
@@ -296,25 +279,12 @@ export default function Signup_Admin({ navigation }) {
               password: Yup.string()
                 .required("Password is required")
                 .min(5, "Your password is too short.")
-                .matches(
-                  /[a-zA-Z0-9]/,
-                  "Password can only contain Latin letters."
-                ),
-              confirmpassword: Yup.string().oneOf(
-                [Yup.ref("password"), null],
-                "Passwords must match"
-              ),
+                .matches(/[a-zA-Z0-9]/, "Password can only contain Latin letters."),
+              confirmpassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
             })}
             onSubmit={(values) => handleApi(values)}
           >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              isValid,
-            }) => (
+            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
               <View>
                 {/*Personal Information*/}
                 <Headline title={"personal information"} />
@@ -328,9 +298,7 @@ export default function Signup_Admin({ navigation }) {
                   // onChangeText={(name) => setName(name)}
                   // onBlur={handleBlur("name")}
                 />
-                {errors.name && (
-                  <Text style={styles.errorText}>{errors.name}</Text>
-                )}
+                {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
                 <Input
                   label="Email ID"
                   placeholder="Enter your E-mail ID"
@@ -339,9 +307,7 @@ export default function Signup_Admin({ navigation }) {
                   onChangeText={handleChange("email")}
                   // onChangeText={(email) => setEmail(email)}
                 />
-                {errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                )}
+                {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                 <Input
                   label="Contact No"
                   placeholder="Enter mobile number"
@@ -350,9 +316,7 @@ export default function Signup_Admin({ navigation }) {
                   onChangeText={handleChange("phoneNumber")}
                   // onChangeText={(phone) => setPhone(phone)}
                 />
-                {errors.phone && (
-                  <Text style={styles.errorText}>{errors.phone}</Text>
-                )}
+                {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
                 <Input
                   multiline={true}
                   numberOfLines={3}
@@ -364,9 +328,7 @@ export default function Signup_Admin({ navigation }) {
                   // onChangeText={(address) => setAddress(address)}
                   // onBlur={handleBlur("address")}
                 />
-                {errors.address && (
-                  <Text style={styles.errorText}>{errors.address}</Text>
-                )}
+                {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
 
                 {/*Institute Information*/}
                 <Headline title={"institute information"} />
@@ -414,10 +376,7 @@ export default function Signup_Admin({ navigation }) {
                 />
                 <Text style={styles.label_text}>Select State</Text>
                 <Dropdown
-                  style={[
-                    styles.dropdown,
-                    stateFocus && { borderColor: color.purple, borderWidth: 2 },
-                  ]}
+                  style={[styles.dropdown, stateFocus && { borderColor: color.purple, borderWidth: 2 }]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   inputSearchStyle={styles.inputSearchStyle}
@@ -443,10 +402,7 @@ export default function Signup_Admin({ navigation }) {
                 />
                 <Text style={styles.label_text}>Select City</Text>
                 <Dropdown
-                  style={[
-                    styles.dropdown,
-                    cityFocus && { borderColor: color.purple, borderWidth: 2 },
-                  ]}
+                  style={[styles.dropdown, cityFocus && { borderColor: color.purple, borderWidth: 2 }]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   inputSearchStyle={styles.inputSearchStyle}
@@ -547,26 +503,13 @@ export default function Signup_Admin({ navigation }) {
                   onChangeText={handleChange("userName")}
                   // onChangeText={(username) => setUsername(username)}
                 />
-                {errors.userName && (
-                  <Text style={styles.errorText}>{errors.userName}</Text>
-                )}
+                {errors.userName && <Text style={styles.errorText}>{errors.userName}</Text>}
                 <View>
-                  <TouchableOpacity
-                    style={styles.icon}
-                    onPress={() => setIsVisibleEntry(!isVisibleEntry)}
-                  >
+                  <TouchableOpacity style={styles.icon} onPress={() => setIsVisibleEntry(!isVisibleEntry)}>
                     <MaterialCommunityIcons
-                      name={
-                        isVisibleEntry === false
-                          ? "eye-outline"
-                          : "eye-off-outline"
-                      }
+                      name={isVisibleEntry === false ? "eye-outline" : "eye-off-outline"}
                       size={24}
-                      color={
-                        isVisibleEntry === false
-                          ? color.dark_gray
-                          : color.purple
-                      }
+                      color={isVisibleEntry === false ? color.dark_gray : color.purple}
                     />
                   </TouchableOpacity>
                   <Input
@@ -581,26 +524,13 @@ export default function Signup_Admin({ navigation }) {
                     // onBlur={handleBlur("passwor}
                   />
                 </View>
-                {errors.password && (
-                  <Text style={styles.errorText}>{errors.password}</Text>
-                )}
+                {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
                 <View>
-                  <TouchableOpacity
-                    style={styles.icon}
-                    onPress={() => setIsConfirmEntry(!isConfirmEntry)}
-                  >
+                  <TouchableOpacity style={styles.icon} onPress={() => setIsConfirmEntry(!isConfirmEntry)}>
                     <MaterialCommunityIcons
-                      name={
-                        isConfirmEntry === false
-                          ? "eye-outline"
-                          : "eye-off-outline"
-                      }
+                      name={isConfirmEntry === false ? "eye-outline" : "eye-off-outline"}
                       size={24}
-                      color={
-                        isConfirmEntry === false
-                          ? color.dark_gray
-                          : color.purple
-                      }
+                      color={isConfirmEntry === false ? color.dark_gray : color.purple}
                     />
                   </TouchableOpacity>
                   <Input
@@ -664,9 +594,7 @@ export default function Signup_Admin({ navigation }) {
                     onValueChange={setChecked}
                     color={isChecked ? color.purple : undefined}
                   />
-                  <Text style={styles.agree_text}>
-                    I agree to the above terms
-                  </Text>
+                  <Text style={styles.agree_text}>I agree to the above terms</Text>
                 </View>
 
                 {/*Extra Space*/}

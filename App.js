@@ -70,11 +70,11 @@ import NavigationDrawer from "./src/app/screens/students/home_screen/NavigationD
 import RootNavigator from "./src/app/navigations/RootNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import FlashMessage from "react-native-flash-message";
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 
 export default function App() {
-  console.error = (error) => error.apply;
-  LogBox.ignoreLogs(["ViewPropTypes will be removed", "ColorPropType will be removed"]);
+  // console.error = (error) => error.apply;
+  // LogBox.ignoreLogs(["ViewPropTypes will be removed", "ColorPropType will be removed"]);
   // useEffect(() => {
   //   useFonts();
   //   const backHandler = BackHandler.addEventListener("hardwareBackPress", function () {

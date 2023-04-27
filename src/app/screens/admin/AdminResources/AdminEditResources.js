@@ -16,6 +16,25 @@ export default function AdminEditResources({ route, navigation }) {
   // const { eventID, eventIDParam } = route.params; // ! Current Event ID
   const updateEvent = async () => {
     setloading(true);
+    if (!question && !answer) {
+      return Alert.alert("Please provide correct data", "Question and Answer is mandatory fields", [
+        {
+          text: "Cancel",
+          onPress: () => {
+            setloading(false);
+            console.log("Cancel Pressed");
+          },
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            setloading(false);
+            console.log("OK Pressed");
+          },
+        },
+      ]);
+    }
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
     var data = qs.stringify({
@@ -70,12 +89,12 @@ export default function AdminEditResources({ route, navigation }) {
           keyboardType="text"
         />
         <View style={styles.button}>
-        <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
+          <SmallButton
+            title={"Cancel"}
+            color={color.purple}
+            fontFamily={"Montserrat-Medium"}
+            onPress={() => navigation.goBack()}
+          />
           <SmallButton
             title="Update"
             color={color.white}

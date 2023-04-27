@@ -4,10 +4,10 @@ import SelectDropdown from "react-native-select-dropdown";
 import React from "react";
 const down_img = require("../../../assets/images/down.png");
 const Value = [
-  { name: "Export Content", id: "1" },
-  { name: "Not available on any of the pages", id: "2" },
-  { name: "Available only for top level pages", id: "3" },
-  { name: "Available on every page", id: "4" },
+  // { name: "Export Content", id: "1" },
+  { name: "Not available on any of the pages", id: "1" },
+  { name: "Available only for top level pages", id: "2" },
+  { name: "Available on every page", id: "3" },
 ];
 export default function ExportContent({ label, ...props }) {
   return (

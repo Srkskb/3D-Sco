@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, RefreshControl, Platform, Linking } from "react-native";
 import color from "../../../../assets/themes/Color";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
@@ -23,13 +23,16 @@ export default function Backup() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const [selectCourse, setSelectCourse] = useState("Select Course");
+  const [selectCourse, setSelectCourse] = useState({});
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log("fileCabinetData", fileCabinetData);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setSelectCourse({});
+  }, [isFocused]);
   const allLearnerList = (id) => {
     setLoading(true);
     const myHeaders = myHeadersData();
@@ -41,6 +44,7 @@ export default function Backup() {
     fetch(`https://3dsco.com/3discoapi/studentregistration.php?backup_course_id=1&course_id=${id}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
+        console.log(result?.data);
         setFileCabinetData(result?.data || []);
         setLoading(false);
       })
@@ -66,7 +70,6 @@ export default function Backup() {
 
     axios(config)
       .then((response) => {
-        console.log("dele for", response);
         if (response.data.success == 1) {
           // allLearnerList();
           setFileCabinetData((prev) => prev.filter((item) => item.id != id));
@@ -194,8 +197,11 @@ export default function Backup() {
         <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {
+            console.log("selectedItem", selectedItem);
+            setSelectCourse(selectedItem);
             allLearnerList(selectedItem.id);
           }}
+          value={selectCourse}
           // value={selectCourse}
         />
         <View>

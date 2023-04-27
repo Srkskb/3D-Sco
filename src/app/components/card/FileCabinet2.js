@@ -68,7 +68,7 @@ export default function FileCabinet2({
           onPress={() => onPressView()}
         />
         {/* <View style={{ width: 60 }}></View> */}
-        <Remove onPress={removePress} />
+        <Remove onPress={() => removePress()} />
       </View>
     </View>
   );

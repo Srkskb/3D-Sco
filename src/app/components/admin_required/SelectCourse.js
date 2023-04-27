@@ -1,14 +1,17 @@
 import { View, Text, Image } from "react-native";
-import SelectDropdown from "react-native-select-dropdown";
-import color from "../../assets/themes/Color";
+// import SelectDropdown from "react-native-select-dropdown";
+import { Dropdown } from "react-native-element-dropdown";
+// import color from "../../assets/themes/Color";
 import React, { useEffect, useState } from "react";
-const down_img = require("../../assets/images/down.png");
+// const down_img = require("../../assets/images/down.png");
 import { styles } from "./Styles";
 import AsyncStorage from "@react-native-community/async-storage";
 import axios from "axios";
+import { AntDesign } from "@expo/vector-icons";
 
-export default function SelectCourse({ label, ...props }) {
+export default function SelectCourse({ label, onSelect, ...props }) {
   const [selectItem, setSelectItem] = useState([]);
+  const [isFocus, setIsFocus] = useState(false);
 
   const fetch = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -35,7 +38,7 @@ export default function SelectCourse({ label, ...props }) {
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       {label && <Text style={styles.label_text}>{label}</Text>}
 
-      <View style={{ flexDirection: "row" }}>
+      {/* <View style={{ flexDirection: "row" }}>
         <SelectDropdown
           defaultValue={"Select Course"}
           data={selectItem.map((item, index) => ({ name: item.Course, id: item.id }))}
@@ -50,10 +53,36 @@ export default function SelectCourse({ label, ...props }) {
           rowTextStyle={styles.row_text}
           dropdownStyle={styles.dropdown_style}
           {...props}
+          value={{ name: "hajs", id: "1" }}
         />
 
         <Image style={styles.downimg} source={down_img}></Image>
-      </View>
+      </View> */}
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: "#82027D" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={selectItem.map((item, index) => ({ name: item.Course, id: item.id }))}
+        search
+        maxHeight={300}
+        labelField="name"
+        valueField="id"
+        placeholder={!isFocus ? "Select item" : "..."}
+        searchPlaceholder="Search..."
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setIsFocus(false);
+          onSelect(item);
+        }}
+        {...props}
+        renderLeftIcon={() => (
+          <AntDesign style={styles.icon} color={isFocus ? "#82027D" : "black"} name="Safety" size={20} />
+        )}
+      />
+      {/* </View> */}
     </View>
   );
 }

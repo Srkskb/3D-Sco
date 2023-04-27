@@ -22,6 +22,7 @@ export default function AddAssignment({ navigation }) {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectCourse, setSelectCourse] = useState("");
 
   // const pickImage = async () => {
   //   let result = await ImagePicker.launchImageLibraryAsync({
@@ -83,10 +84,7 @@ export default function AddAssignment({ navigation }) {
   };
   return (
     <View style={{ backgroundColor: color.white, flex: 1 }}>
-      <HeaderBack
-        title={"Add Assignment"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Add Assignment"} onPress={() => navigation.goBack()} />
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
@@ -109,15 +107,7 @@ export default function AddAssignment({ navigation }) {
               })}
               onSubmit={(values) => addAssignment(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-                setFieldValue,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Assignment Title"}
@@ -129,11 +119,7 @@ export default function AddAssignment({ navigation }) {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -149,27 +135,20 @@ export default function AddAssignment({ navigation }) {
                     label={"Select Course"}
                     onSelect={(selectedItem, index) => {
                       setFieldValue("course", selectedItem.id);
+                      setSelectCourse(selectedItem);
                     }}
-                    value={values.course}
+                    value={selectCourse}
                   />
 
                   {errors.course && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.course}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
                   )}
 
                   <UploadDocument pickImg={pickImg} />
                   {/* <View style={styles.uploadCon}>
                     {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View> */}
-                  <View>
-                    {image?.name && (
-                      <Text style={styles.uploadCon}>{image.name}</Text>
-                    )}
-                  </View>
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
 
                   <InputField
                     label={"Description"}
@@ -184,20 +163,16 @@ export default function AddAssignment({ navigation }) {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                  <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={() => handleSubmit()}
                       title="Save"

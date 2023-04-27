@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, RefreshControl, Linking } from "react-native";
 import color from "../../../../assets/themes/Color";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import HeaderBack from "../../../../components/header/Header";
 import { myHeadersData } from "../../../../api/helper";
 import { NoDataFound } from "../../../../components";
@@ -23,13 +23,17 @@ export default function Presentation() {
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const [selectCourse, setSelectCourse] = useState("");
+  const [selectCourse, setSelectCourse] = useState({});
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [courseId, setCourseId] = useState("");
 
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setSelectCourse({});
+  }, [isFocused]);
   const allLearnerList = (id) => {
     setLoading(true);
     const myHeaders = myHeadersData();
@@ -134,7 +138,9 @@ export default function Presentation() {
           onSelect={(selectedItem, index) => {
             setCourseId(selectedItem.id);
             console.log(selectedItem.id);
+            setSelectCourse(selectedItem);
           }}
+          value={selectCourse}
         />
         <View style={{ paddingHorizontal: 10 }}>
           {fileCabinetData === undefined ? (
@@ -157,6 +163,8 @@ export default function Presentation() {
                       preTitle: list.assignment_title,
                       id: list?.id,
                       description: list.Description,
+                      file_name: list.file_name,
+                      course_id: list.course_id,
                     })
                   }
                   removePress={() => {

@@ -6,9 +6,34 @@ import color from "../../../assets/themes/Color";
 import Book_Card from "../../../components/card/Book_Card";
 import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
+import axios from "axios";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AdminManageLibrary() {
   const navigation = useNavigation();
+  const [manageLibrary, setManageLibrary] = useState([]);
+
+  const fetch = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    axios
+      .get(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData?.id}`)
+      .then(function (res) {
+        if (res.data.success == 1) {
+          if (res.data.data) {
+            console.log("data", res.data.data);
+            setManageLibrary(res.data.data);
+          } else setManageLibrary([{ Course: "Please add the course", id: 0 }]);
+        } else {
+          console.log("Course List can't fetch right now");
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
+  useEffect(() => {
+    !manageLibrary.length && fetch();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -18,7 +43,13 @@ export default function AdminManageLibrary() {
 
         <ScrollView>
           <View style={styles.book_container}>
-            <Book_Card title={"title"} author={"author name"} onPress={() => navigation.navigate("ViewBook")} />
+            {manageLibrary.map((item) => (
+              <Book_Card
+                title={item?.titel}
+                author={item?.author}
+                onPress={() => navigation.navigate("ViewBook", { list: item })}
+              />
+            ))}
           </View>
         </ScrollView>
       </View>

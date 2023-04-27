@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AddAnnouncement({ navigation }) {
   const [loading, setloading] = useState(false);
-  const loginUID = localStorage.getItem("loginUID");
+  const [selectCourse, setSelectCourse] = useState({});
 
   const handleAddAnnouncement = async (values) => {
     setloading(true);
@@ -94,9 +94,9 @@ export default function AddAnnouncement({ navigation }) {
                     name="course"
                     onSelect={(selectedItem, index) => {
                       setFieldValue("course", selectedItem.id);
-                      console.log(selectedItem);
+                      setSelectCourse(selectedItem);
                     }}
-                    // value={course}
+                    value={selectCourse}
                   />
 
                   {errors.course && (

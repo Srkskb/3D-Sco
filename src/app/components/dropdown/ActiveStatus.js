@@ -13,7 +13,7 @@ export default function ActiveStatus({ label, ...props }) {
     <View>
       <Text style={styles.label_text}>Status</Text>
 
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingVertical: 6 }}>
         <SelectDropdown
           data={Access.map((item) => ({ name: item.name, id: item.id }))}
           buttonTextAfterSelection={(selectedItem, index) => {

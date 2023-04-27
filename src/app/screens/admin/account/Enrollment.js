@@ -19,6 +19,8 @@ export default function Enrollment({ navigation }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectCourseId, setSelectCourseId] = useState("");
+  const [selectCourse, setSelectCourse] = useState({});
+  const [search, setSearch] = useState("");
 
   // const DeleteCourse = () => {
   //   var data = qs.stringify({
@@ -63,7 +65,9 @@ export default function Enrollment({ navigation }) {
       .then((result) => {
         console.log("result", result);
         if (result?.data?.length) {
-          setCourses(result?.data);
+          const filteredItems = result?.data?.name.filter((item) => item.toLowerCase().includes(search.toLowerCase()));
+          setCourses(filteredItems);
+          setSearch("");
         } else {
           setCourses([]);
         }
@@ -90,14 +94,16 @@ export default function Enrollment({ navigation }) {
         />
         <View style={styles.search_course}>
           <View style={{ flex: 1 }}>
-            <SearchEnroll placeholder={"Search...."} />
+            <SearchEnroll onChangeText={(text) => setSearch(text)} placeholder={"Search...."} />
           </View>
           <View style={{ width: "50%" }}>
             <SelectCourse
               onSelect={(selectedItem, index) => {
                 console.log(selectedItem);
                 setSelectCourseId(selectedItem.id);
+                setSelectCourse(selectedItem);
               }}
+              value={selectCourse}
             />
           </View>
         </View>

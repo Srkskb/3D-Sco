@@ -3,16 +3,12 @@ import SelectDropdown from "react-native-select-dropdown";
 import React from "react";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
-const Gender = [
-  "Male",
-  "Female",
-  "Other",
-];
+const Gender = ["Male", "Female", "Other"];
 export default function GenderDropdown({ label, ...props }) {
   return (
     <View>
       <Text style={styles.label_text}>{label}</Text>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingVertical: 6 }}>
         <SelectDropdown
           data={Gender}
           buttonTextAfterSelection={(selectedItem, index) => {
@@ -32,4 +28,3 @@ export default function GenderDropdown({ label, ...props }) {
     </View>
   );
 }
-

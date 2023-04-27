@@ -22,9 +22,10 @@ export default function Course({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState("");
   const [id2, setId2] = useState("");
-const [deletePop, setDeletePop] = useState(false);
-  const [courseKey, setCourseKey] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
+  const [courseKey, setCourseKey] = useState("Access");
   const [input, setInput] = useState("");
+  const [myId, setMyId] = useState("");
 
   const DeleteCourse = (id, userId) => {
     console.log("first", id, userId);
@@ -57,12 +58,13 @@ const [deletePop, setDeletePop] = useState(false);
 
   const allCourses = async (access) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-
+    console.log(myData.id);
+    setMyId(myData?.id);
     setLoading(true);
     var config = {
       method: "get",
 
-      url: `https://3dsco.com/3discoapi/studentregistration.php?courses_filter=1&Access=${courseKey}&SearchKey=${input}&user_id=${myData.id}`,
+      url: `https://3dsco.com/3discoapi/studentregistration.php?courses_filter=1&Access=${courseKey}&user_id=${myData.id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
@@ -72,8 +74,13 @@ const [deletePop, setDeletePop] = useState(false);
 
     axios(config)
       .then((response) => {
-        if (response.data.data) {
-          setCourses(response.data.data);
+        if (response?.data?.data) {
+          const filteredItems = response.data.data.filter((item) =>
+            item?.course_name.toLowerCase().includes(input.toLowerCase())
+          );
+          setCourses(filteredItems);
+
+          console.log("response.data.data", response.data.data);
         } else {
           setCourses([]);
         }
@@ -134,6 +141,8 @@ const [deletePop, setDeletePop] = useState(false);
                 educator={list.assigned_tutor}
                 releaseDate={list.ReleaseDate}
                 endDate={list.EndDate}
+                userId={list?.user_id}
+                myId={myId}
                 removePress={() => {
                   setId(list.id);
                   setId2(list.user_id);
@@ -148,10 +157,7 @@ const [deletePop, setDeletePop] = useState(false);
         </ScrollView>
       )}
       {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => DeleteCourse(id,id2)}
-        />
+        <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => DeleteCourse(id, id2)} />
       ) : null}
     </View>
   );

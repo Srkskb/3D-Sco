@@ -3,10 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 import { Image } from "react-native";
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from "react-native-responsive-screen";
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
 import CommonDropdown from "../../../components/dropdown/CommonDropdown";
 import Input from "../../../components/inputs/Input";
@@ -19,17 +16,16 @@ import { Snackbar } from "react-native-paper";
 import SelectCourse from "../../../components/admin_required/SelectCourse";
 import AsyncStorage from "@react-native-community/async-storage";
 import mime from "mime";
+import * as Yup from "yup";
+import { Formik } from "formik";
 
 export default function AdminAddBook({ navigation }) {
-  const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
-  const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
-  const [loading, setloading] = useState(false);
-  const [getMessageTrue, setMessageTrue] = useState();
-  const [getMessageFalse, setMessageFalse] = useState();
-  const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(null);
   const [courseList, setCourseList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState({});
+  const [image, setImage] = useState("");
+  const [doc, setDoc] = useState("");
   const initialObj = {
     add_book: "",
     title: "",
@@ -50,35 +46,38 @@ export default function AdminAddBook({ navigation }) {
     })();
   }, []);
 
-  const handleCreateBook = async () => {
-    setloading(true);
+  const handleCreateBook = async (bookData) => {
     const userData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setLoading(true);
     var data = new FormData();
     data.append("add_book", "1");
-    data.append("title", bookData?.title);
-    data.append("course_id", bookData?.course_id);
-    data.append("detail", bookData?.detail);
+    data.append("title", bookData?.bookTitle);
+    data.append("course_id", bookData?.courseId);
+    data.append("detail", bookData?.description);
     data.append("author", bookData?.author);
     data.append("pdf", {
-      uri: bookData?.pdf.uri, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(bookData?.pdf.uri),
-      name: bookData?.pdf.name,
+      uri: doc.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(doc.uri),
+      name: doc.name,
     });
     data.append("image", {
-      uri: bookData?.image.uri, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(bookData?.image.uri),
-      name: bookData?.image.name,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image.name,
     });
     data.append("publisher", bookData?.publisher);
     data.append("user_id", userData.id);
+    console.log("payload", data);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=a780e1f8925e5a3d9ebcdbb058ff0885");
 
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: data,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Cookie: "PHPSESSID=8us3uou5gm35l17b3eo0lfb334",
-      },
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
@@ -90,21 +89,10 @@ export default function AdminAddBook({ navigation }) {
           navigation.navigate("AdminLibrary");
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log("err", err);
         setLoading(false);
       });
-  };
-  const pickPdf = async () => {
-    console.log("pdf");
-    let result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    console.log(result);
-    if (result.uri) {
-      // setImage(result);
-      setBookData((prev) => ({ ...prev, pdf: { name: result?.name, uri: result?.uri } }));
-    }
-    return;
   };
   const pickImg = async () => {
     console.log("first");
@@ -113,109 +101,104 @@ export default function AdminAddBook({ navigation }) {
     });
     console.log(result);
     if (result.uri) {
-      // setImage(result);
-      setBookData((prev) => ({ ...prev, image: { name: result?.name, uri: result?.uri } }));
+      setImage(result);
+    }
+  };
+
+  const pickImgPdf = async () => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/*",
+    });
+    console.log(result);
+    if (result.uri) {
+      setDoc(result);
     }
   };
   return (
     <View style={styles.container}>
       <HeaderBack title={"Add Book"} onPress={() => navigation.goBack()} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.scroll_view}>
-          {/* <CommonDropdown
-            value={courseList.map((item) => ({ name: item?.Course, id: item?.id }))}
-            label={"Course"}
-            marginBottom={10}
-            onChange={(item) => setBookData((prev) => ({ ...prev, course_id: item?.id }))}
-          /> */}
-          <SelectCourse
-            onSelect={(selectedItem, index) => {
-              console.log(selectedItem);
-              // setSelectCourseId(selectedItem.id);
-              setBookData((prev) => ({ ...prev, course_id: selectedItem?.id }));
-            }}
-          />
-          <Input
-            value={bookData?.title}
-            onChangeText={(title) =>
-              setBookData((prev) => ({ ...prev, title }))
-            }
-            label={"Book Title"}
-            placeholder={"Enter Book Name"}
-          />
-          <Input
-            value={bookData?.author}
-            onChangeText={(author) =>
-              setBookData((prev) => ({ ...prev, author }))
-            }
-            label={"Author"}
-            placeholder={"Enter Author Name"}
-          />
-          <Input
-            value={bookData?.publisher}
-            onChangeText={(publisher) =>
-              setBookData((prev) => ({ ...prev, publisher }))
-            }
-            label={"Publisher"}
-            placeholder={"Enter Publisher Name"}
-          />
-          <UploadDocument
-            onChange={(e) =>
-              setBookData((prev) => ({
-                ...prev,
-                pdf: { name: e?.name, uri: e?.uri },
-              }))
-            }
-            pickImg={() => pickPdf()}
-            // onChange={(e) => setBookData((prev) => ({ ...prev, pdf: { name: e?.name, uri: e?.uri } }))}
-            type={"Book (pdf)"}
-          />
-          {bookData?.pdf?.name && (
-            <Text style={{ textAlign: "right" }}>{bookData?.pdf?.name}</Text>
-          )}
-          <UploadDocument
-            onChange={(e) =>
-              setBookData((prev) => ({
-                ...prev,
-                image: { name: e?.name, uri: e?.uri },
-              }))
-            }
-            pickImg={() => pickImg()}
-            // onChange={(e) => setBookData((prev) => ({ ...prev, image: { name: e?.name, uri: e?.uri } }))}
-            type={"Book (Image)"}
-          />
-          {bookData?.image?.name && (
-            <Text style={{ textAlign: "right" }}>{bookData?.image?.name}</Text>
-          )}
-
-          <Input
-            label={"Description"}
-            value={bookData?.detail}
-            placeholder={"Enter your book description"}
-            multiline={true}
-            numberOfLines={6}
-            textAlignVertical={"top"}
-            onChangeText={(detail) =>
-              setBookData((prev) => ({ ...prev, detail }))
-            }
-          />
-          <View style={styles.button}>
-          <SmallButton
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{
+            courseId: "",
+            bookTitle: "",
+            author: "",
+            publisher: "",
+            description: "",
+          }}
+          validationSchema={Yup.object().shape({
+            courseId: Yup.string().required("Category is required"),
+            bookTitle: Yup.string().required("Book Title is required"),
+            author: Yup.string().required("author is required"),
+            publisher: Yup.string().required("Publisher is required"),
+            description: Yup.string().required("Description is required"),
+          })}
+          onSubmit={(values) => handleCreateBook(values)}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+            <View style={styles.scroll_view}>
+              <SelectCourse
+                label={"Course"}
+                onSelect={(selectedItem) => {
+                  setFieldValue("courseId", selectedItem.id);
+                  setSelectedCourse(selectedItem);
+                }}
+                value={selectedCourse}
+              />
+              <Input
+                label={"Book Title"}
+                placeholder={"Enter Book Name"}
+                value={values?.bookTitle}
+                onChangeText={handleChange("bookTitle")}
+              />
+              <Input
+                label={"Author"}
+                placeholder={"Enter Author Name"}
+                value={values?.author}
+                onChangeText={handleChange("author")}
+              />
+              <Input
+                label={"Publisher"}
+                placeholder={"Enter Publisher Name"}
+                value={values?.publisher}
+                onChangeText={handleChange("publisher")}
+              />
+              <UploadDocument pickImg={pickImgPdf} type={"Book (pdf,doc,ppt,xls)"} />
+              {doc?.name && <Text style={{ color: "red", textAlign: "right" }}>{doc?.name}</Text>}
+              <UploadDocument pickImg={pickImg} type={"Book Image"} />
+              {image?.name && <Text style={{ color: "red", textAlign: "right" }}>{image?.name}</Text>}
+              <Input
+                label={"Description"}
+                placeholder={"Enter your book description"}
+                multiline={true}
+                numberOfLines={6}
+                textAlignVertical={"top"}
+                value={values?.description}
+                onChangeText={handleChange("description")}
+              />
+              <View style={styles.button}>
+                <SmallButton
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
                   onPress={() => navigation.goBack()}
                 />
-            <SmallButton
-              title="Save"
-              loading={loading}
-              onPress={handleCreateBook}
-              color={color.white}
-              backgroundColor={color.purple}
-              fontFamily={"Montserrat-Bold"}
-            />
-          </View>
-        </View>
+
+                <SmallButton
+                  title="Update"
+                  color={color.white}
+                  backgroundColor={color.purple}
+                  fontFamily={"Montserrat-Bold"}
+                  onPress={() => handleSubmit()}
+                  loading={loading}
+                />
+              </View>
+            </View>
+          )}
+        </Formik>
       </ScrollView>
       <Snackbar
         visible={snackVisibleTrue}

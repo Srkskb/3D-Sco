@@ -14,26 +14,45 @@ import CategoryDropdown from "../../../../components/dropdown/CategoryDropdown";
 
 export default function Users() {
   const [loading, setloading] = useState(false);
-  var userType = [{ name: "Student" }, { name: "Tutor" }, { name: "Parent" }, { name: "Admin" }, { name: "Affiliate" }];
+  var userType = [
+    { name: "Student", value: "student" },
+    { name: "Tutor", value: "tutor" },
+    { name: "Parent", value: "parent" },
+    { name: "Admin", value: "admin" },
+    { name: "Affiliate", value: "Affiliate" },
+  ];
   const [userList, setUserList] = useState([]);
   const [type, setType] = useState("");
   const initialObj = {
-    status: "",
+    status: "1",
     days: "",
   };
   const [statusData, setStatusData] = useState(initialObj);
+  const [accountType, setAccountType] = useState("");
+  const [searchData, setSearchData] = useState("");
+  const [category, setCategory] = useState("");
 
   const filter = () => {
     setloading(true);
     var formdata = new FormData();
     // var myHeaders = myHeadersData();
     formdata.append("Account_filter", "1");
-    formdata.append("days", statusData.days);
-    formdata.append("admin_status", statusData.status);
+    {
+      statusData.day && formdata.append("days", statusData.days);
+    }
+    {
+      statusData.status && formdata.append("admin_status", statusData.status);
+    }
     // formdata.append("created_by", "");
-    // formdata.append("type", type);
-    // formdata.append("SearchKey", "");
-    // formdata.append("cat_id", "");
+    {
+      accountType && formdata.append("type", accountType);
+    }
+    {
+      searchData && formdata.append("SearchKey", searchData);
+    }
+    {
+      category?.id && formdata.append("cat_id", category?.id);
+    }
     // formdata.append("match_word", "");
 
     const myHeaders = new Headers();
@@ -47,18 +66,18 @@ export default function Users() {
       body: formdata,
       // redirect: "follow",
     };
-
+    console.log("formdata", formdata);
     fetch("https://3dsco.com/3discoapi/studentregistration.php", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.data != null) {
           setloading(false);
           setUserList(result.data);
+          console.log(result.data);
           setStatusData(initialObj);
         }
       })
-      .catch((error) => 
-      console.log("error", error));
+      .catch((error) => console.log("error", error));
   };
   return (
     <View style={styles.container}>
@@ -66,12 +85,17 @@ export default function Users() {
         <Text style={styles.headline}>Account Status</Text>
         <AccountStatus
           onSelect={(item) => {
-            console.log("item", item);
             setStatusData((prev) => ({ ...prev, status: item.id }));
           }}
         />
         <Text style={styles.headline}>Account Type</Text>
-        <CommonDropdown value={userType} onSelect={(item, index) => setType(index + 1)} />
+        <CommonDropdown
+          value={userType}
+          onSelect={(item, index) => {
+            setAccountType(item?.value);
+            console.log(item);
+          }}
+        />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={styles.input}>
             <View
@@ -96,6 +120,8 @@ export default function Users() {
                   fontFamily: "Montserrat-Regular",
                   fontSize: 12,
                 }}
+                value={searchData}
+                onChangeText={(text) => setSearchData(text)}
                 placeholder={"Search Login Name, Email.."}
               />
             </View>
@@ -113,15 +139,13 @@ export default function Users() {
           }}
         >
           <View style={{ width: "58%" }}>
-            {/* <CommonDropdown /> */}
             <CategoryDropdown
-              label={"Category"}
+              // label={"Category"}
               name="category"
-              // onSelect={(item, index) => console.log(item)}
               onSelect={(selectedItem, index) => {
-                // setCategory(selectedItem);
+                setCategory(selectedItem);
               }}
-              // value={category}
+              value={category}
             />
           </View>
           <View style={{ width: "38%" }}>
@@ -163,7 +187,7 @@ export default function Users() {
           </View>
         </View>
         <View style={styles.btnContainer}>
-          <AppButton title={"Filter"} btnColor={color.purple} onPress={filter} loading={loading}/>
+          <AppButton title={"Filter"} btnColor={color.purple} onPress={filter} loading={loading} />
         </View>
         <View style={{ paddingHorizontal: 2 }}>
           {userList === undefined ? (
