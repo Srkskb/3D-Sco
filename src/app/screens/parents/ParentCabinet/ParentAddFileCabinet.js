@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function ParentAddFileCabinet() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,6 +40,7 @@ export default function ParentAddFileCabinet() {
   };
 
   const addFileCabinet = async (values) => {
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(values);
     setLoading(true);
@@ -70,14 +71,15 @@ export default function ParentAddFileCabinet() {
       .then((res) => {
         console.log(res);
         if (res.success == 1) {
+          setLoading(false);
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
           navigation.navigate("ParentCabinet");
         } else {
+          setLoading(false);
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-        setLoading(false);
       })
       .catch(() => setLoading(false));
   };
@@ -132,7 +134,7 @@ export default function ParentAddFileCabinet() {
                     placeholder={"Document Title"}
                     name="docTitle"
                     onChangeText={handleChange("docTitle")}
-                    onBlur={handleBlur("docTitle")}
+                    // onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
                     keyboardType="text"
                   />
@@ -144,9 +146,10 @@ export default function ParentAddFileCabinet() {
                     label={"Access Level"}
                     name="access"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem.name);
+                      setAccess(selectedItem);
                     }}
-                    // value={access}
+                    value={access}
                   />
                   {errors.access && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
@@ -171,7 +174,12 @@ export default function ParentAddFileCabinet() {
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

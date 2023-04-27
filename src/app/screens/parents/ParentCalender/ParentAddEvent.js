@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from 
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
-import { AccessLevel } from "../../../components/dropdown";
+// import { AccessLevel } from "../../../components/dropdown";
+import AccessLevel from "../../../components/dropdown/AccessLevel";
+
 import SmallButton from "../../../components/buttons/SmallButton";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
@@ -127,6 +129,7 @@ export default function ParentAddEvent() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
+              validateOnChange={false}
               initialValues={{
                 evenTitle: "",
                 eventDescription: "",
@@ -164,7 +167,7 @@ export default function ParentAddEvent() {
                     label={"Access Level"}
                     name="access"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem.id);
                     }}
                     // value={access}
                   />
@@ -198,6 +201,7 @@ export default function ParentAddEvent() {
                       date={selectedDate}
                       onConfirm={(e) => {
                         setFieldValue("eventDate", moment(e).format("YYYY-MM-DD"));
+                        hideDatePicker();
                       }}
                       onCancel={hideDatePicker}
                     />

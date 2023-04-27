@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView,RefreshControl } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -7,13 +7,14 @@ import HeaderText from "../../../components/HeaderText";
 import Book_Card from "../../../components/card/Book_Card";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export default function AffiliateLibrary() {
   const navigation = useNavigation();
   const [studentLibrary, setStudentLibrary] = useState([]);
-    const [color, changeColor] = useState("red");
+  const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
-  const allLearnerList = () => {
+  const allLearnerList = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -21,15 +22,12 @@ export default function AffiliateLibrary() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=5&course_id=6`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=5&course_id=6`, requestOptions)
       .then((res) => res.json())
       .then((result) => setStudentLibrary(result.data))
       .catch((error) => console.log("error", error));
   };
-    const onRefresh = () => {
+  const onRefresh = () => {
     setRefreshing(true);
     allLearnerList();
     setTimeout(() => {
@@ -41,15 +39,10 @@ export default function AffiliateLibrary() {
   }, []);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Library"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Library"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <HeaderText title={"Library"} />
-        <ScrollView refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          } >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
             {studentLibrary === undefined ? (
               <>
@@ -58,10 +51,7 @@ export default function AffiliateLibrary() {
             ) : (
               <>
                 {studentLibrary.map((list, index) => (
-                  <Book_Card
-                    title={`${list.titel}`}
-                    author={`${list.author}`}
-                  />
+                  <Book_Card key={index} title={`${list.titel}`} author={`${list.author}`} />
                 ))}
               </>
             )}

@@ -129,7 +129,7 @@ export default function AffiliateViewBlogs({ route, navigation }) {
               title={"Cancel"}
               color={color.purple}
               fontFamily={"Montserrat-Medium"}
-              onPress={() => navigation.navigate("AdminBlogs")}
+              onPress={() => navigation.navigate("AffiliateBlogs")}
             />
             <SmallButton
               title={"Submit"}

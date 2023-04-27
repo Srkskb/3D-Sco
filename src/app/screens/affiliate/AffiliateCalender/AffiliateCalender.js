@@ -15,6 +15,7 @@ import HomeHeader from "../../../components/header/HomeHeader";
 import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
 export default function AffiliateCalender() {
   const [id, setId] = useState("");
@@ -51,7 +52,7 @@ export default function AffiliateCalender() {
 
   const eventListData = async (date) => {
     let mdate = moment(date).format("YYYY-MM-DD");
-    console.log(mdate);
+    console.log("date", date, mdate);
     setLoading(true);
     // const loginUID = localStorage.getItem("loginUID");
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -69,9 +70,13 @@ export default function AffiliateCalender() {
     )
       .then((res) => res.json())
       .then((result) => {
-        let data = result.data.filter((i) => moment(i.event_date).isSame(date, "day"));
-        console.log(data);
-        setEventList(data);
+        if (date) {
+          let data = result.data.filter((i) => moment(i.event_date).isSame(date, "day"));
+          setEventList(data);
+        } else {
+          setEventList(result.data);
+        }
+
         setLoading(false);
       })
       .catch((error) => {
@@ -155,22 +160,7 @@ export default function AffiliateCalender() {
       >
         {getMessageFalse}
       </Snackbar>
-      {/* <Calender_Strip/> */}
-      {loading ? (
-        <View
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#ffffffcc",
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 0,
-          }}
-        >
-          <ActivityIndicator size={"large"} />
-        </View>
-      ) : null}
+      {loading && <Loader />}
       {loading ? null : (
         <CalendarStrip
           scrollable
@@ -214,47 +204,39 @@ export default function AffiliateCalender() {
         </View>
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        {eventList && eventList.length == 0 ? (
-          <>
-            <NoDataFound />
-          </>
+        {eventList?.length ? (
+          eventList.map((list, index) => (
+            <View key={index} style={{ paddingHorizontal: 10, zIndex: 0 }}>
+              <Event_Card
+                key={index}
+                title={list.event_title}
+                status={list.access_level}
+                date={moment(list && list?.event_date).format("LL")}
+                description={list.decription}
+                editPress={() =>
+                  navigation.navigate("AffiliateEditEvent", {
+                    editData: list,
+                  })
+                }
+                removePress={() => {
+                  setDeletePop(true);
+                  setId(list.event_id);
+                }}
+                viewPress={() =>
+                  navigation.navigate("AffiliateViewEventDetails", {
+                    title: list.event_title,
+                    status: list.access_level,
+                    Date: moment(list && list?.event_date).format("LL"),
+                    description: list.decription,
+                  })
+                }
+              />
+            </View>
+          ))
         ) : (
-          <>
-            {eventList &&
-              eventList.map((list, index) => (
-                <View key={index} style={{ paddingHorizontal: 10, zIndex: 0 }}>
-                  <Event_Card
-                    key={index}
-                    title={list.event_title}
-                    status={list.access_level}
-                    date={moment(list && list?.event_date).format("LL")}
-                    description={list.decription}
-                    editPress={() =>
-                      navigation.navigate("AffiliateEditEvent", {
-                        eventID: list.event_id,
-                        title: list.event_title,
-                        status: list.access_level,
-                        dateData: moment(list && list?.event_date).format("LL"),
-                        description: list.decription,
-                      })
-                    }
-                    removePress={() => {
-                      setDeletePop(true);
-                      setId(list.event_id);
-                    }}
-                    viewPress={() =>
-                      navigation.navigate("AffiliateViewEventDetails", {
-                        title: list.event_title,
-                        status: list.access_level,
-                        Date: moment(list && list?.event_date).format("LL"),
-                        description: list.decription,
-                      })
-                    }
-                  />
-                </View>
-              ))}
-          </>
+          <NoDataFound />
         )}
+
         <View style={styles.card_padding}></View>
       </ScrollView>
       {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}

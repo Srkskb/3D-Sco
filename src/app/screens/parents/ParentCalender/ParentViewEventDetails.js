@@ -11,14 +11,8 @@ export default function ParentViewEventDetails({ route, navigation }) {
   const { description, descriptionParam } = route.params;
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Event Detail"}
-        onPress={() => navigation.goBack()}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.scroll_view}
-      >
+      <HeaderBack title={"Event Detail"} onPress={() => navigation.goBack()} />
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll_view}>
         <View style={styles.detail_box}>
           <Text style={styles.head_text}>{title}</Text>
           <View style={styles.detail}>
@@ -35,7 +29,6 @@ export default function ParentViewEventDetails({ route, navigation }) {
             <View style={styles.description}>
               <Text style={styles.description_text}>{description}</Text>
             </View>
-       
           </View>
         </View>
       </ScrollView>
@@ -79,5 +72,4 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: color.gray_light,
   },
-   
 });

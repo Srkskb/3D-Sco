@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -28,14 +20,15 @@ export default function AffiliateEditMyJournal({ route, navigation }) {
   const { jAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { jImage, docImageParam } = route.params;
-  const [loading, setloading] = useState(false);
+
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState({ name: jImage.split("https://3dsco.com/images/")[1].split(".")[0], uri: jImage });
+  const [image, setImage] = useState({ name: jImage.split("https://3dsco.com/images/")[1], uri: jImage });
   const [updateTitle, setUpTitle] = useState(title);
+  const [loading, setloading] = useState(false);
   const [upDescription, setUpDescription] = useState(description);
   const [access, setAccess] = useState(jAccess);
   const pickImg = async () => {
@@ -89,27 +82,23 @@ export default function AffiliateEditMyJournal({ route, navigation }) {
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
-  const [showDocResults, setShowDocResults] = useState(false);
+  const [showDocResults, setShowDocResults] = useState(true);
 
   const onClick = () => {
     setShowResults(true);
   };
   const onClickDoc = () => {
-    setShowDocResults(true);
+    setShowDocResults(false);
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Journal"}
-        onPress={() => navigation.navigate("AffiliateMyJournal")}
-      />
+      <HeaderBack title={"Update Journal"} onPress={() => navigation.navigate("AffiliateMyJournal")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
-        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -118,7 +107,6 @@ export default function AffiliateEditMyJournal({ route, navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
-        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -160,27 +148,15 @@ export default function AffiliateEditMyJournal({ route, navigation }) {
               )}
               {showDocResults ? (
                 <>
-                  <UploadDocument
-                    type={"(pdf, doc, ppt,xls)"}
-                    pickImg={pickImg}
-                  />
-                  <View>
-                    {image?.name && (
-                      <Text style={styles.uploadCon}>{image.name}</Text>
-                    )}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                 </>
               ) : (
                 <>
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {jImage && (
-                        <Image
-                          source={{ uri: jImage }}
-                          style={styles.uploadImg}
-                        />
-                      )}
+                      {jImage && <Image source={{ uri: jImage }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -206,11 +182,11 @@ export default function AffiliateEditMyJournal({ route, navigation }) {
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}
-                  onPress={()=>navigation.goBack()}
+                  onPress={() => navigation.goBack()}
                 />
                 <SmallButton
                   onPress={updateDocument}
-                  title="Update"
+                  title="Save"
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}
                   color={color.white}

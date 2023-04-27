@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AffiliateAddFileCabinet() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,6 +40,7 @@ export default function AffiliateAddFileCabinet() {
   };
 
   const addFileCabinet = async (values) => {
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(values);
     setLoading(true);
@@ -79,7 +80,6 @@ export default function AffiliateAddFileCabinet() {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-        // setLoading(false);
       })
       .catch(() => setLoading(false));
   };
@@ -134,7 +134,7 @@ export default function AffiliateAddFileCabinet() {
                     placeholder={"Document Title"}
                     name="docTitle"
                     onChangeText={handleChange("docTitle")}
-                    onBlur={handleBlur("docTitle")}
+                    // onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
                     keyboardType="text"
                   />
@@ -146,9 +146,10 @@ export default function AffiliateAddFileCabinet() {
                     label={"Access Level"}
                     name="access"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem.name);
+                      setAccess(selectedItem);
                     }}
-                    // value={access}
+                    value={access}
                   />
                   {errors.access && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
@@ -173,7 +174,12 @@ export default function AffiliateAddFileCabinet() {
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

@@ -18,13 +18,13 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function ParentAddBlog() {
   const navigation = useNavigation();
-  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -73,6 +73,7 @@ export default function ParentAddBlog() {
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
         duration={2000}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -81,6 +82,7 @@ export default function ParentAddBlog() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -189,13 +191,10 @@ export default function ParentAddBlog() {
                   )}
                   <View style={styles.button}>
                     <SmallButton
-                      onPress={() => {
-                        resetForm();
-                        navigation.goBack();
-                      }}
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
                       onPress={() => handleSubmit()}

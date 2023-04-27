@@ -11,10 +11,10 @@ import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
+
 export default function AffiliateMyJournal() {
   const navigation = useNavigation();
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -22,9 +22,13 @@ const [deletePop, setDeletePop] = useState(false);
   const [myJournalData, setMyJournalData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const allLearnerList = async () => {
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -33,8 +37,15 @@ const [deletePop, setDeletePop] = useState(false);
     };
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
-      .then((result) => setMyJournalData(result.data))
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        setLoading(false);
+        setMyJournalData(result.data);
+        console.log(result.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
 
   const deleteJournal = async (id) => {
@@ -108,6 +119,7 @@ const [deletePop, setDeletePop] = useState(false);
       >
         {getMessageFalse}
       </Snackbar>
+      {loading && <Loader />}
       <View style={styles.main_box}>
         <ScrollView
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -151,9 +163,9 @@ const [deletePop, setDeletePop] = useState(false);
                         })
                       }
                       removePress={() => {
-                      setId(list.id);
-                      setDeletePop(true);
-                    }}
+                        setId(list.id);
+                        setDeletePop(true);
+                      }}
                     />
                   ))}
                 </>
@@ -162,12 +174,7 @@ const [deletePop, setDeletePop] = useState(false);
           </View>
         </ScrollView>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteJournal(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteJournal(id)} /> : null}
     </View>
   );
 }
