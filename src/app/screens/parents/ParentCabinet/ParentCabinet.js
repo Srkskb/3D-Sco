@@ -9,8 +9,13 @@ import TextWithButton from "../../../components/TextWithButton";
 import FileCabinetCard from "../../../components/card/FileCabinetCard";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
+
 export default function ParentCabinet() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -18,9 +23,11 @@ export default function ParentCabinet() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -29,8 +36,15 @@ export default function ParentCabinet() {
     };
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?student_filecabinate=1&id=${myData.id}`, requestOptions)
       .then((res) => res.json())
-      .then((result) => setFileCabinetData(result.data))
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        console.log(result);
+        setFileCabinetData(result.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteEvent = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -49,6 +63,7 @@ export default function ParentCabinet() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -84,6 +99,7 @@ export default function ParentCabinet() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -92,9 +108,11 @@ export default function ParentCabinet() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
+      {loading && <Loader />}
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}
@@ -113,6 +131,7 @@ export default function ParentCabinet() {
             <>
               {fileCabinetData.map((list, index) => (
                 <FileCabinetCard
+                  key={index}
                   title={list.name}
                   access={list.access_level}
                   description={list.description}
@@ -125,7 +144,10 @@ export default function ParentCabinet() {
                       docImage: list.image,
                     })
                   }
-                  removePress={() => deleteEvent(list.id)}
+                  removePress={() => {
+                    setId(list.id);
+                    setDeletePop(true);
+                  }}
                   onPress={() =>
                     navigation.navigate("ParentViewContent", {
                       title: list.name,
@@ -140,6 +162,7 @@ export default function ParentCabinet() {
           )}
         </View>
       </ScrollView>
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteEvent(id)} /> : null}
     </View>
   );
 }

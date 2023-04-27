@@ -52,7 +52,7 @@ export default function AffiliateAddFinancial({ route, navigation }) {
     formdata.append("Add_financial_assistance", "1");
     formdata.append("titel", assetsTitle);
     formdata.append("url", assetsUrl);
-    formdata.append("type", "4");
+    formdata.append("type", "5");
     formdata.append("user_id", myData.id);
     var requestOptions = {
       method: "POST",

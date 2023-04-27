@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -22,10 +14,10 @@ import AsyncStorage from "@react-native-community/async-storage";
 export default function ParentEditPhoto({ route, navigation }) {
   const { docId, docIdParam } = route.params; // ! Current Event ID
   const { title, titleParam } = route.params;
-  const [loading, setloading] = useState(false);
   const { docAccess, docAccessParam } = route.params;
   const { description, descriptionParam } = route.params;
   const { docImage, docImageParam } = route.params;
+  const [loading, setloading] = useState(false);
   const [access, setAccess] = useState(docAccess);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -108,10 +100,7 @@ export default function ParentEditPhoto({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Photo"}
-        onPress={() => navigation.navigate("ParentPhotoAlbum")}
-      />
+      <HeaderBack title={"Update Photo"} onPress={() => navigation.navigate("ParentPhotoAlbum")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -170,9 +159,7 @@ export default function ParentEditPhoto({ route, navigation }) {
                 <>
                   <UploadDocument pickImg={pickImage} />
                   <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                   </View>
                 </>
               ) : (
@@ -181,12 +168,7 @@ export default function ParentEditPhoto({ route, navigation }) {
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
                       {/* {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />} */}
-                      {image && (
-                        <Image
-                          source={{ uri: image }}
-                          style={styles.uploadImg}
-                        />
-                      )}
+                      {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
                       <TouchableOpacity onPress={onClickDoc}>
                         <Text>close</Text>
                       </TouchableOpacity>
@@ -214,6 +196,7 @@ export default function ParentEditPhoto({ route, navigation }) {
                   fontFamily={"Montserrat-Medium"}
                   onPress={() => navigation.goBack()}
                 />
+
                 <SmallButton
                   onPress={updateDocument}
                   title="Update"

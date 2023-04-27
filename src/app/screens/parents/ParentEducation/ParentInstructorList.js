@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView,RefreshControl } from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -21,10 +21,7 @@ export default function ParentInstructorList() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?instructor_list=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?instructor_list=1`, requestOptions)
       .then((res) => res.json())
 
       .then((result) => setInstructorList(result.data))
@@ -43,16 +40,11 @@ export default function ParentInstructorList() {
   }, []);
   return (
     <View style={styles.container}>
-      <HeaderBack
-        title={"Instructor's list"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Instructor's list"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <HeaderText title={"Instructor's list"} />
 
-        <ScrollView refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          } >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {instructorListData === undefined ? (
             <>
               <NoDataFound />
@@ -60,8 +52,8 @@ export default function ParentInstructorList() {
           ) : (
             <>
               {instructorListData.map((list, index) => (
-                <View style={styles.mainBoxList}>
-                  <FontAwesome name="user" size={20} color='#82027D'/>
+                <View key={index} style={styles.mainBoxList}>
+                  <FontAwesome name="user" size={20} color="#82027D" />
                   <View style={{ marginLeft: 15 }}>
                     <Text style={styles.names}>{list.user_name}</Text>
                   </View>

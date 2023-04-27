@@ -17,22 +17,23 @@ import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function ParentAddPhoto() {
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
 
   const pickImg = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
     if (!result.cancelled) {
+      console.log(result.assets[0]);
       setImage(result.assets[0].uri);
     }
   };
@@ -138,19 +139,6 @@ export default function ParentAddPhoto() {
                   {errors.docTitle && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
-                  {/* <AccessLevel
-                    required
-                    label={"Access Level"}
-                    onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem);
-                      console.log(selectedItem, index);
-                    }}
-                    value={access}
-                  /> */}
-
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
-                  )}
 
                   <UploadDocument type={"Image"} pickImg={pickImg} />
                   <View style={styles.uploadCon}>
@@ -174,13 +162,10 @@ export default function ParentAddPhoto() {
 
                   <View style={styles.button}>
                     <SmallButton
-                      onPress={() => {
-                        resetForm();
-                        navigation.navigate("ParentPhotoAlbum");
-                      }}
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}
