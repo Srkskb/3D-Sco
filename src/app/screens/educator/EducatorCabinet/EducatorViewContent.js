@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, Linking } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
 const { height, width } = Dimensions.get("window");
@@ -25,7 +25,7 @@ export default function EducatorViewContent({ route, navigation }) {
           <Text style={styles.title}>Description : {description}</Text>
         </Text>
         <View style={styles.documentView}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL(image)}>
             <Image source={require("../../../assets/images/whatever.png")} />
           </TouchableOpacity>
           <Text>Pdf Name:</Text>

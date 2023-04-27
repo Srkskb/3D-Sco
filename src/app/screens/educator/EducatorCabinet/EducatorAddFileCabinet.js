@@ -19,8 +19,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function EducatorAddFileCabinet() {
   const navigation = useNavigation();
-  
-  const [access, setAccess] = useState("Private");
+
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -145,9 +145,10 @@ export default function EducatorAddFileCabinet() {
                     label={"Access Level"}
                     name="access"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem?.name);
+                      setAccess(selectedItem);
                     }}
-                    // value={access}
+                    value={access}
                   />
                   {errors.access && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>

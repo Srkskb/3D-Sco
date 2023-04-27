@@ -29,7 +29,7 @@ export default function EducatorStoreFavoriteLinks() {
   const [storeLinks, setStoreLinks] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [selectCategory, setSelectCategory] = useState("");
   // const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -70,7 +70,11 @@ export default function EducatorStoreFavoriteLinks() {
     )
       .then((response) => response.json())
       .then((result) => {
-        setStoreLinks(result.data);
+        const filteredItems = result?.data?.filter((item) =>
+          item?.Titel.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        setStoreLinks(filteredItems);
         // setSearchData(result.data);
         setLoading(false);
       })
@@ -133,16 +137,16 @@ export default function EducatorStoreFavoriteLinks() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    filter && allLearnerList();
     setTimeout(() => {
       // changeColor("green");
 
       setRefreshing(false);
     }, 2000);
   };
-  useEffect(() => {
-    navigation.addListener("focus", () => setStoreLinks([]));
-  }, [navigation]);
+  // useEffect(() => {
+  //   navigation.addListener("focus", () => setStoreLinks([]));
+  // }, [navigation]);
 
   // const searchText = (searchTerm) => {
   //   const filteredData = storeLinks?.filter((el) => {
@@ -209,13 +213,15 @@ export default function EducatorStoreFavoriteLinks() {
             <RoundCategory
               onSelect={(selectedItem, index, item) => {
                 setFilter(selectedItem.id);
+                setSelectCategory(selectedItem);
               }}
+              value={selectCategory}
             />
             <TextInput
               style={styles.input}
               onChangeText={(text) => setSearchTerm(text)}
               value={searchTerm}
-              placeholder={"Search title, author..."}
+              placeholder={"Search title..."}
             />
           </View>
           <View style={styles.search_button}>
@@ -254,6 +260,7 @@ export default function EducatorStoreFavoriteLinks() {
                       }}
                       pressEdit={() => {
                         setStoreLinks([]);
+                        setSelectCategory("");
                         navigation.navigate("EducatorEditStoreFavoriteLinks", {
                           linkID: list.id,
                           title: list.Titel,

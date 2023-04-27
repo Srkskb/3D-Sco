@@ -13,6 +13,7 @@ import * as qs from "qs";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
 export default function EducatorPhotoAlbum() {
   const navigation = useNavigation();
@@ -25,10 +26,12 @@ export default function EducatorPhotoAlbum() {
   const [fileCabinetData, setFileCabinetData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+    // const loginUID = localStorage.getItem("loginUID");
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -42,10 +45,13 @@ export default function EducatorPhotoAlbum() {
     )
       .then((res) => res.json())
       .then((result) => {
-        setFileCabinetData(result.data);
-        console.log("fileCabinetData", result.data);
+        setFileCabinetData(result?.data);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
 
   const deleteEvent = async (id) => {
@@ -142,6 +148,7 @@ export default function EducatorPhotoAlbum() {
       >
         {getMessageFalse}
       </Snackbar>
+      {loading && <Loader />}
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}

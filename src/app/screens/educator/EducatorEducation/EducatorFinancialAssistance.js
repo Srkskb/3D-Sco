@@ -7,15 +7,24 @@ import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import Loader from "../../../utils/Loader";
+
 export default function EducatorFinancialAssistance() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const loginUID = localStorage.getItem("loginUID");
+  // const loginUID = localStorage.getItem("loginUID");
+  const [userId, setUserId] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [assistanceData, setAssistanceData] = useState([]);
-  const financialAssistanceList = () => {
+
+  const financialAssistanceList = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setUserId(myData?.id);
+    setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
@@ -31,9 +40,13 @@ export default function EducatorFinancialAssistance() {
     fetch(`https://3dsco.com/3discoapi/studentregistration.php`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        setAssistanceData(result.data);
+        setAssistanceData(result?.data);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteBlog = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -102,7 +115,7 @@ export default function EducatorFinancialAssistance() {
           label={"+Add"}
           onPress={() => navigation.navigate("EducatorAddFinancial")}
         />
-
+        {loading && <Loader />}
         <ScrollView>
           {assistanceData.map((list, index) => (
             <View style={styles.financialAssis}>
@@ -120,7 +133,7 @@ export default function EducatorFinancialAssistance() {
                 </View>
               </View>
               <View style={styles.button_container}>
-                {list.user_id === loginUID ? (
+                {list.user_id === userId ? (
                   <>
                     <Remove onPress={() => deleteBlog(list.id)} />
                     <View style={{ width: 20 }}></View>

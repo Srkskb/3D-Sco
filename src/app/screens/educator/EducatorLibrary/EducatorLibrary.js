@@ -19,6 +19,8 @@ import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import Library_Search from "../../../components/LibrarySearch";
 import AsyncStorage from "@react-native-community/async-storage";
+import Loader from "../../../utils/Loader";
+
 export default function LibraryAccess() {
   const navigation = useNavigation();
   const [studentLibrary, setStudentLibrary] = useState([]);
@@ -26,9 +28,11 @@ export default function LibraryAccess() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const isFocused = useIsFocused();
+  const [loading, setLoading] = useState(false);
+
   const allLearnerList = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -42,8 +46,24 @@ export default function LibraryAccess() {
         setStudentLibrary(result.data);
         setInitialStudentLibrary(result.data);
         console.log(myData.id);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
+  };
+  const handleSearch = () => {
+    setLoading(true);
+    if (searchTerm) {
+      const filteredItems = studentLibrary.filter((item) =>
+        item?.titel?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setInitialStudentLibrary(filteredItems);
+    } else {
+      setInitialStudentLibrary(studentLibrary);
+    }
+    setLoading(false);
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -56,15 +76,15 @@ export default function LibraryAccess() {
     allLearnerList();
   }, [isFocused]);
 
-  useEffect(() => {
-    if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
-    let temp = [];
-    initialStudentLibrary.forEach((item) => {
-      if (item.titel.toLowerCase().includes(searchTerm.toLowerCase())) temp.push(item);
-    });
+  // useEffect(() => {
+  //   if (!searchTerm) return setStudentLibrary(initialStudentLibrary);
+  //   let temp = [];
+  //   initialStudentLibrary.forEach((item) => {
+  //     if (item.titel.toLowerCase().includes(searchTerm.toLowerCase())) temp.push(item);
+  //   });
 
-    setStudentLibrary(temp);
-  }, [searchTerm]);
+  //   setStudentLibrary(temp);
+  // }, [searchTerm]);
   return (
     <View style={styles.container}>
       <HeaderBack title={"Library"} onPress={() => navigation.goBack()} />
@@ -83,26 +103,27 @@ export default function LibraryAccess() {
           <View style={styles.input}>
             <TextInput
               style={styles.text_input}
-              onChangeText={setSearchTerm}
+              onChangeText={(text) => setSearchTerm(text)}
               value={searchTerm}
               placeholder={"Search title, author..."}
             />
           </View>
-          <TouchableOpacity style={styles.search_button}>
+          <TouchableOpacity style={styles.search_button} onPress={() => handleSearch()}>
             <View>
               <Text style={styles.search_text}>SEARCH</Text>
             </View>
           </TouchableOpacity>
         </View>
+        {loading && <Loader />}
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
-            {studentLibrary === undefined ? (
+            {!initialStudentLibrary?.length ? (
               <>
                 <NoDataFound />
               </>
             ) : (
               <>
-                {studentLibrary.map((list) => (
+                {initialStudentLibrary.map((list) => (
                   <Book_Card title={list.titel} author={list.author} onPress={() => Linking.openURL(list.pdf)} />
                 ))}
               </>

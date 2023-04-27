@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -21,7 +14,9 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
+import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AddPhoto() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -32,50 +27,60 @@ export default function AddPhoto() {
   const [image, setImage] = useState(null);
   const [loading, setloading] = useState(false);
 
+  // const pickImg = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+  //   if (!result.cancelled) {
+  //     setImage(result.assets[0].uri);
+  //   }
+  // };
   const pickImg = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
     });
-    if (!result.cancelled) {
-      setImage(result.assets[0].uri);
+    console.log(result);
+    if (result.uri) {
+      setImage(result);
     }
   };
 
   const addFileCabinet = async (values) => {
     setloading(true);
+    console.log("enterrrrrrr");
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const getHeaders = myHeadersData();
+    // const getHeaders = myHeadersData();
     var data = new FormData();
     data.append("add_photos", "1");
     data.append("title", values.docTitle);
     data.append("user_id", myData.id);
     data.append("detail", values.description);
     data.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(image.uri),
+      name: image?.name,
     });
     // data.append("image", image);
-
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=a780e1f8925e5a3d9ebcdbb058ff0885");
     var config = {
-      method: "post",
-      url: "https://3dsco.com/3discoapi/studentregistration.php",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        // "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: "PHPSESSID=r8i6tl7an7ibqgp4kog3aa6ro7",
-        // ...data,
-      },
-      data: data,
+      method: "POST",
+      headers: myHeaders,
+      body: data,
     };
-
-    axios(config)
+    console.log("data", data);
+    // axios(config)
+    fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
+      .then((response) => response.json())
       .then((response) => {
-        if (response.data.success == 1) {
+        console.log("response", response);
+        if (response?.success == 1) {
           setloading(false);
           navigation.navigate("EducatorPhotoAlbum");
         }
@@ -124,36 +129,22 @@ export default function AddPhoto() {
                   .max(50, "Document Title cannot be more than 50 characters"),
                 description: Yup.string()
                   .required("Description is required")
-                  .min(20, "Description must be at least 20 characters")
-                  .max(250, "Description cannot be more than 50 characters"),
+                  .min(20, "Description must be at least 20 characters"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-                resetForm,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
                     placeholder={"Document Title"}
                     name="title"
                     onChangeText={handleChange("docTitle")}
-                    onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   {/* <AccessLevel
                     required
@@ -166,19 +157,15 @@ export default function AddPhoto() {
                   /> */}
 
                   {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
 
                   <UploadDocument type={"Image"} pickImg={pickImg} />
-                  <View style={styles.uploadCon}>
-                    {image && (
-                      <Image source={{ uri: image }} style={styles.uploadImg} />
-                    )}
-                  </View>
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image?.name}</Text>}</View>
+
+                  {/* <View style={styles.uploadCon}>
+                    {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
+                  </View> */}
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -186,17 +173,12 @@ export default function AddPhoto() {
                     multiline={true}
                     numberOfLines={6}
                     onChangeText={handleChange("description")}
-                    onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
@@ -207,7 +189,7 @@ export default function AddPhoto() {
                       onPress={() => navigation.goBack()}
                     />
                     <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                       title="Save"
                       disabled={!isValid}
                       color={color.white}

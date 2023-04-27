@@ -11,6 +11,7 @@ import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+
 export default function EducatorMyJournal() {
   const navigation = useNavigation();
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -21,10 +22,10 @@ export default function EducatorMyJournal() {
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
+
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -162,12 +163,7 @@ const [deletePop, setDeletePop] = useState(false);
           </View>
         </ScrollView>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteJournal(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteJournal(id)} /> : null}
     </View>
   );
 }

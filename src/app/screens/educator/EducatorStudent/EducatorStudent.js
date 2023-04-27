@@ -6,31 +6,36 @@ import HeaderText from "../../../components/HeaderText";
 import Student_Card from "../../../components/card/Student_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Loader from "../../../utils/Loader";
 
-export default function EducatorStudent({navigation}) {
+export default function EducatorStudent({ navigation }) {
   const [studentList, setStudentList] = useState([]);
-   const [color, changeColor] = useState("red");
+  const [loading, setLoading] = useState(false);
+  const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
   const studentListData = () => {
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      "https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=student",
-      requestOptions
-    )
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=student", requestOptions)
       .then((res) => res.json())
       .then((res) => {
         if (res.success == 0) {
           alert("Please Try after some time");
         } else {
           setStudentList(res.data);
+          console.log("first", res.data);
         }
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -39,20 +44,18 @@ export default function EducatorStudent({navigation}) {
       setRefreshing(false);
     }, 2000);
   };
-    useEffect(() => {
+  useEffect(() => {
     studentListData();
   }, []);
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation}/>
+      <HomeHeader navigation={navigation} />
+      {loading && <Loader />}
       <View style={styles.main_box}>
         <HeaderText title={"STUDENT'S LIST"} />
-        <ScrollView refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          } 
-          >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {studentList.map((list, index) => (
-            <Student_Card name={list.name} />
+            <Student_Card email={list?.Email} name={list.name} />
           ))}
         </ScrollView>
       </View>

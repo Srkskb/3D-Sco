@@ -7,16 +7,19 @@ import HeaderText from "../../../components/HeaderText";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
+import Loader from "../../../utils/Loader";
 
 export default function EducatorMyResources() {
   const navigation = useNavigation();
   const [myResourcesData, setMyResourcesData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   // const user_id = localStorage.getItem("loginUID");
 
   const allLearnerList = () => {
     const myHeaders = myHeadersData();
+    setLoading(true);
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
@@ -24,8 +27,14 @@ export default function EducatorMyResources() {
     };
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?faq=1`, requestOptions)
       .then((res) => res.json())
-      .then((result) => setMyResourcesData(result.data))
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        setMyResourcesData(result.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -47,6 +56,7 @@ export default function EducatorMyResources() {
           label={"Manage"}
           onPress={() => navigation.navigate("EducatorManageResources")}
         />
+        {loading && <Loader />}
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.main}>
             {myResourcesData === undefined ? (

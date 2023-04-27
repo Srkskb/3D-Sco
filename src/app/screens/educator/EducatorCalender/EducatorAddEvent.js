@@ -20,8 +20,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function EducatorAddEvent() {
   const navigation = useNavigation();
-  const loginUID = localStorage.getItem("loginUID");
-  const [access, setAccess] = useState("Private");
+  // const loginUID = localStorage.getItem("loginUID");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -164,9 +164,10 @@ export default function EducatorAddEvent() {
                     label={"Access Level"}
                     name="access"
                     onSelect={(selectedItem, index) => {
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem.name);
+                      setAccess(selectedItem);
                     }}
-                    // value={access}
+                    value={access}
                   />
 
                   {errors.access && (
@@ -227,7 +228,7 @@ export default function EducatorAddEvent() {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={() => console.log(loginUID)}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}

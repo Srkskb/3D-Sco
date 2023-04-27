@@ -15,9 +15,10 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+
 export default function EducatorAddMyJournal() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -25,12 +26,11 @@ export default function EducatorAddMyJournal() {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const pickImg = async () => {
-    console.log("first");
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/pdf",
     });
-    console.log(result);
     if (result.uri) {
       setImage(result);
     }
@@ -39,7 +39,6 @@ export default function EducatorAddMyJournal() {
   const addFileCabinet = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
-    console.log(values.docTitle, access, image, loginUID, values.description);
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Add_journals", "1");
@@ -62,7 +61,6 @@ export default function EducatorAddMyJournal() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
@@ -73,6 +71,10 @@ export default function EducatorAddMyJournal() {
           setMessageFalse(res.message);
           setLoading(false);
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
       });
   };
   return (
@@ -99,6 +101,7 @@ export default function EducatorAddMyJournal() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
+              validateOnChange={false}
               initialValues={{
                 docTitle: "",
                 description: "",
@@ -107,21 +110,20 @@ export default function EducatorAddMyJournal() {
                 docTitle: Yup.string()
                   .required("Journal Title is required")
                   .min(3, "Journal Title must be at least 3 characters"),
-
+                access: Yup.string().required("Access is required"),
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Journal Title"}
                     placeholder={"Journal Title"}
                     name="title"
                     onChangeText={handleChange("docTitle")}
-                    onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
                     keyboardType="text"
                   />
@@ -132,14 +134,15 @@ export default function EducatorAddMyJournal() {
                     required
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem);
+                      setAccess(selectedItem.name);
+                      setFieldValue("access", selectedItem.name);
                       console.log(selectedItem, index);
                     }}
                     value={access}
                   />
 
-                  {errors.selectedItem && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
+                  {errors.access && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}
 
                   <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
@@ -151,7 +154,6 @@ export default function EducatorAddMyJournal() {
                     multiline={true}
                     numberOfLines={6}
                     onChangeText={handleChange("description")}
-                    onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
                     textAlignVertical="top"
@@ -161,7 +163,12 @@ export default function EducatorAddMyJournal() {
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} fontFamily={"Montserrat-Medium"} />
+                    <SmallButton
+                      title={"Cancel"}
+                      onPress={() => navigation.goBack()}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
