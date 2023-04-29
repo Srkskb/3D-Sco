@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Snackbar } from "react-native-paper";
 import color from "../../../assets/themes/Color";
@@ -14,7 +14,7 @@ export default function AdminEditFinancial({ route, navigation }) {
   // const { assisTitle, titleParam } = route.params;
   // const { assisURL, urlParam } = route.params;
   const [loading, setloading] = useState(false);
-  console.log("editData", editData);
+
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
   const [assetsTitle, setAssetsTitle] = useState("");
@@ -32,7 +32,9 @@ export default function AdminEditFinancial({ route, navigation }) {
 
   const updateFinancialAssets = async () => {
     setloading(true);
-    if (!assetsTitle && !assetsUrl) {
+    console.log("firstssss", assetsTitle, assetsUrl);
+    if (!assetsTitle || !assetsUrl) {
+      console.log("dgsfhgsgj");
       return Alert.alert("Please provide correct data", "Title and Url is mandatory fields", [
         {
           text: "Cancel",
@@ -55,7 +57,7 @@ export default function AdminEditFinancial({ route, navigation }) {
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
-    console.log(loginUID);
+
     var formdata = new FormData();
     formdata.append("update_financial_assistance", "1");
     formdata.append("titel", assetsTitle);

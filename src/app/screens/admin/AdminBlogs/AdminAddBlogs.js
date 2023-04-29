@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AdminAddBlog() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -167,7 +167,7 @@ export default function AdminAddBlog() {
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
                       setAccess(selectedItem);
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem.name);
                       handleChange("access");
                     }}
                     value={access}
@@ -190,12 +190,12 @@ export default function AdminAddBlog() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
-                  <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={() => handleSubmit()}
                       title="Save"

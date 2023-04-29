@@ -55,6 +55,7 @@ export default function EnrollStudent({ navigation }) {
       course_id: enrollData.courseId,
       student_id: enrollData.studentId,
     });
+    console.log("data", data);
     // var adminFormData = new FormData();
     // adminFormData.append("student_select_courses", "1");
     // adminFormData.append("course_id", enrollData.courseId);

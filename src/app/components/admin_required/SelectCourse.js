@@ -13,15 +13,17 @@ export default function SelectCourse({ label, onSelect, ...props }) {
   const [selectItem, setSelectItem] = useState([]);
   const [isFocus, setIsFocus] = useState(false);
 
-  const fetch = async () => {
+  const fetchData = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     axios
       .get(`https://3dsco.com/3discoapi/3dicowebservce.php?courses_list=1&user_id=${myData.id}`)
+      // .then((response) => response.json())
       .then(function (res) {
-        if (res.data.success == 1) {
-          if (res.data.data) {
+        if (res?.data?.success == 1) {
+          if (res?.data?.data) {
             setSelectItem(res.data.data);
-          } else setSelectItem([{ Course: "Please add the course", id: 0 }]);
+          } else setSelectItem([{ name: "No data to display", id: "" }]);
         } else {
           console.log("Course List can't fetch right now");
         }
@@ -31,7 +33,7 @@ export default function SelectCourse({ label, onSelect, ...props }) {
       });
   };
   useEffect(() => {
-    !selectItem.length && fetch();
+    !selectItem.length && fetchData();
   }, []);
 
   return (
@@ -65,7 +67,11 @@ export default function SelectCourse({ label, onSelect, ...props }) {
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
         data={selectItem.map((item, index) => ({ name: item.Course, id: item.id }))}
-        search
+        // data={[
+        //   ...selectItem?.map((item) => ({ name: item.Course, id: item.id })),
+        //   { name: "No data to display", id: "" },
+        // ]}
+        search={selectItem?.length}
         maxHeight={300}
         labelField="name"
         valueField="id"

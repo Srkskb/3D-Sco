@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
@@ -48,6 +48,7 @@ export default function AdminStoreFavoriteLinks() {
   console.log("filter", filter);
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log("first", myData.id);
     const type =
       myData.type == "admin"
         ? 4
@@ -75,7 +76,6 @@ export default function AdminStoreFavoriteLinks() {
         const filteredItems = result?.data?.filter((item) =>
           item?.Titel?.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        console.log("filteredItems", filteredItems);
         setSearchTerm("");
         setStoreLinks(filteredItems);
         // setSearchData(result.data);
@@ -152,13 +152,15 @@ export default function AdminStoreFavoriteLinks() {
       setRefreshing(false);
     }, 2000);
   };
+  const isFocused = useIsFocused();
   useEffect(() => {
-    navigation.addListener("focus", () => {
-      // setSelectCategory({});
-      // setStoreLinks([]);
-      // allLearnerList();
-    });
-  }, [navigation]);
+    // navigation.addListener("focus", () => {
+    //   // setSelectCategory({});
+    //   // setStoreLinks([]);
+    //   // allLearnerList();
+    // });
+    allLearnerList();
+  }, [isFocused]);
 
   // const searchText = (searchTerm) => {
   //   const filteredData = storeLinks?.filter((el) => {
@@ -211,7 +213,10 @@ export default function AdminStoreFavoriteLinks() {
         <TextWithButton
           title={"Store Favorite Links"}
           label={"+Add"}
-          onPress={() => navigation.navigate("AdminAddLinks")}
+          onPress={() => {
+            setFilter("");
+            navigation.navigate("AdminAddLinks");
+          }}
         />
 
         <View

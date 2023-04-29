@@ -141,6 +141,9 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
                     value={values?.linkTitle}
                     keyboardType="text"
                   />
+                  {errors.linkTitle && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkTitle}</Text>
+                  )}
                   <InputField
                     label={"URL"}
                     placeholder={"Document Title"}
@@ -149,6 +152,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
                     value={values?.url}
                     keyboardType="text"
                   />
+                  {errors.url && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.url}</Text>}
                   {showResults ? (
                     <>
                       <CategoryDropdown
@@ -157,7 +161,7 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
                           setCategory(selectedItem);
                           setFieldValue("category", selectedItem?.id);
                         }}
-                        value={selectedItem}
+                        value={category}
                       />
                     </>
                   ) : (
@@ -186,6 +190,9 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
                     onChangeText={handleChange("description")}
                     value={values?.description}
                   />
+                  {errors.description && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                  )}
 
                   <View style={styles.button}>
                     <SmallButton

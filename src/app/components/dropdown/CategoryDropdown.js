@@ -21,7 +21,6 @@ export default function CategoryDropdown({ label, onSelect, ...props }) {
       .then(function (res) {
         if (res.data.success == 1) {
           if (res.data.data) {
-            console.log("data", res.data.data);
             setCategoryList(res.data.data);
           } else setCategoryList([{ Course: "Please add the course", id: 0 }]);
         } else {

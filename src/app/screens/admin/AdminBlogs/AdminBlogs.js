@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { Snackbar } from "react-native-paper";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
@@ -32,10 +25,10 @@ export default function AdminBlogs() {
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
   const [userId, setUserId] = useState("");
-
+  const isFocused = useIsFocused();
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   const fetchData = async () => {
     const data = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -53,10 +46,7 @@ export default function AdminBlogs() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?blog_list=1`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         setLoading(false);
@@ -78,10 +68,7 @@ export default function AdminBlogs() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${userId}`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_blog=1&id=${id}&user_id=${userId}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
@@ -149,20 +136,9 @@ export default function AdminBlogs() {
         {getMessageFalse}
       </Snackbar>
       <View style={styles.main_box}>
-        <TextWithButton
-          title={"My Blog"}
-          label={"+Add"}
-          onPress={() => navigation.navigate("AdminAddBlogs")}
-        />
+        <TextWithButton title={"My Blog"} label={"+Add"} onPress={() => navigation.navigate("AdminAddBlogs")} />
         <View style={styles.main_box2}>
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => onRefresh()}
-              />
-            }
-          >
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}>
             <View style={styles.main}>
               <View style={{ flex: 1 }}>
                 {blogListData === undefined ? (
@@ -177,14 +153,8 @@ export default function AdminBlogs() {
                           <View style={styles.right_side}>
                             <View style={{ width: "100%" }}>
                               <Text style={styles.head_text}>{list.Titel}</Text>
-                              <Text style={styles.date}>
-                                Last Updated -{" "}
-                                {moment(list && list?.Date).format("LL")}
-                              </Text>
-                              <Text
-                                style={styles.description_text}
-                                numberOfLines={1}
-                              >
+                              <Text style={styles.date}>Last Updated - {moment(list && list?.Date).format("LL")}</Text>
+                              <Text style={styles.description_text} numberOfLines={1}>
                                 {list.Description}
                               </Text>
                             </View>
@@ -210,9 +180,7 @@ export default function AdminBlogs() {
                                   navigation.navigate("AdminEditBlogs", {
                                     blogID: list.id,
                                     title: list.Titel,
-                                    date: moment(list && list?.Date).format(
-                                      "LL"
-                                    ),
+                                    date: moment(list && list?.Date).format("LL"),
                                     description: list.Description,
                                   })
                                 }
@@ -236,12 +204,7 @@ export default function AdminBlogs() {
           </ScrollView>
         </View>
       </View>
-      {deletePop ? (
-        <DeletePopup
-          cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteBlog(id)}
-        />
-      ) : null}
+      {deletePop ? <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteBlog(id)} /> : null}
     </View>
   );
 }

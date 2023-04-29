@@ -18,6 +18,7 @@ export default function AdminAddLink({ navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectCategory] = useState("");
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
@@ -131,7 +132,9 @@ export default function AdminAddLink({ navigation }) {
                     label={"Category"}
                     onSelect={(selectedItem, index) => {
                       setFieldValue("category", selectedItem.id);
+                      setSelectCategory(selectedItem);
                     }}
+                    value={selectedCategory}
                   />
                   {errors.category && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.category}</Text>

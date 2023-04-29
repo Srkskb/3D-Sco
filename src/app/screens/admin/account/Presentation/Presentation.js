@@ -131,7 +131,10 @@ export default function Presentation() {
         <TextWithButton
           title={"Course Category"}
           label={"+Add"}
-          onPress={() => navigation.navigate("AddPresentation")}
+          onPress={() => {
+            setSelectCourse("");
+            navigation.navigate("AddPresentation");
+          }}
         />
         <SelectCourse
           label={"Select Course"}

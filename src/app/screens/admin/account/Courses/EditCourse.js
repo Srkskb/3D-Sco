@@ -26,6 +26,7 @@ import moment from "moment";
 
 export default function EditCourse({ navigation, route }) {
   const { editData } = route.params;
+  console.log("editData", editData);
   const [checked, setChecked] = React.useState("first");
   const [checked2, setChecked2] = React.useState("first1");
   const [end, setEnd] = React.useState("first1");
@@ -36,8 +37,8 @@ export default function EditCourse({ navigation, route }) {
   const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
 
-  const [category, setCategory] = useState({ name: editData?.cat_ID, id: editData?.cat_ID });
-  console.log("category", category);
+  const [category, setCategory] = useState();
+  console.log("category3333", category);
   const [editCourseData, setEditCourseData] = useState({
     category: "",
     language: "",
@@ -64,30 +65,32 @@ export default function EditCourse({ navigation, route }) {
 
   useEffect(() => {
     if (editData) {
-      setEditCourseData((prev) => ({
-        ...prev,
-        category: editData.categorie,
-        language: editData.Language,
-        title: editData.Courses,
-        subject: editData.subject,
-        desc: editData.Description,
-        syllabus: editData.Syllabus,
-        sheets: editData.JobSheet,
-        content: editData.export_content,
-        announcement: editData.Syndicate,
-        access: editData.Access,
-        releaseDate: editData.ReleaseDate,
-        endDate: editData.EndDate,
-        banner: editData.Banner,
-        initialContent: editData.Initial_content,
-        courseQuota: editData.quota,
-        maxFileSize: editData.filesize,
-        icon: editData.icon,
-        syndicate: editData.Syndicate,
-        exportContent: editData.export_content,
-        id: editData.id,
-        userId: editData.user_id,
-      }));
+      // setEditCourseData((prev) => ({
+      //   ...prev,
+      //   category: editData.categorie,
+      //   language: editData.Language,
+      //   title: editData.Courses,
+      //   subject: editData.subject,
+      //   desc: editData.Description,
+      //   syllabus: editData.Syllabus,
+      //   sheets: editData.JobSheet,
+      //   content: editData.export_content,
+      //   announcement: editData.Syndicate,
+      //   access: editData.Access,
+      //   releaseDate: editData.ReleaseDate,
+      //   endDate: editData.EndDate,
+      //   banner: editData.Banner,
+      //   initialContent: editData.Initial_content,
+      //   courseQuota: editData.quota,
+      //   maxFileSize: editData.filesize,
+      //   icon: editData.icon,
+      //   syndicate: editData.Syndicate,
+      //   exportContent: editData.export_content,
+      //   id: editData.id,
+      //   userId: editData.user_id,
+      // }));
+      console.log("editData?.cat_ID", editData?.cat_ID);
+      setCategory({ name: editData?.cat_ID, id: editData?.cat_ID });
     }
   }, [editData]);
   const showDatePicker = () => {
@@ -118,35 +121,37 @@ export default function EditCourse({ navigation, route }) {
     releaseOn: false,
     endOn: false,
   });
-  const Edit = () => {
+  const Edit = (values) => {
     setloading(true);
+    console.log("values", values);
     var data = qs.stringify({
       Update_courses: "1",
-      user_id: editCourseData.userId,
-      course_name: editCourseData.title,
-      language: editCourseData.language,
-      Description: editCourseData.desc,
-      Syndicate: editCourseData.syndicate,
-      export_content: editCourseData.exportContent,
-      Access: editCourseData.access,
+      user_id: editData.userId,
+      course_name: values.title,
+      language: values.language,
+      Description: values.desc,
+      Syndicate: values.syndicate,
+      export_content: values.exportContent,
+      Access: values.access,
       notify_enroll: "0",
       hide_course: "0",
-      ReleaseDate: editCourseData.releaseDate,
-      EndDate: editCourseData.endDate,
-      Banner: editCourseData.banner,
-      initial_content: editCourseData.initialContent,
-      quota: editCourseData.courseQuota,
+      ReleaseDate: values.releaseDate,
+      EndDate: values.endDate,
+      Banner: values.banner,
+      initial_content: values.initialContent,
+      quota: values.courseQuota,
       quota_other: "",
-      filesize: editCourseData.maxFileSize,
+      filesize: values.maxFileSize,
       Copyright: "no",
-      subject: editCourseData.subject,
+      subject: values.subject,
       num_week: "0",
-      Syllabus: editCourseData.syllabus,
-      JobSheet: editCourseData.sheets,
-      catID: editCourseData.category,
-      // id: editCourseData.id,
-      id: "46",
+      Syllabus: values.syllabus,
+      JobSheet: values.sheets,
+      catID: values.catId,
+      id: editData.id,
+      // id: "46",
     });
+    console.log("data", data);
     var config = {
       method: "POST",
       // url: "https://3dsco.com/3discoapi/studentregistration.php",
@@ -158,7 +163,7 @@ export default function EditCourse({ navigation, route }) {
       body: data,
     };
     // axios(config)
-    console.log("ENter");
+    console.log("ENter", data);
     fetch("https://3dsco.com/3discoapi/studentregistration.php", config)
       .then(function (response) {
         setloading(false);
@@ -242,7 +247,7 @@ export default function EditCourse({ navigation, route }) {
             quota: Yup.string().required("Quota is required"),
             fileSize: Yup.string().required("FileSize is required"),
           })}
-          onSubmit={(values) => addCourse(values)}
+          onSubmit={(values) => Edit(values)}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
             <View style={{ marginVertical: 10 }}>

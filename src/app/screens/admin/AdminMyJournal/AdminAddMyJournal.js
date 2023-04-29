@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -22,9 +15,10 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+
 export default function AdminAddMyJournal() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -46,30 +40,31 @@ export default function AdminAddMyJournal() {
   const addFileCabinet = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
-    console.log(values.docTitle, access, image, loginUID, values.description);
-    const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Add_journals", "1");
     urlencoded.append("titel", values.docTitle);
-    urlencoded.append("access_level", access);
+    urlencoded.append("access_level", values.access);
     urlencoded.append("image", {
-      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      uri: image.uri,
       type: mime.getType(image.uri),
       name: image.name,
     });
     urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
+
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=a780e1f8925e5a3d9ebcdbb058ff0885");
+    console.log("urlencoded", urlencoded);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
-      headers: {
-        myHeaders,
-        "Content-type": "multipart/form-data",
-      },
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        console.log("res", res);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
@@ -80,15 +75,16 @@ export default function AdminAddMyJournal() {
           setMessageFalse(res.message);
           setLoading(false);
         }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log("err", err);
       });
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Add Journal"}
-        onPress={() => navigation.navigate("AdminMyJournal")}
-      />
+      <HeaderBack title={"Add Journal"} onPress={() => navigation.navigate("AdminMyJournal")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -111,27 +107,21 @@ export default function AdminAddMyJournal() {
             <Formik
               initialValues={{
                 docTitle: "",
+                access: "",
                 description: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Journal Title is required")
                   .min(3, "Journal Title must be at least 3 characters"),
-
+                access: Yup.string().required("Access is required"),
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Journal Title"}
@@ -143,39 +133,24 @@ export default function AdminAddMyJournal() {
                     keyboardType="text"
                   />
                   {errors.docTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.docTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
                   <AccessLevel
                     required
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
                       setAccess(selectedItem);
-                      console.log(selectedItem, index);
+                      setFieldValue("access", selectedItem.name);
                     }}
                     value={access}
                   />
 
-                  {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+                  {errors.access && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}
 
-                  <UploadDocument
-                    type={"(pdf, doc, ppt,xls)"}
-                    pickImg={pickImg}
-                  />
-                  <View>
-                    {image?.name && (
-                      <Text style={styles.uploadCon}>{image.name}</Text>
-                    )}
-                  </View>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -189,20 +164,16 @@ export default function AdminAddMyJournal() {
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
 
                   <View style={styles.button}>
-                  <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"

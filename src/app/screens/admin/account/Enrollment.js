@@ -65,7 +65,7 @@ export default function Enrollment({ navigation }) {
       .then((result) => {
         console.log("result", result);
         if (result?.data?.length) {
-          const filteredItems = result?.data?.name.filter((item) => item.toLowerCase().includes(search.toLowerCase()));
+          const filteredItems = result?.data.filter((item) => item?.name.toLowerCase().includes(search.toLowerCase()));
           setCourses(filteredItems);
           setSearch("");
         } else {

@@ -132,7 +132,7 @@ export default function AdminAddBook({ navigation }) {
           validationSchema={Yup.object().shape({
             courseId: Yup.string().required("Category is required"),
             bookTitle: Yup.string().required("Book Title is required"),
-            author: Yup.string().required("author is required"),
+            author: Yup.string().required("Author is required"),
             publisher: Yup.string().required("Publisher is required"),
             description: Yup.string().required("Description is required"),
           })}
@@ -148,24 +148,34 @@ export default function AdminAddBook({ navigation }) {
                 }}
                 value={selectedCourse}
               />
+              {errors.courseId && (
+                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.courseId}</Text>
+              )}
               <Input
                 label={"Book Title"}
                 placeholder={"Enter Book Name"}
                 value={values?.bookTitle}
                 onChangeText={handleChange("bookTitle")}
               />
+              {errors.bookTitle && (
+                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.bookTitle}</Text>
+              )}
               <Input
                 label={"Author"}
                 placeholder={"Enter Author Name"}
                 value={values?.author}
                 onChangeText={handleChange("author")}
               />
+              {errors.author && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.author}</Text>}
               <Input
                 label={"Publisher"}
                 placeholder={"Enter Publisher Name"}
                 value={values?.publisher}
                 onChangeText={handleChange("publisher")}
               />
+              {errors.publisher && (
+                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.publisher}</Text>
+              )}
               <UploadDocument pickImg={pickImgPdf} type={"Book (pdf,doc,ppt,xls)"} />
               {doc?.name && <Text style={{ color: "red", textAlign: "right" }}>{doc?.name}</Text>}
               <UploadDocument pickImg={pickImg} type={"Book Image"} />
@@ -179,6 +189,9 @@ export default function AdminAddBook({ navigation }) {
                 value={values?.description}
                 onChangeText={handleChange("description")}
               />
+              {errors.description && (
+                <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+              )}
               <View style={styles.button}>
                 <SmallButton
                   title={"Cancel"}

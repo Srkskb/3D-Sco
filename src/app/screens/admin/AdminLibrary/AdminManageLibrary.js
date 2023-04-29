@@ -20,7 +20,7 @@ export default function AdminManageLibrary() {
       .then(function (res) {
         if (res.data.success == 1) {
           if (res.data.data) {
-            console.log("data", res.data.data);
+            console.log("data222", res.data.data);
             setManageLibrary(res.data.data);
           } else setManageLibrary([{ Course: "Please add the course", id: 0 }]);
         } else {

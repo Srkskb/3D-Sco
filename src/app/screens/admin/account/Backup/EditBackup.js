@@ -29,7 +29,7 @@ export default function EditBackup({ navigation, route }) {
   // const [showDocResults, setShowDocResults] = useState(false);
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
-
+  console.log("route.params.", route.params);
   const pickImg = async () => {
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/zip",
@@ -45,7 +45,7 @@ export default function EditBackup({ navigation, route }) {
     var formdata = new FormData();
     formdata.append("Update_backup", "1");
     formdata.append("user_id", route.params.title.user_id);
-    formdata.append("course_id", route.params.title.course_id);
+    formdata.append("course_id", values.course);
     formdata.append("title", values.docTitle);
     formdata.append("detail", values.description);
     console.log("uri", mime.getType(image.uri));
@@ -86,15 +86,19 @@ export default function EditBackup({ navigation, route }) {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
+              enableReinitialize
               initialValues={{
                 docTitle: route.params.title.title,
                 description: route.params.title.detail,
+                course: route.params.title.course_id,
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
                   .min(3, "Document Title must be at least 3 characters")
                   .max(50, "Document Title cannot be more than 50 characters"),
+                course: Yup.string().required("course is required"),
+
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters")
@@ -102,7 +106,7 @@ export default function EditBackup({ navigation, route }) {
               })}
               onSubmit={(values) => EditBackupFun(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -119,7 +123,20 @@ export default function EditBackup({ navigation, route }) {
                   {errors.selectedItem && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.selectedItem}</Text>
                   )}
+                  <SelectCourse
+                    label={"Select Course"}
+                    name="course"
+                    onSelect={(selectedItem, index) => {
+                      setCourse(selectedItem);
+                      // console.log(selectedItem, index);
+                      setFieldValue("course", selectedItem.id);
+                    }}
+                    value={course}
+                  />
 
+                  {errors.course && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.course}</Text>
+                  )}
                   <UploadDocument pickImg={pickImg} />
                   <View style={styles.uploadCon}>
                     {image.name && (
