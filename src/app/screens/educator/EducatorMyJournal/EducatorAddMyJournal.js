@@ -26,11 +26,12 @@ export default function EducatorAddMyJournal() {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const pickImg = async () => {
+    console.log("first");
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/pdf",
     });
+    console.log(result);
     if (result.uri) {
       setImage(result);
     }
@@ -39,28 +40,31 @@ export default function EducatorAddMyJournal() {
   const addFileCabinet = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
-    const myHeaders = myHeadersData();
     var urlencoded = new FormData();
     urlencoded.append("Add_journals", "1");
     urlencoded.append("titel", values.docTitle);
-    urlencoded.append("access_level", access);
+    urlencoded.append("access_level", values.access);
     urlencoded.append("image", {
-      uri: image.uri, //"file:///" + image.split("file:/").join(""),
+      uri: image.uri,
       type: mime.getType(image.uri),
       name: image.name,
     });
     urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
+
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=a780e1f8925e5a3d9ebcdbb058ff0885");
+    console.log("urlencoded", urlencoded);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
-      headers: {
-        myHeaders,
-        "Content-type": "multipart/form-data",
-      },
+      headers: myHeaders,
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log("res", res);
         if (res.success == 1) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
@@ -73,8 +77,8 @@ export default function EducatorAddMyJournal() {
         }
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
+        console.log("err", err);
       });
   };
   return (
@@ -101,9 +105,9 @@ export default function EducatorAddMyJournal() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
-              validateOnChange={false}
               initialValues={{
                 docTitle: "",
+                access: "",
                 description: "",
               }}
               validationSchema={Yup.object().shape({
@@ -124,6 +128,7 @@ export default function EducatorAddMyJournal() {
                     placeholder={"Journal Title"}
                     name="title"
                     onChangeText={handleChange("docTitle")}
+                    onBlur={handleBlur("docTitle")}
                     value={values.docTitle}
                     keyboardType="text"
                   />
@@ -134,9 +139,8 @@ export default function EducatorAddMyJournal() {
                     required
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem.name);
+                      setAccess(selectedItem);
                       setFieldValue("access", selectedItem.name);
-                      console.log(selectedItem, index);
                     }}
                     value={access}
                   />
@@ -154,6 +158,7 @@ export default function EducatorAddMyJournal() {
                     multiline={true}
                     numberOfLines={6}
                     onChangeText={handleChange("description")}
+                    onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
                     textAlignVertical="top"
@@ -165,9 +170,9 @@ export default function EducatorAddMyJournal() {
                   <View style={styles.button}>
                     <SmallButton
                       title={"Cancel"}
-                      onPress={() => navigation.goBack()}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}

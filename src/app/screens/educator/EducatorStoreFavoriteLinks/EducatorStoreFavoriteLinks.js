@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
@@ -29,7 +29,8 @@ export default function EducatorStoreFavoriteLinks() {
   const [storeLinks, setStoreLinks] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectCategory, setSelectCategory] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   // const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,12 +41,14 @@ export default function EducatorStoreFavoriteLinks() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [filter, setFilter] = useState("");
+  const [selectCategory, setSelectCategory] = useState("");
   // const [categoryList, setCategoryList] = useState([]);
   // const [initialStoreLinks, setInitialStoreLinks] = useState([]);
   // const user_type = localStorage.getItem("userID"); // ! user Type student or other
   console.log("filter", filter);
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    console.log("first", myData.id);
     const type =
       myData.type == "admin"
         ? 4
@@ -71,9 +74,9 @@ export default function EducatorStoreFavoriteLinks() {
       .then((response) => response.json())
       .then((result) => {
         const filteredItems = result?.data?.filter((item) =>
-          item?.Titel.toLowerCase().includes(searchTerm.toLowerCase())
+          item?.Titel?.toLowerCase().includes(searchTerm.toLowerCase())
         );
-
+        setSearchTerm("");
         setStoreLinks(filteredItems);
         // setSearchData(result.data);
         setLoading(false);
@@ -105,6 +108,7 @@ export default function EducatorStoreFavoriteLinks() {
 
   const deleteProject = async (linkId) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setDeleteLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "DELETE",
@@ -131,22 +135,32 @@ export default function EducatorStoreFavoriteLinks() {
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
-      })
-      .catch((error) => console.log("error", error));
+        setDeleteLoading(false);
+      });
+    setDeleteLoading(true).catch((error) => {
+      setDeleteLoading(false);
+      console.log("error", error);
+    });
   };
 
   const onRefresh = () => {
     setRefreshing(true);
-    filter && allLearnerList();
+    allLearnerList();
     setTimeout(() => {
       // changeColor("green");
 
       setRefreshing(false);
     }, 2000);
   };
-  // useEffect(() => {
-  //   navigation.addListener("focus", () => setStoreLinks([]));
-  // }, [navigation]);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    // navigation.addListener("focus", () => {
+    //   // setSelectCategory({});
+    //   // setStoreLinks([]);
+    //   // allLearnerList();
+    // });
+    allLearnerList();
+  }, [isFocused]);
 
   // const searchText = (searchTerm) => {
   //   const filteredData = storeLinks?.filter((el) => {
@@ -199,7 +213,10 @@ export default function EducatorStoreFavoriteLinks() {
         <TextWithButton
           title={"Store Favorite Links"}
           label={"+Add"}
-          onPress={() => navigation.navigate("EducatorAddLinks")}
+          onPress={() => {
+            setFilter("");
+            navigation.navigate("EducatorAddLinks");
+          }}
         />
 
         <View
@@ -221,7 +238,7 @@ export default function EducatorStoreFavoriteLinks() {
               style={styles.input}
               onChangeText={(text) => setSearchTerm(text)}
               value={searchTerm}
-              placeholder={"Search title..."}
+              placeholder={"Search title, author..."}
             />
           </View>
           <View style={styles.search_button}>
@@ -260,14 +277,8 @@ export default function EducatorStoreFavoriteLinks() {
                       }}
                       pressEdit={() => {
                         setStoreLinks([]);
-                        setSelectCategory("");
                         navigation.navigate("EducatorEditStoreFavoriteLinks", {
-                          linkID: list.id,
-                          title: list.Titel,
-                          link: list.url,
-                          description: list.Detail,
-                          linkCategory: list.Category,
-                          catId: list.Category_id,
+                          editData: list,
                         });
                       }}
                     />
@@ -279,7 +290,11 @@ export default function EducatorStoreFavoriteLinks() {
         </ScrollView>
       </View>
       {linkId?.length ? (
-        <DeletePopup cancelPress={() => setDeletePop(false)} deletePress={() => deleteProject(linkId)} />
+        <DeletePopup
+          deleteLoading={deleteLoading}
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteProject(linkId)}
+        />
       ) : null}
     </View>
   );

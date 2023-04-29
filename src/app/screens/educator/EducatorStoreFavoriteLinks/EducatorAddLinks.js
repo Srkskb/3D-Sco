@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
-// import { AccessLevel } from "../../../components/dropdown";
+import { AccessLevel } from "../../../components/dropdown";
 import SmallButton from "../../../components/buttons/SmallButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
@@ -18,7 +18,7 @@ export default function EducatorAddLink({ navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setLoading] = useState(false);
-  const [selectCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectCategory] = useState("");
   const urlValidation =
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
@@ -132,9 +132,9 @@ export default function EducatorAddLink({ navigation }) {
                     label={"Category"}
                     onSelect={(selectedItem, index) => {
                       setFieldValue("category", selectedItem.id);
-                      setSelectedCategory(selectedItem);
+                      setSelectCategory(selectedItem);
                     }}
-                    value={selectCategory}
+                    value={selectedCategory}
                   />
                   {errors.category && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.category}</Text>

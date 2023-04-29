@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function ParentAddBlog() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -167,7 +167,7 @@ export default function ParentAddBlog() {
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
                       setAccess(selectedItem);
-                      setFieldValue("access", selectedItem);
+                      setFieldValue("access", selectedItem.name);
                       handleChange("access");
                     }}
                     value={access}

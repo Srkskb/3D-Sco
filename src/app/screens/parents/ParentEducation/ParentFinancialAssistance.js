@@ -8,6 +8,7 @@ import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
 export default function ParentFinancialAssistance() {
   const navigation = useNavigation();
@@ -21,6 +22,7 @@ export default function ParentFinancialAssistance() {
   const [loginUID, setloginUID] = useState("");
   const [assistanceData, setAssistanceData] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -28,6 +30,7 @@ export default function ParentFinancialAssistance() {
   }, []);
 
   const financialAssistanceList = () => {
+    setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
@@ -43,10 +46,13 @@ export default function ParentFinancialAssistance() {
     fetch(`https://3dsco.com/3discoapi/studentregistration.php`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result.data);
-        setAssistanceData(result.data);
+        setAssistanceData(result?.data);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
   const deleteBlog = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -123,7 +129,7 @@ export default function ParentFinancialAssistance() {
           label={"+Add"}
           onPress={() => navigation.navigate("ParentAddFinancial")}
         />
-
+        {loading && <Loader />}
         <ScrollView>
           {assistanceData.map((list, index) => (
             <View key={index} style={styles.financialAssis}>
