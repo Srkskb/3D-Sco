@@ -63,7 +63,7 @@ export default function LibraryAccess() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    courseId && allLearnerList(courseId);
+    allLearnerList();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);

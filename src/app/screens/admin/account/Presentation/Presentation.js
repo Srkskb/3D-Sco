@@ -29,7 +29,6 @@ export default function Presentation() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [courseId, setCourseId] = useState("");
-
   const isFocused = useIsFocused();
   useEffect(() => {
     setSelectCourse({});
@@ -89,14 +88,14 @@ export default function Presentation() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    courseId && allLearnerList(courseId);
+    allLearnerList(courseId);
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
     }, 2000);
   };
   useEffect(() => {
-    courseId && allLearnerList(courseId);
+    allLearnerList(courseId);
     navigation.addListener("focus", () => setFileCabinetData([]));
   }, [courseId]);
 

@@ -129,8 +129,8 @@ export default function AdminEditStoreFavoriteLinks({ route, navigation }) {
               category: Yup.string().required("Category is required"),
               description: Yup.string().required("Description is required"),
             })}
-            // onSubmit={(values) => updateDocument(values)}
-            onSubmit={(values) => console.log("first", values)}
+            onSubmit={(values) => updateDocument(values)}
+            // onSubmit={(values) => console.log("first", values)}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
               <View>

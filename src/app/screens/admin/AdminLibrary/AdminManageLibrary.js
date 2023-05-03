@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl, TextInput, Image, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Text,
+  RefreshControlBase,
+} from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -8,16 +18,23 @@ import { NoDataFound } from "../../../components";
 import TextWithButton from "../../../components/TextWithButton";
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
+import SelectCourse from "../../../components/admin_required/SelectCourse";
+import Loader from "../../../utils/Loader";
 
 export default function AdminManageLibrary() {
   const navigation = useNavigation();
   const [manageLibrary, setManageLibrary] = useState([]);
+  const [courseId, setCourseId] = useState("");
+  const [course, setCourse] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetch = async () => {
-    console.log("first");
+  const fetch = async (id) => {
+    console.log("firsteeeeeeee", id);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setLoading(true);
     axios
-      .get(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData?.id}`)
+      .get(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData?.id}&course_id=${id}`)
       .then(function (res) {
         if (res.data.success == 1) {
           if (res.data.data) {
@@ -27,22 +44,41 @@ export default function AdminManageLibrary() {
         } else {
           console.log("Course List can't fetch right now");
         }
+        setLoading(false);
       })
       .catch((err) => {
+        setLoading(false);
         console.log("err", err);
       });
   };
   useEffect(() => {
-    !manageLibrary.length && fetch();
-  }, []);
+    fetch(courseId);
+  }, [courseId]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetch();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   return (
     <View style={styles.container}>
       <HeaderBack title={"Library"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <TextWithButton title={"Books"} label={"Add Books"} onPress={() => navigation.navigate("AdminAddBook")} />
+        <SelectCourse
+          // label={"Select Course"}
+          onSelect={(selectedItem, index) => {
+            setCourseId(selectedItem.id);
+            setCourse(selectedItem);
+          }}
+          value={course}
+        />
+        {loading && <Loader />}
 
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.book_container}>
             {manageLibrary.map((item) => (
               <Book_Card

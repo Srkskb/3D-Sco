@@ -22,7 +22,7 @@ export default function AdminEditBook({ navigation, route }) {
   const [selectedCourse, setSelectedCourse] = useState({ name: data?.course_id, id: data?.course_id });
   const [image, setImage] = useState("");
   const [doc, setDoc] = useState("");
-
+  console.log("data", data);
   const pickImg = async () => {
     console.log("first");
     let result = await DocumentPicker.getDocumentAsync({

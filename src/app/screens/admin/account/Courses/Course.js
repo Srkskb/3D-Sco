@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, RefreshControl } from "react-native";
 import React, { useState, useEffect } from "react";
 import HeaderBack from "../../../../components/header/Header";
 import TextWithButton from "../../../../components/TextWithButton";
@@ -23,9 +23,10 @@ export default function Course({ navigation }) {
   const [id, setId] = useState("");
   const [id2, setId2] = useState("");
   const [deletePop, setDeletePop] = useState(false);
-  const [courseKey, setCourseKey] = useState("Access");
+  const [courseKey, setCourseKey] = useState("");
   const [input, setInput] = useState("");
   const [myId, setMyId] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   const DeleteCourse = (id, userId) => {
     console.log("first", id, userId);
@@ -55,7 +56,9 @@ export default function Course({ navigation }) {
         console.log(error);
       });
   };
-
+  useEffect(() => {
+    allCourses();
+  }, []);
   const allCourses = async (access) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     console.log(myData.id);
@@ -96,6 +99,13 @@ export default function Course({ navigation }) {
   //   courseKey&&allCourses();
   //   navigation.addListener("focus", () => allCourses());
   // }, [courseKey]);
+  const onRefresh = () => {
+    setRefreshing(true);
+    allCourses();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   return (
     <View style={styles.container}>
@@ -131,7 +141,10 @@ export default function Course({ navigation }) {
       {loading ? (
         <Loader />
       ) : (
-        <ScrollView style={{ paddingHorizontal: 10 }}>
+        <ScrollView
+          style={{ paddingHorizontal: 10 }}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
+        >
           {!!courses?.length ? (
             courses.map((list, index) => (
               <Course_Card

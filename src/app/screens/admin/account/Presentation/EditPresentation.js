@@ -47,6 +47,7 @@ export default function EditPresentation({ navigation, route }) {
     data.append("presentation_title", values.preTitle);
     data.append("Description", values.description);
     data.append("course_id", values.course);
+
     {
       !image?.uri.includes("https") &&
         data.append("image", {
@@ -55,7 +56,8 @@ export default function EditPresentation({ navigation, route }) {
           name: image?.name,
         });
     }
-    data.append("id", values.id);
+    data.append("id", editData.id);
+    console.log("data", data);
 
     var myHeaders = new Headers();
     // myHeaders.append("Accept", "application/json");
@@ -91,7 +93,11 @@ export default function EditPresentation({ navigation, route }) {
         <Formik
           enableReinitialize
           validateOnChange={false}
-          initialValues={{ preTitle: editData?.preTitle, description: editData?.description, course: "" }}
+          initialValues={{
+            preTitle: editData?.preTitle,
+            description: editData?.description,
+            course: editData?.course_id,
+          }}
           validationSchema={Yup.object().shape({
             preTitle: Yup.string()
               .required("Document Title is required")
