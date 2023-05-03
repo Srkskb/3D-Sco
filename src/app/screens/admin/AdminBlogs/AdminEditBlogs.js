@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
@@ -15,12 +15,14 @@ import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import EmptyInput from "../../../utils/EmptyInput";
 
 export default function AdminEditBlogs({ route, navigation }) {
   // ** For Event Update
   const { editData } = route.params; // ! Current Event ID
   console.log("editData", editData);
   const [access, setAccess] = useState("");
+  console.log("access", access);
 
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -34,6 +36,9 @@ export default function AdminEditBlogs({ route, navigation }) {
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
+  useEffect(() => {
+    setAccess(editData?.access);
+  }, [editData]);
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
@@ -47,13 +52,14 @@ export default function AdminEditBlogs({ route, navigation }) {
 
   const updateEvent = async (values) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log(blogID);
+
     setLoading(true);
     var data = qs.stringify({
       update_blogs: "1",
       id: editData?.id,
       titel: values?.blogTitle,
       user_id: myData.id,
+      access: values?.access,
       description: values?.description,
       date: moment(values?.blogDate).format("YYYY-MM-DD"),
     });
@@ -133,7 +139,7 @@ export default function AdminEditBlogs({ route, navigation }) {
                 blogTitle: editData?.Titel,
                 description: editData?.Description,
                 blogDate: editData?.Date,
-                access: "",
+                access: editData?.access,
               }}
               validationSchema={Yup.object().shape({
                 blogTitle: Yup.string()
@@ -198,17 +204,29 @@ export default function AdminEditBlogs({ route, navigation }) {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogDate}</Text>
                   )}
 
-                  <AccessLevel
-                    required
-                    name="access"
-                    label={"Access Level"}
-                    onSelect={(selectedItem, index) => {
-                      setAccess(selectedItem);
-                      setFieldValue("access", selectedItem.name);
-                      handleChange("access");
-                    }}
-                    value={access}
-                  />
+                  {access ? (
+                    <>
+                      <Text style={styles.label_text}>{"Access"}</Text>
+                      <EmptyInput
+                        value={values?.access}
+                        onPress={() => {
+                          setAccess();
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <AccessLevel
+                      required
+                      name="access"
+                      label={"Access Level"}
+                      onSelect={(selectedItem, index) => {
+                        setAccess(selectedItem);
+                        setFieldValue("access", selectedItem.name);
+                        handleChange("access");
+                      }}
+                      value={access}
+                    />
+                  )}
                   {errors.access && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}

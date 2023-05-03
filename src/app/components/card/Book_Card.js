@@ -4,10 +4,11 @@ import color from "../../assets/themes/Color";
 let book_img = require("../../assets/images/book.png");
 
 export default function Book_Card({ title, author, onPress, image }) {
+  console.log("image", image);
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.6} onPress={onPress}>
       <View style={styles.upper_portion}>
-        <Image style={styles.bookimg} source={image} />
+        <Image style={styles.bookimg} source={image || book_img} />
       </View>
       <View style={styles.bottom_portion}>
         <Text numberOfLines={2} style={styles.title}>

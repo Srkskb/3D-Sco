@@ -3,7 +3,7 @@ import { Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import color from "../assets/themes/Color";
 
-const EmptyInput = ({ value, setToggle, name }) => {
+const EmptyInput = ({ value, setToggle, name, onPress }) => {
   return (
     <View
       style={{
@@ -20,7 +20,8 @@ const EmptyInput = ({ value, setToggle, name }) => {
       <Text>{value}</Text>
       <TouchableOpacity
         onPress={() => {
-          setToggle((prev) => ({ ...prev, [name]: false }));
+          setToggle && setToggle((prev) => ({ ...prev, [name]: false }));
+          onPress && onPress();
         }}
       >
         <Text>close</Text>

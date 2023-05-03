@@ -14,6 +14,7 @@ export default function AdminManageLibrary() {
   const [manageLibrary, setManageLibrary] = useState([]);
 
   const fetch = async () => {
+    console.log("first");
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     axios
       .get(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData?.id}`)

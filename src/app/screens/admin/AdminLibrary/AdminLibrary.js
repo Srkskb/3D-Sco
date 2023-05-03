@@ -69,7 +69,7 @@ export default function LibraryAccess() {
     }, 2000);
   };
   useEffect(() => {
-    courseId && allLearnerList(courseId);
+    allLearnerList(courseId);
   }, [courseId, isFocused]);
 
   useEffect(() => {

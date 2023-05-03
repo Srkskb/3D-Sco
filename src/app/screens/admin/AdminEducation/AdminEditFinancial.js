@@ -65,7 +65,7 @@ export default function AdminEditFinancial({ route, navigation }) {
     // formdata.append("type", "4"); test
     formdata.append("user_id", myData.id);
     formdata.append("id", editData?.id);
-
+    console.log("formdata", formdata);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,

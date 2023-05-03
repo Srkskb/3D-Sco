@@ -201,7 +201,7 @@ export default function AdminAddBook({ navigation }) {
                 />
 
                 <SmallButton
-                  title="Update"
+                  title="Add"
                   color={color.white}
                   backgroundColor={color.purple}
                   fontFamily={"Montserrat-Bold"}

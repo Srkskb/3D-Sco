@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -23,6 +23,7 @@ export default function AdminFinancialAssistance() {
   const [assistanceData, setAssistanceData] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -94,6 +95,13 @@ export default function AdminFinancialAssistance() {
         console.log("error", error);
       });
   };
+  const onRefresh = () => {
+    setRefreshing(true);
+    financialAssistanceList();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
   useEffect(() => {
     financialAssistanceList();
     navigation.addListener("focus", () => financialAssistanceList());
@@ -130,7 +138,7 @@ export default function AdminFinancialAssistance() {
           onPress={() => navigation.navigate("AdminAddFinancial")}
         />
         {loading && <Loader />}
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {assistanceData.map((list, index) => (
             <View key={index} style={styles.financialAssis}>
               <View style={{ flexDirection: "row" }}>
