@@ -18,51 +18,39 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default function EducatorAddBlog() {
   const navigation = useNavigation();
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [selectedDate, setSelectedDate] = useState();
   const [loading, setloading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    setSelectedDate(date);
-    hideDatePicker();
-  };
   const addFileCabinet = async (values) => {
     setloading(true);
-    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    // const myHeaders = myHeadersData();/
-    var urlencoded = new FormData();
+    const data = JSON.parse(await AsyncStorage.getItem("userData"));
 
+    const myHeaders = myHeadersData();
+    var urlencoded = new FormData();
     urlencoded.append("blogs", "1");
     urlencoded.append("titel", values.blogTitle);
     urlencoded.append("access", values.access);
-    urlencoded.append("user_id", myData.id);
-    urlencoded.append("date", values?.eventDate);
+    urlencoded.append("user_id", data.id);
+    urlencoded.append("date", moment(values?.blogDate).format("YYYY-MM-DD"));
     urlencoded.append("description", values.description);
-    const myHeaders = new Headers();
-    myHeaders.append("Accept", "application/json");
-    myHeaders.append("Content-Type", "multipart/form-data");
-    myHeaders.append("Cookie", "PHPSESSID=a780e1f8925e5a3d9ebcdbb058ff0885");
 
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
-      headers: myHeaders,
+      headers: {
+        myHeaders,
+      },
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log("add bog", res);
         if (res.success == 1) {
           setloading(false);
           setSnackVisibleTrue(true);
@@ -73,10 +61,6 @@ export default function EducatorAddBlog() {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        setloading(false);
       });
   };
   return (
@@ -88,6 +72,8 @@ export default function EducatorAddBlog() {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        duration={2000}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -96,6 +82,7 @@ export default function EducatorAddBlog() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -103,31 +90,35 @@ export default function EducatorAddBlog() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ paddingVertical: 10 }}>
             <Formik
+              validateOnBlur={false}
+              validateOnChange={false}
               initialValues={{
                 blogTitle: "",
-                eventDate: "",
-                access: "",
                 description: "",
+                blogDate: "",
+                access: "",
               }}
               validationSchema={Yup.object().shape({
                 blogTitle: Yup.string()
                   .required("Document Title is required")
-                  .min(3, "Document Title must be at least 3 characters"),
-                eventDate: Yup.string().required("Event Date is required"),
-                access: Yup.string().required("Access level is required"),
+                  .min(3, "Document Title must be at least 3 characters")
+                  .max(150, "Document Title cannot be more than 150 characters"),
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
+                blogDate: Yup.string().required("Date is required"),
+                access: Yup.string().required("Access is required"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue, resetForm }) => (
                 <View>
                   <InputField
                     label={"Blog Title"}
                     placeholder={"Blog Title"}
-                    name="title"
+                    name="blogTitle"
                     onChangeText={handleChange("blogTitle")}
+                    // onBlur={handleBlur("blogTitle")}
                     value={values.blogTitle}
                     keyboardType="text"
                   />
@@ -135,7 +126,7 @@ export default function EducatorAddBlog() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogTitle}</Text>
                   )}
                   <Text style={{ marginBottom: 5 }}>
-                    <Text style={styles.label_text}>Event Date</Text>
+                    <Text style={styles.label_text}>Blog Date</Text>
                     <Text style={{ color: color.red }}>*</Text>
                   </Text>
                   <View style={styles.calendar_input}>
@@ -145,11 +136,11 @@ export default function EducatorAddBlog() {
                         fontFamily: "Montserrat-SemiBold",
                       }}
                     >
-                      {selectedDate ? selectedDate.toLocaleDateString() : "No date selected"}
+                      {values?.blogDate ? moment(values?.blogDate).format("YYYY-MM-DD") : "No date selected"}
                     </Text>
                     <View style={styles.selectDate}>
-                      <TouchableOpacity onPress={showDatePicker}>
-                        {/* <Text>Select Date</Text> */}
+                      {/* <TouchableOpacity onPress={showDatePicker}> */}
+                      <TouchableOpacity onPress={(e) => setDatePickerVisibility(true)}>
                         <Entypo name="calendar" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
@@ -157,23 +148,29 @@ export default function EducatorAddBlog() {
                     <DateTimePickerModal
                       isVisible={isDatePickerVisible}
                       mode="date"
-                      date={selectedDate}
-                      onConfirm={(e) => setFieldValue("eventDate", moment(e).format("DD-MM-YYY"))}
-                      onCancel={hideDatePicker}
+                      name="blogDate"
+                      onConfirm={(e) => {
+                        setFieldValue("blogDate", e);
+                        handleChange("blogDate");
+                        setDatePickerVisibility(false);
+                      }}
+                      onCancel={() => setDatePickerVisibility(false)}
                     />
                   </View>
-                  {errors.eventDate && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.eventDate}</Text>
+                  {errors.blogDate && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogDate}</Text>
                   )}
 
                   <AccessLevel
                     required
+                    name="access"
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
                       setAccess(selectedItem);
-                      setFieldValue("access", selectedItem?.name);
+                      setFieldValue("access", selectedItem.name);
+                      handleChange("access");
                     }}
-                    value={values?.access}
+                    value={access}
                   />
                   {errors.access && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
@@ -185,7 +182,6 @@ export default function EducatorAddBlog() {
                     multiline={true}
                     numberOfLines={6}
                     onChangeText={handleChange("description")}
-                    // onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
                     textAlignVertical="top"
@@ -201,7 +197,7 @@ export default function EducatorAddBlog() {
                       onPress={() => navigation.goBack()}
                     />
                     <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                       title="Save"
                       disabled={!isValid}
                       color={color.white}

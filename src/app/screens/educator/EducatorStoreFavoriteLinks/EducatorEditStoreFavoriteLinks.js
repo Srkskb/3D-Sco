@@ -11,9 +11,11 @@ import { UploadDocument } from "../../../components";
 import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
 import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
-  const { linkID, title, link, description, linkCategory, catId } = route.params;
+  const { editData } = route.params;
 
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
@@ -22,10 +24,10 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
   const loginUID = localStorage.getItem("loginUID");
   const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
-  const [updateTitle, setUpTitle] = useState(title);
-  const [upDescription, setUpDescription] = useState(description);
-  const [upLink, setUpLink] = useState(link);
-  const [category, setCategory] = useState(catId);
+  // const [updateTitle, setUpTitle] = useState(title);
+  // const [upDescription, setUpDescription] = useState(description);
+  // const [upLink, setUpLink] = useState(link);
+  const [category, setCategory] = useState({});
 
   const updateDocument = async (values) => {
     setloading(true);
@@ -44,13 +46,14 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
     var urlencoded = new FormData();
 
     urlencoded.append("update_link", "1");
-    urlencoded.append("titel", updateTitle);
-    urlencoded.append("category", category);
-    urlencoded.append("detail", upDescription);
-    urlencoded.append("url", upLink);
+    urlencoded.append("titel", values?.linkTitle);
+    urlencoded.append("category", values?.category);
+    urlencoded.append("detail", values?.description);
+    urlencoded.append("url", values?.url);
     urlencoded.append("type", type);
-    urlencoded.append("id", linkID);
+    urlencoded.append("id", editData?.id);
     urlencoded.append("user_id", myData.id);
+    console.log("urlencoded", urlencoded);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
@@ -109,77 +112,108 @@ export default function EducatorEditStoreFavoriteLinks({ route, navigation }) {
       </Snackbar>
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View>
-            <View>
-              <InputField
-                label={"Link Title"}
-                placeholder={"Document Title"}
-                name="title"
-                onChangeText={(text) => setUpTitle(text)}
-                value={updateTitle}
-                keyboardType="text"
-              />
-              <InputField
-                label={"URL"}
-                placeholder={"Document Title"}
-                name="title"
-                onChangeText={(text) => setUpLink(text)}
-                value={upLink}
-                keyboardType="text"
-              />
-              {showResults ? (
-                <>
-                  <CategoryDropdown
-                    label={"Select Category"}
-                    onSelect={(selectedItem, index) => {
-                      setCategory(index + 1);
-                    }}
+          <Formik
+            enableReinitialize
+            initialValues={{
+              linkTitle: editData?.Titel,
+              url: editData?.url,
+              category: editData?.Category_id,
+              description: editData?.Detail,
+            }}
+            validationSchema={Yup.object().shape({
+              linkTitle: Yup.string()
+                .required("Link Title is required")
+                .min(3, "Link Title must be at least 3 characters"),
+              url: Yup.string().required("Url Title is required"),
+              category: Yup.string().required("Category is required"),
+              description: Yup.string().required("Description is required"),
+            })}
+            onSubmit={(values) => updateDocument(values)}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+              <View>
+                <View>
+                  <InputField
+                    label={"Link Title"}
+                    placeholder={"Document Title"}
+                    name="linkTitle"
+                    onChangeText={handleChange("linkTitle")}
+                    value={values?.linkTitle}
+                    keyboardType="text"
                   />
-                </>
-              ) : (
-                <>
-                  <View style={styles.selectedDataCon}>
-                    <Text>Selected Category</Text>
-                    <View style={styles.selectedData}>
-                      <Text>{linkCategory}</Text>
-                      <TouchableOpacity onPress={onClick}>
-                        <Text>close</Text>
-                      </TouchableOpacity>
-                    </View>
+                  {errors.linkTitle && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkTitle}</Text>
+                  )}
+                  <InputField
+                    label={"URL"}
+                    placeholder={"Document Title"}
+                    name="url"
+                    onChangeText={handleChange("url")}
+                    value={values?.url}
+                    keyboardType="text"
+                  />
+                  {errors.url && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.url}</Text>}
+                  {showResults ? (
+                    <>
+                      <CategoryDropdown
+                        label={"Select Category"}
+                        onSelect={(selectedItem, index) => {
+                          setCategory(selectedItem);
+                          setFieldValue("category", selectedItem?.id);
+                        }}
+                        value={category}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <View style={styles.selectedDataCon}>
+                        <Text>Selected Category</Text>
+                        <View style={styles.selectedData}>
+                          <Text>{editData?.Category}</Text>
+                          <TouchableOpacity onPress={onClick}>
+                            <Text>close</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </>
+                  )}
+
+                  <InputField
+                    label={"Description"}
+                    placeholder={"Description"}
+                    name="description"
+                    multiline={true}
+                    numberOfLines={6}
+                    keyboardType="default"
+                    textAlignVertical="top"
+                    // onChangeText={(text) => setUpDescription(text)}
+                    onChangeText={handleChange("description")}
+                    value={values?.description}
+                  />
+                  {errors.description && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                  )}
+
+                  <View style={styles.button}>
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
+                    <SmallButton
+                      onPress={() => handleSubmit()}
+                      title="Update"
+                      backgroundColor={color.purple}
+                      fontFamily={"Montserrat-Bold"}
+                      color={color.white}
+                      loading={loading}
+                    />
                   </View>
-                </>
-              )}
-
-              <InputField
-                label={"Description"}
-                placeholder={"Description"}
-                name="description"
-                multiline={true}
-                numberOfLines={6}
-                keyboardType="default"
-                textAlignVertical="top"
-                onChangeText={(text) => setUpDescription(text)}
-                value={upDescription}
-              />
-
-              <View style={styles.button}>
-                <SmallButton
-                  title={"Cancel"}
-                  color={color.purple}
-                  fontFamily={"Montserrat-Medium"}
-                  onPress={() => navigation.goBack()}
-                />
-                <SmallButton
-                  onPress={() => updateDocument()}
-                  title="Update"
-                  backgroundColor={color.purple}
-                  fontFamily={"Montserrat-Bold"}
-                  color={color.white}
-                  loading={loading}
-                />
+                </View>
               </View>
-            </View>
-          </View>
+            )}
+          </Formik>
         </ScrollView>
       </View>
     </View>

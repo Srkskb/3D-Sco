@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { Snackbar } from "react-native-paper";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
@@ -25,10 +25,10 @@ export default function AffiliateBlogs() {
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
   const [userId, setUserId] = useState("");
-
+  const isFocused = useIsFocused();
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   const fetchData = async () => {
     const data = JSON.parse(await AsyncStorage.getItem("userData"));

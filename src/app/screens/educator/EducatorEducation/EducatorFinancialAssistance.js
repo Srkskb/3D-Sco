@@ -7,23 +7,29 @@ import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
 import Loader from "../../../utils/Loader";
 
 export default function EducatorFinancialAssistance() {
   const navigation = useNavigation();
+  const [id, setId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   // const loginUID = localStorage.getItem("loginUID");
-  const [userId, setUserId] = useState("");
+  const [loginUID, setloginUID] = useState("");
+  const [assistanceData, setAssistanceData] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [assistanceData, setAssistanceData] = useState([]);
-
-  const financialAssistanceList = async () => {
+  useEffect(async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    setUserId(myData?.id);
+    setloginUID(myData?.id);
+  }, []);
+
+  const financialAssistanceList = () => {
     setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -50,9 +56,10 @@ export default function EducatorFinancialAssistance() {
   };
   const deleteBlog = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setDeleteLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
-    myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
+    myHeaders.append("Cookie", "PHPSESSID=a780e1f8925e5a3d9ebcdbb058ff0885");
     var formdata = new FormData();
     formdata.append("delete_financial_assistance", "1");
     formdata.append("user_id", myData.id);
@@ -68,6 +75,7 @@ export default function EducatorFinancialAssistance() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
+          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -79,8 +87,12 @@ export default function EducatorFinancialAssistance() {
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
+        setDeleteLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setDeleteLoading(false);
+        console.log("error", error);
+      });
   };
   useEffect(() => {
     financialAssistanceList();
@@ -95,6 +107,7 @@ export default function EducatorFinancialAssistance() {
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
         style={styles.snackText}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -104,6 +117,7 @@ export default function EducatorFinancialAssistance() {
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
         style={styles.snackText}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -118,7 +132,7 @@ export default function EducatorFinancialAssistance() {
         {loading && <Loader />}
         <ScrollView>
           {assistanceData.map((list, index) => (
-            <View style={styles.financialAssis}>
+            <View key={index} style={styles.financialAssis}>
               <View style={{ flexDirection: "row" }}>
                 <View style={styles.right_view}>
                   <Text style={styles.title}>{list.Titel} </Text>
@@ -133,16 +147,19 @@ export default function EducatorFinancialAssistance() {
                 </View>
               </View>
               <View style={styles.button_container}>
-                {list.user_id === userId ? (
+                {list?.user_id === loginUID ? (
                   <>
-                    <Remove onPress={() => deleteBlog(list.id)} />
+                    <Remove
+                      onPress={() => {
+                        setId(list?.id);
+                        setDeletePop(true);
+                      }}
+                    />
                     <View style={{ width: 20 }}></View>
                     <Edit
                       onPress={() =>
                         navigation.navigate("EducatorEditFinancial", {
-                          assisID: list.id,
-                          assisTitle: list.Titel,
-                          assisURL: list.url,
+                          editData: list,
                         })
                       }
                     />
@@ -153,6 +170,13 @@ export default function EducatorFinancialAssistance() {
           ))}
         </ScrollView>
       </View>
+      {deletePop ? (
+        <DeletePopup
+          deleteLoading={deleteLoading}
+          cancelPress={() => setDeletePop(false)}
+          deletePress={() => deleteBlog(id)}
+        />
+      ) : null}
     </View>
   );
 }
