@@ -30,7 +30,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
   const [updateTitle, setUpTitle] = useState(title);
   const [loading, setloading] = useState(false);
   const [upDescription, setUpDescription] = useState(description);
-  const [access, setAccess] = useState(jAccess);
+  const [access, setAccess] = useState({ name: jAccess, id: jAccess });
   const pickImg = async () => {
     console.log("first");
     let result = await DocumentPicker.getDocumentAsync({});
@@ -48,7 +48,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
     var urlencoded = new FormData();
     urlencoded.append("update_journals", "1");
     urlencoded.append("titel", updateTitle);
-    urlencoded.append("access_level", access);
+    urlencoded.append("access_level", access?.name);
     urlencoded.append("description", upDescription);
     urlencoded.append("user_id", myData.id);
     urlencoded.append("id", jID);
@@ -131,6 +131,7 @@ export default function AdminEditMyJournal({ route, navigation }) {
                     onSelect={(selectedItem) => {
                       setAccess(selectedItem);
                     }}
+                    value={access}
                   />
                 </>
               ) : (

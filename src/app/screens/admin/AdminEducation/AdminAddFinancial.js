@@ -24,7 +24,7 @@ export default function AdminAddFinancial({ route, navigation }) {
   const addFinancialAssets = async () => {
     setloading(true);
 
-    if (!assetsTitle && !assetsUrl) {
+    if (!assetsTitle || !assetsUrl) {
       return Alert.alert("Please provide correct data", "Title and Url is mandatory fields", [
         {
           text: "Cancel",

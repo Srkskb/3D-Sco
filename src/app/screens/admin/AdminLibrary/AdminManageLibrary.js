@@ -45,6 +45,7 @@ export default function AdminManageLibrary() {
           <View style={styles.book_container}>
             {manageLibrary.map((item) => (
               <Book_Card
+                image={item?.image}
                 title={item?.titel}
                 author={item?.author}
                 onPress={() => navigation.navigate("ViewBook", { list: item })}

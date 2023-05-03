@@ -3,11 +3,11 @@ import React from "react";
 import color from "../../assets/themes/Color";
 let book_img = require("../../assets/images/book.png");
 
-export default function Book_Card({ title, author, onPress }) {
+export default function Book_Card({ title, author, onPress, image }) {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.6} onPress={onPress}>
       <View style={styles.upper_portion}>
-        <Image style={styles.bookimg} source={book_img} />
+        <Image style={styles.bookimg} source={image} />
       </View>
       <View style={styles.bottom_portion}>
         <Text numberOfLines={2} style={styles.title}>

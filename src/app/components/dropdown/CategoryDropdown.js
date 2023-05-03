@@ -93,9 +93,9 @@ export default function CategoryDropdown({ label, onSelect, ...props }) {
           }}
           // value={props?.value}
           {...props}
-          renderLeftIcon={() => (
-            <AntDesign style={styles.icon} color={isFocus ? "#82027D" : "black"} name="Safety" size={20} />
-          )}
+          // renderLeftIcon={() => (
+          //   <AntDesign style={styles.icon} color={isFocus ? "#82027D" : "black"} name="Safety" size={20} />
+          // )}
         />
       </View>
     </View>

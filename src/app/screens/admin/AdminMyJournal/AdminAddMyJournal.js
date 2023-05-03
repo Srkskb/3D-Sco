@@ -105,6 +105,7 @@ export default function AdminAddMyJournal() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
+              validateOnChange={false}
               initialValues={{
                 docTitle: "",
                 access: "",

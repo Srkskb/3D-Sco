@@ -132,7 +132,7 @@ export default function Announcement() {
       >
         {getMessageFalse}
       </Snackbar>
-
+      {loading && <Loader />}
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{ paddingHorizontal: 10 }}

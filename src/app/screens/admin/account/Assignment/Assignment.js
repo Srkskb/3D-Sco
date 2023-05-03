@@ -131,7 +131,14 @@ export default function Assignment() {
         {getMessageFalse}
       </Snackbar>
       <View style={{ paddingHorizontal: 10 }}>
-        <TextWithButton title={"Course Category"} label={"+Add"} onPress={() => navigation.navigate("AddAssignment")} />
+        <TextWithButton
+          title={"Course Category"}
+          label={"+Add"}
+          onPress={() => {
+            setSelectCourse("");
+            navigation.navigate("AddAssignment");
+          }}
+        />
         <SelectCourse
           label={"Select Course"}
           onSelect={(selectedItem, index) => {

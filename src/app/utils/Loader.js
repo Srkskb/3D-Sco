@@ -1,5 +1,6 @@
 import React from "react";
-import { ActivityIndicator, Dimensions, View } from "react-native";
+import { ActivityIndicator, Dimensions, StatusBar, View } from "react-native";
+import HeaderBack from "../components/header/Header";
 
 const Loader = () => {
   return (

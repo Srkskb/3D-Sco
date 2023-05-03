@@ -84,9 +84,9 @@ export default function SelectCourse({ label, onSelect, ...props }) {
           onSelect(item);
         }}
         {...props}
-        renderLeftIcon={() => (
-          <AntDesign style={styles.icon} color={isFocus ? "#82027D" : "black"} name="Safety" size={20} />
-        )}
+        // renderLeftIcon={() => (
+        //   <AntDesign style={styles.icon} color={isFocus ? "#82027D" : "black"} name="Safety" size={20} />
+        // )}
       />
       {/* </View> */}
     </View>

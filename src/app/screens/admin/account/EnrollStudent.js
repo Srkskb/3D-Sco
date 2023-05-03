@@ -13,6 +13,7 @@ import SelectCourse from "../../../components/admin_required/SelectCourse";
 export default function EnrollStudent({ navigation }) {
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
+  const [course, setCourse] = useState({});
   const [enrollData, setEnrollData] = useState({
     studentId: "",
     courseId: "",
@@ -117,8 +118,9 @@ export default function EnrollStudent({ navigation }) {
             onSelect={(item, index) => {
               setEnrollData((prev) => ({ ...prev, courseId: item.id }));
               console.log(item);
+              setCourse(item);
             }}
-            // value={course}
+            value={course}
           />
         </View>
         <View style={styles.title_container}>

@@ -13,10 +13,11 @@ import { Formik } from "formik";
 export default function EditAnnouncement({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
-  const [selectCourse, setSelectCourse] = useState({ name: route?.params?.course_id, id: route?.params?.course_id });
-
+  const [selectCourse, setSelectCourse] = useState();
+  console.log("editData", editData);
   useEffect(() => {
-    setEditData(route?.params);
+    setEditData({ ...route?.params, course: route?.params?.course_id });
+    setSelectCourse({ name: route?.params?.course_id, id: route?.params?.course_id });
   }, [route.params]);
 
   const EditAnnouncement = (values) => {

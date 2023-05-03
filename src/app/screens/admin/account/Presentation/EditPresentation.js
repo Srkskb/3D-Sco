@@ -15,7 +15,8 @@ import mime from "mime";
 export default function EditPresentation({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
-  const [selectCourse, setSelectCourse] = useState({ name: route.params.course_id, id: route.params.course_id });
+  console.log("editData", editData);
+  const [selectCourse, setSelectCourse] = useState();
 
   const [image, setImage] = useState({
     name: route.params.file_name.split("https://3dsco.com/images/")[1],
@@ -32,6 +33,7 @@ export default function EditPresentation({ navigation, route }) {
   };
   useEffect(() => {
     setEditData(route?.params);
+    setSelectCourse({ name: route.params.course_id, id: route.params.course_id });
   }, [route.params]);
 
   const editPresentation = async (values) => {
@@ -88,7 +90,8 @@ export default function EditPresentation({ navigation, route }) {
       <ScrollView style={styles.container}>
         <Formik
           enableReinitialize
-          initialValues={{ ...editData, course: "" }}
+          validateOnChange={false}
+          initialValues={{ preTitle: editData?.preTitle, description: editData?.description, course: "" }}
           validationSchema={Yup.object().shape({
             preTitle: Yup.string()
               .required("Document Title is required")

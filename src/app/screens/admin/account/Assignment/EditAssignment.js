@@ -29,6 +29,7 @@ export default function EditAssignment({ navigation, route }) {
         description: description,
         course: course_id,
       });
+      setSelectCourse({ name: course_id, id: course_id });
     }
   }, [route]);
 

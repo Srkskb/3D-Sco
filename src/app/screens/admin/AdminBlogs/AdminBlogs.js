@@ -11,6 +11,7 @@ import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
 export default function AdminBlogs() {
   const navigation = useNavigation();
@@ -23,12 +24,11 @@ export default function AdminBlogs() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setLoading] = useState(false);
-  const loginUID = localStorage.getItem("loginUID");
   const [userId, setUserId] = useState("");
   const isFocused = useIsFocused();
   useEffect(() => {
     fetchData();
-  }, [isFocused]);
+  }, []);
 
   const fetchData = async () => {
     const data = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -37,7 +37,6 @@ export default function AdminBlogs() {
   };
 
   const allLearnerList = async () => {
-    console.log("Enter");
     setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -50,7 +49,6 @@ export default function AdminBlogs() {
       .then((res) => res.json())
       .then((result) => {
         setLoading(false);
-        console.log(result.data);
         setBlogListData(result.data);
       })
       .catch((error) => {
@@ -89,7 +87,7 @@ export default function AdminBlogs() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    fetchData();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -101,22 +99,16 @@ export default function AdminBlogs() {
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <View
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#ffffffcc",
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 100,
-          }}
-        >
-          <ActivityIndicator size={"large"} />
-        </View>
-      ) : null}
-      <HeaderBack title={"Blogs"} onPress={() => navigation.goBack()} />
+      {loading && <Loader />}
+
+      <HeaderBack
+        title={"Blogs"}
+        onPress={() => {
+          console.log("Enterrrrr");
+          setLoading(false);
+          navigation.goBack();
+        }}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -178,10 +170,7 @@ export default function AdminBlogs() {
                               <Edit
                                 onPress={() =>
                                   navigation.navigate("AdminEditBlogs", {
-                                    blogID: list.id,
-                                    title: list.Titel,
-                                    date: moment(list && list?.Date).format("LL"),
-                                    description: list.Description,
+                                    editData: list,
                                   })
                                 }
                               />

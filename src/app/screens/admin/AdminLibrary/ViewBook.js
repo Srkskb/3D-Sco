@@ -12,6 +12,7 @@ export default function ViewBook({ navigation, route }) {
   const [loading, setLoading] = useState(false);
 
   const handleDeleteBook = async () => {
+    console.log("enterrrr", viewData);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     // console.log("value", values);
     setLoading(true);
@@ -19,7 +20,7 @@ export default function ViewBook({ navigation, route }) {
     data.append("delete_book", "1");
     data.append("book_id", viewData?.id);
     data.append("user_id", myData?.id);
-
+    console.log("data", data);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: data,
@@ -30,6 +31,7 @@ export default function ViewBook({ navigation, route }) {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log("first", res);
         if (res.success == 1) {
           setLoading(false);
           // navigation.navigate("AdminManageLibrary");

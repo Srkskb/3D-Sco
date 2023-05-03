@@ -28,6 +28,10 @@ export default function CreateUser({ navigation }) {
   const [isVisibleEntry2, setIsVisibleEntry2] = useState(true);
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState({});
+  const [state, setState] = useState();
+  const [country, setCountry] = useState();
+  const [city, setCity] = useState();
+  const [university, setUniversity] = useState();
 
   const createNewStudent = (values) => {
     console.log(values);
@@ -87,14 +91,14 @@ export default function CreateUser({ navigation }) {
           navigation.navigate("MasterStudentList");
           setLoading(false);
         } else {
-          Alert.alert("Some issue", result.message, [
-            {
-              text: "Cancel",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "OK", onPress: () => console.log("OK Pressed") },
-          ]);
+          // Alert.alert("Some issue", result.message, [
+          //   {
+          //     text: "Cancel",
+          //     onPress: () => console.log("Cancel Pressed"),
+          //     style: "cancel",
+          //   },
+          //   { text: "OK", onPress: () => console.log("OK Pressed") },
+          // ]);
         }
       })
       .catch((error) => {
@@ -141,7 +145,7 @@ export default function CreateUser({ navigation }) {
               userName: Yup.string().required("UserName is required").min(3, "UserName must be at least 3 characters"),
               password: Yup.string().required("Password is required"),
               confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
-              email: Yup.string().required("Email is required"),
+              email: Yup.string().email().required("Email is required"),
               name: Yup.string().required("Name is required"),
               accountType: Yup.string().required("Account Type is required"),
               status: Yup.string().required("status is required"),
@@ -312,11 +316,11 @@ export default function CreateUser({ navigation }) {
                   label={"Country"}
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
-                    // setCountry(selectedItem.id);
+                    setCountry(selectedItem.id);
                     // console.log("sss", selectedItem);
                     setFieldValue("country", selectedItem.id);
                   }}
-                  // value={country}
+                  value={country}
                 />
                 {errors.country && (
                   <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.country}</Text>
@@ -328,11 +332,11 @@ export default function CreateUser({ navigation }) {
                   countryId={values.country}
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
-                    // setState(selectedItem.id);
+                    setState(selectedItem.id);
                     // console.log("state", selectedItem);
                     setFieldValue("state", selectedItem.id);
                   }}
-                  // value={state}
+                  value={state}
                 />
                 {errors.state && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.state}</Text>}
                 <CityDropdown
@@ -343,11 +347,11 @@ export default function CreateUser({ navigation }) {
                   disabled={!values?.country}
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
-                    // setCity(selectedItem.id);
+                    setCity(selectedItem.id);
                     // console.log("city", selectedItem);
                     setFieldValue("city", selectedItem.id);
                   }}
-                  // value={city}
+                  value={city}
                 />
                 {errors.city && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.city}</Text>}
                 <UniversityDropdown
@@ -356,11 +360,11 @@ export default function CreateUser({ navigation }) {
                   countryId={values.country}
                   // onSelect={(item, index) => console.log(item)}
                   onSelect={(selectedItem, index) => {
-                    // setUniversity(selectedItem.id);
+                    setUniversity(selectedItem.id);
                     // console.log("first", selectedItem);
                     setFieldValue("university", selectedItem.id);
                   }}
-                  // value={university}
+                  value={university}
                 />
                 {errors.university && (
                   <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.university}</Text>
