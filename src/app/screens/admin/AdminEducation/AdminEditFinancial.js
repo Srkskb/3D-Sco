@@ -42,7 +42,7 @@ export default function AdminEditFinancial({ route, navigation }) {
       user_id: editData.user_id,
       id: editData?.id,
     });
-
+    console.log("data", data);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,

@@ -11,7 +11,7 @@ import {
   RefreshControlBase,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import Book_Card from "../../../components/card/Book_Card";
 import { NoDataFound } from "../../../components";
@@ -34,7 +34,11 @@ export default function AdminManageLibrary() {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
     axios
-      .get(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData?.id}&course_id=${id}`)
+      .get(
+        `https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&student_id=${myData?.id}${
+          id && `&course_id=${id}`
+        }`
+      )
       .then(function (res) {
         if (res.data.success == 1) {
           if (res.data.data) {
@@ -51,13 +55,15 @@ export default function AdminManageLibrary() {
         console.log("err", err);
       });
   };
+  const isFocused = useIsFocused();
   useEffect(() => {
     fetch(courseId);
-  }, [courseId]);
+  }, [courseId, isFocused]);
 
   const onRefresh = () => {
     setRefreshing(true);
     fetch();
+    setCourse();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);

@@ -160,7 +160,7 @@ export default function AdminStoreFavoriteLinks() {
     //   // allLearnerList();
     // });
     allLearnerList();
-  }, []);
+  }, [isFocused]);
 
   // const searchText = (searchTerm) => {
   //   const filteredData = storeLinks?.filter((el) => {

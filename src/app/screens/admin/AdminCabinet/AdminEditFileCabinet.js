@@ -29,7 +29,9 @@ export default function AdminEditFileCabinet({ route, navigation }) {
 
   const pickImg = async () => {
     console.log("first");
-    let result = await DocumentPicker.getDocumentAsync({});
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+    });
     console.log(result);
     if (result.uri) {
       setImage(result);
@@ -149,7 +151,7 @@ export default function AdminEditFileCabinet({ route, navigation }) {
               )}
               {/* {showDocResults ? (
                 <> */}
-              <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+              <UploadDocument type={"pdf"} pickImg={pickImg} />
               <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
               {/* </> */}
               {/* // ) : (

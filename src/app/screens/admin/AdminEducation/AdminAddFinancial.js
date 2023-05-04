@@ -87,7 +87,7 @@ export default function AdminAddFinancial({ route, navigation }) {
         <ScrollView style={styles.scroll_container}>
           <Formik
             validateOnBlur={false}
-            validateOnChange={false}
+            // validateOnChange={false}
             initialValues={{
               title: "",
               url: "",

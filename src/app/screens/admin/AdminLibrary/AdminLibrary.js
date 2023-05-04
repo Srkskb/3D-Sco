@@ -44,7 +44,7 @@ export default function LibraryAccess() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1&course_id=${id}`, requestOptions)
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?student_library=1${id && `&course_id=${id}`}`, requestOptions)
       .then((res) => res.json())
       .then((result) => {
         if (result.success) {
@@ -63,7 +63,9 @@ export default function LibraryAccess() {
   };
   const onRefresh = () => {
     setRefreshing(true);
+    setCourse();
     allLearnerList();
+
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);

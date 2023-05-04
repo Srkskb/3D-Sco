@@ -33,7 +33,10 @@ export default function Presentation() {
   useEffect(() => {
     setSelectCourse({});
   }, [isFocused]);
-  const allLearnerList = (id) => {
+  const allLearnerList = async (id) => {
+    console.log("firstsdss", id);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -41,7 +44,9 @@ export default function Presentation() {
       headers: myHeaders,
     };
     fetch(
-      `https://3dsco.com/3discoapi/studentregistration.php?courses_presentation_listbycourses=1&course_id=${id}`,
+      `https://3dsco.com/3discoapi/studentregistration.php?courses_presentation_listbycourses=1${
+        id && `&course_id=${id}`
+      }`,
       requestOptions
     )
       .then((res) => res.json())
@@ -88,7 +93,8 @@ export default function Presentation() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList(courseId);
+    allLearnerList();
+    setSelectCourse();
     setTimeout(() => {
       changeColor("green");
       setRefreshing(false);
@@ -160,15 +166,16 @@ export default function Presentation() {
                   onPressView={() => {
                     Linking.openURL(list.file_name);
                   }}
-                  onPressEdit={() =>
+                  onPressEdit={() => {
+                    setSelectCourse();
                     navigation.navigate("EditPresentation", {
                       preTitle: list.assignment_title,
                       id: list?.id,
                       description: list.Description,
                       file_name: list.file_name,
                       course_id: list.course_id,
-                    })
-                  }
+                    });
+                  }}
                   removePress={() => {
                     setId(list.id);
                     setDeletePop(true);

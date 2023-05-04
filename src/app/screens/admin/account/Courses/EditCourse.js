@@ -39,29 +39,6 @@ export default function EditCourse({ navigation, route }) {
 
   const [category, setCategory] = useState();
   console.log("category3333", category);
-  const [editCourseData, setEditCourseData] = useState({
-    category: "",
-    language: "",
-    title: "",
-    subject: "",
-    desc: "",
-    syllabus: "",
-    sheets: "",
-    content: "",
-    announcement: "",
-    access: "",
-    releaseDate: "",
-    endDate: "",
-    initialContent: "",
-    courseQuota: "",
-    maxFileSize: "",
-    banner: "",
-    icon: "",
-    syndicate: "",
-    exportContent: "",
-    id: "",
-    userId: "",
-  });
 
   useEffect(() => {
     if (editData) {
@@ -127,7 +104,7 @@ export default function EditCourse({ navigation, route }) {
     var data = qs.stringify({
       Update_courses: "1",
       user_id: editData.userId,
-      course_name: values.title,
+      course_name: values.courseName,
       language: values.language,
       Description: values.desc,
       Syndicate: values.syndicate,
