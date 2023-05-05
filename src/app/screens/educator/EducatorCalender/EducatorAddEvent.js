@@ -152,7 +152,7 @@ export default function EducatorAddEvent() {
                     placeholder={"Event Title"}
                     name="evenTitle"
                     onChangeText={handleChange("evenTitle")}
-                    onBlur={handleBlur("evenTitle")}
+                    // onBlur={handleBlur("evenTitle")}
                     value={values.evenTitle}
                     keyboardType="text"
                   />

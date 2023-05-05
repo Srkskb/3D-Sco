@@ -30,7 +30,7 @@ export default function EducatorStoreFavoriteLinks() {
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
-
+  console.log(storeLinks);
   // const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,10 +45,10 @@ export default function EducatorStoreFavoriteLinks() {
   // const [categoryList, setCategoryList] = useState([]);
   // const [initialStoreLinks, setInitialStoreLinks] = useState([]);
   // const user_type = localStorage.getItem("userID"); // ! user Type student or other
-  console.log("filter", filter);
+
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log("first", myData.id);
+
     const type =
       myData.type == "admin"
         ? 4
@@ -66,11 +66,12 @@ export default function EducatorStoreFavoriteLinks() {
       headers: myHeaders,
       redirect: "follow",
     };
+    const url = `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${type}${
+      filter ? `&category=${filter}` : ""
+    }`;
+    console.log("url", url);
 
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${type}&category=${filter}`,
-      requestOptions
-    )
+    fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         const filteredItems = result?.data?.filter((item) =>
@@ -145,6 +146,7 @@ export default function EducatorStoreFavoriteLinks() {
 
   const onRefresh = () => {
     setRefreshing(true);
+    setFilter();
     allLearnerList();
     setTimeout(() => {
       // changeColor("green");

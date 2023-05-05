@@ -121,6 +121,8 @@ export default function EducatorFinancialAssistance() {
       >
         {getMessageFalse}
       </Snackbar>
+      {loading && <Loader />}
+
       <HeaderBack title={"Financial assistance"} onPress={() => navigation.goBack()} />
 
       <View style={styles.main_box}>
@@ -129,7 +131,6 @@ export default function EducatorFinancialAssistance() {
           label={"+Add"}
           onPress={() => navigation.navigate("EducatorAddFinancial")}
         />
-        {loading && <Loader />}
         <ScrollView>
           {assistanceData.map((list, index) => (
             <View key={index} style={styles.financialAssis}>

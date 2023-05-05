@@ -69,9 +69,13 @@ export default function EducatorCalender() {
     )
       .then((res) => res.json())
       .then((result) => {
-        let data = result.data.filter((i) => moment(i.event_date).isSame(date, "day"));
-        console.log(data);
-        setEventList(data);
+        console.log("first", date, result?.data);
+        if (date) {
+          let data = result.data.filter((i) => moment(i.event_date).isSame(date, "day"));
+          setEventList(data);
+        } else {
+          setEventList(result.data);
+        }
         setLoading(false);
       })
       .catch((error) => {

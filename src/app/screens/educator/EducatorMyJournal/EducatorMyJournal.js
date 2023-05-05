@@ -11,6 +11,7 @@ import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
 export default function EducatorMyJournal() {
   const navigation = useNavigation();
@@ -23,9 +24,11 @@ export default function EducatorMyJournal() {
   const [color, changeColor] = useState("red");
   const [id, setId] = useState("");
   const [deletePop, setDeletePop] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -34,8 +37,14 @@ export default function EducatorMyJournal() {
     };
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
-      .then((result) => setMyJournalData(result.data))
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        setLoading(false);
+        setMyJournalData(result.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
 
   const deleteJournal = async (id) => {
@@ -90,6 +99,8 @@ export default function EducatorMyJournal() {
   }, []);
   return (
     <View style={styles.container}>
+      {loading && <Loader />}
+
       <HeaderBack title={"My Journal"} onPress={() => navigation.goBack()} />
       <Snackbar
         visible={snackVisibleTrue}

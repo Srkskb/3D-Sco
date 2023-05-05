@@ -32,12 +32,21 @@ export default function AdminAddFinancial({ route, navigation }) {
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
     myHeaders.append("Content-Type", "multipart/form-data");
 
-    // console.log(loginUID);
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
     var formdata = new FormData();
     formdata.append("Add_financial_assistance", "1");
     formdata.append("titel", values?.title);
     formdata.append("url", values?.url);
-    formdata.append("type", "4");
+    formdata.append("type", type);
     formdata.append("user_id", myData.id);
     var requestOptions = {
       method: "POST",
