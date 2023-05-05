@@ -276,7 +276,6 @@ export default function ParentStoreFavoriteLinks() {
                         // setDeletePop(true);
                       }}
                       pressEdit={() => {
-                        setStoreLinks([]);
                         navigation.navigate("ParentEditStoreFavoriteLinks", {
                           editData: list,
                         });

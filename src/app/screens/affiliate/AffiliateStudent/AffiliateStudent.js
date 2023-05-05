@@ -6,16 +6,12 @@ import HeaderText from "../../../components/HeaderText";
 import Student_Card from "../../../components/card/Student_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Loader from "../../../utils/Loader";
 
 export default function AffiliateStudent({ navigation }) {
   const [studentList, setStudentList] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
-
   const studentListData = () => {
-    setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -29,13 +25,10 @@ export default function AffiliateStudent({ navigation }) {
           alert("Please Try after some time");
         } else {
           setStudentList(res.data);
+          console.log("res.data", res.data);
         }
-        setLoading(false);
       })
-      .catch((error) => {
-        setLoading(false);
-        console.log("error", error);
-      });
+      .catch((error) => console.log("error", error));
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -47,16 +40,14 @@ export default function AffiliateStudent({ navigation }) {
   useEffect(() => {
     studentListData();
   }, []);
-
   return (
     <SafeAreaView style={styles.container}>
-      {loading && <Loader />}
       <HomeHeader navigation={navigation} />
       <View style={styles.main_box}>
         <HeaderText title={"STUDENT'S LIST"} />
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          {studentList?.map((list, index) => (
-            <Student_Card name={list.name} />
+          {studentList.map((list, index) => (
+            <Student_Card name={list.name} email={list?.Email} />
           ))}
         </ScrollView>
       </View>

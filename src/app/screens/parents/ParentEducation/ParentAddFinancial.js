@@ -8,6 +8,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import SmallButton from "../../../components/buttons/SmallButton";
 import UserType from "../../UserType";
 import AsyncStorage from "@react-native-community/async-storage";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 export default function ParentAddFinancial({ route, navigation }) {
   // const user_id = localStorage.getItem("user_id"); // ! loged user id
@@ -21,38 +23,21 @@ export default function ParentAddFinancial({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
 
-  const addFinancialAssets = async () => {
+  const addFinancialAssets = async (values) => {
     setloading(true);
 
-    if (!assetsTitle && !assetsUrl) {
-      return Alert.alert("Please provide correct data", "Title and Url is mandatory fields", [
-        {
-          text: "Cancel",
-          onPress: () => {
-            setloading(false);
-            console.log("Cancel Pressed");
-          },
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            setloading(false);
-            console.log("OK Pressed");
-          },
-        },
-      ]);
-    }
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
+    myHeaders.append("Content-Type", "multipart/form-data");
+
     // console.log(loginUID);
     var formdata = new FormData();
     formdata.append("Add_financial_assistance", "1");
-    formdata.append("titel", assetsTitle);
-    formdata.append("url", assetsUrl);
-    formdata.append("type", "3");
+    formdata.append("titel", values?.title);
+    formdata.append("url", values?.url);
+    formdata.append("type", "5");
     formdata.append("user_id", myData.id);
     var requestOptions = {
       method: "POST",
@@ -100,24 +85,50 @@ export default function ParentAddFinancial({ route, navigation }) {
         <HeaderBack title={"Add Financial"} onPress={() => navigation.navigate("ParentFinancialAssistance")} />
 
         <ScrollView style={styles.scroll_container}>
-          <Input label={"Title"} placeholder={"Username"} name="title" onChangeText={(text) => setAssetsTitle(text)} />
-          <Input label={"Url"} placeholder={"http://"} name="url" onChangeText={(text) => setAssetsUrl(text)} />
-          <View style={{ paddingVertical: 10, flexDirection: "row" }}>
-            <SmallButton
-              title={"Cancel"}
-              color={color.purple}
-              fontFamily={"Montserrat-Medium"}
-              onPress={() => navigation.goBack()}
-            />
-            <SmallButton
-              title={"Submit"}
-              backgroundColor={color.purple}
-              color={color.white}
-              fontFamily={"Montserrat-Bold"}
-              onPress={addFinancialAssets}
-              loading={loading}
-            />
-          </View>
+          <Formik
+            validateOnBlur={false}
+            // validateOnChange={false}
+            initialValues={{
+              title: "",
+              url: "",
+            }}
+            validationSchema={Yup.object().shape({
+              url: Yup.string()
+                .matches(
+                  /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+                  "Enter correct url!"
+                )
+                .required("Url is required"),
+              title: Yup.string().required("Title is required"),
+            })}
+            onSubmit={(values) => addFinancialAssets(values)}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue, resetForm }) => (
+              <View>
+                <Input label={"Title"} placeholder={"Username"} name="title" onChangeText={handleChange("title")} />
+                {errors.title && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.title}</Text>}
+                <Input label={"Url"} placeholder={"http://"} name="url" onChangeText={handleChange("url")} />
+                {errors.url && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.url}</Text>}
+
+                <View style={{ paddingVertical: 10, flexDirection: "row" }}>
+                  <SmallButton
+                    title={"Cancel"}
+                    color={color.purple}
+                    fontFamily={"Montserrat-Medium"}
+                    onPress={() => navigation.goBack()}
+                  />
+                  <SmallButton
+                    title={"Submit"}
+                    backgroundColor={color.purple}
+                    color={color.white}
+                    fontFamily={"Montserrat-Bold"}
+                    onPress={handleSubmit}
+                    loading={loading}
+                  />
+                </View>
+              </View>
+            )}
+          </Formik>
         </ScrollView>
       </View>
     </>

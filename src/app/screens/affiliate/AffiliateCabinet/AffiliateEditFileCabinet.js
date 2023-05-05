@@ -21,7 +21,7 @@ export default function AffiliateEditFileCabinet({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState({ name: docImage.split("/").pop().split(".")[0], uri: docImage });
+  const [image, setImage] = useState({ name: docImage.split("/").pop(), uri: docImage });
   const [loading, setLoading] = useState(false);
 
   const [updateTitle, setUpTitle] = useState(title);
@@ -29,7 +29,9 @@ export default function AffiliateEditFileCabinet({ route, navigation }) {
 
   const pickImg = async () => {
     console.log("first");
-    let result = await DocumentPicker.getDocumentAsync({});
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+    });
     console.log(result);
     if (result.uri) {
       setImage(result);
@@ -40,7 +42,6 @@ export default function AffiliateEditFileCabinet({ route, navigation }) {
     setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     // const myHeaders = myHeadersData();
-    console.log(updateTitle, access, docId, upDescription, myData.id, image);
     var urlencoded = new FormData();
     urlencoded.append("update_documents", "1");
     urlencoded.append("titel", updateTitle);
@@ -48,11 +49,14 @@ export default function AffiliateEditFileCabinet({ route, navigation }) {
     urlencoded.append("id", docId);
     urlencoded.append("description", upDescription);
     urlencoded.append("student_id", myData.id);
-    urlencoded.append("image", {
-      uri: image.uri,
-      type: mime.getType(image.uri),
-      name: image.name,
-    });
+    {
+      !image.uri.includes("http") &&
+        urlencoded.append("image", {
+          uri: image.uri,
+          type: mime.getType(image.uri),
+          name: image.name,
+        });
+    }
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
@@ -147,7 +151,7 @@ export default function AffiliateEditFileCabinet({ route, navigation }) {
               )}
               {/* {showDocResults ? (
                 <> */}
-              <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+              <UploadDocument type={"pdf"} pickImg={pickImg} />
               <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
               {/* </> */}
               {/* // ) : (

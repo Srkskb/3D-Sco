@@ -7,9 +7,9 @@ import Student_Card from "../../../components/card/Student_Card";
 import HomeHeader from "../../../components/header/HomeHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function ParentStudent({navigation}) {
+export default function ParentStudent({ navigation }) {
   const [studentList, setStudentList] = useState([]);
-   const [color, changeColor] = useState("red");
+  const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
   const studentListData = () => {
     const myHeaders = myHeadersData();
@@ -18,16 +18,14 @@ export default function ParentStudent({navigation}) {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      "https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=student",
-      requestOptions
-    )
+    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?student_list=1&type=student", requestOptions)
       .then((res) => res.json())
       .then((res) => {
         if (res.success == 0) {
           alert("Please Try after some time");
         } else {
           setStudentList(res.data);
+          console.log("res.data", res.data);
         }
       })
       .catch((error) => console.log("error", error));
@@ -39,20 +37,17 @@ export default function ParentStudent({navigation}) {
       setRefreshing(false);
     }, 2000);
   };
-    useEffect(() => {
+  useEffect(() => {
     studentListData();
   }, []);
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation}/>
+      <HomeHeader navigation={navigation} />
       <View style={styles.main_box}>
         <HeaderText title={"STUDENT'S LIST"} />
-        <ScrollView refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          } 
-          >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {studentList.map((list, index) => (
-            <Student_Card name={list.name} />
+            <Student_Card name={list.name} email={list?.Email} />
           ))}
         </ScrollView>
       </View>

@@ -15,6 +15,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+import EmptyInput from "../../../utils/EmptyInput";
 
 export default function AffiliateAddBlog() {
   const navigation = useNavigation();
@@ -40,7 +41,7 @@ export default function AffiliateAddBlog() {
     urlencoded.append("user_id", data.id);
     urlencoded.append("date", moment(values?.blogDate).format("YYYY-MM-DD"));
     urlencoded.append("description", values.description);
-
+    console.log("urlencoded", urlencoded);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
@@ -61,6 +62,9 @@ export default function AffiliateAddBlog() {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
+      })
+      .catch((err) => {
+        console.log("err", err);
       });
   };
   return (
@@ -166,12 +170,13 @@ export default function AffiliateAddBlog() {
                     name="access"
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
+                      console.log("selectedItem", selectedItem.id);
                       setAccess(selectedItem);
-                      setFieldValue("access", selectedItem.name);
-                      handleChange("access");
+                      setFieldValue("access", selectedItem.id);
                     }}
                     value={access}
                   />
+
                   {errors.access && (
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}

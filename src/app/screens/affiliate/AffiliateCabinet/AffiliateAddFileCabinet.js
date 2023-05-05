@@ -25,17 +25,15 @@ export default function AffiliateAddFileCabinet() {
   const [loading, setLoading] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(null);
 
-  const pickImg = async () => {
+  const pickImg = async (setFieldValue) => {
     console.log("first");
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/pdf",
     });
     console.log(result);
     if (result.uri) {
-      setImage(result);
+      setFieldValue("pdf", result);
     }
   };
 
@@ -55,9 +53,9 @@ export default function AffiliateAddFileCabinet() {
     urlencoded.append("titel", values.docTitle);
     urlencoded.append("access", values.access);
     urlencoded.append("image", {
-      uri: image.uri, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image.uri),
-      name: image.name,
+      uri: values?.pdf.uri,
+      type: mime.getType(values?.pdf.uri),
+      name: values?.pdf.name,
     });
     urlencoded.append("user_id", myData.id);
     urlencoded.append("description", values.description);
@@ -115,12 +113,14 @@ export default function AffiliateAddFileCabinet() {
                 docTitle: "",
                 description: "",
                 access: "",
+                pdf: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
                   .required("Document Title is required")
                   .min(3, "Document Title must be at least 3 characters"),
                 access: Yup.string().required("Access is required"),
+                pdf: Yup.object().required("Pdf is required"),
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
@@ -155,8 +155,9 @@ export default function AffiliateAddFileCabinet() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}
 
-                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
-                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+                  <UploadDocument name="pdf" type={"(pdf, doc, ppt,xls)"} pickImg={() => pickImg(setFieldValue)} />
+                  <View>{values?.pdf?.name && <Text style={styles.uploadCon}>{values?.pdf?.name}</Text>}</View>
+                  {errors.pdf && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.pdf}</Text>}
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}

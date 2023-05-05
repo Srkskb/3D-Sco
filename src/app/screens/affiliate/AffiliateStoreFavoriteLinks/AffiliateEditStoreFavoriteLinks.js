@@ -16,7 +16,7 @@ import * as Yup from "yup";
 
 export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
   const { editData } = route.params;
-
+  console.log("editData", editData);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -30,6 +30,7 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
   const [category, setCategory] = useState({});
 
   const updateDocument = async (values) => {
+    console.log("first", values);
     setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const type =
@@ -117,7 +118,7 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
             initialValues={{
               linkTitle: editData?.Titel,
               url: editData?.url,
-              category: editData?.Category_id,
+              category: editData?.Category_id || "",
               description: editData?.Detail,
             }}
             validationSchema={Yup.object().shape({
@@ -129,87 +130,87 @@ export default function AffiliateEditStoreFavoriteLinks({ route, navigation }) {
               description: Yup.string().required("Description is required"),
             })}
             onSubmit={(values) => updateDocument(values)}
+            // onSubmit={(values) => console.log("first", values)}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
               <View>
-                <View>
-                  <InputField
-                    label={"Link Title"}
-                    placeholder={"Document Title"}
-                    name="linkTitle"
-                    onChangeText={handleChange("linkTitle")}
-                    value={values?.linkTitle}
-                    keyboardType="text"
-                  />
-                  {errors.linkTitle && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkTitle}</Text>
-                  )}
-                  <InputField
-                    label={"URL"}
-                    placeholder={"Document Title"}
-                    name="url"
-                    onChangeText={handleChange("url")}
-                    value={values?.url}
-                    keyboardType="text"
-                  />
-                  {errors.url && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.url}</Text>}
-                  {showResults ? (
-                    <>
-                      <CategoryDropdown
-                        label={"Select Category"}
-                        onSelect={(selectedItem, index) => {
-                          setCategory(selectedItem);
-                          setFieldValue("category", selectedItem?.id);
-                        }}
-                        value={category}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <View style={styles.selectedDataCon}>
-                        <Text>Selected Category</Text>
-                        <View style={styles.selectedData}>
-                          <Text>{editData?.Category}</Text>
-                          <TouchableOpacity onPress={onClick}>
-                            <Text>close</Text>
-                          </TouchableOpacity>
-                        </View>
+                <InputField
+                  label={"Link Title"}
+                  placeholder={"Document Title"}
+                  name="linkTitle"
+                  onChangeText={handleChange("linkTitle")}
+                  value={values?.linkTitle}
+                  keyboardType="text"
+                />
+                {errors.linkTitle && (
+                  <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.linkTitle}</Text>
+                )}
+                <InputField
+                  label={"URL"}
+                  placeholder={"Document Title"}
+                  name="url"
+                  onChangeText={handleChange("url")}
+                  value={values?.url}
+                  keyboardType="text"
+                />
+                {errors.url && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.url}</Text>}
+                {showResults ? (
+                  <>
+                    <CategoryDropdown
+                      label={"Select Category"}
+                      onSelect={(selectedItem, index) => {
+                        setCategory(selectedItem);
+                        setFieldValue("category", selectedItem?.id);
+                      }}
+                      value={category}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <View style={styles.selectedDataCon}>
+                      <Text>Selected Category</Text>
+                      <View style={styles.selectedData}>
+                        <Text>{editData?.Category}</Text>
+                        <TouchableOpacity onPress={onClick}>
+                          <Text>close</Text>
+                        </TouchableOpacity>
                       </View>
-                    </>
-                  )}
+                    </View>
+                  </>
+                )}
 
-                  <InputField
-                    label={"Description"}
-                    placeholder={"Description"}
-                    name="description"
-                    multiline={true}
-                    numberOfLines={6}
-                    keyboardType="default"
-                    textAlignVertical="top"
-                    // onChangeText={(text) => setUpDescription(text)}
-                    onChangeText={handleChange("description")}
-                    value={values?.description}
+                <InputField
+                  label={"Description"}
+                  placeholder={"Description"}
+                  name="description"
+                  multiline={true}
+                  numberOfLines={6}
+                  keyboardType="default"
+                  textAlignVertical="top"
+                  // onChangeText={(text) => setUpDescription(text)}
+                  onChangeText={handleChange("description")}
+                  value={values?.description}
+                />
+                {errors.description && (
+                  <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
+                )}
+
+                <View style={styles.button}>
+                  <SmallButton
+                    title={"Cancel"}
+                    color={color.purple}
+                    fontFamily={"Montserrat-Medium"}
+                    onPress={() => navigation.goBack()}
                   />
-                  {errors.description && (
-                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
-                  )}
-
-                  <View style={styles.button}>
-                    <SmallButton
-                      title={"Cancel"}
-                      color={color.purple}
-                      fontFamily={"Montserrat-Medium"}
-                      onPress={() => navigation.goBack()}
-                    />
-                    <SmallButton
-                      onPress={() => handleSubmit()}
-                      title="Update"
-                      backgroundColor={color.purple}
-                      fontFamily={"Montserrat-Bold"}
-                      color={color.white}
-                      loading={loading}
-                    />
-                  </View>
+                  <SmallButton
+                    onPress={handleSubmit}
+                    // onPress={() => console.log("first")}
+                    title="Update"
+                    backgroundColor={color.purple}
+                    fontFamily={"Montserrat-Bold"}
+                    color={color.white}
+                    loading={loading}
+                  />
                 </View>
               </View>
             )}

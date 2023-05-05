@@ -10,11 +10,14 @@ import { myHeadersData } from "../../../api/helper";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
+import * as DocumentPicker from "expo-document-picker";
+
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
 import mime from "mime";
 import AsyncStorage from "@react-native-community/async-storage";
+
 export default function ParentAddPhoto() {
   const navigation = useNavigation();
   const [loading, setloading] = useState(false);
@@ -25,16 +28,31 @@ export default function ParentAddPhoto() {
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
 
-  const pickImg = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+  // const pickImg = async (setFieldValue) => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+  //   if (!result.cancelled) {
+  //     console.log(result.assets[0]);
+  //     setImage(result.assets[0].uri);
+  //     setFieldValue("image", result);
+  //     console.log("imageresult", result);
+  //   }
+  // };
+
+  const pickImg = async (setFieldValue) => {
+    console.log("first");
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
     });
-    if (!result.cancelled) {
-      console.log(result.assets[0]);
-      setImage(result.assets[0].uri);
+    console.log(result);
+    if (result.uri) {
+      setImage(result);
+      setFieldValue("image", result);
+      console.log("first", result);
     }
   };
 
@@ -48,10 +66,11 @@ export default function ParentAddPhoto() {
     data.append("user_id", myData.id);
     data.append("detail", values.description);
     data.append("image", {
-      uri: image, //"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image),
-      name: `abc.jpg`,
+      uri: values?.image.uri, //"file:///" + image.split("file:/").join(""),
+      type: mime.getType(values?.image.uri),
+      name: values?.image.name,
     });
+    console.log("data", data);
     // data.append("image", image);
 
     var config = {
@@ -112,6 +131,7 @@ export default function ParentAddPhoto() {
               initialValues={{
                 docTitle: "",
                 description: "",
+                image: "",
               }}
               validationSchema={Yup.object().shape({
                 docTitle: Yup.string()
@@ -122,10 +142,11 @@ export default function ParentAddPhoto() {
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters")
                   .max(250, "Description cannot be more than 50 characters"),
+                image: Yup.object().required("Image is required"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm, setFieldValue }) => (
                 <View>
                   <InputField
                     label={"Document Title"}
@@ -140,10 +161,13 @@ export default function ParentAddPhoto() {
                     <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.docTitle}</Text>
                   )}
 
-                  <UploadDocument type={"Image"} pickImg={pickImg} />
-                  <View style={styles.uploadCon}>
+                  <UploadDocument type={"Image"} pickImg={() => pickImg(setFieldValue)} />
+                  {errors.image && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.image}</Text>}
+                  <View>{values?.image?.name && <Text style={styles.uploadCon}>{values?.image?.name}</Text>}</View>
+                  {/* <View style={styles.uploadCon}>
+
                     {image && <Image source={{ uri: image }} style={styles.uploadImg} />}
-                  </View>
+                  </View> */}
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}
@@ -228,6 +252,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   uploadCon: {
-    textAlign: "center",
+    textAlign: "right",
+    color: "red",
   },
 });

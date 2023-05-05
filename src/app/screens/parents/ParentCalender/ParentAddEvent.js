@@ -23,7 +23,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 export default function ParentAddEvent() {
   const navigation = useNavigation();
   const loginUID = localStorage.getItem("loginUID");
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
@@ -130,6 +130,7 @@ export default function ParentAddEvent() {
           <View>
             <Formik
               validateOnChange={false}
+              validateOnBlur={false}
               initialValues={{
                 evenTitle: "",
                 eventDescription: "",
@@ -168,8 +169,9 @@ export default function ParentAddEvent() {
                     name="access"
                     onSelect={(selectedItem, index) => {
                       setFieldValue("access", selectedItem.id);
+                      setAccess(selectedItem);
                     }}
-                    // value={access}
+                    value={access}
                   />
 
                   {errors.access && (
