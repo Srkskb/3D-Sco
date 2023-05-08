@@ -11,6 +11,7 @@ import Journal_Card from "../../../components/card/Journal_Card";
 import TextWithButton from "../../../components/TextWithButton";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
 export default function MyJournal() {
   const navigation = useNavigation();
@@ -22,20 +23,32 @@ export default function MyJournal() {
   const [refreshing, setRefreshing] = useState(false);
   const [color, changeColor] = useState("red");
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const allLearnerList = async () => {
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?journals_list=1&user_id=${myData.id}`,
+      requestOptions
+    )
       .then((res) => res.json())
-      .then((result) => setMyJournalData(result.data))
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        setLoading(false);
+        setMyJournalData(result.data);
+        console.log(result.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
 
   const deleteJournal = async (id) => {
@@ -109,9 +122,12 @@ const [deletePop, setDeletePop] = useState(false);
       >
         {getMessageFalse}
       </Snackbar>
+      {loading && <Loader />}
       <View style={styles.main_box}>
         <ScrollView
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           style={{ paddingHorizontal: 10 }}
         >
           <View style={styles.book_container}>

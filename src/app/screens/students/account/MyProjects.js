@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -19,7 +14,7 @@ import DeletePopup from "../../../components/popup/DeletePopup";
 export default function MyProjects() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
   const [courseRoomAccess, setCourseRoomAccess] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
@@ -27,7 +22,7 @@ const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const allLearnerList =async () => {
+  const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -47,7 +42,7 @@ const [deletePop, setDeletePop] = useState(false);
       .catch((error) => console.log("error", error));
   };
   // Delete Project
-  const deleteProject =async (id) => {
+  const deleteProject = async (id) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -112,10 +107,7 @@ const [deletePop, setDeletePop] = useState(false);
       >
         {getMessageFalse}
       </Snackbar>
-      <HeaderBack
-        title={"My Projects"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"My Projects"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <TextWithButton
           title={"My Project"}
@@ -135,37 +127,45 @@ const [deletePop, setDeletePop] = useState(false);
                 </>
               ) : (
                 <>
-                  {courseRoomAccess && courseRoomAccess.map((list, index) => (
-                    <MyProjectCard
-                      title={list.Titel}
-                      date={moment(list && list?.Date).format("LL")}
-                      duration={list && list.Duration}
-                      description={list.Detail}
-                      viewPress={() =>
-                        navigation.navigate("ViewMyProject", {
-                          title: list.Titel,
-                          date: moment(list && list?.Date).format("LL"),
-                          duration: list.Duration,
-                          description: list.Detail,
-                          image: list.image,
-                        })
-                      }
-                      pressEdit={() =>
-                        navigation.navigate("EditMyProjects", {
-                          projectID:list.id,
-                          title: list.Titel,
-                          date: moment(list && list?.Date).format("LL"),
-                          duration: list.Duration,
-                          description: list.Detail,
-                          pjImage: list.image,
-                        })
-                      }
-                      removePress={() => {
-                        setId(list.id);
-                        setDeletePop(true);
-                      }}
-                    />
-                  ))}
+                  {courseRoomAccess &&
+                    courseRoomAccess.map((list, index) => (
+                      <MyProjectCard
+                        title={list.Titel}
+                        date={moment(list && list?.Date).format("LL")}
+                        duration={list && list.Duration}
+                        description={list.Detail}
+                        viewPress={() =>
+                          navigation.navigate("ViewMyProject", {
+                            title: list.Titel,
+                            date: moment(list && list?.Date).format("LL"),
+                            duration: list.Duration,
+                            description: list.Detail,
+                            image: list.image,
+                          })
+                        }
+                        pressEdit={() =>
+                          navigation.navigate("EditMyProjects", {
+                            // projectID:list.id,
+                            // title: list.Titel,
+                            // date: moment(list && list?.Date).format("LL"),
+                            // duration: list.Duration,
+                            // description: list.Detail,
+                            // pjImage: list.image,
+                            projectID: list.id,
+                            title: list.Titel,
+                            date: moment(list && list?.Date).format("LL"),
+                            duration: list.Duration,
+                            description: list.Detail,
+                            docImage: list.image,
+                            file_name: list.file_name,
+                          })
+                        }
+                        removePress={() => {
+                          setId(list.id);
+                          setDeletePop(true);
+                        }}
+                      />
+                    ))}
                 </>
               )}
             </View>

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, Button, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
@@ -23,51 +15,33 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-community/async-storage";
+import EmptyInput from "../../../utils/EmptyInput";
+
 export default function AddBlog() {
   const navigation = useNavigation();
-  const [loading, setloading] = useState(false);
-  const [access, setAccess] = useState("Private");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
+  const [loading, setloading] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    setSelectedDate(date);
-    console.log(date);
-    hideDatePicker();
-  };
   const addFileCabinet = async (values) => {
     setloading(true);
-    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log(
-      values.blogTitle,
-      access,
-      loginUID,
-      selectedDate,
-      values.description
-    );
+    const data = JSON.parse(await AsyncStorage.getItem("userData"));
+
     const myHeaders = myHeadersData();
     var urlencoded = new FormData();
-
     urlencoded.append("blogs", "1");
     urlencoded.append("titel", values.blogTitle);
-    urlencoded.append("access", access);
-    urlencoded.append("user_id", myData.id);
-    // urlencoded.append("added_by", loginUID);
-
-    urlencoded.append("date", "2022-02-01");
+    urlencoded.append("access", values.access);
+    urlencoded.append("user_id", data.id);
+    urlencoded.append("date", moment(values?.blogDate).format("YYYY-MM-DD"));
     urlencoded.append("description", values.description);
+    console.log("urlencoded", urlencoded);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
       method: "POST",
       body: urlencoded,
@@ -77,7 +51,7 @@ export default function AddBlog() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        console.log("add bog", res);
         if (res.success == 1) {
           setloading(false);
           setSnackVisibleTrue(true);
@@ -88,20 +62,22 @@ export default function AddBlog() {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
         }
+      })
+      .catch((err) => {
+        console.log("err", err);
       });
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Add Blog"}
-        onPress={() => navigation.navigate("Blogs")}
-      />
+      <HeaderBack title={"Add Blog"} onPress={() => navigation.navigate("Blogs")} />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        duration={2000}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -110,6 +86,7 @@ export default function AddBlog() {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -117,51 +94,43 @@ export default function AddBlog() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ paddingVertical: 10 }}>
             <Formik
+              validateOnBlur={false}
+              validateOnChange={false}
               initialValues={{
                 blogTitle: "",
                 description: "",
+                blogDate: "",
+                access: "",
               }}
               validationSchema={Yup.object().shape({
                 blogTitle: Yup.string()
                   .required("Document Title is required")
                   .min(3, "Document Title must be at least 3 characters")
-                  .max(
-                    150,
-                    "Document Title cannot be more than 150 characters"
-                  ),
+                  .max(150, "Document Title cannot be more than 150 characters"),
                 description: Yup.string()
                   .required("Description is required")
                   .min(20, "Description must be at least 20 characters"),
+                blogDate: Yup.string().required("Date is required"),
+                access: Yup.string().required("Access is required"),
               })}
               onSubmit={(values) => addFileCabinet(values)}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                isValid,
-              }) => (
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue, resetForm }) => (
                 <View>
                   <InputField
                     label={"Blog Title"}
                     placeholder={"Blog Title"}
-                    name="title"
+                    name="blogTitle"
                     onChangeText={handleChange("blogTitle")}
-                    onBlur={handleBlur("blogTitle")}
+                    // onBlur={handleBlur("blogTitle")}
                     value={values.blogTitle}
                     keyboardType="text"
                   />
                   {errors.blogTitle && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.blogTitle}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogTitle}</Text>
                   )}
                   <Text style={{ marginBottom: 5 }}>
-                    <Text style={styles.label_text}>Event Date</Text>
+                    <Text style={styles.label_text}>Blog Date</Text>
                     <Text style={{ color: color.red }}>*</Text>
                   </Text>
                   <View style={styles.calendar_input}>
@@ -171,45 +140,45 @@ export default function AddBlog() {
                         fontFamily: "Montserrat-SemiBold",
                       }}
                     >
-                      {selectedDate
-                        ? selectedDate.toLocaleDateString()
-                        : "No date selected"}
+                      {values?.blogDate ? moment(values?.blogDate).format("YYYY-MM-DD") : "No date selected"}
                     </Text>
                     <View style={styles.selectDate}>
-                      <TouchableOpacity onPress={showDatePicker}>
-                        {/* <Text>Select Date</Text> */}
-                        <Entypo
-                          name="calendar"
-                          size={24}
-                          color={color.purple}
-                        />
+                      {/* <TouchableOpacity onPress={showDatePicker}> */}
+                      <TouchableOpacity onPress={(e) => setDatePickerVisibility(true)}>
+                        <Entypo name="calendar" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
 
                     <DateTimePickerModal
                       isVisible={isDatePickerVisible}
                       mode="date"
-                      date={selectedDate}
-                      onConfirm={handleConfirm}
-                      onCancel={hideDatePicker}
+                      name="blogDate"
+                      onConfirm={(e) => {
+                        setFieldValue("blogDate", e);
+                        handleChange("blogDate");
+                        setDatePickerVisibility(false);
+                      }}
+                      onCancel={() => setDatePickerVisibility(false)}
                     />
                   </View>
+                  {errors.blogDate && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.blogDate}</Text>
+                  )}
 
                   <AccessLevel
                     required
+                    name="access"
                     label={"Access Level"}
                     onSelect={(selectedItem, index) => {
+                      console.log("selectedItem", selectedItem.id);
                       setAccess(selectedItem);
-                      console.log(selectedItem, index);
+                      setFieldValue("access", selectedItem.id);
                     }}
                     value={access}
                   />
-                  {errors.selectedItem && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.selectedItem}
-                    </Text>
+
+                  {errors.access && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
                   )}
                   <InputField
                     label={"Description"}
@@ -218,17 +187,12 @@ export default function AddBlog() {
                     multiline={true}
                     numberOfLines={6}
                     onChangeText={handleChange("description")}
-                    onBlur={handleBlur("description")}
                     value={values.description}
                     keyboardType="default"
                     textAlignVertical="top"
                   />
                   {errors.description && (
-                    <Text
-                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
-                    >
-                      {errors.description}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.description}</Text>
                   )}
                   <View style={styles.button}>
                     <SmallButton
@@ -238,7 +202,7 @@ export default function AddBlog() {
                       onPress={() => navigation.goBack()}
                     />
                     <SmallButton
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                       title="Save"
                       disabled={!isValid}
                       color={color.white}

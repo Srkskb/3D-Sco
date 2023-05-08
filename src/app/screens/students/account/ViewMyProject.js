@@ -1,8 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView,Image,Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
-const{height,width}=Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 export default function ViewMyProject({ route, navigation }) {
   const { title, titleParam } = route.params;
   const { date, dateParam } = route.params;
@@ -37,12 +46,13 @@ export default function ViewMyProject({ route, navigation }) {
               <Text style={styles.description_text}>{description}</Text>
             </View>
             <View style={styles.documentView}>
-              <Image
-                style={styles.tinyLogo}
-                source={{
-                  uri: `${image}`,
-                }}
-              />
+              <TouchableOpacity onPress={() => Linking.openURL(image)}>
+                <Image
+                  source={require("../../../assets/images/whatever.png")}
+                />
+              </TouchableOpacity>
+              <Text>Pdf Name:</Text>
+              <Text>{image.split("/").pop().split(".")[0]}</Text>
             </View>
           </View>
         </View>
@@ -87,17 +97,17 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: color.gray_light,
   },
-    documentView: {
+  documentView: {
     marginTop: 30,
   },
-    tinyLogo: {
-      height: height/2,
-      resizeMode:'contain'
+  tinyLogo: {
+    height: height / 2,
+    resizeMode: "contain",
   },
   img: {
     width: 300,
     height: 500,
     borderWidth: 1,
-    resizeMode:'contain'
+    resizeMode: "contain",
   },
 });

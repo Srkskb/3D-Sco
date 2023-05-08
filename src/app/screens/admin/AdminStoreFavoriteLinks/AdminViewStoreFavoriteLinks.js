@@ -34,7 +34,6 @@ export default function AdminViewStoreFavoriteLinks({ route, navigation }) {
             <View style={styles.description}>
               <Text style={styles.description_text}>{description}</Text>
             </View>
-       
           </View>
         </View>
       </ScrollView>

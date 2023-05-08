@@ -10,7 +10,9 @@ import {
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
-import { AccessLevel } from "../../../components/dropdown";
+// import { AccessLevel } from "../../../components/dropdown";
+import AccessLevel from "../../../components/dropdown/AccessLevel";
+
 import SmallButton from "../../../components/buttons/SmallButton";
 import { useNavigation } from "@react-navigation/native";
 import { myHeadersData } from "../../../api/helper";
@@ -18,23 +20,24 @@ import AppButton from "../../../components/buttons/AppButton";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import * as qs from "qs";
+import axios from "axios";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
-import NavigationDrawer from "../home_screen/NavigationDrawer";
 import AsyncStorage from "@react-native-community/async-storage";
-export default function AddEvent() {
-  const [loading, setloading] = useState(false);
-  const navigation = useNavigation();
-  // const loginUID = localStorage.getItem("loginUID");
 
-  const [access, setAccess] = useState("Private");
+export default function AddEvent() {
+  const navigation = useNavigation();
+  const loginUID = localStorage.getItem("loginUID");
+  const [access, setAccess] = useState("");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -49,38 +52,46 @@ export default function AddEvent() {
     console.log(date);
     hideDatePicker();
   };
-  const addEventCalender =async (values) => {
-    console.log("value321",values)
-    setloading(true);
+  const addEventCalender = async (values) => {
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("add_event", "1");
-    urlencoded.append("event_titel", values.evenTitle);
-    urlencoded.append("access_level", access);
-    urlencoded.append("event_date",values.eventDate);
-    urlencoded.append("decription", values.eventDecription);
-    urlencoded.append("user_id", myData.id);
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
-      method: "POST",
-      body: urlencoded,
+
+    var data = qs.stringify({
+      add_event: "1",
+      event_titel: values.evenTitle,
+      access_level: values.access,
+      event_date: values.eventDate,
+      decription: values.eventDescription,
+      user_id: myData.id,
+    });
+    console.log(data);
+    var config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php",
       headers: {
-        myHeaders,
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=nplr09m5e9f2rrvo5bsbia8m07",
       },
-    })
-      .then((res) => res.json())
+      data: data,
+    };
+
+    axios(config)
       .then((res) => {
         console.log(res);
-        if (res.success == 1) {
+        if (res.status == 200) {
           setSnackVisibleTrue(true);
           setMessageTrue(res.message);
-          navigation.replace("Calendar");
-          setloading(false);
+          navigation.goBack();
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(res.message);
-          setloading(false);
         }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
   };
 
@@ -103,10 +114,7 @@ export default function AddEvent() {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Add Event"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Add Event"} onPress={() => navigation.goBack()} />
       {/* <NavigationDrawer backPress={() => navigation.navigate("HomeScreen")} /> */}
       <Snackbar
         visible={snackVisibleTrue}
@@ -128,17 +136,21 @@ export default function AddEvent() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Formik
+              validateOnChange={false}
+              validateOnBlur={false}
               initialValues={{
                 evenTitle: "",
-
-                eventDecription: "",
+                eventDescription: "",
+                access: "",
+                eventDate: "",
               }}
               validationSchema={Yup.object().shape({
                 evenTitle: Yup.string()
                   .required("Event Title is required")
                   .min(3, "Event Title must be at least 3 characters"),
-
-                eventDecription: Yup.string()
+                access: Yup.string().required("Access Level is required"),
+                eventDate: Yup.string().required("Event Date is required"),
+                eventDescription: Yup.string()
                   .required("Description is required")
                   .min(8, "Description must be at least 8 characters"),
               })}
@@ -148,16 +160,16 @@ export default function AddEvent() {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                setFieldValue,
                 values,
                 errors,
                 isValid,
+                setFieldValue,
               }) => (
                 <View>
                   <InputField
                     label={"Event Title"}
                     placeholder={"Event Title"}
-                    name="title"
+                    name="evenTitle"
                     onChangeText={handleChange("evenTitle")}
                     onBlur={handleBlur("evenTitle")}
                     value={values.evenTitle}
@@ -173,18 +185,19 @@ export default function AddEvent() {
                   <AccessLevel
                     required
                     label={"Access Level"}
+                    name="access"
                     onSelect={(selectedItem, index) => {
+                      setFieldValue("access", selectedItem.id);
                       setAccess(selectedItem);
-                      console.log(selectedItem, index);
                     }}
                     value={access}
                   />
 
-                  {errors.selectedItem && (
+                  {errors.access && (
                     <Text
                       style={{ fontSize: 14, color: "red", marginBottom: 10 }}
                     >
-                      {errors.selectedItem}
+                      {errors.access}
                     </Text>
                   )}
                   <Text style={{ marginBottom: 5 }}>
@@ -198,7 +211,7 @@ export default function AddEvent() {
                         fontFamily: "Montserrat-SemiBold",
                       }}
                     >
-                     {values.eventDate ? values.eventDate : "No date selected"}
+                      {values.eventDate ? values.eventDate : "No date selected"}
                     </Text>
                     <View style={styles.selectDate}>
                       <TouchableOpacity onPress={showDatePicker}>
@@ -216,12 +229,22 @@ export default function AddEvent() {
                       mode="date"
                       date={selectedDate}
                       onConfirm={(e) => {
-                        setFieldValue("eventDate", moment(e).format("YYYY-MM-DD"));
+                        setFieldValue(
+                          "eventDate",
+                          moment(e).format("YYYY-MM-DD")
+                        );
                         hideDatePicker();
                       }}
                       onCancel={hideDatePicker}
                     />
                   </View>
+                  {errors.eventDate && (
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.eventDate}
+                    </Text>
+                  )}
 
                   <InputField
                     label={"Description"}
@@ -229,31 +252,35 @@ export default function AddEvent() {
                     multiline={true}
                     numberOfLines={6}
                     textAlignVertical={"top"}
-                    name="title"
-                    onChangeText={handleChange("eventDecription")}
-                    onBlur={handleBlur("eventDecription")}
-                    value={values.eventDecription}
+                    name="eventDescription"
+                    onChangeText={handleChange("eventDescription")}
+                    onBlur={handleBlur("eventDescription")}
+                    value={values.eventDescription}
                     keyboardType="text"
                   />
-                  {errors.eventDecription && (
+                  {errors.eventDescription && (
                     <Text
                       style={{ fontSize: 14, color: "red", marginBottom: 10 }}
                     >
-                      {errors.eventDecription}
+                      {errors.eventDescription}
                     </Text>
                   )}
 
                   <View style={styles.button}>
-                    <SmallButton title={"Cancel"} color={color.purple} 
-                    fontFamily={'Montserrat-Medium'} onPress={()=>navigation.goBack()}/>
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
                     <SmallButton
                       onPress={handleSubmit}
                       title="Save"
+                      loading={loading}
                       disabled={!isValid}
                       color={color.white}
                       backgroundColor={color.purple}
                       fontFamily={"Montserrat-Bold"}
-                      loading={loading}
                     />
                   </View>
                 </View>

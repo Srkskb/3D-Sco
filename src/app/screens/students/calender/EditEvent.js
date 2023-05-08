@@ -1,44 +1,41 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import color from "../../../assets/themes/Color";
 import HeaderBack from "../../../components/header/Header";
 import InputField from "../../../components/inputs/Input";
-import { AccessLevel } from "../../../components/dropdown";
+// import { AccessLevel } from "../../../components/dropdown";
+import AccessLevel from "../../../components/dropdown/AccessLevel";
 import SmallButton from "../../../components/buttons/SmallButton";
 import { myHeadersData } from "../../../api/helper";
 import { Snackbar } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
+import axios from "axios";
+import qs from "qs";
 import AsyncStorage from "@react-native-community/async-storage";
-import NavigationDrawer from "../home_screen/NavigationDrawer";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 export default function EditEvent({ route, navigation }) {
   // ** For Event Update
-  
+  const { editData } = route.params; // ! Current Event ID
+  console.log("editData", editData);
+  // const { title, titleParam } = route.params;
+  // const { status, statusIDParam } = route.params;
   const [loading, setloading] = useState(false);
-  const { eventID, eventIDParam } = route.params; // ! Current Event ID
-  const { title, titleParam } = route.params;
-  const { status, statusIDParam } = route.params;
-  const { dateData, dateIDParam } = route.params;
-  const { description, descriptionIDParam } = route.params;
+  // const { dateData, dateIDParam } = route.params;
+  // const { description, descriptionIDParam } = route.params;
   // const loginUID = localStorage.getItem("loginUID");
-  const [access, setAccess] = useState("Private");
+  // const [access, setAccess] = useState(status);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [selectedDate, setSelectedDate] = useState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [updateTitle, setUpTitle] = useState(title);
-  const [updateDescription, setUpDescription] = useState(description);
+  // const [updateTitle, setUpTitle] = useState(title);
+  // const [updateDescription, setUpDescription] = useState(description);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -54,41 +51,43 @@ export default function EditEvent({ route, navigation }) {
     hideDatePicker();
   };
 
-  const updateEvent =async () => {
+  const updateEvent = async (values) => {
     setloading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const myHeaders = myHeadersData();
-    var urlencoded = new FormData();
-    urlencoded.append("update_event", "1");
-    urlencoded.append("event_titel", updateTitle);
-    urlencoded.append("access_level", access);
-    urlencoded.append("event_date", dateData);
-    urlencoded.append("decription", updateDescription);
-    urlencoded.append("event_id", eventID);
-    urlencoded.append("user_id", myData.id);
-
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php`, {
-      method: "POST",
-      body: urlencoded,
+    var data = qs.stringify({
+      update_event: "1",
+      event_titel: values?.evenTitle,
+      access_level: values?.access,
+      decription: values?.eventDescription,
+      event_id: editData?.event_id,
+      event_date: values?.eventDate,
+      user_id: myData.id,
+    });
+    console.log(data);
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/3dicowebservce.php",
       headers: {
-        myHeaders,
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: "PHPSESSID=41mqd76dj1dbfh1dbhbrkk6jv5",
       },
-      redirect: "follow",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success == 1) {
-          setloading(false);
-          setSnackVisibleTrue(true);
-          setMessageTrue(res.message);
-          navigation.replace("Calendar");
-        } else {
-          setloading(false);
-          setSnackVisibleFalse(true);
-          setMessageFalse(res.message);
-        }
-      });
+      data: data,
+    };
+    axios(config).then((res) => {
+      console.log(res.data);
+      if (res.status == 200) {
+        setloading(false);
+        setSnackVisibleTrue(true);
+        setMessageTrue(res.data.message);
+        navigation.goBack();
+      } else {
+        setloading(false);
+        setSnackVisibleFalse(true);
+        setMessageFalse(res.data.message);
+      }
+    });
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
@@ -97,7 +96,6 @@ export default function EditEvent({ route, navigation }) {
   };
   return (
     <View style={styles.container}>
-      
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -115,10 +113,7 @@ export default function EditEvent({ route, navigation }) {
         {getMessageFalse}
       </Snackbar>
       <StatusBar backgroundColor={color.purple} />
-      <HeaderBack
-        title={"Update Event"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Update Event"} onPress={() => navigation.goBack()} />
       {/* <NavigationDrawer backPress={() => navigation.navigate("HomeScreen")} /> */}
       {/* <NavigationDrawer backPress={() => navigation.navigate("AddEvent")}/> */}
       <Snackbar
@@ -140,97 +135,125 @@ export default function EditEvent({ route, navigation }) {
       <View style={styles.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
-            <View>
-              <InputField
-                required
-                label={"Event Title"}
-                placeholder={"Event Title"}
-                name="title"
-                onChangeText={(text) => setUpTitle(text)}
-                value={updateTitle}
-                keyboardType="text"
-              />
-              {showResults ? (
-                <>
+            <Formik
+              enableReinitialize
+              initialValues={{
+                evenTitle: editData?.event_title,
+                eventDescription: editData?.decription,
+                access: editData?.access_level,
+                eventDate: editData?.event_date,
+              }}
+              validationSchema={Yup.object().shape({
+                evenTitle: Yup.string()
+                  .required("Event Title is required")
+                  .min(3, "Event Title must be at least 3 characters"),
+                access: Yup.string().required("Access Level is required"),
+                eventDate: Yup.string().required("Event Date is required"),
+                eventDescription: Yup.string()
+                  .required("Description is required")
+                  .min(8, "Description must be at least 8 characters"),
+              })}
+              onSubmit={(values) => updateEvent(values)}
+            >
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldValue }) => (
+                <View>
+                  <InputField
+                    label={"Event Title"}
+                    placeholder={"Event Title"}
+                    name="evenTitle"
+                    onChangeText={handleChange("evenTitle")}
+                    onBlur={handleBlur("evenTitle")}
+                    value={values.evenTitle}
+                    keyboardType="text"
+                  />
+                  {errors.evenTitle && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.evenTitle}</Text>
+                  )}
                   <AccessLevel
                     required
                     label={"Access Level"}
-                    onSelect={(selectedItem) => {
-                      setAccess(selectedItem);
+                    name="access"
+                    onSelect={(selectedItem, index) => {
+                      setFieldValue("access", selectedItem.id);
+                      console.log("selectedItem", selectedItem);
                     }}
-                    placeholder={status}
+                    value={values?.access}
                   />
-                </>
-              ) : (
-                <>
-                  <View style={styles.selectedDataCon}>
-                    <Text>Access Level</Text>
-                    <View style={styles.selectedData}>
-                      <Text>{status}</Text>
-                      <TouchableOpacity onPress={onClick}>
-                        <Text>close</Text>
+
+                  {errors.access && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.access}</Text>
+                  )}
+                  <Text style={{ marginBottom: 5 }}>
+                    <Text style={styles.label_text}>Event Date</Text>
+                    <Text style={{ color: color.red }}>*</Text>
+                  </Text>
+                  <View style={styles.calendar_input}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontFamily: "Montserrat-SemiBold",
+                      }}
+                    >
+                      {values.eventDate ? values.eventDate : "No date selected"}
+                    </Text>
+                    <View style={styles.selectDate}>
+                      <TouchableOpacity onPress={showDatePicker}>
+                        {/* <Text>Select Date</Text> */}
+                        <Entypo name="calendar" size={24} color={color.purple} />
                       </TouchableOpacity>
                     </View>
+
+                    <DateTimePickerModal
+                      isVisible={isDatePickerVisible}
+                      mode="date"
+                      date={selectedDate}
+                      onConfirm={(e) => {
+                        setFieldValue("eventDate", moment(e).format("YYYY-MM-DD"));
+                        hideDatePicker();
+                      }}
+                      onCancel={hideDatePicker}
+                    />
                   </View>
-                </>
-              )}
+                  {errors.eventDate && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.eventDate}</Text>
+                  )}
 
-              <Text style={{ marginBottom: 5 }}>
-                <Text style={styles.label_text}>Event Date</Text>
-                <Text style={{ color: color.red }}>*</Text>
-              </Text>
-              <View style={styles.calendar_input}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontFamily: "Montserrat-SemiBold",
-                  }}
-                >
-                  {selectedDate
-                    ? selectedDate.toLocaleDateString()
-                    : `${dateData}`}
-                </Text>
-                <Text></Text>
-                <View style={styles.selectDate}>
-                  <TouchableOpacity onPress={showDatePicker}>
-                    <Entypo name="calendar" size={24} color={color.purple} />
-                  </TouchableOpacity>
+                  <InputField
+                    label={"Description"}
+                    placeholder={"Description"}
+                    multiline={true}
+                    numberOfLines={6}
+                    textAlignVertical={"top"}
+                    name="eventDescription"
+                    onChangeText={handleChange("eventDescription")}
+                    onBlur={handleBlur("eventDescription")}
+                    value={values.eventDescription}
+                    keyboardType="text"
+                  />
+                  {errors.eventDescription && (
+                    <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.eventDescription}</Text>
+                  )}
+
+                  <View style={styles.button}>
+                    <SmallButton
+                      title={"Cancel"}
+                      color={color.purple}
+                      fontFamily={"Montserrat-Medium"}
+                      onPress={() => navigation.goBack()}
+                    />
+                    <SmallButton
+                      onPress={handleSubmit}
+                      title="Save"
+                      loading={loading}
+                      disabled={!isValid}
+                      color={color.white}
+                      backgroundColor={color.purple}
+                      fontFamily={"Montserrat-Bold"}
+                    />
+                  </View>
                 </View>
-
-                <DateTimePickerModal
-                  isVisible={isDatePickerVisible}
-                  mode="date"
-                  date={selectedDate}
-                  onConfirm={handleConfirm}
-                  onCancel={hideDatePicker}
-                />
-              </View>
-
-              <InputField
-                label={"Description"}
-                placeholder={"Description"}
-                multiline={true}
-                numberOfLines={6}
-                textAlignVertical={"top"}
-                name="title"
-                value={updateDescription}
-                onChangeText={(text) => setUpDescription(text)}
-                keyboardType="text"
-              />
-
-              <View style={styles.button}>
-              <SmallButton title={"Cancel"} color={color.purple} 
-                    fontFamily={'Montserrat-Medium'} onPress={()=>navigation.goBack()}/>
-                <SmallButton
-                  onPress={updateEvent}
-                  title="Update"
-                  color={color.white}
-                  backgroundColor={color.purple}
-                  fontFamily={"Montserrat-Bold"}
-                  loading={loading}
-                />
-              </View>
-            </View>
+              )}
+            </Formik>
           </View>
         </ScrollView>
       </View>

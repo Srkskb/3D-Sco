@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions, Linking } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import React from "react";
 import HeaderBack from "../../../components/header/Header";
 import color from "../../../assets/themes/Color";
@@ -14,8 +23,14 @@ export default function ViewJournal({ route, navigation }) {
   const { image, imageParam } = route.params;
   return (
     <View style={styles.container}>
-      <HeaderBack title={"view journal"} onPress={() => navigation.navigate("MyJournal")} />
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll_view}>
+      <HeaderBack
+        title={"view journal"}
+        onPress={() => navigation.navigate("MyJournal")}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scroll_view}
+      >
         <View style={styles.detail_box}>
           <Text style={styles.head_text}>{title}</Text>
           <View style={styles.detail}>
@@ -34,7 +49,9 @@ export default function ViewJournal({ route, navigation }) {
             </View>
             <View style={styles.documentView}>
               <TouchableOpacity onPress={() => Linking.openURL(image)}>
-                <Image source={require("../../../assets/images/whatever.png")} />
+                <Image
+                  source={require("../../../assets/images/whatever.png")}
+                />
               </TouchableOpacity>
               <Text>Pdf Name:</Text>
               <Text>{image.split("/").pop().split(".")[0]}</Text>
@@ -84,6 +101,9 @@ const styles = StyleSheet.create({
   },
   documentView: {
     marginTop: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
   tinyLogo: {
     height: height / 2,

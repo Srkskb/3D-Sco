@@ -33,14 +33,14 @@ export default function AddProject() {
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
   const [image, setImage] = useState(null);
-  const pickImage = async () => {
+  const pickImage = async (setFieldValue) => {
     console.log("first");
     let result = await DocumentPicker.getDocumentAsync({
       type: "application/pdf",
     });
     console.log(result);
     if (result.uri) {
-      setImage(result);
+      setFieldValue("pdf", result);
     }
   };
 
@@ -48,8 +48,12 @@ export default function AddProject() {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setloading(true);
     console.log("values123",values)
-    console.log(values.pTitle,access,loginUID,values.pDescription,image,values.pDuration);
-    const myHeaders = myHeadersData();
+    console.log(values.pTitle,access,values.pDescription,image,values.pDuration);
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Cookie", "PHPSESSID=pae8vgg24o777t60ue1clbj6d5");
+
     var urlencoded = new FormData();
     urlencoded.append("Add_project", "1");
     urlencoded.append("titel", values.pTitle);
@@ -57,10 +61,10 @@ export default function AddProject() {
     urlencoded.append("project_duration", values.pDuration);
     urlencoded.append("date", '20-01-2022');
     urlencoded.append("description", values.pDescription);
-     urlencoded.append("image", {
-      uri: image.uri,//"file:///" + image.split("file:/").join(""),
-      type: mime.getType(image.uri),
-      name: image.name,
+    urlencoded.append("image", {
+      uri: values?.pdf.uri,
+      type: mime.getType(values?.pdf.uri),
+      name: values?.pdf.name,
     });
 
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
@@ -138,6 +142,7 @@ export default function AddProject() {
                 values,
                 errors,
                 isValid,
+                setFieldValue,
               }) => (
                 <View>
                   <InputField
@@ -174,13 +179,23 @@ export default function AddProject() {
                   )}
                  
 
-                  <UploadDocument type={"(pdf, doc, ppt,xls)"}
-                    pickImg={pickImage} />
+                 <UploadDocument
+                    name="pdf"
+                    type={"(pdf, doc, ppt,xls)"}
+                    pickImg={() => pickImage(setFieldValue)}
+                  />
                   <View>
-                    {image?.name && (
-                      <Text style={styles.uploadCon}>{image.name}</Text>
+                    {values?.pdf?.name && (
+                      <Text style={styles.uploadCon}>{values?.pdf?.name}</Text>
                     )}
                   </View>
+                  {errors.pdf && (
+                    <Text
+                      style={{ fontSize: 14, color: "red", marginBottom: 10 }}
+                    >
+                      {errors.pdf}
+                    </Text>
+                  )}
                   <InputField
                     label={"Description"}
                     placeholder={"Description"}

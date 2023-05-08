@@ -22,27 +22,30 @@ import mime from "mime";
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-community/async-storage";
 export default function EditMyProjects({ route, navigation }) {
-  const { projectID, docIdParam } = route.params; // ! Current Event ID
-  const { title, titleParam } = route.params;
+  // const { projectID, docIdParam } = route.params; // ! Current Event ID
+  const { projectID, title, docAccess, description, docImage,duration } = route.params;
+  // const { title, titleParam } = route.params;
   const [loading, setloading] = useState(false);
-  const { duration, durationParam } = route.params;
-  const { description, descriptionParam } = route.params;
-  const { pjImage, pjImageParam } = route.params;
+  // const { duration, durationParam } = route.params;
+  // const { description, descriptionParam } = route.params;
+  // const { pjImage, pjImageParam } = route.params;
 
-  const [access, setAccess] = useState("Private");
+  // const [access, setAccess] = useState("Private");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState(pjImage);
+  const [image, setImage] = useState({ name: docImage.split("https://3dsco.com/images/")[1], uri: docImage });
   const [updateTitle, setUpTitle] = useState(title);
   const [upDescription, setUpDescription] = useState(description);
   const [upDuration, setUpDuration] = useState(duration);
 
-  const pickImage = async () => {
+  const pickImg = async () => {
     console.log("first");
-    let result = await DocumentPicker.getDocumentAsync({});
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+    });
     console.log(result);
     if (result.uri) {
       setImage(result);
@@ -72,7 +75,7 @@ export default function EditMyProjects({ route, navigation }) {
       body: urlencoded,
       headers: {
         myHeaders,
-        "Content-Type": "multipart/form-data",
+        // "Content-Type": "multipart/form-data",
       },
     })
       .then((res) => res.json())
@@ -132,26 +135,19 @@ export default function EditMyProjects({ route, navigation }) {
                 value={updateTitle}
                 keyboardType="text"
               />
-              {showDocResults ? (
+              {/* {showDocResults ? (
                 <>
-                <UploadDocument
-                  type={"(pdf, doc, ppt,xls)"}
-                  pickImg={pickImage}
-                />
-                <View>
-                  {image?.name && (
-                    <Text style={styles.uploadCon}>{image.name}</Text>
-                  )}
-                </View>
+                 <UploadDocument type={"pdf"} pickImg={pickImg} />
+              <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
               </>
               ) : (
                 <>
                   <View style={styles.selectedDataCon}>
                     <Text>Uploaded Document</Text>
                     <View style={styles.selectedData}>
-                      {pjImage && (
+                      {docImage && (
                         <Image
-                          source={{ uri: pjImage }}
+                          source={{ uri: docImage }}
                           style={styles.uploadImg}
                         />
                       )}
@@ -161,7 +157,26 @@ export default function EditMyProjects({ route, navigation }) {
                     </View>
                   </View>
                 </>
+              )} */}
+             {showDocResults ? (
+                <>
+                  <UploadDocument type={"(pdf, doc, ppt,xls)"} pickImg={pickImg} />
+                  <View>{image?.name && <Text style={styles.uploadCon}>{image.name}</Text>}</View>
+                </>
+              ) : (
+                <>
+                  <View style={styles.selectedDataCon}>
+                    <Text>Uploaded Document</Text>
+                    <View style={styles.selectedData}>
+                      {docImage && <Image source={{ uri: docImage }} style={styles.uploadImg} />}
+                      <TouchableOpacity onPress={onClickDoc}>
+                        <Text>close</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </>
               )}
+
               <InputField
                 label={"Project Duration"}
                 placeholder={"Project Duration"}
