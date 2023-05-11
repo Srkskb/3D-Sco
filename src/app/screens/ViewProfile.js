@@ -8,6 +8,7 @@ import { Edit } from "../components/buttons";
 import HomeHeader from "../components/header/HomeHeader";
 import { myHeadersData } from "./../api/helper";
 import AsyncStorage from "@react-native-community/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function ViewProfile({ navigation }) {
   // ! setUser data for the
@@ -79,9 +80,10 @@ export default function ViewProfile({ navigation }) {
         console.log("error", error);
       });
   };
+  const isFocused = useIsFocused();
   useEffect(() => {
     showUserDetails();
-  }, []);
+  }, [isFocused]);
   return (
     <View style={styles.container}>
       {/* <HeaderBack title={"User Detail"} onPress={()=>navigation.navigate("HomeScreen")}/> */}

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -23,20 +23,18 @@ import axios from "axios";
 import { myHeadersData } from "../../api/helper";
 import * as Yup from "yup";
 
-import {
-  CategoryDropdown,
-  StateDropdown,
-  CountryDropdown,
-  GenderDropdown,
-  UniversityDropdown,
-  CityDropdown,
-} from "../../components/dropdown";
+import { GenderDropdown } from "../../components/dropdown";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Snackbar } from "react-native-paper";
 
 import { Formik } from "formik";
+import StateDropdown from "../../components/dropdown/StateDropdown";
+import CityDropdown from "../../components/dropdown/CityDropdown";
+import UniversityDropdown from "../../components/dropdown/UniversityDropdown";
+import CountryDropdown from "../../components/dropdown/CountryDropdown";
+import CategoryDropdown from "../../components/dropdown/CategoryDropdown";
 
 const { height, width } = Dimensions.get("window");
 export default function Signup_Educator({ navigation }) {
@@ -89,8 +87,7 @@ export default function Signup_Educator({ navigation }) {
     formdata.append("password", values.password);
     // address
     formdata.append("address", values.address);
-    // formdata.append("schoolname", values.schoolName);
-    // formdata.append("collagename", values.collegeName);
+
     formdata.append("country", country);
     formdata.append("state", state);
     formdata.append("city", city);
@@ -250,10 +247,7 @@ export default function Signup_Educator({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <BackButton />
         </TouchableOpacity>
@@ -278,50 +272,54 @@ export default function Signup_Educator({ navigation }) {
           <Formik
             initialValues={{
               name: "",
+              mobile: "",
               email: "",
-              phoneNumber: "",
-              address: "",
-              userName: "",
               password: "",
+              address: "",
+              state: "",
+              city: "",
+              university: "",
+              username: "",
+              gender: "",
+              category: "",
+              typ: "",
+              country: "",
+              Comment: "",
+              institute: "",
+              Organization: "",
+              Description: "",
+              Experience: "",
+              Occupation: "",
+              Education: "",
+              Levels: "",
+              Institute: "",
+              Tnc: "yes",
             }}
             validationSchema={Yup.object().shape({
-              name: Yup.string()
-                .required("Name is required.")
-                .min(3, "Name must be at least 3 characters")
-                .max(20, "Name cannot be more than 20 characters"),
-              email: Yup.string()
-                .email("Enter a valid email")
-                .required("Email is required"),
-              phoneNumber: Yup.string().matches(
-                phoneRegExp,
-                "Phone number is not valid"
-              ),
+              name: Yup.string().required("Name is required."),
+              mobile: Yup.string().required("Contact No. is required."),
+              email: Yup.string().required("Email is required."),
+              password: Yup.string().required("Password is required."),
+              confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
               address: Yup.string().required("Address is required."),
-              // schoolName: Yup.string().required("School Name is required."),
-              // collegeName: Yup.string().required("College Name is required."),
-              userName: Yup.string().required("User Name is required."),
-              password: Yup.string()
-                .required("Password is required")
-                .min(5, "Your password is too short.")
-                .matches(
-                  /[a-zA-Z0-9]/,
-                  "Password can only contain Latin letters."
-                ),
-              confirmpassword: Yup.string().oneOf(
-                [Yup.ref("password"), null],
-                "Passwords must match"
-              ),
+              state: Yup.string().required("State is required."),
+              city: Yup.string().required("City is required."),
+              country: Yup.string().required("Country is required."),
+              university: Yup.string().required("University is required."),
+              username: Yup.string().required("UserName is required."),
+              gender: Yup.string().required("Gender is required."),
+              category: Yup.string().required("Category is required."),
+              Comment: Yup.string().required("Comment is required."),
+              Organization: Yup.string().required("Organization is required."),
+              Occupation: Yup.string().required("Occupation is required."),
+              Levels: Yup.string().required("Levels is required."),
+              institute: Yup.string().required("Name is required."),
+              totalExp: Yup.string().required("Total Experience is required."),
+              Education: Yup.string().required("Total Experience is required."),
             })}
             onSubmit={(values) => handleApi(values)}
           >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              isValid,
-            }) => (
+            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
               <View>
                 {/*Personal Information*/}
                 <Headline title={"personal information"} />
@@ -335,9 +333,7 @@ export default function Signup_Educator({ navigation }) {
                   // onChangeText={(name) => setName(name)}
                   // onBlur={handleBlur("name")}
                 />
-                {errors.name && (
-                  <Text style={styles.errorText}>{errors.name}</Text>
-                )}
+                {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
                 <Input
                   label="Email ID"
                   placeholder="Enter your E-mail ID"
@@ -346,64 +342,48 @@ export default function Signup_Educator({ navigation }) {
                   onChangeText={handleChange("email")}
                   // onChangeText={(email) => setEmail(email)}
                 />
-                {errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                )}
+                {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                 <Input
                   label="Contact No"
                   placeholder="Enter mobile number"
                   keyboardType="number-pad"
-                  value={values.phoneNumber}
-                  onChangeText={handleChange("phoneNumber")}
+                  name="mobile"
+                  value={values.mobile}
+                  onChangeText={handleChange("mobile")}
                   // onChangeText={(phone) => setPhone(phone)}
                 />
-                {errors.phone && (
-                  <Text style={styles.errorText}>{errors.phone}</Text>
-                )}
+                {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
                 <Input
                   multiline={true}
                   numberOfLines={3}
                   label="Address"
                   placeholder="Enter your Address"
                   textAlignVertical={"top"}
+                  name="address"
                   onChangeText={handleChange("address")}
                   value={values.address}
                   // onChangeText={(address) => setAddress(address)}
                   // onBlur={handleBlur("address")}
                 />
-                {errors.address && (
-                  <Text style={styles.errorText}>{errors.address}</Text>
-                )}
+                {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
 
                 {/*Login and Password*/}
                 <Headline title={"login and password"} />
                 <Input
                   label="Username"
                   placeholder="Username"
-                  value={values.userName}
-                  onChangeText={handleChange("userName")}
+                  value={values.username}
+                  name="username"
+                  onChangeText={handleChange("username")}
                   // onChangeText={(username) => setUsername(username)}
                 />
-                {errors.userName && (
-                  <Text style={styles.errorText}>{errors.userName}</Text>
-                )}
+                {errors.userName && <Text style={styles.errorText}>{errors.userName}</Text>}
                 <View>
-                  <TouchableOpacity
-                    style={styles.icon}
-                    onPress={() => setIsVisibleEntry(!isVisibleEntry)}
-                  >
+                  <TouchableOpacity style={styles.icon} onPress={() => setIsVisibleEntry(!isVisibleEntry)}>
                     <MaterialCommunityIcons
-                      name={
-                        isVisibleEntry === false
-                          ? "eye-outline"
-                          : "eye-off-outline"
-                      }
+                      name={isVisibleEntry === false ? "eye-outline" : "eye-off-outline"}
                       size={24}
-                      color={
-                        isVisibleEntry === false
-                          ? color.dark_gray
-                          : color.purple
-                      }
+                      color={isVisibleEntry === false ? color.dark_gray : color.purple}
                     />
                   </TouchableOpacity>
                   <Input
@@ -418,221 +398,49 @@ export default function Signup_Educator({ navigation }) {
                     // onBlur={handleBlur("passwor}
                   />
                 </View>
-                {errors.password && (
-                  <Text style={styles.errorText}>{errors.password}</Text>
-                )}
+                {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
                 <View>
-                  <TouchableOpacity
-                    style={styles.icon}
-                    onPress={() => setIsConfirmEntry(!isConfirmEntry)}
-                  >
+                  <TouchableOpacity style={styles.icon} onPress={() => setIsConfirmEntry(!isConfirmEntry)}>
                     <MaterialCommunityIcons
-                      name={
-                        isConfirmEntry === false
-                          ? "eye-outline"
-                          : "eye-off-outline"
-                      }
+                      name={isConfirmEntry === false ? "eye-outline" : "eye-off-outline"}
                       size={24}
-                      color={
-                        isConfirmEntry === false
-                          ? color.dark_gray
-                          : color.purple
-                      }
+                      color={isConfirmEntry === false ? color.dark_gray : color.purple}
                     />
                   </TouchableOpacity>
                   <Input
                     label={"Confirm Password"}
                     placeholder={"Enter Confirm Password"}
-                    name="confirmpassword"
+                    name="confirmPassword"
                     onChangeText={handleChange("confirmPassword")}
-                    value={values.confirmpassword}
+                    value={values.confirmPassword}
                     secureTextEntry={isConfirmEntry}
                     autoCapitalize="none"
-                    // onBlur={handleBlur("confirmpassword")}
-                    // onChangeText={(confirmpassword) =>
-                    //   setConfirmpassword(confirmpassword)
-                    // }
                   />
                 </View>
-                {/* {errors.confirmpassword && (
-                  <Text style={styles.errorText}>{errors.confirmpassword}</Text>
-                )} */}
+                {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
                 {/*Institute Information*/}
                 <Headline title={"institute information"} />
                 <Input
                   label="Institute Name"
                   placeholder="Institute Name"
-                  value={values.instituteName}
-                  onChangeText={handleChange("instituteName")}
+                  value={values.institute}
+                  name="institute"
+                  onChangeText={handleChange("institute")}
                   // onChangeText={
                   //   (instituteName) => setInstituteName(instituteName)
                   // }
                 />
-                {/* {errors.instituteName && (
-                  <Text style={styles.errorText}>{errors.instituteName}</Text>
-                )} */}
-                {/* <CountryDropdown
-                  label={"Country"}
-                  onSelect={(selectedItem, index) => {
-                    setCountry(selectedItem);
-                    console.log(selectedItem, index);
-                  }}
-                /> */}
-                {/* {errors.country && (
-                  <Text style={styles.errorText}>{errors.country}</Text>
-                )} */}
-                {/* <StateDropdown
-                  label={"State"}
-                  onSelect={(selectedItem, index) => {
-                    setState(selectedItem);
-                    console.log(selectedItem, index);
-                  }}
-                /> */}
-                {/* {errors.state && (
-                  <Text style={styles.errorText}>{errors.state}</Text>
-                )} */}
-                {/* <CityDropdown
-                  label={"City"}
-                  onSelect={(selectedItem, index) => {
-                    setCity(selectedItem);
-                    console.log(selectedItem, index);
-                  }}
-                /> */}
-                {/* {errors.state && (
-                  <Text style={styles.errorText}>{errors.state}</Text>
-                )} */}
-                {/* <UniversityDropdown
-                  label={"University"}
-                  onSelect={(selectedItem, index) => {
-                    setUniversity(selectedItem);
-                    console.log(selectedItem, index);
-                  }}
-                /> */}
-                {/* {errors.university && (
-                  <Text style={styles.errorText}>{errors.university}</Text>
-                )} */}
-<Text style={styles.label_text}>Select Country</Text>
-                <Dropdown
-                  style={[
-                    styles.dropdown,
-                    countryFocus && {
-                      borderColor: color.purple,
-                      borderWidth: 2,
-                    },
-                  ]}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  inputSearchStyle={styles.inputSearchStyle}
-                  iconStyle={styles.iconStyle}
-                  data={countryData}
-                  search
-                  maxHeight={300}
-                  labelField="label"
-                  valueField="value"
-                  placeholder={!countryFocus ? "Select Country" : "..."}
-                  searchPlaceholder="Search..."
-                  value={country}
-                  onFocus={() => setCountryFocus(true)}
-                  onBlur={() => setCountryFocus(false)}
-                  onChange={(item) => {
-                    setCountry(item.value);
-                    setCountryFocus(false);
-                    handleState(item.value);
-                    handleUniversity(item.value);
-                  }}
-                  containerStyle={styles.dropdown_container}
-                  itemContainerStyle={styles.dropdown_data}
-                  itemTextStyle={styles.item_textStyle}
-                />
+                {errors.institute && <Text style={styles.errorText}>{errors.institute}</Text>}
+
+                <Text style={styles.label_text}>Select Country</Text>
+                <CountryDropdown />
                 <Text style={styles.label_text}>Select State</Text>
-                <Dropdown
-                  style={[
-                    styles.dropdown,
-                    stateFocus && { borderColor: color.purple, borderWidth: 2 },
-                  ]}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  inputSearchStyle={styles.inputSearchStyle}
-                  iconStyle={styles.iconStyle}
-                  data={stateData}
-                  search
-                  maxHeight={300}
-                  labelField="label"
-                  valueField="value"
-                  placeholder={!stateFocus ? "Select State" : "..."}
-                  searchPlaceholder="Search..."
-                  value={state}
-                  onFocus={() => setStateFocus(true)}
-                  onBlur={() => setStateFocus(false)}
-                  onChange={(item) => {
-                    setState(item.value);
-                    setStateFocus(false);
-                    handleCity(country, item.value);
-                  }}
-                  containerStyle={styles.dropdown_container}
-                  itemContainerStyle={styles.dropdown_data}
-                  itemTextStyle={styles.item_textStyle}
-                />
+                <StateDropdown />
                 <Text style={styles.label_text}>Select City</Text>
-                <Dropdown
-                  style={[
-                    styles.dropdown,
-                    cityFocus && { borderColor: color.purple, borderWidth: 2 },
-                  ]}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  inputSearchStyle={styles.inputSearchStyle}
-                  iconStyle={styles.iconStyle}
-                  data={cityData}
-                  search
-                  maxHeight={300}
-                  labelField="label"
-                  valueField="value"
-                  placeholder={!cityFocus ? "Select City" : "..."}
-                  searchPlaceholder="Search..."
-                  value={city}
-                  onFocus={() => setCityFocus(true)}
-                  onBlur={() => setCityFocus(false)}
-                  onChange={(item) => {
-                    setCity(item.value);
-                    setCityFocus(false);
-                  }}
-                  containerStyle={styles.dropdown_container}
-                  itemContainerStyle={styles.dropdown_data}
-                  itemTextStyle={styles.item_textStyle}
-                />
+                <CityDropdown />
                 <Text style={styles.label_text}>Select University</Text>
-                <Dropdown
-                  style={[
-                    styles.dropdown,
-                    universityFocus && {
-                      borderColor: color.purple,
-                      borderWidth: 2,
-                    },
-                  ]}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  inputSearchStyle={styles.inputSearchStyle}
-                  iconStyle={styles.iconStyle}
-                  data={universityData}
-                  search
-                  maxHeight={300}
-                  labelField="label"
-                  valueField="value"
-                  placeholder={!universityFocus ? "Select University" : "..."}
-                  searchPlaceholder="Search..."
-                  value={university}
-                  onFocus={() => setUniversityFocus(true)}
-                  onBlur={() => setUniversityFocus(false)}
-                  onChange={(item) => {
-                    setUniversity(item.value);
-                    setUniversityFocus(false);
-                  }}
-                  containerStyle={styles.dropdown_container}
-                  itemContainerStyle={styles.dropdown_data}
-                  itemTextStyle={styles.item_textStyle}
-                />
+                <UniversityDropdown />
                 {/*Professional Information*/}
                 <Headline title={"professional information"} />
                 <Input
@@ -747,9 +555,7 @@ export default function Signup_Educator({ navigation }) {
                     onValueChange={setChecked}
                     color={isChecked ? color.purple : undefined}
                   />
-                  <Text style={styles.agree_text}>
-                    I agree to the above terms
-                  </Text>
+                  <Text style={styles.agree_text}>I agree to the above terms</Text>
                 </View>
 
                 {/*Extra Space*/}
@@ -842,61 +648,61 @@ const styles = StyleSheet.create({
     top: "45%",
     zIndex: 1,
   },
-    //dropdown style
+  //dropdown style
 
-    dropdown: {
-      height: 50,
-      borderColor: color.gray,
-      borderWidth: 2,
-      borderRadius: 8,
-      paddingHorizontal: 8,
-      marginBottom: 5,
-    },
-  
-    label: {
-      position: "absolute",
-      backgroundColor: "white",
-      left: 22,
-      top: 8,
-      zIndex: 999,
-      paddingHorizontal: 8,
-      fontSize: 14,
-    },
-    placeholderStyle: {
-      color: color.dark_gray,
-      fontSize: 14,
-      fontFamily: "Montserrat-Regular",
-    },
-    selectedTextStyle: {
-      color: color.black,
-      fontSize: 14,
-      fontFamily: "Montserrat-Regular",
-    },
-    iconStyle: {
-      width: 20,
-      height: 20,
-    },
-    inputSearchStyle: {
-      height: 40,
-      fontSize: 16,
-    },
-    label_text: {
-      color: color.black,
-      fontSize: 13,
-      fontFamily: "Montserrat-Regular",
-      marginBottom: 5,
-    },
-    dropdown_data: {
-      borderBottomColor: color.gray,
-      borderBottomWidth: 1,
-    },
-    dropdown_container: {
-      borderWidth: 1,
-      borderColor: color.gray,
-      borderRadius: 5,
-    },
-    item_textStyle: {
-      fontFamily: "Montserrat-Bold",
-      fontSize: 14,
-    },
+  dropdown: {
+    height: 50,
+    borderColor: color.gray,
+    borderWidth: 2,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginBottom: 5,
+  },
+
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    color: color.dark_gray,
+    fontSize: 14,
+    fontFamily: "Montserrat-Regular",
+  },
+  selectedTextStyle: {
+    color: color.black,
+    fontSize: 14,
+    fontFamily: "Montserrat-Regular",
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+  label_text: {
+    color: color.black,
+    fontSize: 13,
+    fontFamily: "Montserrat-Regular",
+    marginBottom: 5,
+  },
+  dropdown_data: {
+    borderBottomColor: color.gray,
+    borderBottomWidth: 1,
+  },
+  dropdown_container: {
+    borderWidth: 1,
+    borderColor: color.gray,
+    borderRadius: 5,
+  },
+  item_textStyle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 14,
+  },
 });

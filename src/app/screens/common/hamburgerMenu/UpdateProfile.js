@@ -6,7 +6,7 @@ import Input2 from "../../../components/inputs/Input2";
 import AppButton from "../../../components/buttons/AppButton";
 import Headline from "../../../components/Headline";
 import AsyncStorage from "@react-native-community/async-storage";
-import { CategoryDropdown, GenderDropdown } from "../../../components/dropdown";
+import { GenderDropdown } from "../../../components/dropdown";
 import { Snackbar } from "react-native-paper";
 import HomeHeader from "../../../components/header/HomeHeader";
 const { height, width } = Dimensions.get("window");
@@ -22,6 +22,7 @@ import axios from "axios";
 import { myHeadersData } from "../../../api/helper";
 import EmptyInput from "../../../utils/EmptyInput";
 import Loader from "../../../utils/Loader";
+import CategoryDropdown from "../../../components/dropdown/CategoryDropdown";
 
 export default function UpdateProfile({ navigation }) {
   // Alert Message or SnakesBar
@@ -33,24 +34,18 @@ export default function UpdateProfile({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const [toggle, setToggle] = useState({
-    country: "",
-    state: "",
-    city: "",
-    category: "",
-    university: "",
     gender: "",
   });
   //   personal information states
   const [country, setCountry] = useState();
   const [state, setState] = useState();
   const [city, setCity] = useState();
-  const [university, setUniversity] = useState();
   const [category, setCategory] = useState();
+  console.log("category", category);
   const fetchData = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    console.log("loginUID", myData.id);
+
     setLoading(true);
-    // setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -59,21 +54,18 @@ export default function UpdateProfile({ navigation }) {
     };
 
     fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${myData.id}`, requestOptions)
-      // axios(`https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${myData.id}`)
       .then((res) => res.json())
       .then((res) => {
         console.log("Profile_Detail", res?.Profile_Detail);
         setUserData(res?.Profile_Detail);
         setLoading(false);
         setToggle({
-          country: res?.Profile_Detail?.Country,
-          state: res?.Profile_Detail?.state,
-          city: res?.Profile_Detail?.city,
-          category: res?.Profile_Detail?.category,
           gender: res?.Profile_Detail?.Gender,
-          university: res?.Profile_Detail?.University,
         });
-        setCountry({ name: res?.Profile_Detail?.Country, id: res?.Profile_Detail?.Country });
+        setCountry({ name: res?.Profile_Detail?.Country_id, id: res?.Profile_Detail?.Country_id });
+        setState({ name: res?.Profile_Detail?.state_id, id: res?.Profile_Detail?.state_id });
+        setCity({ name: res?.Profile_Detail?.city_id, id: res?.Profile_Detail?.city_id });
+        setCategory({ name: res?.Profile_Detail?.category_id, id: res?.Profile_Detail?.category_id });
       })
       .catch((error) => {
         setLoading(false);
@@ -85,6 +77,7 @@ export default function UpdateProfile({ navigation }) {
   }, []);
 
   const handleApi = async (values) => {
+    console.log("Enterrr", values);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const type =
       myData.type == "admin"
@@ -101,21 +94,16 @@ export default function UpdateProfile({ navigation }) {
       update_studentprofile: "1",
       first_name: values?.name,
       mobile: values?.phone,
-      // email: 'Sonnu@gmail.com',
-      // password: '123456',
       address: values?.address,
-      // schoolname: values?.schoolName,
-      // collagename: values?.collegeName,
       country: values?.country,
       state: values?.state,
       city: values?.city,
-      // univercity: values?.university,
       username: values?.userName,
       gender: values?.gender,
       category: values?.category,
       comments: values?.comments,
-      // tandc: '1',
-      // role: '1',
+      tandc: "1",
+      role: type,
       id: myData?.id,
     });
     var myHeaders = new Headers();
@@ -152,110 +140,10 @@ export default function UpdateProfile({ navigation }) {
         console.log(responseJson);
       })
       .catch((error) => {
-        //Hide Loader
-        // alert("Invalid credential ");
-
         console.error(error);
       });
   };
-  // useEffect(() => {
-  //   const myHeaders = myHeadersData();
-  //   var config = {
-  //     method: "get",
-  //     url: "https://3dsco.com/3discoapi/3dicowebservce.php?country=1",
-  //     headers: { myHeaders },
-  //   };
-  //   axios(config)
-  //     .then((response) => {
-  //       // console.log("country",response);
-  //       var count = Object.keys(response.data.data).length;
-  //       let countryArray = [];
-  //       for (var i = 0; i < count; i++) {
-  //         countryArray.push({
-  //           value: response.data.data[i].country_id,
-  //           label: response.data.data[i].name,
-  //         });
-  //       }
-  //       setCountryData(countryArray);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }, []);
-  // const handleState = (countryCode) => {
-  //   const myHeaders = myHeadersData();
-  //   var config = {
-  //     method: "get",
-  //     url: `https://3dsco.com/3discoapi/state.php?state=1&country_id=${countryCode}`,
-  //     headers: { myHeaders },
-  //   };
-  //   axios(config)
-  //     .then((response) => {
-  //       // console.log("mine", response);
-  //       var count = Object.keys(response.data.data).length;
-  //       let stateArray = [];
-  //       for (var i = 0; i < count; i++) {
-  //         stateArray.push({
-  //           value: response.data.data[i].state_id,
-  //           label: response.data.data[i].name,
-  //         });
-  //       }
-  //       setStateData(stateArray);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
 
-  // const handleCity = (countryCode, stateCode) => {
-  //   const myHeaders = myHeadersData();
-  //   var config = {
-  //     method: "get",
-  //     url: `https://3dsco.com/3discoapi/state.php?city=1&country_id=${countryCode}&state_id=${stateCode}`,
-  //     headers: { myHeaders },
-  //   };
-  //   axios(config)
-  //     .then((response) => {
-  //       // console.log("mine", response);
-  //       var count = Object.keys(response.data.data).length;
-  //       let cityArray = [];
-  //       for (var i = 0; i < count; i++) {
-  //         cityArray.push({
-  //           value: response.data.data[i].city_id,
-  //           label: response.data.data[i].name,
-  //         });
-  //       }
-  //       setCityData(cityArray);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
-
-  // const handleUniversity = (countryCode) => {
-  //   const myHeaders = myHeadersData();
-  //   var config = {
-  //     method: "get",
-  //     url: `https://3dsco.com/3discoapi/state.php?university=1&country_id=${countryCode}`,
-  //     headers: { myHeaders },
-  //   };
-  //   axios(config)
-  //     .then((response) => {
-  //       // console.log("mine", response);
-  //       var count = Object.keys(response.data.data).length;
-  //       let universityArray = [];
-  //       for (var i = 0; i < count; i++) {
-  //         universityArray.push({
-  //           value: response.data.data[i].university_id,
-  //           label: response.data.data[i].name,
-  //         });
-  //       }
-  //       setUniversityData(universityArray);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
@@ -290,13 +178,13 @@ export default function UpdateProfile({ navigation }) {
               address: userData?.Address,
               // schoolName: userData?.School,
               // collegeName: userData?.college,
-              country: userData?.Country,
-              state: userData?.state,
-              city: userData?.city,
+              country: userData?.Country_id,
+              state: userData?.state_id,
+              city: userData?.city_id,
               // university: userData?.University,
               userName: userData?.Username,
               gender: userData?.Gender,
-              category: userData?.category,
+              category: userData?.category_id,
               comments: userData?.comment,
             }}
             validationSchema={Yup.object().shape({
@@ -407,51 +295,51 @@ export default function UpdateProfile({ navigation }) {
 
                 <Text style={styles.label_text}>Select Country</Text>
                 {/* {userData?.Country ? ( */}
-                {toggle.country ? (
+                {/* {toggle.country ? (
                   <EmptyInput value={userData?.Country} name="country" setToggle={setToggle} />
-                ) : (
-                  <CountryDropdown
-                    onSelect={(selectedItem) => {
-                      setFieldValue("country", selectedItem?.id);
-                      setCountry(selectedItem);
-                    }}
-                    // value={country}
-                    value={country}
-                  />
-                )}
+                ) : ( */}
+                <CountryDropdown
+                  onSelect={(selectedItem) => {
+                    setFieldValue("country", selectedItem?.id);
+                    setCountry(selectedItem);
+                  }}
+                  // value={country}
+                  value={country}
+                />
+                {/* )} */}
                 {errors.country && (
                   <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.country}</Text>
                 )}
 
                 <Text style={styles.label_text}>Select State</Text>
-                {toggle.state ? (
+                {/* {toggle.state ? (
                   <EmptyInput value={userData?.state} name="state" setToggle={setToggle} />
-                ) : (
-                  <StateDropdown
-                    countryId={values?.country}
-                    onSelect={(selectedItem) => {
-                      setFieldValue("state", selectedItem?.id);
-                      setState(selectedItem);
-                    }}
-                    value={state}
-                  />
-                )}
+                ) : ( */}
+                <StateDropdown
+                  countryId={values?.country}
+                  onSelect={(selectedItem) => {
+                    setFieldValue("state", selectedItem?.id);
+                    setState(selectedItem);
+                  }}
+                  value={state}
+                />
+                {/* )} */}
                 {errors.state && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.state}</Text>}
 
                 <Text style={styles.label_text}>Select City</Text>
-                {toggle.city ? (
+                {/* {toggle.city ? (
                   <EmptyInput value={userData?.city} name="city" setToggle={setToggle} />
-                ) : (
-                  <CityDropdown
-                    stateId={values?.state}
-                    countryId={values?.country}
-                    onSelect={(selectedItem) => {
-                      setFieldValue("city", selectedItem?.id);
-                      setCity(selectedItem);
-                    }}
-                    value={city}
-                  />
-                )}
+                ) : ( */}
+                <CityDropdown
+                  stateId={values?.state}
+                  countryId={values?.country}
+                  onSelect={(selectedItem) => {
+                    setFieldValue("city", selectedItem?.id);
+                    setCity(selectedItem);
+                  }}
+                  value={city}
+                />
+                {/* )} */}
 
                 {errors.city && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.city}</Text>}
                 {/* <Text style={styles.label_text}>Select University</Text>
@@ -518,19 +406,19 @@ export default function UpdateProfile({ navigation }) {
                 {errors.gender && <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.gender}</Text>}
                 <Text style={styles.label_text}>Category</Text>
 
-                {toggle.category ? (
+                {/* {toggle.category ? (
                   <EmptyInput value={userData?.category} name="category" setToggle={setToggle} />
-                ) : (
-                  <CategoryDropdown
-                    // label={"Category"}
-                    onSelect={(selectedItem, index) => {
-                      setCategory(selectedItem);
-                      // console.log(selectedItem.id, index);
-                      setFieldValue("category", selectedItem.id);
-                    }}
-                    value={category}
-                  />
-                )}
+                ) : ( */}
+                <CategoryDropdown
+                  // label={"Category"}
+                  onSelect={(selectedItem, index) => {
+                    setCategory(selectedItem);
+                    // console.log(selectedItem.id, index);
+                    setFieldValue("category", selectedItem.id);
+                  }}
+                  value={category}
+                />
+                {/* )} */}
                 {errors.category && (
                   <Text style={{ fontSize: 14, color: "red", marginBottom: 10 }}>{errors.category}</Text>
                 )}
@@ -552,7 +440,7 @@ export default function UpdateProfile({ navigation }) {
                 {/* <View style={{ height: 40 }}></View> */}
 
                 {/* SignUp Button */}
-                <AppButton title={"Update"} onPress={() => handleSubmit()} btnColor={color.purple} />
+                <AppButton loading={loading} title={"Update"} onPress={() => handleSubmit()} btnColor={color.purple} />
               </View>
             )}
           </Formik>

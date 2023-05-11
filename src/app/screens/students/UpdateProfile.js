@@ -39,32 +39,10 @@ export default function UpdateProfile({ navigation }) {
   const user_id = localStorage.getItem("user_id"); // ! loged user id
   const loginUID = localStorage.getItem("loginUID"); // ! loged user type
 
-  // ! setUser data for the
-  const [getName, setUpName] = useState();
-  const [getEmail, setUpEmail] = useState();
-  const [getGender, setUpGender] = useState();
-  const [getContact, setUpContact] = useState();
-  const [getCountry, setUpCountry] = useState();
-  const [getAddress, setUpAddress] = useState();
-  const [getUsername, setUpUsername] = useState();
-  const [getUniversity, setUpUniversity] = useState();
-  const [getCategory, setUpCategory] = useState();
-  const [getComment, setUpComment] = useState();
-  const [getOcc, setUpOcc] = useState();
-  const [getEdu, setUpEdu] = useState();
-  const [getLevel, setUpLevel] = useState();
-  const [getDate_of_birth, setUpDate_of_birth] = useState();
-  const [getZip, setUpZip] = useState();
-  const [getCity_id, setUpCity_id] = useState();
-  const [getState_id, setUpState_id] = useState();
-  // const [getUniversity_name, setUpUniversity_name] = useState();
-  const [getInstitute, setUpInstitute] = useState();
-  // const [getSchool, setUpSchool] = useState();
-  // const [getCollege, setUpCollege] = useState();
-
   // ! Too show user details
-  const showUserDetails = () => {
-    console.log("loginUID", loginUID);
+  const showUserDetails = async () => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "GET",
@@ -72,7 +50,7 @@ export default function UpdateProfile({ navigation }) {
       redirect: "follow",
     };
 
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${loginUID}`, requestOptions)
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?profile=1&student_id=${myData.id}`, requestOptions)
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
@@ -95,13 +73,12 @@ export default function UpdateProfile({ navigation }) {
         setUpCity_id(res.Profile_Detail.city_id);
         setUpState_id(res.Profile_Detail.state_id);
         // setUpUniversity_name(res.Profile_Detail.university_name);
-        setUpInstitute(res.Profile_Detail.institute);
+        // setUpInstitute(res.Profile_Detail.institute);
         // setUpCollege(res.Profile_Detail.college);
       })
       .catch((error) => console.log("error", error));
   };
   useEffect(() => {
-    console.log(loginUID);
     showUserDetails();
   }, []);
 
@@ -131,7 +108,7 @@ export default function UpdateProfile({ navigation }) {
     urlencoded.append("comments", comment);
     // static value
     urlencoded.append("tandc", "1");
-    urlencoded.append("role", user_id);
+    // urlencoded.append("role", user_id);
 
     console.log(urlencoded);
     fetch("https://3dsco.com/3discoapi/3dicowebservce.php", {
