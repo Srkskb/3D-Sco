@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // import { AdminJoin } from "../../students/account";
 const { height, width } = Dimensions.get("window");
 
-export default function AdminHomes({ navigation, backActionHandler }) {
+export default function AdminHomes({ navigation}) {
   // const backActionHandler = () => {
   //   Alert.alert("Alert!", "Are you sure you want to go back?", [
   //     {
@@ -39,6 +39,34 @@ export default function AdminHomes({ navigation, backActionHandler }) {
   //     // clear/remove event listener
   //     BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
   // }, []);
+  const homeBackPress = () => {
+    if (navigation.isFocused()) {
+      Alert.alert(
+        "3DSCO",
+        "Do you want to exit 3dsco?",
+        [
+          {
+            text: "No",
+            onPress: () => console.log("No"),
+            style: "cancel",
+          },
+          { text: "Yes", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    } else if (!navigation.isFocused()) {
+      // navigation.goBack();
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", homeBackPress);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", homeBackPress);
+  }, []);
 
   const [refreshing, setRefreshing] = useState(false);
 

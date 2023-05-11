@@ -77,7 +77,7 @@ export default function UpdateProfile({ navigation }) {
   }, []);
 
   const handleApi = async (values) => {
-    console.log("Enterrr", values);
+    setLoading(true);
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const type =
       myData.type == "admin"
@@ -122,9 +122,11 @@ export default function UpdateProfile({ navigation }) {
         console.log("responseJson", responseJson);
         if (responseJson.success == 0) {
           setSnackVisibleFalse(true);
+          setLoading(false);
           console.log("what", responseJson.message);
           setMessageFalse(responseJson.message);
         } else {
+          setLoading(false);
           setMessageTrue(responseJson?.message);
           console.log("what", responseJson.message);
           setSnackVisibleTrue(true);

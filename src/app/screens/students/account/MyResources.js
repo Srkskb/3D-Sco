@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-  RefreshControl,
-} from "react-native";
+import { View, StyleSheet, ScrollView, Text, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
@@ -19,6 +13,8 @@ export default function MyResources() {
   const [myResourcesData, setMyResourcesData] = useState([]);
   const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = React.useState(false);
+  // const user_id = localStorage.getItem("loginUID");
+
   const allLearnerList = () => {
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -26,10 +22,7 @@ export default function MyResources() {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?faq=1`,
-      requestOptions
-    )
+    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?faq=1`, requestOptions)
       .then((res) => res.json())
       .then((result) => setMyResourcesData(result.data))
       .catch((error) => console.log("error", error));
@@ -41,7 +34,6 @@ export default function MyResources() {
       setRefreshing(false);
     }, 2000);
   };
-
   useEffect(() => {
     allLearnerList();
   }, []);
@@ -50,12 +42,12 @@ export default function MyResources() {
       <HeaderBack title={"FAQ"} onPress={() => navigation.goBack()} />
       <View style={styles.main_box}>
         <HeaderText title={"FREQUENTLY ASKED QUESTIONS ( FAQ )"} />
-        <TextWithButton title={"Manage My Resources"} label={"Manage"} onPress={()=>navigation.navigate("ManageResources")}/>
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <TextWithButton
+          title={"Manage My Resources"}
+          label={"Manage"}
+          onPress={() => navigation.navigate("ManageResources")}
+        />
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.main}>
             {myResourcesData === undefined ? (
               <>
@@ -63,52 +55,28 @@ export default function MyResources() {
               </>
             ) : (
               <>
-                {myResourcesData.map((list, index) => (
-                  <>
-                    <View style={styles.faqBlock}>
+                {myResourcesData
+                  // .filter((item) => item.user_id == user_id)
+                  .map((list, index) => (
+                    // <>
+                    <View key={index} style={styles.faqBlock}>
                       <View>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            marginBottom: 10,
-                          }}
-                        >
-                          <View style={{ flex: 0.2 }}>
-                            <Text style={styles.queT}>Que. {index + 1}</Text>
-                          </View>
-                          <View style={{ flex: 0.8, paddingRight: 5 }}>
-                            <Text
-                              style={[styles.queT, { textAlign: "justify" }]}
-                            >
-                              {list.Question}
-                            </Text>
-                          </View>
-                        </View>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                          }}
-                        >
-                          <View style={{ flex: 0.2 }}>
-                            <Text style={styles.queT}> Ans.</Text>
-                          </View>
-                          <View style={{ flex: 0.8, paddingRight: 5 }}>
-                            <Text
-                              style={[styles.answer, { textAlign: "justify" }]}
-                            >
-                              {list.Answer}
-                            </Text>
-                          </View>
-                        </View>
+                        <Text style={styles.queT}>
+                          Que. {index + 1} {"   "} {list.Question}
+                        </Text>
+                        <Text style={styles.queT}>
+                          Ans. {index + 1} {"   "} <Text style={styles.answer}>{list.Answer}</Text>
+                        </Text>
                       </View>
                     </View>
-                  </>
-                ))}
+                    // </>
+                  ))}
               </>
             )}
           </View>
         </ScrollView>
       </View>
+      
     </View>
   );
 }
@@ -118,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
   },
   main_box: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     flex: 1,
   },
   subhead_text: {

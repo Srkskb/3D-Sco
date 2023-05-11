@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Snackbar } from "react-native-paper";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
@@ -18,11 +18,12 @@ import TextWithButton from "../../../components/TextWithButton";
 import { Edit, Remove, ViewButton } from "../../../components/buttons";
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
 
-export default function Blogs() {
+export default function AdminBlogs() {
+  const navigation = useNavigation();
   const [id, setId] = useState("");
   const [deletePop, setDeletePop] = useState(false);
-  const navigation = useNavigation();
   const [blogListData, setBlogListData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
@@ -30,9 +31,8 @@ export default function Blogs() {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [loading, setLoading] = useState(false);
-  const loginUID = localStorage.getItem("loginUID");
   const [userId, setUserId] = useState("");
-
+  const isFocused = useIsFocused();
   useEffect(() => {
     fetchData();
   }, []);
@@ -44,7 +44,6 @@ export default function Blogs() {
   };
 
   const allLearnerList = async () => {
-    console.log("Enter");
     setLoading(true);
     const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
@@ -60,7 +59,6 @@ export default function Blogs() {
       .then((res) => res.json())
       .then((result) => {
         setLoading(false);
-        console.log(result.data);
         setBlogListData(result.data);
       })
       .catch((error) => {
@@ -70,6 +68,7 @@ export default function Blogs() {
   };
   // Delete Blog
   const deleteBlog = (id) => {
+    setDeletePop(false);
     // const loginUID = localStorage.getItem("loginUID");
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -85,7 +84,6 @@ export default function Blogs() {
       .then((result) => {
         console.log(result);
         if (result.success === 1) {
-          setDeletePop(false);
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
           let temp = [];
@@ -102,7 +100,7 @@ export default function Blogs() {
   };
   const onRefresh = () => {
     setRefreshing(true);
-    allLearnerList();
+    fetchData();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -111,25 +109,74 @@ export default function Blogs() {
   // useEffect(() => {
   //   navigation.addListener("focus", () => allLearnerList());
   // }, []);
+  const renderBlogData=(list)=>{
+    return(
+      <View style={styles.containerBlog}>
+                        <View style={{ flexDirection: "row" }}>
+                          <View style={styles.right_side}>
+                            <View style={{ width: "100%" }}>
+                              <Text style={styles.head_text}>{list.Titel}</Text>
+                              <Text style={styles.date}>
+                                Last Updated -{" "}
+                                {moment(list && list?.Date).format("LL")}
+                              </Text>
+                              <Text
+                                style={styles.description_text}
+                                numberOfLines={1}
+                              >
+                                {list.Description}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                        <View style={styles.button_container}>
+                          <ViewButton
+                            onPress={() =>
+                              navigation.navigate("ViewBlogs", {
+                                Titel: list.Titel,
+                                Date: moment(list && list?.Date).format("LL"),
+                                description: list.Description,
+                                list: list,
+                              })
+                            }
+                          />
+                          <View style={{ width: 20 }}></View>
+
+                          {list.added_by == userId ? (
+                            <>
+                              <Edit
+                                onPress={() =>
+                                  navigation.navigate("EditBlogs", {
+                                    editData: list,
+                                  })
+                                }
+                              />
+                              <View style={{ width: 20 }}></View>
+                              <Remove
+                                onPress={() => {
+                                  setId(list.id);
+                                  setDeletePop(true);
+                                }}
+                              />
+                            </>
+                          ) : null}
+                        </View>
+                      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <View
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#ffffffcc",
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 100,
-          }}
-        >
-          <ActivityIndicator size={"large"} />
-        </View>
-      ) : null}
-      <HeaderBack title={"Blogs"} onPress={() => navigation.goBack()} />
+      {loading && <Loader />}
+
+      <HeaderBack
+        title={"Blogs"}
+        onPress={() => {
+          console.log("Enterrrrr");
+          setLoading(false);
+          navigation.goBack();
+        }}
+      />
       <Snackbar
         visible={snackVisibleTrue}
         onDismiss={() => setSnackVisibleTrue(false)}
@@ -208,12 +255,7 @@ export default function Blogs() {
                               <Edit
                                 onPress={() =>
                                   navigation.navigate("EditBlogs", {
-                                    blogID: list.id,
-                                    title: list.Titel,
-                                    date: moment(list && list?.Date).format(
-                                      "LL"
-                                    ),
-                                    description: list.Description,
+                                    editData: list,
                                   })
                                 }
                               />

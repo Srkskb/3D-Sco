@@ -21,54 +21,53 @@ import * as Yup from "yup";
 import * as qs from "qs";
 import * as ImagePicker from "expo-image-picker";
 import { UploadDocument } from "../../../components";
-import mime from 'mime'
+import mime from "mime";
+
 import AsyncStorage from "@react-native-community/async-storage";
 export default function AddResources({ navigation }) {
-  const [question,setQuestion]=useState("");
-  const [answer ,setAnswer] =useState("");
-  const loginUID = localStorage.getItem("loginUID");
+  const [question, setQuestion] = useState("");
   const [loading, setloading] = useState(false);
+  const [answer, setAnswer] = useState("");
+  const loginUID = localStorage.getItem("loginUID");
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
 
-  const addFileCabinet =async (values) => {
-    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+  const addFileCabinet = async (values) => {
     setloading(true);
-    console.log(values.docTitle,loginUID,values.description,);
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     const getHeaders = myHeadersData();
     var data = qs.stringify({
-  'add_faq': '1',
-  'Question': values.docTitle,
-  'Answer': values.description,
-  'user_id': myData.id 
-});
-  var config = {
-  method: 'post',
-  url: 'https://3dsco.com/3discoapi/studentregistration.php',
-  headers: { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  data : data
-};
-  
-  axios(config)
-  .then((response)=>{
-    console.log(response)
-    if(response.data.success==1){
-      setloading(false);
-    navigation.navigate("ManageResources")
-  }
-  })
-  .catch(function (error) {
-    setloading(false);
-    console.log(error);
-  });
-};
+      add_faq: "1",
+      Question: values.docTitle,
+      Answer: values.description,
+      user_id: myData.id,
+    });
+    var config = {
+      method: "post",
+      url: "https://3dsco.com/3discoapi/studentregistration.php",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then((response) => {
+        if (response.data.success == 1) {
+          setloading(false);
+          navigation.navigate("ManageResources");
+        }
+      })
+      .catch(function (error) {
+        setloading(false);
+        console.log(error);
+      });
+  };
   return (
-<View style={styles.container}>
+    <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Add Resources"}
@@ -80,6 +79,7 @@ export default function AddResources({ navigation }) {
         onDismiss={() => setSnackVisibleTrue(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "#82027D" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageTrue}
       </Snackbar>
@@ -88,6 +88,7 @@ export default function AddResources({ navigation }) {
         onDismiss={() => setSnackVisibleFalse(false)}
         action={{ label: "Close" }}
         theme={{ colors: { accent: "red" } }}
+        wrapperStyle={{ zIndex: 1 }}
       >
         {getMessageFalse}
       </Snackbar>
@@ -152,7 +153,7 @@ export default function AddResources({ navigation }) {
                       {errors.selectedItem}
                     </Text>
                   )}
-{/*  */}
+                  {/*  */}
                   <InputField
                     label={"Answer"}
                     placeholder={"Enter Your Answer"}
@@ -178,7 +179,7 @@ export default function AddResources({ navigation }) {
                       title={"Cancel"}
                       color={color.purple}
                       fontFamily={"Montserrat-Medium"}
-                      onPress={()=>navigation.goBack()}
+                      onPress={() => navigation.goBack()}
                     />
                     <SmallButton
                       onPress={handleSubmit}

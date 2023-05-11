@@ -18,7 +18,7 @@ export default function ViewBlogs({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const loginUID = localStorage.getItem("loginUID");
 
-  const addComment = async () => {
+  const addComment =async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
     setLoading(true);
     var formdata = new FormData();
@@ -129,7 +129,7 @@ export default function ViewBlogs({ route, navigation }) {
               title={"Cancel"}
               color={color.purple}
               fontFamily={"Montserrat-Medium"}
-              onPress={() => navigation.navigate("AdminBlogs")}
+              onPress={() => navigation.navigate("Blogs")}
             />
             <SmallButton
               title={"Submit"}

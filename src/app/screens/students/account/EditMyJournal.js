@@ -34,11 +34,14 @@ export default function EditMyJournal({ route, navigation }) {
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const loginUID = localStorage.getItem("loginUID");
-  const [image, setImage] = useState({ name: jImage.split("https://3dsco.com/images/")[1].split(".")[0], uri: jImage });
+  const [image, setImage] = useState({
+    name: jImage.split("https://3dsco.com/images/")[1],
+    uri: jImage,
+  });
   const [updateTitle, setUpTitle] = useState(title);
   const [loading, setloading] = useState(false);
   const [upDescription, setUpDescription] = useState(description);
-  const [access, setAccess] = useState(jAccess);
+  const [access, setAccess] = useState({ name: jAccess, id: jAccess });
   const pickImg = async () => {
     console.log("first");
     let result = await DocumentPicker.getDocumentAsync({});
@@ -56,7 +59,7 @@ export default function EditMyJournal({ route, navigation }) {
     var urlencoded = new FormData();
     urlencoded.append("update_journals", "1");
     urlencoded.append("titel", updateTitle);
-    urlencoded.append("access_level", access);
+    urlencoded.append("access_level", access?.name);
     urlencoded.append("description", upDescription);
     urlencoded.append("user_id", myData.id);
     urlencoded.append("id", jID);
@@ -90,20 +93,20 @@ export default function EditMyJournal({ route, navigation }) {
   };
   // ** Use Effect To get value of each and every Field
   const [showResults, setShowResults] = useState(false);
-  const [showDocResults, setShowDocResults] = useState(false);
+  const [showDocResults, setShowDocResults] = useState(true);
 
   const onClick = () => {
     setShowResults(true);
   };
   const onClickDoc = () => {
-    setShowDocResults(true);
+    setShowDocResults(false);
   };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={color.purple} />
       <HeaderBack
         title={"Update Journal"}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate("MyJournal")}
       />
       <Snackbar
         visible={snackVisibleTrue}
@@ -142,6 +145,7 @@ export default function EditMyJournal({ route, navigation }) {
                     onSelect={(selectedItem) => {
                       setAccess(selectedItem);
                     }}
+                    value={access}
                   />
                 </>
               ) : (
@@ -201,7 +205,7 @@ export default function EditMyJournal({ route, navigation }) {
               />
 
               <View style={styles.button}>
-              <SmallButton
+                <SmallButton
                   title={"Cancel"}
                   color={color.purple}
                   fontFamily={"Montserrat-Medium"}

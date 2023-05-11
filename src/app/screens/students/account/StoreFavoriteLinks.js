@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import HeaderBack from "../../../components/header/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import { myHeadersData } from "../../../api/helper";
 import { NoDataFound } from "../../../components";
@@ -19,34 +19,46 @@ import TextWithButton from "../../../components/TextWithButton";
 import RoundCategory from "../../../components/dropdown/RoundCategory";
 import WeblinkSearch from "../../../components/WeblinkSearch";
 import { FontAwesome } from "@expo/vector-icons";
-import qs from "qs";
-import axios from "axios";
+
 import AsyncStorage from "@react-native-community/async-storage";
 import DeletePopup from "../../../components/popup/DeletePopup";
+
 export default function StoreFavoriteLinks() {
   const navigation = useNavigation();
 
   const [storeLinks, setStoreLinks] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const [color, changeColor] = useState("red");
+  // const [color, changeColor] = useState("red");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [linkId, setLinkId] = useState("");
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
   const [filter, setFilter] = useState("");
-  const [categoryList, setCategoryList] = useState([]);
-  const [initialStoreLinks, setInitialStoreLinks] = useState([]);
-  const user_type = localStorage.getItem("userID"); // ! user Type student or other
-
-  const allLearnerList = async (text = "") => {
+  const [selectCategory, setSelectCategory] = useState("");
+  // const [categoryList, setCategoryList] = useState([]);
+  // const [initialStoreLinks, setInitialStoreLinks] = useState([]);
+  // const user_type = localStorage.getItem("userID"); // ! user Type student or other
+  console.log("filter", filter);
+  const allLearnerList = async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+    console.log("first", myData.id);
+    const type =
+      myData.type == "admin"
+        ? 4
+        : myData.type == "tutor"
+        ? 2
+        : myData.type == "affiliate"
+        ? 5
+        : myData.type == "student"
+        ? 1
+        : 3;
     setLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
@@ -56,14 +68,17 @@ const [deletePop, setDeletePop] = useState(false);
     };
 
     fetch(
-      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${user_type}&category=${filter}`,
+      `https://3dsco.com/3discoapi/3dicowebservce.php?link=1&student_id=${myData.id}&type=${type}&category=${filter}`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        setStoreLinks(result.data);
-        setSearchData(result.data);
-        setInitialStoreLinks(result.data);
+        const filteredItems = result?.data?.filter((item) =>
+          item?.Titel?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setSearchTerm("");
+        setStoreLinks(filteredItems);
+        // setSearchData(result.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -72,80 +87,91 @@ const [deletePop, setDeletePop] = useState(false);
       });
   };
 
-  const category = () => {
-    const myHeaders = myHeadersData();
-    fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
-      method: "GET",
-      headers: {
-        myHeaders,
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success == 1) {
-          setCategoryList(res.data);
-        } else {
-          alert("Try after sometime");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  };
+  // const category = () => {
+  //   const myHeaders = myHeadersData();
+  //   fetch("https://3dsco.com/3discoapi/3dicowebservce.php?category_list=1", {
+  //     method: "GET",
+  //     headers: {
+  //       myHeaders,
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       if (res.success == 1) {
+  //         setCategoryList(res.data);
+  //       } else {
+  //         alert("Try after sometime");
+  //       }
+  //     })
+  //     .catch((error) => console.log("error", error));
+  // };
 
-  const deleteProject = async (id) => {
+  const deleteProject = async (linkId) => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
-    const loginUID = localStorage.getItem("loginUID");
+    setDeleteLoading(true);
     const myHeaders = myHeadersData();
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${id}&user_id=${myData.id}`, requestOptions)
+    fetch(
+      `https://3dsco.com/3discoapi/3dicowebservce.php?delete_link=1&id=${linkId}&user_id=${myData.id}`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((result) => {
-        if (result.success === 1) {
-          setDeletePop(false);
+        console.log(result);
+        if (result.success == 1) {
+          setLinkId("");
           setSnackVisibleTrue(true);
           setMessageTrue(result.message);
-          let temp = [];
-          storeLinks.forEach((item) => {
-            if (item.id !== id) temp.push(item);
-          });
-          setStoreLinks(temp);
+          // let temp = [];
+          // storeLinks.forEach((item) => {
+          //   if (item.id !== linkId) temp.push(item);
+          // });
+          setStoreLinks((prev) => prev.filter((item) => item.id != linkId));
         } else {
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
-      })
-      .catch((error) => console.log("error", error));
+        setDeleteLoading(false);
+      });
+    setDeleteLoading(true).catch((error) => {
+      setDeleteLoading(false);
+      console.log("error", error);
+    });
   };
 
   const onRefresh = () => {
     setRefreshing(true);
-    // allLearnerList();
+    allLearnerList();
     setTimeout(() => {
-      changeColor("green");
+      // changeColor("green");
+
       setRefreshing(false);
     }, 2000);
   };
+  const isFocused = useIsFocused();
   useEffect(() => {
-    category();
-    navigation.addListener("focus", () => category());
-  }, [navigation]);
-  useEffect(() => {
-    filter && allLearnerList();
-  }, [filter]);
+    // navigation.addListener("focus", () => {
+    //   // setSelectCategory({});
+    //   // setStoreLinks([]);
+    //   // allLearnerList();
+    // });
+    allLearnerList();
+  }, [isFocused]);
 
-  const searchText = (searchTerm) => {
-    const filteredData = storeLinks?.filter((el) => {
-      if (searchTerm === "") {
-        return storeLinks;
-      } else {
-        return el.Titel.toLowerCase().includes(searchTerm);
-      }
-    });
-    setSearchData(filteredData);
-  };
+  // const searchText = (searchTerm) => {
+  //   const filteredData = storeLinks?.filter((el) => {
+  //     if (searchTerm === "") {
+  //       return storeLinks;
+  //     } else {
+  //       return el.Titel.toLowerCase().includes(searchTerm);
+  //     }
+  //   });
+  //   setSearchData(filteredData);
+  // };
   return (
     <View style={styles.container}>
       {loading ? (
@@ -187,7 +213,10 @@ const [deletePop, setDeletePop] = useState(false);
         <TextWithButton
           title={"Store Favorite Links"}
           label={"+Add"}
-          onPress={() => navigation.navigate("AddLink")}
+          onPress={() => {
+            setFilter("");
+            navigation.navigate("AddLink");
+          }}
         />
 
         <View
@@ -200,11 +229,10 @@ const [deletePop, setDeletePop] = useState(false);
           <View style={styles.category_search}>
             <RoundCategory
               onSelect={(selectedItem, index, item) => {
-                // let catid = categoryList?.filter((i) => i.Name === selectedItem).map((i) => i.id);
-                console.log(selectedItem);
-                // setFilter(catid && catid[0]);
-                setSearchTerm("");
+                setFilter(selectedItem.id);
+                setSelectCategory(selectedItem);
               }}
+              value={selectCategory}
             />
             <TextInput
               style={styles.input}
@@ -214,13 +242,12 @@ const [deletePop, setDeletePop] = useState(false);
             />
           </View>
           <View style={styles.search_button}>
-            {/* <TouchableOpacity onPress={() => allLearnerList()}> */}
-            <TouchableOpacity onPress={() => searchText(searchTerm)}>
+            <TouchableOpacity onPress={() => allLearnerList()}>
               <FontAwesome name="search" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
         </View>
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScrollView refreshControl={!refreshing && <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.main}>
             <View style={{ flex: 1 }}>
               {storeLinks === undefined ? (
@@ -229,7 +256,7 @@ const [deletePop, setDeletePop] = useState(false);
                 </>
               ) : (
                 <>
-                  {searchData?.map((list, index) => (
+                  {storeLinks?.map((list, index) => (
                     <WebLinkCard
                       key={index}
                       title={list.Titel}
@@ -245,18 +272,14 @@ const [deletePop, setDeletePop] = useState(false);
                         })
                       }
                       removePress={() => {
-                        setId(list.id);
-                        setDeletePop(true);
+                        setLinkId(list.id);
+                        // setDeletePop(true);
                       }}
-                      pressEdit={() =>
+                      pressEdit={() => {
                         navigation.navigate("EditStoreFavoriteLinks", {
-                          linkID: list.id,
-                          title: list.Titel,
-                          link: list.url,
-                          description: list.Detail,
-                          linkCategory: list.Category,
-                        })
-                      }
+                          editData: list,
+                        });
+                      }}
                     />
                   ))}
                 </>
@@ -265,10 +288,11 @@ const [deletePop, setDeletePop] = useState(false);
           </View>
         </ScrollView>
       </View>
-      {deletePop ? (
+      {linkId?.length ? (
         <DeletePopup
+          deleteLoading={deleteLoading}
           cancelPress={() => setDeletePop(false)}
-          deletePress={() => deleteProject(id)}
+          deletePress={() => deleteProject(linkId)}
         />
       ) : null}
     </View>

@@ -5,7 +5,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import React, { useState } from "react";
 import { styles } from "./Styles";
 const down_img = require("../../assets/images/down.png");
-const Access = ["Private", "Public", "Shared"];
+const Access = ["Private", "Shared"];
 
 export default function AccessLevel({ label, onSelect, ...props }) {
   const [isFocus, setIsFocus] = useState(false);

@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import HeaderBack from "../../../components/header/Header";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../../assets/themes/Color";
 import TextWithButton from "../../../components/TextWithButton";
 import { Remove, Edit } from "../../../components/buttons";
 import { Snackbar } from "react-native-paper";
-import DeletePopup from "../../../components/popup/DeletePopup";
 import AsyncStorage from "@react-native-community/async-storage";
+import DeletePopup from "../../../components/popup/DeletePopup";
+import Loader from "../../../utils/Loader";
+
 export default function FinancialAssistance() {
   const navigation = useNavigation();
   const [id, setId] = useState("");
-const [deletePop, setDeletePop] = useState(false);
+  const [deletePop, setDeletePop] = useState(false);
   const [snackVisibleTrue, setSnackVisibleTrue] = useState(false);
   const [snackVisibleFalse, setSnackVisibleFalse] = useState(false);
   const [getMessageTrue, setMessageTrue] = useState();
   const [getMessageFalse, setMessageFalse] = useState();
-  const loginUID = localStorage.getItem("loginUID");
+  // const loginUID = localStorage.getItem("loginUID");
+  const [loginUID, setloginUID] = useState("");
   const [assistanceData, setAssistanceData] = useState([]);
-  const financialAssistanceList =async () => {
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(async () => {
     const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setloginUID(myData?.id);
+  }, []);
+
+  const financialAssistanceList = () => {
+    setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
@@ -35,14 +47,20 @@ const [deletePop, setDeletePop] = useState(false);
     fetch(`https://3dsco.com/3discoapi/studentregistration.php`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        setAssistanceData(result.data);
+        setAssistanceData(result?.data);
+        setLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setLoading(false);
+        console.log("error", error);
+      });
   };
-  const deleteBlog = (id) => {
+  const deleteBlog = async (id) => {
+    const myData = JSON.parse(await AsyncStorage.getItem("userData"));
+    setDeleteLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
-    myHeaders.append("Cookie", "PHPSESSID=4molrg4fbqiec2tainr98f2lo1");
+    myHeaders.append("Cookie", "PHPSESSID=a780e1f8925e5a3d9ebcdbb058ff0885");
     var formdata = new FormData();
     formdata.append("delete_financial_assistance", "1");
     formdata.append("user_id", myData.id);
@@ -70,8 +88,19 @@ const [deletePop, setDeletePop] = useState(false);
           setSnackVisibleFalse(true);
           setMessageFalse(result.message);
         }
+        setDeleteLoading(false);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        setDeleteLoading(false);
+        console.log("error", error);
+      });
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+    financialAssistanceList();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
   };
   useEffect(() => {
     financialAssistanceList();
@@ -100,10 +129,7 @@ const [deletePop, setDeletePop] = useState(false);
       >
         {getMessageFalse}
       </Snackbar>
-      <HeaderBack
-        title={"Financial assistance"}
-        onPress={() => navigation.goBack()}
-      />
+      <HeaderBack title={"Financial assistance"} onPress={() => navigation.goBack()} />
 
       <View style={styles.main_box}>
         <TextWithButton
@@ -111,10 +137,10 @@ const [deletePop, setDeletePop] = useState(false);
           label={"+Add"}
           onPress={() => navigation.navigate("AddFinancial")}
         />
-
-        <ScrollView>
+        {loading && <Loader />}
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {assistanceData.map((list, index) => (
-            <View style={styles.financialAssis}>
+            <View key={index} style={styles.financialAssis}>
               <View style={{ flexDirection: "row" }}>
                 <View style={styles.right_view}>
                   <Text style={styles.title}>{list.Titel} </Text>
@@ -124,16 +150,16 @@ const [deletePop, setDeletePop] = useState(false);
                   </Text>
                   <Text style={styles.link}>
                     <Text style={styles.url}>Added By : </Text>
-                    {list.name} ({list.user_type})
+                    {list.name}({list.user_type})
                   </Text>
                 </View>
               </View>
               <View style={styles.button_container}>
-                {list.user_id === loginUID ? (
+                {list?.user_id === loginUID ? (
                   <>
                     <Remove
                       onPress={() => {
-                        setId(list.id);
+                        setId(list?.id);
                         setDeletePop(true);
                       }}
                     />
@@ -141,9 +167,7 @@ const [deletePop, setDeletePop] = useState(false);
                     <Edit
                       onPress={() =>
                         navigation.navigate("EditFinancial", {
-                          assisID: list.id,
-                          assisTitle: list.Titel,
-                          assisURL: list.url,
+                          editData: list,
                         })
                       }
                     />
@@ -156,6 +180,7 @@ const [deletePop, setDeletePop] = useState(false);
       </View>
       {deletePop ? (
         <DeletePopup
+          deleteLoading={deleteLoading}
           cancelPress={() => setDeletePop(false)}
           deletePress={() => deleteBlog(id)}
         />

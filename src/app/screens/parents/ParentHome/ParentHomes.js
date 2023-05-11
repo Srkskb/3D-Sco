@@ -39,7 +39,32 @@ export default function ParentHomes({ navigation, backActionHandler }) {
   //     // clear/remove event listener
   //     BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
   // }, []);
-
+  const homeBackPress = () => {
+    if (navigation.isFocused()) {
+      Alert.alert(
+        "3DSCO",
+        "Do you want to exit 3dsco?",
+        [
+          {
+            text: "No",
+            onPress: () => console.log("No"),
+            style: "cancel",
+          },
+          { text: "Yes", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    } else if (!navigation.isFocused()) {
+      // navigation.goBack();
+      return false;
+    }
+  };
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", homeBackPress);
+    return () =>
+    BackHandler.removeEventListener("hardwareBackPress", homeBackPress);
+}, []);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {

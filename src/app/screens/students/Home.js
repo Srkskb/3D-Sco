@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   View,
   StatusBar,
@@ -8,6 +8,8 @@ import {
   RefreshControl,
   // SafeAreaView,
   Dimensions,
+  BackHandler,
+  Alert
 } from "react-native";
 import color from "../../assets/themes/Color";
 import HomeHeader from "../../components/header/HomeHeader";
@@ -16,6 +18,32 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { JoinedCourse } from "./account";
 const { height, width } = Dimensions.get("window");
 export default function Home({ navigation }) {
+  const homeBackPress = () => {
+    if (navigation.isFocused()) {
+      Alert.alert(
+        "3DSCO",
+        "Do you want to exit 3dsco?",
+        [
+          {
+            text: "No",
+            onPress: () => console.log("No"),
+            style: "cancel",
+          },
+          { text: "Yes", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    } else if (!navigation.isFocused()) {
+      // navigation.goBack();
+      return false;
+    }
+  };
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", homeBackPress);
+    return () =>
+    BackHandler.removeEventListener("hardwareBackPress", homeBackPress);
+}, []);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
